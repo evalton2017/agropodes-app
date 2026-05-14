@@ -5,10 +5,10 @@
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 8080",
     "start-dev": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:agroprodes": "node dist/agroprodes/server/server.mjs"
+    "serve:ssr:agroprodes": "PORT=8080 node dist/agroprodes/server/server.mjs"
   },
   "private": true,
   "dependencies": {
