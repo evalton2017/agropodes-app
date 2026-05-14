@@ -10,7 +10,8 @@ RUN npm run build --configuration=production
 FROM node:22-alpine AS runtime
 WORKDIR /app
 
-COPY --from=build /app/dist/agroprodes /app/dist/agroprodes-app
+# Copia mantendo o nome original do projeto definido no angular.json
+COPY --from=build /app/dist/agroprodes /app/dist/agroprodes
 COPY package*.json ./
 RUN npm ci --omit=dev
 
