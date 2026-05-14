@@ -16,4 +16,4 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 EXPOSE 4000
-CMD ["node", "dist/agroprodes-app/server/server.mjs"]
+CMD ["node", "dist/agroprodes/server/server.mjs"]
