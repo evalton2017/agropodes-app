@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject, AfterViewInit, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { parse } from 'wellknown';
+import {Component, OnInit, Inject, AfterViewInit, PLATFORM_ID} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import {parse} from 'wellknown';
 
 @Component({
   selector: 'app-map-modal',
@@ -29,7 +29,8 @@ export class MapModalComponent implements OnInit, AfterViewInit {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   ngAfterViewInit(): void {
     // Isola o Leaflet (que exige obrigatoriamente a 'window') apenas no navegador
@@ -42,27 +43,46 @@ export class MapModalComponent implements OnInit, AfterViewInit {
 
   private async initMapAndRender(): Promise<void> {
     try {
-      // 1. Processa o WKT de forma segura e síncrona usando o 'wellknown'
-      // O resultado é um objeto GeoJSON nativo válido
-      const geojsonFeature = parse(this.data.wkt);
-
-      if (!geojsonFeature) {
-        console.error('String WKT inválida ou corrompida.');
+      // 1. Validação estrita da string WKT recebida da API
+      if (!this.data || !this.data.wkt) {
+        console.error('WKT não fornecido ou está nulo.');
         return;
       }
 
-      // 2. Importa o Leaflet dinamicamente apenas no ambiente do cliente (browser)
+      // Remove espaços extras e força maiúsculas no tipo da geometria (evita falhas de parse)
+      const sanitizedWkt = this.data.wkt.trim();
+      const geojsonFeature = parse(sanitizedWkt);
+
+      if (!geojsonFeature) {
+        console.error('Não foi possível converter a string WKT para GeoJSON:', sanitizedWkt);
+        return;
+      }
+
+      // 2. Importa o Leaflet dinamicamente
       const L = await import('leaflet');
 
-      // 3. Inicializa o mapa estrutural
+      // 3. Inicializa o mapa
       this.map = L.map('modalMap').setView([0, 0], 2);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
       }).addTo(this.map);
 
-      // 4. Desenha a geometria GeoJSON gerada pelo 'wellknown'
-      const layer = L.geoJSON(geojsonFeature as any, {
+      // 4. Normaliza o dado para o formato esperado pelo Leaflet
+      // Faz o cast para 'any' para evitar o erro de comparação do TypeScript
+      const rawGeojson = geojsonFeature as any;
+      let geojsonToRender: any = rawGeojson;
+
+      if (rawGeojson && rawGeojson.type && rawGeojson.type !== 'Feature' && rawGeojson.type !== 'FeatureCollection') {
+        geojsonToRender = {
+          type: 'Feature',
+          geometry: rawGeojson,
+          properties: {}
+        };
+      }
+
+      // 5. Desenha a geometria de forma segura
+      const layer = L.geoJSON(geojsonToRender, {
         style: {
           color: '#007bff',
           weight: 4,
@@ -72,17 +92,24 @@ export class MapModalComponent implements OnInit, AfterViewInit {
         }
       }).addTo(this.map);
 
-      // 5. Enquadra o zoom do mapa na área da geometria enviada do banco
-      const bounds = layer.getBounds();
-      this.map.fitBounds(bounds);
+      // 6. Enquadra o zoom com segurança
+      // Verifica o tipo na propriedade correta (dentro do objeto unificado ou na raiz)
+      const geometryType = geojsonToRender.geometry ? geojsonToRender.geometry.type : geojsonToRender.type;
+      const coordinates = geojsonToRender.geometry ? geojsonToRender.geometry.coordinates : geojsonToRender.coordinates;
 
-      // 6. Previne bugs visuais onde o mapa renderiza em blocos cinzas dentro do modal
-      setTimeout(() => {
-        this.map.invalidateSize();
-      }, 100);
+      if (geometryType === 'Point' && coordinates) {
+        // Leaflet usa [Lat, Lng], GeoJSON usa [Lng, Lat]
+        this.map.setView([coordinates[1], coordinates[0]], 15);
+      } else {
+        const bounds = layer.getBounds();
+        if (bounds.isValid()) {
+          this.map.fitBounds(bounds);
+        }
+      }
 
     } catch (error) {
       console.error('Erro na inicialização do mapa:', error);
     }
   }
+
 }
