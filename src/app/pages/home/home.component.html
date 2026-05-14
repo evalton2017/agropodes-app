@@ -1,0 +1,89 @@
+<div class="dashboard-wrapper">
+
+  <!-- Painel Lateral -->
+  <aside class="control-panel">
+    <header class="panel-header">
+      <div class="brand-node">⟨A⟩</div>
+      <div>
+        <h1>AGROPRODES</h1>
+        <p>Pontos de Distribuição Sincronizados</p>
+      </div>
+    </header>
+
+    <section class="metrics-card">
+      <div class="metric-row">
+        <span>Malha de Dados:</span>
+        <span class="status-badge live">SINCRO</span>
+      </div>
+      <div class="metric-row">
+        <span>Conexões Fluindo:</span>
+        <strong>{{ diagramLinks().length }} Linhas</strong>
+      </div>
+    </section>
+
+    @if (currentStateInfo(); as info) {
+      <section class="details-card">
+        <h3>{{ info.name }}</h3>
+        <div class="status-indicator" [attr.data-status]="info.status">
+          <span class="dot"></span>
+          <span class="text">Logística: {{ info.status | uppercase }}</span>
+        </div>
+        <div class="coordinates">
+          <code>Calibração Nodo: [X: {{ info.cx }}px, Y: {{ info.cy }}px]</code>
+        </div>
+      </section>
+    } @else {
+      <p class="empty-state">Passe o mouse ou clique sobre os pontos verdes para ler a telemetria geográfica.</p>
+    }
+  </aside>
+
+  <!-- Área Principal -->
+  <main class="viewport">
+
+    <!-- Pequeno Slide Superior Inteligente -->
+    <div class="slide-container">
+      <div class="slide-wrapper" [style.transform]="'translateX(' + (-currentSlideIndex() * 100) + '%)'">
+        @for (slide of slides(); track slide.title) {
+          <div class="slide-item">
+            <div class="slide-content">
+              <span class="slide-title">{{ slide.title }}</span>
+              <div class="slide-data">
+                <span class="slide-value">{{ slide.value }}</span>
+                <span class="slide-badge" [ngClass]="slide.status">{{ slide.label }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <!-- Indicadores de bolinha (Dots) do slide -->
+      <div class="slide-dots">
+        @for (slide of slides(); track slide.title; let i = $index) {
+          <button class="dot-btn" [ngClass]="{ 'active': currentSlideIndex() === i }" (click)="setSlide(i)"></button>
+        }
+      </div>
+    </div>
+
+    <!-- Container do Mapa Sincronizado -->
+    <div class="canvas-container">
+      <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" class="canvas-svg">
+        <image href="assets/mapa-brasil.png" x="0" y="0" width="800" height="600" class="agro-background-map" />
+
+        <g class="diagram-links">
+          @for (link of diagramLinks(); track link.id) {
+            <line [attr.x1]="link.x1" [attr.y1]="link.y1" [attr.x2]="link.x2" [attr.y2]="link.y2" class="network-line" />
+          }
+        </g>
+
+        <g class="diagram-nodes">
+          @for (node of brazilRegions(); track node.id) {
+            <g class="node-interactive-group" (click)="selectState(node.id)" (mouseenter)="selectState(node.id)">
+              <circle [attr.cx]="node.cx" [attr.cy]="node.cy" r="20" fill="transparent" class="touch-target" />
+              <circle [attr.cx]="node.cx" [attr.cy]="node.cy" class="network-node" [ngClass]="networkStatuses()[node.id]" />
+            </g>
+          }
+        </g>
+      </svg>
+    </div>
+
+  </main>
+</div>

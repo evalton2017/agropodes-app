@@ -1,0 +1,163 @@
+:host {
+  --green-bg-light: #e8f5e9;
+  --green-text-dark: #2e7d32;
+  --green-active-bg: #c8e6c9;
+  --green-active-text: #1b5e20;
+
+  --sidenav-collapsed-width: 76px;
+  --sidenav-expanded-width: 260px;
+  --anim-speed: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Estrutura Global */
+.app-container { height: 100vh; background-color: #f8faf8; }
+.header-offset { height: 64px; }
+.page-body { display: flex; flex-direction: column; min-height: calc(100vh - 64px); box-sizing: border-box; }
+.main-content { padding: 24px; box-sizing: border-box; flex: 1; }
+
+/* Design do Cabeçalho */
+.app-header {
+  background-color: var(--green-bg-light) !important;
+  color: var(--green-text-dark);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 64px;
+  z-index: 99;
+}
+.header-profile-btn, .mobile-menu-btn { color: var(--green-text-dark); }
+.header-title { font-weight: 700; font-size: 1.1rem; }
+.spacer { flex: 1 1 auto; }
+
+/* Estilização Geral da Barra Lateral */
+.app-sidenav {
+  background-color: var(--green-bg-light) !important;
+  border-right: 1px solid rgba(46, 125, 50, 0.12) !important;
+}
+::v-deep .mat-drawer-inner-container { overflow-x: hidden !important; }
+.sidenav-logo-container { display: flex; align-items: center; padding: 16px; height: 64px; box-sizing: border-box; gap: 16px; }
+.app-logo { height: 32px; width: 32px; min-width: 32px; object-fit: contain; }
+.brand-name { font-weight: 700; font-size: 1.2rem; color: var(--green-text-dark); white-space: nowrap; }
+.divider { border: 0; border-top: 1px solid rgba(46, 125, 50, 0.12); margin: 0; }
+
+/* Links e Ícones do Menu */
+.app-sidenav mat-nav-list a { color: #556255; margin: 4px 8px; border-radius: 8px; display: flex; align-items: center; }
+.app-sidenav mat-icon { color: var(--green-text-dark); margin-right: 0; transition: margin var(--anim-speed); }
+.active-link { background-color: var(--green-active-bg) !important; color: var(--green-active-text) !important; font-weight: 600; }
+.active-link mat-icon { color: var(--green-active-text) !important; }
+
+/* Ajustes e Correções do MatExpansionPanel dentro da Sidebar */
+.menu-expansion-panel {
+  background: transparent !important;
+  box-shadow: none !important;
+
+  &.mat-expanded {
+    margin: 0 !important;
+  }
+
+  ::v-deep .mat-expansion-panel-body {
+    padding: 0 !important;
+  }
+}
+
+.menu-expansion-header {
+  padding: 0 16px !important;
+  height: 48px !important;
+
+  mat-panel-title {
+    display: flex;
+    align-items: center;
+    color: #556255;
+
+    mat-icon {
+      margin-right: 0;
+    }
+  }
+}
+
+/* Recuo para subitens ficarem aninhados perfeitamente */
+.submenu-list {
+  padding-top: 0 !important;
+  a {
+    padding-left: 32px !important;
+    margin: 2px 8px !important;
+  }
+}
+
+/* ==========================================================================
+   ESTADOS DE LAYOUT CONTROLADOS VIA CLASSES DO ANGULAR (DESKTOP)
+   ========================================================================== */
+
+/* 1. COMPORTAMENTO DO MENU LATERAL (DESKTOP) */
+.app-sidenav.desktop-collapsed {
+  width: var(--sidenav-collapsed-width) !important;
+  transition: width var(--anim-speed) !important;
+
+  /* Força sumir o conteúdo interno e a seta do Expansion quando colapsado */
+  ::v-deep .mat-expansion-panel-content,
+  ::v-deep .mat-expansion-indicator {
+    display: none !important;
+    height: 0 !important;
+  }
+}
+.app-sidenav.desktop-expanded {
+  width: var(--sidenav-expanded-width) !important;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.06) !important;
+  transition: width var(--anim-speed) !important;
+}
+
+/* 2. COMPORTAMENTO DO TEXTO DO MENU */
+.desktop-collapsed .menu-text { opacity: 0; white-space: nowrap; transition: opacity 0.1s ease; }
+.desktop-expanded .menu-text { opacity: 1; white-space: nowrap; transition: opacity 0.15s ease 0.05s; }
+.desktop-expanded mat-icon { margin-right: 16px !important; }
+.desktop-expanded .menu-expansion-header mat-panel-title mat-icon { margin-right: 16px !important; }
+
+/* 3. COMPORTAMENTO DA ÁREA DE CONTEÚDO DA PÁGINA */
+.app-content-wrapper.content-collapsed {
+  margin-left: var(--sidenav-collapsed-width) !important;
+  transition: margin-left var(--anim-speed) !important;
+}
+.app-content-wrapper.content-expanded {
+  margin-left: var(--sidenav-expanded-width) !important;
+  transition: margin-left var(--anim-speed) !important;
+}
+
+/* 4. COMPORTAMENTO DO HEADER SUPERIOR */
+.app-header.header-collapsed {
+  left: var(--sidenav-collapsed-width) !important;
+  width: calc(100% - var(--sidenav-collapsed-width)) !important;
+  padding-left: 24px !important;
+  transition: left var(--anim-speed), width var(--anim-speed), padding var(--anim-speed) !important;
+}
+.app-header.header-expanded {
+  left: var(--sidenav-expanded-width) !important;
+  width: calc(100% - var(--sidenav-expanded-width)) !important;
+  padding-left: 24px !important;
+  transition: left var(--anim-speed), width var(--anim-speed), padding var(--anim-speed) !important;
+}
+
+/* ==========================================================================
+   ESTADOS DE LAYOUT PARA MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-content-wrapper { margin-left: 0 !important; }
+
+  .app-header {
+    left: 0 !important;
+    width: 100% !important;
+    padding-left: 8px !important;
+  }
+
+  .app-sidenav {
+    width: var(--sidenav-expanded-width) !important;
+  }
+
+  .menu-text { opacity: 1 !important; }
+  .app-sidenav mat-icon { margin-right: 16px !important; }
+  .menu-expansion-header mat-panel-title mat-icon { margin-right: 16px !important; }
+
+  ::v-deep .mat-drawer-backdrop.mat-drawer-shown {
+    background-color: rgba(46, 125, 50, 0.15) !important;
+  }
+}

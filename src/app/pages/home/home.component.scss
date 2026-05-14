@@ -1,0 +1,419 @@
+// ==========================================================================
+// 1. VARIÁVEIS DE ESCOPO E CORES (Paleta Clean Agro Verde e Branco)
+// ==========================================================================
+:host {
+  --bg-primary: rgba(241, 245, 249, 0.85);
+  --bg-sidebar: rgba(255, 255, 255, 0.92);
+  --bg-card: #ffffff;
+  --border-color: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #15803d;
+  --text-empty: #64748b;
+  --color-active: #22c55e;
+  --color-active-dark: #16a34a;
+  --color-alert: #a3e635;
+  --color-alert-dark: #84cc16;
+  --color-inactive: #cbd5e1;
+  --color-inactive-dark: #94a3b8;
+}
+
+// ==========================================================================
+// 2. IMAGEM DE FUNDO GLOBAL E CONFIGURAÇÃO DE ROLAGEM
+// ==========================================================================
+.dashboard-wrapper {
+  display: grid;
+  grid-template-columns: 360px 1fr; // Padrão Desktop
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/images/mapa-brasil.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    filter: saturate(0.8) brightness(1.05);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-primary);
+
+    // 🛠️ ALTERADO: Reduzido de 4px para 1.5px para diminuir o desfoque
+    backdrop-filter: blur(1.5px);
+
+    z-index: 1;
+  }
+
+  // Ajuste do Grid para empilhamento no Mobile/Tablet
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr; // Menu automático em cima, área do mapa abaixo
+    height: 100vh;
+    overflow: hidden; // Trava a tela principal para o menu não se deslocar
+  }
+}
+
+// ==========================================================================
+// 3. PAINEL DE CONTROLE FIXO (STIKY NO MOBILE)
+// ==========================================================================
+.control-panel {
+  position: relative;
+  z-index: 10; // Alto nível de empilhamento para evitar que o body passe por cima ao voltar
+  background-color: var(--bg-sidebar);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid var(--border-color);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.05);
+
+  @media (max-width: 1024px) {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 16px;
+    flex-direction: row;
+    flex-wrap: nowrap; // Impede que os cards quebrem linha e sobreponham o conteúdo
+    overflow-x: auto;  // Ativa scroll horizontal para os cards no smartphone
+    align-items: center;
+    gap: 12px;
+
+    // Oculta barras de rolagem visuais do menu horizontal
+    &::-webkit-scrollbar { display: none; }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  @media (max-width: 1024px) {
+    flex-shrink: 0; // Evita que o título esmague no mobile
+  }
+
+  .brand-node {
+    background: linear-gradient(135deg, var(--color-active-dark), #15803d);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-family: monospace;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+  }
+  h1 { font-size: 1.15rem; font-weight: 800; margin: 0; }
+  p { font-size: 0.75rem; color: var(--text-muted); margin: 0; font-weight: 500; }
+}
+
+.metrics-card, .details-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+
+  @media (max-width: 1024px) {
+    padding: 10px 16px;
+    flex-shrink: 0;
+    width: 250px; // Largura fixa confortável para os cards no carrossel do menu
+    box-sizing: border-box;
+  }
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  margin-bottom: 12px;
+  &:last-child { margin-bottom: 0; }
+
+  .status-badge.live {
+    background-color: #f0fdf4;
+    color: var(--color-active-dark);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  font-size: 0.9rem;
+  @media (max-width: 1024px) { margin: 2px 0; }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  &[data-status="active"] { .dot { background: var(--color-active-dark); } .text { color: var(--color-active-dark); } }
+  &[data-status="alert"] { .dot { background: var(--color-alert-dark); } .text { color: var(--color-alert-dark); } }
+  &[data-status="inactive"] { .dot { background: var(--color-inactive-dark); } .text { color: var(--color-inactive-dark); } }
+}
+
+.coordinates code {
+  font-family: monospace;
+  color: var(--color-active-dark);
+  background-color: #f0fdf4;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+}
+
+.empty-state {
+  font-size: 0.85rem;
+  color: var(--text-empty);
+  text-align: center;
+  border: 1px dashed var(--border-color);
+  padding: 24px;
+  border-radius: 8px;
+  background-color: rgba(248, 250, 252, 0.8);
+
+  @media (max-width: 1024px) {
+    display: none; // Oculta o container vazio para preservar o espaço no cabeçalho mobile
+  }
+}
+
+// ==========================================================================
+// 4. VIEWPORT COM ROLAGEM INDEPENDENTE (Abaixo do Menu)
+// ==========================================================================
+.viewport {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    padding: 16px;
+    gap: 16px;
+    height: 100%;
+    overflow-y: auto; // Todo o conteúdo do mapa e slide rola apenas aqui dentro
+    -webkit-overflow-scrolling: touch; // Suaviza o deslize em telas iOS
+  }
+
+  @media (max-width: 576px) {
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
+// ==========================================================================
+// 5. SLIDE SUPERIOR
+// ==========================================================================
+.slide-container {
+  width: 100%;
+  max-width: 800px;
+  height: 74px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+  flex-shrink: 0; // Impede o slide de achatar em telas verticais curtas
+
+  @media (max-width: 576px) {
+    height: 90px;
+  }
+}
+
+.slide-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.slide-item {
+  min-width: 100%;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  box-sizing: border-box;
+
+  @media (max-width: 576px) {
+    padding: 0 16px;
+  }
+}
+
+.slide-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+
+  .slide-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.slide-data {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  @media (max-width: 576px) {
+    gap: 8px;
+  }
+
+  .slide-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    @media (max-width: 576px) { font-size: 1.1rem; }
+  }
+
+  .slide-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    @media (max-width: 576px) { font-size: 0.68rem; }
+
+    &.up { background: #dcfce7; color: #15803d; }
+    &.down { background: #fee2e2; color: #b91c1c; }
+    &.stable { background: #f1f5f9; color: #475569; }
+  }
+}
+
+.slide-dots {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  @media (max-width: 576px) {
+    right: 10px;
+    gap: 4px;
+  }
+
+  .dot-btn {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: none;
+    background: #cbd5e1;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s ease;
+
+    &.active {
+      background: var(--color-active-dark);
+      transform: scale(1.3);
+    }
+  }
+}
+
+// ==========================================================================
+// 6. CANVAS DO MAPA E DIAGRAMA
+// ==========================================================================
+.canvas-container {
+  width: 100%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  overflow: hidden;
+  box-sizing: border-box;
+
+  flex: 1;
+  max-height: calc(100vh - 150px);
+
+  @media (max-width: 1024px) {
+    flex: none;
+    height: auto;
+    aspect-ratio: 800 / 600; // Trava a proporção sem esticar os pontos
+    margin-bottom: 24px; // Espaçamento extra de segurança no rodapé mobile
+  }
+}
+
+.canvas-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.agro-background-map {
+  display: none;
+}
+
+.network-line {
+  stroke: var(--color-active-dark);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 6 5;
+  opacity: 0.75;
+  animation: lineStream 30s linear infinite;
+
+  @media (max-width: 576px) {
+    stroke-width: 1.8;
+  }
+}
+
+.node-interactive-group {
+  cursor: pointer;
+}
+
+.network-node {
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: r 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.3s ease;
+  stroke: #ffffff;
+  stroke-width: 2.5px;
+
+  &.inactive { r: 6px; fill: var(--color-inactive-dark); }
+  &.active { r: 9px; fill: var(--color-active); filter: drop-shadow(0 2px 6px rgba(22, 163, 74, 0.6)); }
+  &.alert { r: 11px; fill: var(--color-alert); filter: drop-shadow(0 2px 6px rgba(132, 204, 22, 0.7)); }
+
+  @media (max-width: 576px) {
+    stroke-width: 1.5px;
+    &.inactive { r: 4.5px; }
+    &.active { r: 7px; }
+    &.alert { r: 8.5px; }
+  }
+}
+
+@keyframes lineStream {
+  to { stroke-dashoffset: -100; }
+}

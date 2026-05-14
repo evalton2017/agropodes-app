@@ -1,0 +1,138 @@
+<div class="page-container">
+
+  <!-- Formulário de Consulta encapsulado em um Card -->
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Consulta PRODES</mat-card-title>
+      <mat-card-subtitle>Insira o WKT do polígono para obter informações analíticas</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="consultaForm" (ngSubmit)="onSubmit()" class="consulta-form">
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>WKT do Polígono (POLYGON)</mat-label>
+          <textarea
+            matInput
+            formControlName="poligono"
+            placeholder="POLYGON ((-56.02...))"
+            rows="4">
+          </textarea>
+          <mat-icon matSuffix>map</mat-icon>
+
+          @if (consultaForm.get('poligono')?.hasError('required')) {
+            <mat-error>O polígono é obrigatório para realizar a busca.</mat-error>
+          }
+        </mat-form-field>
+
+        @if (erroMensagem) {
+          <div class="error-banner">
+            <mat-icon>error</mat-icon>
+            <span>{{ erroMensagem }}</span>
+          </div>
+        }
+
+        <div class="actions-container">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="consultaForm.invalid">
+            <mat-icon>search</mat-icon>
+            Consultar
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tabela de Resultados Material -->
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>Resultados Encontrados</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="table-responsive">
+      <table mat-table [dataSource]="resultados" class="mat-elevation-z0 full-width">
+
+        <!-- Coluna ID / FID -->
+        <ng-container matColumnDef="idFid">
+          <th mat-header-cell *matHeaderCellDef> ID / FID </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="primary-text">ID: {{element.id}}</div>
+            <div class="secondary-text">FID: {{element.fid}}</div>
+          </td>
+        </ng-container>
+
+        <!-- Coluna Ano -->
+        <ng-container matColumnDef="ano">
+          <th mat-header-cell *matHeaderCellDef> Ano </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip-set>
+              <mat-chip class="year-chip">{{element.ano}}</mat-chip>
+            </mat-chip-set>
+          </td>
+        </ng-container>
+
+        <!-- Coluna Tipo / Classe -->
+        <ng-container matColumnDef="tipoClasse">
+          <th mat-header-cell *matHeaderCellDef> Tipo / Classe </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="text-uppercase font-semibold">{{element.tipo}}</div>
+            <div class="secondary-text">{{element.className}}</div>
+          </td>
+        </ng-container>
+
+        <!-- Coluna Área -->
+        <ng-container matColumnDef="area">
+          <th mat-header-cell *matHeaderCellDef> Área (Km²) </th>
+          <td mat-cell *matCellDef="let element"> {{element.areaKm | number:'1.2-4'}} </td>
+        </ng-container>
+
+        <!-- Coluna Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef> Estado </th>
+          <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+        </ng-container>
+
+        <!-- Coluna Satélite / Sensor -->
+        <ng-container matColumnDef="sateliteSensor">
+          <th mat-header-cell *matHeaderCellDef> Satélite / Sensor </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.satellite}} <span class="secondary-text">({{element.sensor}})</span>
+          </td>
+        </ng-container>
+
+        <!-- Coluna Data Imagem -->
+        <ng-container matColumnDef="dataImagem">
+          <th mat-header-cell *matHeaderCellDef> Data Imagem </th>
+          <td mat-cell *matCellDef="let element"> {{element.dataImagem | date:'dd/MM/yyyy'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="poligono">
+          <th mat-header-cell *matHeaderCellDef> Poligono </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="visualizarPoligono(element)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+
+        <!-- Definição de linhas da tabela -->
+        <tr mat-header-row *matHeaderRowDef="colunasExibidas"></tr>
+        <tr mat-row *matRowDef="let row; columns: colunasExibidas;"></tr>
+
+        <!-- Estado Vazio da Tabela -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell empty-table-cell" [attr.colspan]="colunasExibidas.length">
+            <mat-icon class="empty-icon">analytics</mat-icon>
+            <p>Nenhum registro consultado até o momento.</p>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+</div>

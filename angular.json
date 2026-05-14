@@ -27,7 +27,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -92,5 +93,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "484afabf-6fd0-4218-92f2-c8abc3e2bc2c"
   }
 }

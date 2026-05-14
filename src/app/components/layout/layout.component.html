@@ -1,0 +1,94 @@
+<mat-sidenav-container class="app-container" [hasBackdrop]="isMobile()">
+
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="!isMobile()"
+    class="app-sidenav"
+    [class.desktop-collapsed]="!isMobile() && !isExpanded()"
+    [class.desktop-expanded]="!isMobile() && isExpanded()"
+    (mouseenter)="expandMenu()"
+    (mouseleave)="collapseMenu()">
+
+    <div class="sidenav-logo-container">
+      <img src="images/logo.png" alt="AgroProdes" class="app-logo">
+      <span class="brand-name menu-text">AgroProdes</span>
+    </div>
+    <hr class="divider">
+
+    <mat-nav-list>
+      @for (item of menuItems; track item.label) {
+
+        <!-- CASO 1: Item com Submenu (Validação dinâmica baseada em filhos) -->
+        @if (item.children && item.children.length > 0) {
+          <mat-expansion-panel
+            class="menu-expansion-panel"
+            [disabled]="!isExpanded() && !isMobile()"
+            [expanded]="isExpanded() && !isMobile()">
+
+            <mat-expansion-panel-header class="menu-expansion-header">
+              <mat-panel-title>
+                <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                <span class="menu-text">{{ item.label }}</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <mat-nav-list class="submenu-list">
+              @for (child of item.children; track child.route) {
+                <a mat-list-item
+                   [routerLink]="child.route"
+                   routerLinkActive="active-link"
+                   (click)="isMobile() ? sidenav.close() : null">
+                  <mat-icon matListItemIcon>{{ child.icon }}</mat-icon>
+                  <span matListItemTitle class="menu-text">{{ child.label }}</span>
+                </a>
+              }
+            </mat-nav-list>
+          </mat-expansion-panel>
+        }
+        @else {
+          <a mat-list-item
+             [routerLink]="item.route"
+             routerLinkActive="active-link"
+             (click)="isMobile() ? sidenav.close() : null">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle class="menu-text">{{ item.label }}</span>
+          </a>
+        }
+
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content
+    class="app-content-wrapper"
+    [class.content-collapsed]="!isMobile() && !isExpanded()"
+    [class.content-expanded]="!isMobile() && isExpanded()">
+
+    <mat-toolbar
+      class="app-header"
+      [class.header-collapsed]="!isMobile() && !isExpanded()"
+      [class.header-expanded]="!isMobile() && isExpanded()">
+
+      <button *ngIf="isMobile()" mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn" aria-label="Abrir Menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <span class="header-title">AMBIENTE DE TESTE</span>
+      <span class="spacer"></span>
+      <button mat-icon-button aria-label="Perfil do Usuário" class="header-profile-btn">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="header-offset"></div>
+
+    <div class="page-body">
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+      <app-footer></app-footer>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

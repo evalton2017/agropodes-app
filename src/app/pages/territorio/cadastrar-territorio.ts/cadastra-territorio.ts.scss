@@ -1,0 +1,151 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px; /* Ocupa até o limite máximo do painel */
+  width: 100%;       /* Garante preenchimento em telas menores */
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.form-card, .result-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.header-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e3f2fd;
+  border-radius: 50%;
+}
+
+img[mat-card-image] {
+  object-fit: cover;
+  max-height: 220px;
+  width: 100%;
+}
+
+.info-group {
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.code-text {
+  font-family: monospace;
+  background-color: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.truncate {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Força o painel a ocupar até 100% da largura útil disponível */
+.result-expansion-panel {
+  width: 100%;
+  max-width: 1200px;
+  margin: 24px auto;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Alinhamento dos itens no cabeçalho */
+.panel-header {
+  height: 72px !important; /* Altura maior para dar destaque */
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.panel-description {
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Estruturação do conteúdo interno */
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 16px 8px 8px 8px;
+}
+
+.info-row {
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.info-row.align-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Caixa para formatação do hash */
+.code-text-panel {
+  font-family: monospace;
+  background-color: #f5f5f5;
+  padding: 6px 12px;
+  border-radius: 4px;
+  word-break: break-all;
+  display: inline-block;
+  margin-left: 6px;
+}
+
+/* Rodapé com as datas alinhadas em linha */
+.panel-footer-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.panel-footer-dates p {
+  margin: 0;
+}
+
+/* Centraliza o botão e define uma largura menor automática */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Garante que os campos de texto continuem ocupando 100% da largura */
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Ajusta o espaçamento do botão agora que ele está centralizado */
+form button[mat-raised-button] {
+  margin-top: 8px;
+  padding: 0 32px; /* Adiciona um preenchimento confortável nas laterais */
+}
+
+.hash-input-field {
+  width: 100%;
+}

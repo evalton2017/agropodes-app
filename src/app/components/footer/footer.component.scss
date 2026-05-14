@@ -1,0 +1,41 @@
+.app-footer {
+  background-color: #e8f5e9; /* Mesmo verde claro do Header e Menu */
+  color: #2e7d32; /* Verde escuro para contraste */
+  border-top: 1px solid rgba(46, 125, 50, 0.12);
+  padding: 16px 24px;
+  font-size: 0.85rem;
+  margin-top: auto; /* Empurra o footer para o final da página */
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 16px;
+}
+
+.footer-links a {
+  color: #2e7d32;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Ajuste para telas pequenas */
+@media (max-width: 600px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+}
