@@ -12,7 +12,13 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 const app = express();
 
 const angularApp = new AngularNodeAppEngine({
-  trustProxyHeaders: true,
+  trustProxyHeaders: [
+    'x-forwarded-for',
+    'x-forwarded-port',
+    'x-forwarded-host',
+    'x-forwarded-proto',
+    'x-forwarded-server'
+  ],
   allowedHosts: ['busca-car.api.br']
 });
 
