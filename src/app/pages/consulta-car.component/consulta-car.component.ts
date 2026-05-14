@@ -73,7 +73,7 @@ export class ConsultaCarComponent implements OnInit {
     this.filterForm = this.fb.group({
       cpf: [''],
       cnpj: [''],
-      carFederal: ['']
+      codigoCar: ['']
     });
   }
 
