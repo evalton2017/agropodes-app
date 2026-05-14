@@ -24,7 +24,10 @@ const angularApp = new AngularNodeAppEngine({
 
 app.set('trust proxy', true);
 
+const baseHref = '/agroprodes-app/';
+
 app.use(
+  baseHref,
   express.static(browserDistFolder, {
     maxAge: '1y',
     index: false,
