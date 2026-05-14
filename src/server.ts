@@ -26,6 +26,9 @@ app.set('trust proxy', true);
 
 const baseHref = '/agroprodes-app/';
 
+app.use('/images', express.static(join(browserDistFolder, 'images'), { maxAge: '1y' }));
+app.use(join(baseHref, 'images'), express.static(join(browserDistFolder, 'images'), { maxAge: '1y' }));
+
 app.use(
   baseHref,
   express.static(browserDistFolder, {
