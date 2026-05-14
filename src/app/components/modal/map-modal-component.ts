@@ -43,13 +43,11 @@ export class MapModalComponent implements OnInit, AfterViewInit {
 
   private async initMapAndRender(): Promise<void> {
     try {
-      // 1. Validação estrita da string WKT recebida da API
       if (!this.data || !this.data.wkt) {
         console.error('WKT não fornecido ou está nulo.');
         return;
       }
 
-      // Remove espaços extras e força maiúsculas no tipo da geometria (evita falhas de parse)
       const sanitizedWkt = this.data.wkt.trim();
       const geojsonFeature = parse(sanitizedWkt);
 
@@ -58,18 +56,25 @@ export class MapModalComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      // 2. Importa o Leaflet dinamicamente
-      const L = await import('leaflet');
+      // CORREÇÃO: Importa resolvendo a compatibilidade do módulo ESM / CommonJS (.default)
+      const leafletModule = await import('leaflet');
+      const L = (leafletModule.default || leafletModule) as any;
 
-      // 3. Inicializa o mapa
+      // Garante a correção de caminhos de ícones padrões quebrados pelo build/Webpack no Leaflet
+      delete L.Icon.Default.prototype._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'unpkg.com',
+        iconUrl: 'unpkg.com',
+        shadowUrl: 'unpkg.com',
+      });
+
+      // Inicializa o mapa com o container validado
       this.map = L.map('modalMap').setView([0, 0], 2);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
       }).addTo(this.map);
 
-      // 4. Normaliza o dado para o formato esperado pelo Leaflet
-      // Faz o cast para 'any' para evitar o erro de comparação do TypeScript
       const rawGeojson = geojsonFeature as any;
       let geojsonToRender: any = rawGeojson;
 
@@ -81,7 +86,6 @@ export class MapModalComponent implements OnInit, AfterViewInit {
         };
       }
 
-      // 5. Desenha a geometria de forma segura
       const layer = L.geoJSON(geojsonToRender, {
         style: {
           color: '#007bff',
@@ -92,13 +96,10 @@ export class MapModalComponent implements OnInit, AfterViewInit {
         }
       }).addTo(this.map);
 
-      // 6. Enquadra o zoom com segurança
-      // Verifica o tipo na propriedade correta (dentro do objeto unificado ou na raiz)
       const geometryType = geojsonToRender.geometry ? geojsonToRender.geometry.type : geojsonToRender.type;
       const coordinates = geojsonToRender.geometry ? geojsonToRender.geometry.coordinates : geojsonToRender.coordinates;
 
       if (geometryType === 'Point' && coordinates) {
-        // Leaflet usa [Lat, Lng], GeoJSON usa [Lng, Lat]
         this.map.setView([coordinates[1], coordinates[0]], 15);
       } else {
         const bounds = layer.getBounds();
