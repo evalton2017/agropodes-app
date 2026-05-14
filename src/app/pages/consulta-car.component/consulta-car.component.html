@@ -21,7 +21,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>CAR Federal</mat-label>
-          <input matInput formControlName="codigoCar" [mask]="carMask" placeholder="Ex: BR-XXXXXXX...">
+          <input matInput formControlName="codigoCar"  [dropSpecialCharacters]="false"  [mask]="carMask" placeholder="Ex: BR-XXXXXXX...">
         </mat-form-field>
 
       </form>
