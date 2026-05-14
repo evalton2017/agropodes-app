@@ -14,5 +14,5 @@ COPY --from=build /app/dist/agroprodes /app/dist/agroprodes-app
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-EXPOSE 4200
+EXPOSE 4000
 CMD ["node", "dist/agroprodes-app/server/server.mjs"]
