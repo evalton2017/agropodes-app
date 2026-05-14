@@ -69,8 +69,7 @@
               "servePath": "/agroprodes-app/"
             },
             "development": {
-              "buildTarget": "agroprodes:build:development",
-              "servePath": "/agroprodes-app/"
+              "buildTarget": "agroprodes:build:development"
             }
           },
           "defaultConfiguration": "development"
