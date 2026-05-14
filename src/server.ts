@@ -10,11 +10,13 @@ import { join } from 'node:path';
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
-const angularApp = new AngularNodeAppEngine();
+
+const angularApp = new AngularNodeAppEngine({
+  trustProxyHeaders: true,
+  allowedHosts: ['busca-car.api.br']
+});
+
 app.set('trust proxy', true);
-
-
-
 
 app.use(
   express.static(browserDistFolder, {
@@ -27,30 +29,14 @@ app.use(
 
 app.use((req, res, next) => {
   angularApp
-    .handle(req, {
-      trustProxyHeaders: true,
-      allowedHosts: ['busca-car.api.br']
-    })
+    .handle(req)
     .then((response) =>
       response ? writeResponseToNodeResponse(response, res) : next(),
     )
     .catch(next);
 });
 
-/*app.get('**', (req, res, next) => {
-  angularApp
-    .handle(req, {
-      trustProxyHeaders: true,
-      allowedHosts: ['busca-car.api.br']
-    })
-    .then((response) => response ? writeResponseToNodeResponse(response, res) : next())
-    .catch(next);
-});*/
 
-/**
- * Start the server if this module is the main entry point.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
- */
 if (isMainModule(import.meta.url)) {
   const port = process.env['PORT'] || 4000;
   app.listen(port, (error) => {
@@ -62,7 +48,5 @@ if (isMainModule(import.meta.url)) {
   });
 }
 
-/**
- * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
- */
+
 export const reqHandler = createNodeRequestHandler(app);
