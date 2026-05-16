@@ -21,8 +21,12 @@
 .search-form-container {
   display: flex;
   align-items: center;
+  width: 50%;
   gap: 16px;
   flex-wrap: wrap;
+  background-color: #ffffff !important; /* Força o fundo branco */
+  padding: 16px;                        /* Adiciona espaço interno */
+  border-radius: 8px;                   /* Arredonda as bordas se desejar */
 }
 
 .hash-input-field {
@@ -275,3 +279,4 @@
   z-index: -1; /* Mantém a imagem atrás de todo o conteúdo */
   pointer-events: none; /* Evita que o pseudo-elemento bloqueie cliques */
 }
+
