@@ -31,7 +31,8 @@ export class SnackbarService {
   private open(message: string, action: string, panelClass: string): void {
     this.snackBar.open(message, action, {
       ...this.defaultConfig,
-      panelClass: [panelClass]
+      panelClass: [panelClass],
+      duration: 5000
     });
   }
 }

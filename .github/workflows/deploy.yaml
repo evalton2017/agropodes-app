@@ -52,8 +52,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 4832
           script: |
-            # 1. Garante que o diretório existe (o -p cria os pais se necessário)
+            # Garante que o diretório existe (o -p cria os pais se necessário)
             mkdir -p ~/homolog
 
             # Autentica a VPS no Docker Hub

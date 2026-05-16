@@ -5,6 +5,7 @@ export interface CarResponse {
   cdigoTema: string;
   nomeTema: string;
   codigoCar: string;
+  nomePropriedade: string;
   numeroArea: number;
   codigoStatus: string;
   poligono: string;

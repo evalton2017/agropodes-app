@@ -249,3 +249,29 @@
   .btn-search-large { width: 100%; justify-content: center; }
   .imagens-grid { grid-template-columns: 1fr; }
 }
+
+/* Correção da Tela de Fundo */
+.tela-fundo {
+  min-height: 100vh;
+  width: 100%;
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Ajuste da Imagem de Fundo para cobrir toda a rolagem */
+.tela-fundo::before {
+  content: "";
+  position: fixed; /* Fixa o plano de fundo na janela do navegador */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/images/regenerar.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  z-index: -1; /* Mantém a imagem atrás de todo o conteúdo */
+  pointer-events: none; /* Evita que o pseudo-elemento bloqueie cliques */
+}

@@ -1,3 +1,6 @@
+/* ==========================================================================
+   1. LAYOUT E ESTRUTURA PRINCIPAL
+   ========================================================================== */
 .container {
   display: flex;
   flex-direction: column;
@@ -8,11 +11,35 @@
   padding: 0 16px;
 }
 
+/* Centraliza o botão e define uma largura menor automática */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;       /* Força o formulário a ocupar toda a largura do card */
+}
+
+/* Garante que os campos de texto continuem ocupando 100% da largura */
 .full-width {
   width: 100%;
   margin-bottom: 16px;
 }
 
+.hash-input-field {
+  width: 100%;
+}
+
+/* Ajusta o espaçamento do botão agora que ele está centralizado */
+form button[mat-raised-button].btn-enviar {
+  margin-top: 24px;
+  padding: 0 48px; /* Preenchimento confortável nas laterais */
+  align-self: center; /* Reforça a centralização independente do container */
+}
+
+
+/* ==========================================================================
+   2. COMPONENTES VISUAIS (CARDS DO FORMULÁRIO)
+   ========================================================================== */
 .form-card, .result-card {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -32,6 +59,99 @@ img[mat-card-image] {
   width: 100%;
 }
 
+
+/* ==========================================================================
+   3. SEÇÃO DE SELEÇÃO DE PROPRIEDADES (INTEGRAÇÃO NOVA)
+   ========================================================================== */
+.propriedades-secao {
+  margin: 16px 0 24px 0;
+  width: 100%; /* Força o bloco a quebrar a centralização do form e ocupar tudo */
+  text-align: left; /* Garante que o título fique alinhado à esquerda */
+}
+
+.secao-titulo {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+  margin-bottom: 16px;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.card-propriedade {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px; /* Combina com o arredondamento do form-card */
+  padding: 16px;
+  background-color: #fafafa;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-propriedade:hover {
+  background-color: #f5f5f5;
+}
+
+/* Estado quando o radio correspondente está marcado */
+.card-propriedade.card-selecionado {
+  border-color: #3f51b5; /* Cor padrão do Material Primary */
+  background-color: #f5f6fb;
+  box-shadow: 0 4px 8px rgba(63, 81, 181, 0.08);
+}
+
+.card-label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.card-conteudo {
+  flex-grow: 1;
+}
+
+.card-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card-header-info h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.card-body-info p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+
+/* ==========================================================================
+   4. TEXTOS, FORMATAÇÕES E UTILITÁRIOS
+   ========================================================================== */
 .info-group {
   margin-top: 16px;
   font-size: 14px;
@@ -52,6 +172,10 @@ img[mat-card-image] {
   text-overflow: ellipsis;
 }
 
+
+/* ==========================================================================
+   5. PAINEL DE EXPANSÃO (RESULTADOS)
+   ========================================================================== */
 /* Força o painel a ocupar até 100% da largura útil disponível */
 .result-expansion-panel {
   width: 100%;
@@ -127,25 +251,28 @@ img[mat-card-image] {
   margin: 0;
 }
 
-/* Centraliza o botão e define uma largura menor automática */
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Garante que os campos de texto continuem ocupando 100% da largura */
-.full-width {
+/* Correção da Tela de Fundo */
+.tela-fundo {
+  min-height: 100vh;
   width: 100%;
-  margin-bottom: 16px;
+  display: block;
+  position: relative;
+  box-sizing: border-box;
 }
 
-/* Ajusta o espaçamento do botão agora que ele está centralizado */
-form button[mat-raised-button] {
-  margin-top: 8px;
-  padding: 0 32px; /* Adiciona um preenchimento confortável nas laterais */
-}
-
-.hash-input-field {
-  width: 100%;
+/* Ajuste da Imagem de Fundo para cobrir toda a rolagem */
+.tela-fundo::before {
+  content: "";
+  position: fixed; /* Fixa o plano de fundo na janela do navegador */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/images/regenerar.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  z-index: -1; /* Mantém a imagem atrás de todo o conteúdo */
+  pointer-events: none; /* Evita que o pseudo-elemento bloqueie cliques */
 }

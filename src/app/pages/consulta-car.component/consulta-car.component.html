@@ -1,111 +1,169 @@
-<div class="consulta-container">
+<div class=" tela-fundo">
+  <div class="consulta-container">
 
-  <!-- Painel de Filtros -->
-  <mat-card class="filter-card">
-    <mat-card-header>
-      <mat-card-title>Consulta CAR Federal</mat-card-title>
-    </mat-card-header>
+    <mat-card class="filter-card">
+      <mat-card-header>
+        <mat-card-title>Consulta CAR Federal</mat-card-title>
+      </mat-card-header>
 
-    <mat-card-content>
-      <form [formGroup]="filterForm" class="filter-form">
-
-        <mat-form-field appearance="outline">
-          <mat-label>CPF</mat-label>
-          <input  mask="000.000.000-00" matInput formControlName="cpf" placeholder="000.000.000-00">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>CNPJ</mat-label>
-          <input  mask="00.000.000/0000-00" matInput formControlName="cnpj" placeholder="00.000.000/0000-00">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>CAR Federal</mat-label>
-          <input matInput formControlName="codigoCar"  [dropSpecialCharacters]="false"  [mask]="carMask" placeholder="Ex: BR-XXXXXXX...">
-        </mat-form-field>
-
-      </form>
-    </mat-card-content>
-
-    <mat-card-actions align="end">
-      <button mat-button class="btn-limpar" (click)="limpar()">Limpar</button>
-      <button mat-raised-button class="btn-pesquisar" (click)="pesquisar()">Pesquisar</button>
-    </mat-card-actions>
-  </mat-card>
-
-  <div [hidden]="dataSource.data.length === 0">
-    <mat-card class="table-card">
       <mat-card-content>
-        <div class="table-responsive">
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+        <form [formGroup]="filterForm" class="filter-form">
 
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef> ID</th>
-              <td mat-cell *matCellDef="let element"> {{ element.id }}</td>
-            </ng-container>
+          <mat-form-field appearance="outline">
+            <mat-label>CPF</mat-label>
+            <input mask="000.000.000-00" matInput formControlName="cpf" placeholder="000.000.000-00">
+          </mat-form-field>
 
-            <ng-container matColumnDef="codigoCar">
-              <th mat-header-cell *matHeaderCellDef> Código CAR</th>
-              <td mat-cell *matCellDef="let element">
-                <div class="poligono-cell-container">
+          <mat-form-field appearance="outline">
+            <mat-label>CNPJ</mat-label>
+            <input mask="00.000.000/0000-00" matInput formControlName="cnpj" placeholder="00.000.000/0000-00">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CAR Federal</mat-label>
+            <input matInput formControlName="codigoCar" [dropSpecialCharacters]="false" [mask]="carMask"
+                   placeholder="Ex: BR-XXXXXXX...">
+          </mat-form-field>
+
+        </form>
+      </mat-card-content>
+
+      <mat-card-actions align="end" style="margin: 2%">
+        <button mat-button class="btn-limpar" (click)="limpar()">Limpar</button>
+        <button mat-raised-button class="btn-pesquisar" (click)="pesquisar()">Pesquisar</button>
+      </mat-card-actions>
+
+
+    </mat-card>
+
+    <div [hidden]="dataSource.data.length === 0">
+      <mat-card class="table-card">
+        <mat-card-content>
+          <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef> ID</th>
+                <td mat-cell *matCellDef="let element"> {{ element.id }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="codigoCar">
+                <th mat-header-cell *matHeaderCellDef> Código CAR</th>
+                <td mat-cell *matCellDef="let element">
+                  <div class="poligono-cell-container">
                 <span class="text-truncate" [title]="element.poligono">
                     {{ element.codigoCar }}
                   </span>
-                  <button
-                    mat-icon-button
-                    class="btn-copy-verde"
-                    [cdkCopyToClipboard]="element.codigoCar"
-                    (cdkCopyToClipboardCopied)="avisoCopiado()"
-                    title="Copiar car">
-                    <mat-icon>content_copy</mat-icon>
-                  </button>
-                </div>
+                    <button
+                      mat-icon-button
+                      class="btn-copy-verde"
+                      [cdkCopyToClipboard]="element.codigoCar"
+                      (cdkCopyToClipboardCopied)="avisoCopiado()"
+                      title="Copiar car">
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  </div>
                 </td>
-            </ng-container>
+              </ng-container>
 
-            <ng-container matColumnDef="nomeTema">
-              <th mat-header-cell *matHeaderCellDef> Tema</th>
-              <td mat-cell *matCellDef="let element"> {{ element.nomeTema }}</td>
-            </ng-container>
+              <ng-container matColumnDef="nomePropriedade">
+                <th mat-header-cell *matHeaderCellDef> Tema</th>
+                <td mat-cell *matCellDef="let element"> {{ element.nomePropriedade }}</td>
+              </ng-container>
 
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef> Status</th>
-              <td mat-cell *matCellDef="let element"> {{ element.status }}</td>
-            </ng-container>
+              <ng-container matColumnDef="nomeTema">
+                <th mat-header-cell *matHeaderCellDef> Tema</th>
+                <td mat-cell *matCellDef="let element"> {{ element.nomeTema }}</td>
+              </ng-container>
 
-            <ng-container matColumnDef="numeroArea">
-              <th mat-header-cell *matHeaderCellDef> Área (ha)</th>
-              <td mat-cell *matCellDef="let element"> {{ element.numeroArea | number:'1.1-2' }}</td>
-            </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status</th>
+                <td mat-cell *matCellDef="let element"> {{ element.status }}</td>
+              </ng-container>
 
-            <ng-container matColumnDef="poligono">
-              <th mat-header-cell *matHeaderCellDef> Polígono</th>
-              <td mat-cell *matCellDef="let element">
-                <div class="poligono-cell-container">
+              <ng-container matColumnDef="numeroArea">
+                <th mat-header-cell *matHeaderCellDef> Área (ha)</th>
+                <td mat-cell *matCellDef="let element"> {{ element.numeroArea | number:'1.1-2' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="poligono">
+                <th mat-header-cell *matHeaderCellDef> Polígono</th>
+                <td mat-cell *matCellDef="let element">
+                  <div class="poligono-cell-container">
                 <span class="text-truncate" [title]="element.poligono">
                     {{ element.poligono }}
                   </span>
-                  <button
-                    mat-icon-button
-                    class="btn-copy-verde"
-                    [cdkCopyToClipboard]="element.poligono"
-                    (cdkCopyToClipboardCopied)="avisoCopiado()"
-                    title="Copiar polígono">
-                    <mat-icon>content_copy</mat-icon>
-                  </button>
-                </div>
-              </td>
-            </ng-container>
+                    <button
+                      mat-icon-button
+                      class="btn-copy-verde"
+                      [cdkCopyToClipboard]="element.poligono"
+                      (cdkCopyToClipboardCopied)="avisoCopiado()"
+                      title="Copiar polígono">
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-        </div>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
 
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-      </mat-card-content>
-    </mat-card>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+          <div class="actions-container">
+            <button matButton="filled" class="btn-search" (click)="consultarElegibilidade()">
+              Consultar Elegibilidade
+            </button>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    @if (elegibilidade(); as dados) {
+      <div>
+        <mat-card class="elegibilidade-card">
+          <mat-card-header>
+            <mat-card-title>Resultado da Elegibilidade</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <!-- Agora usamos "dados" diretamente, sem parênteses e sem travar -->
+            <p><strong>Código CAR:</strong> {{ dados.codigoCar }}</p>
+            <p>
+              <strong>Status de Elegibilidade:</strong>
+              <span [style.color]="dados.elegivel ? 'green' : 'red'">
+            {{ dados.elegivel ? 'Elegível' : 'Inelegível' }}
+          </span>
+            </p>
+
+            <!-- Listagem do PRODES -->
+            <div *ngIf="dados.prodes?.length" style="margin-top: 15px;">
+              <h3>Dados PRODES:</h3>
+              <ul>
+                <li *ngFor="let item of dados.prodes">
+                  Ano: {{ item.ano }} - Área Desmatada: {{ item.areaKm }} ha
+                </li>
+              </ul>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions align="end" style="margin: 2%">
+            <button
+              mat-raised-button
+              color="primary"
+              *ngIf="dados.elegivel"
+              (click)="cadastrarTerritorio()">
+              Cadastrar Território
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    }
+
   </div>
-
-
 </div>
+

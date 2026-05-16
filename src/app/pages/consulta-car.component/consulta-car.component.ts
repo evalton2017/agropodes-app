@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild, NgZone, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -10,10 +10,14 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import {CarResponse} from '../../dto/response/car';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {MatIconModule} from '@angular/material/icon';
-import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {NgxMaskDirective} from 'ngx-mask';
 import {ConsultaCarService} from '../../service/consulta-car.service';
 import {SnackbarService} from '../../shared/service/snack-bar.service';
+import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {ElegibilidadeModalComponent} from '../../components/modal/elegibilidade-model/elegibilidade-modal.component';
+import {ElegibilidadeResponse} from '../../dto/response/elegibilidade';
 
 
 
@@ -44,6 +48,7 @@ export class ConsultaCarComponent implements OnInit {
   displayedColumns: string[] = [
     'id',
     'codigoCar',
+    'nomePropriedade',
     'nomeTema',
     'status',
     'numeroArea',
@@ -51,6 +56,7 @@ export class ConsultaCarComponent implements OnInit {
   ];
 
   dataSource = new MatTableDataSource<CarResponse>([]);
+  elegibilidade = signal<ElegibilidadeResponse | null>(null);
 
   @ViewChild(MatPaginator) set matPaginator(paginator: MatPaginator) {
     if (paginator) {
@@ -62,7 +68,11 @@ export class ConsultaCarComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly service: ConsultaCarService,
-    private readonly snackBar: SnackbarService
+    private readonly snackBar: SnackbarService,
+    private readonly router: Router,
+    private readonly dialog: MatDialog,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly zone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -85,7 +95,6 @@ export class ConsultaCarComponent implements OnInit {
         this.dataSource.data = res;
       },
       error: (error) => {
-        console.log(error);
         this.snackBar.error(error.error.detail);
       }
     })
@@ -94,9 +103,32 @@ export class ConsultaCarComponent implements OnInit {
   limpar(): void {
     this.filterForm.reset();
     this.dataSource.data = [];
+    this.elegibilidade.set(null);
   }
 
   avisoCopiado(): void {
     this.snackBar.info('Item copiado para a área de transferência!', 'Fechar')
   }
+
+  cadastrarTerritorio(){
+    this.router.navigate(['/cadastro-territorio'], {
+      state: { propriedade: {codigoCar: this.elegibilidade()?.codigoCar , nomePropriedade: this.elegibilidade()?.nomePropriedade} }
+    });
+  }
+
+  consultarElegibilidade(){
+    const dialogRef = this.dialog.open(ElegibilidadeModalComponent, {
+      width: '80%',
+      disableClose: true,
+      data: { propriedades: this.dataSource.data }
+    });
+
+    dialogRef.beforeClosed().subscribe(result => {
+      if (result) {
+        this.elegibilidade.set(result); // Atualiza o sinal instantaneamente
+      }
+    });
+  }
+
+
 }

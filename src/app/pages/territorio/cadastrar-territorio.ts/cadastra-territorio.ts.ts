@@ -1,15 +1,14 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, inject, OnInit, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import {MatCardModule} from '@angular/material/card';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 import {TerritorioResponse} from '../../../model/territorio';
 import {TerritorioService} from '../../../service/territorio.service';
 import {MatDialog} from '@angular/material/dialog';
-import {ProdesResponse} from '../../../dto/response/prodes-response';
 import {MapModalComponent} from '../../../components/modal/map-modal-component';
 import {SnackbarService} from '../../../shared/service/snack-bar.service';
 import {
@@ -19,6 +18,8 @@ import {
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
 import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
+import {Router} from '@angular/router';
+import {propriedadeDto} from '../../../dto/propriedade-dto';
 
 
 @Component({
@@ -42,20 +43,41 @@ import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
   templateUrl: './cadastra-territorio.ts.html',
   styleUrl: './cadastra-territorio.ts.scss',
 })
-export class CadastraTerritorioComponent {
-  cadastroForm: FormGroup;
+export class CadastraTerritorioComponent implements  OnInit {
+  cadastroForm!: FormGroup;
 
   territorioResultado = signal<TerritorioResponse | null>(null);
+  propriedade: propriedadeDto | null = null;
+  private router = inject(Router);
 
   constructor(private readonly fb: FormBuilder,
               private readonly service: TerritorioService,
               private readonly dialog: MatDialog,
               private readonly snackBar: SnackbarService) {
+
+    const navegacao = this.router.currentNavigation();
+
+    if (navegacao?.extras.state) {
+      this.propriedade = navegacao.extras.state['propriedade'];
+    }
+
+    this.criarForm()
+  }
+
+  ngOnInit() {
+    if(this.propriedade) {
+      this.cadastroForm.patchValue({
+        nomeTerritorio: this.propriedade.nomePropriedade,
+        codigoCar: this.propriedade.codigoCar
+      })
+    }
+  }
+
+  criarForm(){
     this.cadastroForm = this.fb.group({
       nomeTerritorio: ['', Validators.required],
       codigoCar: ['', Validators.required]
     });
-
   }
 
   onSubmit(): void {
@@ -87,4 +109,5 @@ export class CadastraTerritorioComponent {
   avisoCopiado(): void {
     this.snackBar.info('Item copiado para a área de transferência!', 'Fechar')
   }
+
 }

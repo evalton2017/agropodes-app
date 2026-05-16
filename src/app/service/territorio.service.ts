@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {limparParams} from '../shared/service/request-util';
-import {environment} from '../environments/environment';
 import {TerritorioResponse} from '../model/territorio';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
