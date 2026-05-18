@@ -11,7 +11,7 @@ export const environment = {
   production: false,
   url: 'http://localhost:9090/agroprods/api/v1',
   postLogoutRedirectUri: 'http://localhost:4200/agroprodes-app/',
-  keycloakConfig: keycloakConfig,
+  keycloakConfig,
   redirectUri:'http://localhost:4200/agroprodes-app/home/',
   cleanUrl: 'http://localhost:4200/agroprodes-app/silent-check-sso.html',
 };

@@ -83,10 +83,9 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
 
         const keycloak = inject(Keycloak);
 
-        // O Angular precisa que você RETORNE a Promise para pausar a renderização inicial
         return keycloak.init({
           onLoad: 'check-sso',
-          silentCheckSsoRedirectUri: environment.cleanUrl,
+          silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
           checkLoginIframe: false
         })
           .then((authenticated) => {
