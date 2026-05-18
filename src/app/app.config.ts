@@ -77,18 +77,19 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
         }
       },
 
-      provideAppInitializer(() => {
+      // Inicializador assíncrono do ciclo de vida seguro para SSR
+      provideAppInitializer(async () => {
         if (!isBrowser) return; // Aborta silenciosamente no servidor SSR
 
         const keycloak = inject(Keycloak);
-
-        keycloak.init({
-          onLoad: 'check-sso',
-          silentCheckSsoRedirectUri: environment.cleanUrl,
-          checkLoginIframe: false 
-        }).catch (error => {
-          console.error('Falha na inicialização do Keycloak:', error);
-        });
+        try {
+          await keycloak.init({
+            onLoad: 'check-sso',
+            silentCheckSsoRedirectUri: environment.cleanUrl,
+          });
+        } catch (error) {
+          console.error('Falha na inicialização ativa do Keycloak:', error);
+        }
       })
     ]
   };
