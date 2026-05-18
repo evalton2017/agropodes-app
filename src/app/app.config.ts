@@ -78,14 +78,19 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
       },
 
       provideAppInitializer(() => {
-        // No servidor, retornamos imediatamente para não travar o SSR
         if (!isBrowser) return Promise.resolve();
 
         const keycloak = inject(Keycloak);
 
+        // Detecta se está em produção para aplicar o caminho correto da subpasta
+        const baseFolder = window.location.pathname.startsWith('/agroprodes-app')
+          ? '/agroprodes-app'
+          : '';
+
         return keycloak.init({
           onLoad: 'check-sso',
-          silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+          // Garante que o caminho inclua a subpasta em produção e funcione localmente
+          silentCheckSsoRedirectUri: `${window.location.origin}${baseFolder}/silent-check-sso.html`,
           checkLoginIframe: false
         })
           .then((authenticated) => {
