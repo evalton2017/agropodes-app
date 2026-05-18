@@ -78,17 +78,23 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
       },
 
       provideAppInitializer(() => {
-        if (!isBrowser) return; // Aborta silenciosamente no servidor SSR
+        // No servidor, retornamos imediatamente para não travar o SSR
+        if (!isBrowser) return Promise.resolve();
 
         const keycloak = inject(Keycloak);
 
-        keycloak.init({
+        // O Angular precisa que você RETORNE a Promise para pausar a renderização inicial
+        return keycloak.init({
           onLoad: 'check-sso',
           silentCheckSsoRedirectUri: environment.cleanUrl,
-          checkLoginIframe: false // Desativa o iframe oculto que causa lentidão extra
-        }).catch (error => {
-          console.error('Falha na inicialização do Keycloak:', error);
-        });
+          checkLoginIframe: false
+        })
+          .then((authenticated) => {
+            console.log(`Keycloak inicializado. Autenticado: ${authenticated}`);
+          })
+          .catch(error => {
+            console.error('Falha na inicialização do Keycloak:', error);
+          });
       })
     ]
   };
