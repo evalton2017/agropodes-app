@@ -30,6 +30,25 @@
 .header-title { font-weight: 700; font-size: 1.1rem; }
 .spacer { flex: 1 1 auto; }
 
+/* Estilos da Seção do Usuário */
+.header-user-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--green-text-dark);
+}
+.menu-user-info {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--green-text-dark);
+}
+
 /* Estilização Geral da Barra Lateral */
 .app-sidenav {
   background-color: var(--green-bg-light) !important;
@@ -135,29 +154,4 @@
   width: calc(100% - var(--sidenav-expanded-width)) !important;
   padding-left: 24px !important;
   transition: left var(--anim-speed), width var(--anim-speed), padding var(--anim-speed) !important;
-}
-
-/* ==========================================================================
-   ESTADOS DE LAYOUT PARA MOBILE
-   ========================================================================== */
-@media (max-width: 768px) {
-  .app-content-wrapper { margin-left: 0 !important; }
-
-  .app-header {
-    left: 0 !important;
-    width: 100% !important;
-    padding-left: 8px !important;
-  }
-
-  .app-sidenav {
-    width: var(--sidenav-expanded-width) !important;
-  }
-
-  .menu-text { opacity: 1 !important; }
-  .app-sidenav mat-icon { margin-right: 16px !important; }
-  .menu-expansion-header mat-panel-title mat-icon { margin-right: 16px !important; }
-
-  ::v-deep .mat-drawer-backdrop.mat-drawer-shown {
-    background-color: rgba(46, 125, 50, 0.15) !important;
-  }
 }

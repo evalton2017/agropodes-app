@@ -6,15 +6,19 @@ import {CadastraTerritorioComponent} from './pages/territorio/cadastrar-territor
 import {
   ConsultaTerritorioComponent
 } from './pages/territorio/consulta-territorio.component/consulta-territorio.component';
+import {authGuard} from './auth/auth.guard';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  // Rotas dos componentes
-  { path: 'home', component: HomeComponent },
-  { path: 'cadastro-territorio', component: CadastraTerritorioComponent },
-  { path: 'consulta-territorio', component: ConsultaTerritorioComponent },
-  { path: 'consulta-car', component: ConsultaCarComponent },
-  { path: 'consulta-prodes', component: ConsultaProdesComponent },
-  { path: '**', redirectTo: 'home' }
+  {path: '', redirectTo: 'home', pathMatch: 'full'},
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [authGuard],
+  },
+  {path: 'cadastro-territorio', component: CadastraTerritorioComponent, canActivate: [authGuard]},
+  {path: 'consulta-territorio', component: ConsultaTerritorioComponent, canActivate: [authGuard]},
+  {path: 'consulta-car', component: ConsultaCarComponent, canActivate: [authGuard]},
+  {path: 'consulta-prodes', component: ConsultaProdesComponent, canActivate: [authGuard]},
+  {path: '**', redirectTo: 'home'}
 ];

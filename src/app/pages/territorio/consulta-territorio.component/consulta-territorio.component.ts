@@ -79,8 +79,9 @@ export class ConsultaTerritorioComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
+        console.log(error);
         this.loading = false;
-        this.snackBar.error(error.error.detail);
+        this.snackBar.error(error?.error ? error?.error?.detail : "Erro na requisição");
         this.cdr.detectChanges();
       }
     })

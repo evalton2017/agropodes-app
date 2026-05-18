@@ -64,7 +64,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/agroprodes-app:latest
 
             # Para e remove o container se ele existir, sem travar se não existir
-            docker ps -aqf "name=agroprods-frontend" | xargs -r docker rm -f
+            docker ps -aqf "name=agroprodes-app" | xargs -r docker rm -f
 
             # Sobe o novo container
             #docker run -d -p 80:4200  --name agroprodes-app ${{ secrets.DOCKER_HUB_USERNAME }}/agroprodes-app:latest

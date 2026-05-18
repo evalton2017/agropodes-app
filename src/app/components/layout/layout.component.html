@@ -11,7 +11,7 @@
     (mouseleave)="collapseMenu()">
 
     <div class="sidenav-logo-container">
-      <img src="images/mapa-brasil.png"
+      <img src="favicon.ico"
            alt="AgroProdes"
            class="app-logo"
            loading="lazy">
@@ -79,9 +79,26 @@
 
       <span class="header-title">AMBIENTE DE TESTE</span>
       <span class="spacer"></span>
-      <button mat-icon-button aria-label="Perfil do Usuário" class="header-profile-btn">
-        <mat-icon>account_circle</mat-icon>
-      </button>
+
+      <!-- Seção do Usuário no Header -->
+      <div class="header-user-section">
+        <span class="user-name" *ngIf="!isMobile()">{{ username() }}</span>
+
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Perfil do Usuário" class="header-profile-btn">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+
+        <mat-menu #profileMenu="matMenu" xPosition="before">
+          <div class="menu-user-info" *ngIf="isMobile()">
+            <span>{{ username() }}</span>
+          </div>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Sair</span>
+          </button>
+        </mat-menu>
+      </div>
+
     </mat-toolbar>
 
     <div class="header-offset"></div>

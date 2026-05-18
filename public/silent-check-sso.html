@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Silent Check SSO</title>
+</head>
+<body>
+<script>
+  // Envia a URL inteira contendo o fragmento de hash para a janela principal processar
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage(window.location.href, window.location.origin);
+  }
+</script>
+</body>
+</html>
