@@ -95,6 +95,7 @@ export class ConsultaCarComponent implements OnInit {
         this.dataSource.data = res;
       },
       error: (error) => {
+        console.log(error);
         this.snackBar.error(error.error.detail);
       }
     })

@@ -1,25 +1,32 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, provideAppInitializer, inject } from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
-
-// Seus imports originais
 import { routes } from './app.routes';
 import { provideNgxMask } from 'ngx-mask';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { loadingInterceptor } from './interceptor/loading-interceptor';
 
-// Importação do arquivo de environment
 import { environment } from '../environments/environment';
 
-// Imports atualizados da biblioteca do Keycloak
 import Keycloak from 'keycloak-js';
-import { includeBearerTokenInterceptor, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG } from 'keycloak-angular';
+import {
+  includeBearerTokenInterceptor,
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+  createInterceptorCondition,
+  IncludeBearerTokenCondition
+} from 'keycloak-angular';
+
+// 1. Gera a condição mapeada obrigatória para as versões modernas da biblioteca
+const urlCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
+  urlPattern: /^(http|https):\/\/.*$/i,
+  bearerPrefix: 'Bearer'
+});
 
 export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
-  // Mantemos apenas o seu interceptor padrão. O interceptor do keycloak será isolado
-  const interceptors = [loadingInterceptor];
+
+  const interceptors = [loadingInterceptor, includeBearerTokenInterceptor];
 
   if (isBrowser) {
     interceptors.push(includeBearerTokenInterceptor);
@@ -27,7 +34,7 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
 
   return {
     providers: [
-      provideBrowserGlobalErrorListeners(),
+      // provideBrowserGlobalErrorListeners foi removido (Gerencie erros com o ErrorHandler nativo do Angular)
       provideZonelessChangeDetection(),
       provideNgxMask(),
       importProvidersFrom(MatSnackBarModule),
@@ -40,24 +47,15 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
       provideRouter(routes),
       provideClientHydration(withEventReplay()),
 
-      // ✅ SOLUÇÃO DO ERRO NG0201: Prover a configuração exigida pelo interceptor
-      // Isso impede que o motor do SSR quebre procurando por este Token.
       {
         provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
-        useValue: [
-          {
-            urlPattern: /^(http|https):\/\/.*$/i, // Altere para a Regex da sua API se necessário
-            bearerPrefix: 'Bearer'
-          }
-        ]
+        useValue: [urlCondition]
       },
 
-      // Mapeamento explícito do token de injeção do Keycloak
       {
         provide: Keycloak,
         useFactory: () => {
           if (!isBrowser) {
-            // Retorna um Mock estruturado para o ambiente Node.js do Servidor
             return {
               init: () => Promise.resolve(false),
               login: () => Promise.resolve(),
@@ -68,7 +66,6 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
             } as unknown as Keycloak;
           }
 
-          // Instância real executada apenas no Navegador
           return new Keycloak({
             url: environment.keycloakConfig.url,
             realm: environment.keycloakConfig.realm,
@@ -82,14 +79,12 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
 
         const keycloak = inject(Keycloak);
 
-        // Detecta se está em produção para aplicar o caminho correto da subpasta
         const baseFolder = window.location.pathname.startsWith('/agroprodes-app')
           ? '/agroprodes-app'
           : '';
 
         return keycloak.init({
           onLoad: 'check-sso',
-          // Garante que o caminho inclua a subpasta em produção e funcione localmente
           silentCheckSsoRedirectUri: `${window.location.origin}${baseFolder}/silent-check-sso.html`,
           checkLoginIframe: false
         })
