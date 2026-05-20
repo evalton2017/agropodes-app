@@ -113,3 +113,26 @@
   z-index: -1; /* Mantém a imagem atrás de todo o conteúdo */
   pointer-events: none; /* Evita que o pseudo-elemento bloqueie cliques */
 }
+/* 1. Controla o container que envolve a tabela */
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto; /* Cria a barra de rolagem horizontal */
+  box-sizing: border-box;
+}
+
+/* 2. Garante que a tabela não quebre o layout do card */
+.mat-mdc-table {
+  width: 100%;
+  min-width: 800px; /* Alinha bem as 8 colunas sem esmagar o texto */
+  background: transparent;
+}
+
+/* 3. Força os cards a respeitarem a largura máxima da tela */
+.form-card,
+.table-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; /* Garante que nada saia das bordas arredondadas */
+}
