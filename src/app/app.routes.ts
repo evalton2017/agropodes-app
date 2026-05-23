@@ -7,6 +7,7 @@ import {
   ConsultaTerritorioComponent
 } from './pages/territorio/consulta-territorio.component/consulta-territorio.component';
 import {authGuard} from './auth/auth.guard';
+import {ConsultaAnaliseComponent} from './pages/analise/consulta-analise.component/consulta-analise.component';
 
 
 export const routes: Routes = [
@@ -20,5 +21,6 @@ export const routes: Routes = [
   {path: 'consulta-territorio', component: ConsultaTerritorioComponent, canActivate: [authGuard]},
   {path: 'consulta-car', component: ConsultaCarComponent, canActivate: [authGuard]},
   {path: 'consulta-prodes', component: ConsultaProdesComponent, canActivate: [authGuard]},
+  {path: 'consulta-analise', component: ConsultaAnaliseComponent, canActivate: [authGuard]},
   {path: '**', redirectTo: 'home'}
 ];

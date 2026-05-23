@@ -12,7 +12,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MenuItem } from '../../dto/menu-item';
 import Keycloak from 'keycloak-js';
 import { environment } from '../../../environments/environment';
-import { MatMenuModule } from '@angular/material/menu'; // Alterado para o módulo completo do Menu
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'layout-app',
@@ -21,7 +21,7 @@ import { MatMenuModule } from '@angular/material/menu'; // Alterado para o módu
     CommonModule, RouterOutlet, RouterLink, RouterLinkActive,
     MatSidenavModule, MatListModule, MatToolbarModule, MatButtonModule, MatIconModule,
     MatExpansionModule, FooterComponent,
-    MatMenuModule // Importando o módulo completo para habilitar o menu suspenso
+    MatMenuModule
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
@@ -42,6 +42,13 @@ export class LayoutComponent implements OnInit {
     { route: '/home', label: 'Home', icon: 'home' },
     { route: '/consulta-car', label: 'Consulta Car', icon: 'grain' },
     { route: '/consulta-prodes', label: 'Consulta Prodes', icon: 'forest' },
+    {
+      label: 'Analises',
+      icon: 'rate_review',
+      children: [
+        { route: '/consulta-analise', label: 'Consultar Analise', icon: 'search' },
+      ]
+    },
     {
       label: 'Territórios',
       icon: 'terrain',

@@ -1,7 +1,9 @@
 export interface ImagemTerritorio {
+  id?: number;
   imageUrl: string;
   chave: string;
   dataCadastro: string;
+  poligono?: string;
 }
 
 export interface TerritorioResponse {

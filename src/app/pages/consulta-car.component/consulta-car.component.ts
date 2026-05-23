@@ -70,9 +70,7 @@ export class ConsultaCarComponent implements OnInit {
     private readonly service: ConsultaCarService,
     private readonly snackBar: SnackbarService,
     private readonly router: Router,
-    private readonly dialog: MatDialog,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly zone: NgZone
+    private readonly dialog: MatDialog
   ) {}
 
   ngOnInit(): void {

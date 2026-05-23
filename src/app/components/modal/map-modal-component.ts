@@ -33,7 +33,7 @@ export class MapModalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Isola o Leaflet (que exige obrigatoriamente a 'window') apenas no navegador
+
     if (this.isBrowser) {
       setTimeout(() => {
         this.initMapAndRender();
