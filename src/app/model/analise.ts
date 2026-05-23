@@ -17,5 +17,6 @@ export interface Analise {
   poligono: string;
   poligonoUnificado: string;
   analisado: boolean;
+  imageUrl: string;
   statusAnalise: StatusAnaliseType;
 }

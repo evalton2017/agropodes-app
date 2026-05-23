@@ -33,6 +33,7 @@ export class ConsultaAnaliseComponent implements OnInit {
     'coordenadas',
     'poligono',
     'poligonoUnificado',
+    'imagemUnificada',
     'status'
   ];
 

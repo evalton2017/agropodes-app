@@ -10,7 +10,7 @@
 
     <!-- Imagem Coluna -->
     <ng-container matColumnDef="imagem">
-      <th mat-header-cell *matHeaderCellDef> Imagem (Link) </th>
+      <th mat-header-cell *matHeaderCellDef> Imagem Territorio </th>
       <td mat-cell *matCellDef="let element">
         <button mat-button color="primary" (click)="verImagem(element.imagemProdes.imageUrl)">
           <mat-icon>image</mat-icon>
@@ -43,6 +43,16 @@
       <td mat-cell *matCellDef="let element">
         <button mat-stroked-button color="warn" (click)="abrirModalPoligono('Unificado', element.poligonoUnificado)">
           <mat-icon>unfold_more</mat-icon> Ver Unificado
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="imagemUnificada">
+      <th mat-header-cell *matHeaderCellDef> Imagem Unificada </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="primary" (click)="verImagem(element.imageUrl)">
+          <mat-icon>image</mat-icon>
+          Visualizar Imagem
         </button>
       </td>
     </ng-container>
