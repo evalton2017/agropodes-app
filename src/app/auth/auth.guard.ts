@@ -18,12 +18,14 @@ export const authGuard: CanActivateFn = async (
 
   const keycloak = inject(Keycloak);
 
-  // CORREÇÃO CRÍTICA PARA ZONELESS: Aguarda um ciclo microtask para garantir que o .init() do app.config terminou
-  if (keycloak.authenticated === undefined || (!keycloak.authenticated && (window.location.href.includes('code=') || window.location.href.includes('state=')))) {
+  // Aguarda inicialização do Keycloak caso esteja processando o redirecionamento
+  if (keycloak.authenticated === undefined
+    || (!keycloak.authenticated && (window.location.href.includes('code=')
+    || window.location.href.includes('state=')))) {
     await new Promise(resolve => setTimeout(resolve, 50));
   }
 
-  // Se mesmo após o processamento inicial o usuário não estiver autenticado, aí sim força o login
+  // Força o login caso não esteja autenticado
   if (!keycloak.authenticated) {
     await keycloak.login({
       redirectUri: environment.redirectUri
@@ -31,25 +33,30 @@ export const authGuard: CanActivateFn = async (
     return false;
   }
 
-
+  // Recupera as roles configuradas na rota
   const requiredRoles = route.data['roles'] as string[];
+
+  // Se a rota não exigir roles, o acesso é liberado
   if (!requiredRoles || requiredRoles.length === 0) {
     return true;
   }
 
-  // Captura as permissões vindas do token decodificado do Keycloak
+  // Captura as permissões do Keycloak
   const realmRoles = keycloak.realmAccess?.roles || [];
   const resourceRoles = keycloak.resourceAccess
     ? Object.values(keycloak.resourceAccess).flatMap(access => access.roles || [])
     : [];
 
-  const hasRequiredRole = requiredRoles.every((role) =>
+  // CORREÇÃO: Altera de .every() para .some()
+  // O usuário precisa possuir PELO MENOS UMA das roles especificadas na rota
+  const hasRequiredRole = requiredRoles.some((role) =>
     realmRoles.includes(role) || resourceRoles.includes(role)
   );
 
+  // Se o usuário não tiver nenhuma das roles necessárias, barra o acesso
   if (!hasRequiredRole) {
-    // IMPORTANTE: Ajuste o caminho do access-denied para incluir sua baseHref
-    return router.parseUrl('/agroprodes-app/access-denied');
+    console.log('acesso negado ')
+    return router.parseUrl('/acesso-negado');
   }
 
   return true;

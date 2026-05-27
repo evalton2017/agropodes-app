@@ -1,89 +1,75 @@
-<div class="dashboard-wrapper">
+<div class="home-container">
 
-  <!-- Painel Lateral -->
-  <aside class="control-panel">
-    <header class="panel-header">
-      <div class="brand-node">⟨AGP⟩</div>
-      <div>
-        <h1>AGROPRODES</h1>
-        <p>Pontos de Distribuição Sincronizados</p>
-      </div>
-    </header>
+  <!-- Header Superior -->
+  <mat-toolbar class="header">
+    <div class="logo-wrapper">
+      <img [src]="resolveImageUrl('images/logo.png')" alt="Logo AgroProdes" class="logo-img">
+      <span class="logo-text">AgroProdes</span>
+    </div>
+    <span class="spacer"></span>
+    <button mat-flat-button class="btn-entrar" (click)="fazerLogin()">
+      <mat-icon>login</mat-icon> Entrar
+    </button>
+  </mat-toolbar>
 
-    <section class="metrics-card">
-      <div class="metric-row">
-        <span>Malha de Dados:</span>
-        <span class="status-badge live">SINCRO</span>
-      </div>
-      <div class="metric-row">
-        <span>Conexões Fluindo:</span>
-        <strong>{{ diagramLinks().length }} Linhas</strong>
-      </div>
-    </section>
+  <!-- Conteúdo Principal -->
+  <main class="content">
 
-    @if (currentStateInfo(); as info) {
-      <section class="details-card">
-        <h3>{{ info.name }}</h3>
-        <div class="status-indicator" [attr.data-status]="info.status">
-          <span class="dot"></span>
-          <span class="text">Logística: {{ info.status | uppercase }}</span>
-        </div>
-        <div class="coordinates">
-          <code>Calibração Nodo: [X: {{ info.cx }}px, Y: {{ info.cy }}px]</code>
-        </div>
-      </section>
-    } @else {
-      <p class="empty-state">Passe o mouse ou clique sobre os pontos verdes para ler a telemetria geográfica.</p>
-    }
-  </aside>
-
-  <!-- Área Principal -->
-  <main class="viewport">
-
-    <!-- Pequeno Slide Superior Inteligente -->
-    <div class="slide-container">
-      <div class="slide-wrapper" [style.transform]="'translateX(' + (-currentSlideIndex() * 100) + '%)'">
-        @for (slide of slides(); track slide.title) {
-          <div class="slide-item">
-            <div class="slide-content">
-              <span class="slide-title">{{ slide.title }}</span>
-              <div class="slide-data">
-                <span class="slide-value">{{ slide.value }}</span>
-                <span class="slide-badge" [ngClass]="slide.status">{{ slide.label }}</span>
-              </div>
-            </div>
+    <!-- Carrossel de Imagens -->
+    <div class="carousel-container">
+      <div class="carousel">
+        @for (image of carouselImages(); track image.url; let i = $index) {
+          <div class="carousel-item" [class.active]="i === currentIndex()">
+            <img [src]="resolveImageUrl(image.url)" [alt]="image.alt">
           </div>
         }
-      </div>
-      <!-- Indicadores de bolinha (Dots) do slide -->
-      <div class="slide-dots">
-        @for (slide of slides(); track slide.title; let i = $index) {
-          <button class="dot-btn" [ngClass]="{ 'active': currentSlideIndex() === i }" (click)="setSlide(i)"></button>
-        }
+
+        <!-- Controles do Carrossel -->
+        <button class="carousel-btn prev" (click)="prevSlide()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button class="carousel-btn next" (click)="nextSlide()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
       </div>
     </div>
 
-    <!-- Container do Mapa Sincronizado -->
-    <div class="canvas-container">
-      <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet" class="canvas-svg">
-        <image href="assets/mapa-brasil.png" x="0" y="0" width="800" height="600" class="agro-background-map" />
+    <!-- Texto Informativo (AgroProdes) -->
+    <section class="info-section">
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>Sobre o AgroProdes</mat-card-title>
+          <mat-card-subtitle>Tecnologia e Sustentabilidade no Campo</mat-card-subtitle>
+        </mat-card-header>
 
-        <g class="diagram-links">
-          @for (link of diagramLinks(); track link.id) {
-            <line [attr.x1]="link.x1" [attr.y1]="link.y1" [attr.x2]="link.x2" [attr.y2]="link.y2" class="network-line" />
-          }
-        </g>
+        <mat-card-content>
+          <p>
+            O <strong>AgroProdes</strong> é uma plataforma inteligente voltada para a gestão territorial ambiental.
+            Nosso sistema oferece soluções robustas para a consulta e validação do Cadastro Ambiental Rural (CAR),
+            além do monitoramento preciso de áreas de desmatamento através da integração com os dados oficiais do Prodes.
+          </p>
 
-        <g class="diagram-nodes">
-          @for (node of brazilRegions(); track node.id) {
-            <g class="node-interactive-group" (click)="selectState(node.id)" (mouseenter)="selectState(node.id)">
-              <circle [attr.cx]="node.cx" [attr.cy]="node.cy" r="20" fill="transparent" class="touch-target" />
-              <circle [attr.cx]="node.cx" [attr.cy]="node.cy" class="network-node" [ngClass]="networkStatuses()[node.id]" />
-            </g>
-          }
-        </g>
-      </svg>
-    </div>
+          <div class="features-grid">
+            <div class="feature-item">
+              <mat-icon color="primary">verified_user</mat-icon>
+              <span>Validação e Consulta de CAR</span>
+            </div>
+            <div class="feature-item">
+              <mat-icon color="warn">terrain</mat-icon>
+              <span>Análise de Desmatamento (Prodes)</span>
+            </div>
+            <div class="feature-item">
+              <mat-icon color="primary">eco</mat-icon>
+              <span>Cadastro de Áreas para Regeneração</span>
+            </div>
+            <div class="feature-item">
+              <mat-icon color="primary">phonelink_setup</mat-icon>
+              <span>Acompanhamento via Aplicativo Mobile</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </section>
 
   </main>
 </div>

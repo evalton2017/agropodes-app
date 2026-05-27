@@ -1,114 +1,124 @@
-<mat-sidenav-container class="app-container" [hasBackdrop]="isMobile()">
+@if(menuItems().length > 0){
+  <mat-sidenav-container class="app-container" [hasBackdrop]="isMobile()">
 
-  <mat-sidenav
-    #sidenav
-    [mode]="isMobile() ? 'over' : 'side'"
-    [opened]="!isMobile()"
-    class="app-sidenav"
-    [class.desktop-collapsed]="!isMobile() && !isExpanded()"
-    [class.desktop-expanded]="!isMobile() && isExpanded()"
-    (mouseenter)="expandMenu()"
-    (mouseleave)="collapseMenu()">
+    <mat-sidenav
+      #sidenav
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="!isMobile()"
+      class="app-sidenav"
+      [class.desktop-collapsed]="!isMobile() && !isExpanded()"
+      [class.desktop-expanded]="!isMobile() && isExpanded()"
+      (mouseenter)="expandMenu()"
+      (mouseleave)="collapseMenu()">
 
-    <div class="sidenav-logo-container">
-      <img src="favicon.ico"
-           alt="AgroProdes"
-           class="app-logo"
-           loading="lazy">
-      <span class="brand-name menu-text">AgroProdes</span>
-    </div>
-    <hr class="divider">
+      <div class="sidenav-logo-container">
+        <img src="favicon.ico"
+             alt="AgroProdes"
+             class="app-logo"
+             loading="lazy">
+        <span class="brand-name menu-text">AgroProdes</span>
+      </div>
+      <hr class="divider">
 
-    <mat-nav-list>
-      @for (item of menuItems; track item.label) {
+      <mat-nav-list>
+        @for (item of menuItems(); track item.label) {
 
-        <!-- CASO 1: Item com Submenu (Validação dinâmica baseada em filhos) -->
-        @if (item.children && item.children.length > 0) {
-          <mat-expansion-panel
-            class="menu-expansion-panel"
-            [disabled]="!isExpanded() && !isMobile()"
-            [expanded]="isExpanded() && !isMobile()">
+          <!-- CASO 1: Item com Submenu (Validação dinâmica baseada em filhos) -->
+          @if (item.children && item.children.length > 0) {
+            <mat-expansion-panel
+              class="menu-expansion-panel"
+              [disabled]="!isExpanded() && !isMobile()"
+              [expanded]="isExpanded() && !isMobile()">
 
-            <mat-expansion-panel-header class="menu-expansion-header">
-              <mat-panel-title>
-                <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-                <span class="menu-text">{{ item.label }}</span>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
+              <mat-expansion-panel-header class="menu-expansion-header">
+                <mat-panel-title>
+                  <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                  <span class="menu-text">{{ item.label }}</span>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
 
-            <mat-nav-list class="submenu-list">
-              @for (child of item.children; track child.route) {
-                <a mat-list-item
-                   [routerLink]="child.route"
-                   routerLinkActive="active-link"
-                   (click)="isMobile() ? sidenav.close() : null">
-                  <mat-icon matListItemIcon>{{ child.icon }}</mat-icon>
-                  <span matListItemTitle class="menu-text">{{ child.label }}</span>
-                </a>
-              }
-            </mat-nav-list>
-          </mat-expansion-panel>
+              <mat-nav-list class="submenu-list">
+                @for (child of item.children; track child.route) {
+                  <a mat-list-item
+                     [routerLink]="child.route"
+                     routerLinkActive="active-link"
+                     (click)="isMobile() ? sidenav.close() : null">
+                    <mat-icon matListItemIcon>{{ child.icon }}</mat-icon>
+                    <span matListItemTitle class="menu-text">{{ child.label }}</span>
+                  </a>
+                }
+              </mat-nav-list>
+            </mat-expansion-panel>
+          }
+          @else {
+            <a mat-list-item
+               [routerLink]="item.route"
+               routerLinkActive="active-link"
+               (click)="isMobile() ? sidenav.close() : null">
+              <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+              <span matListItemTitle class="menu-text">{{ item.label }}</span>
+            </a>
+          }
+
         }
-        @else {
-          <a mat-list-item
-             [routerLink]="item.route"
-             routerLinkActive="active-link"
-             (click)="isMobile() ? sidenav.close() : null">
-            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-            <span matListItemTitle class="menu-text">{{ item.label }}</span>
-          </a>
-        }
+      </mat-nav-list>
+    </mat-sidenav>
 
-      }
-    </mat-nav-list>
-  </mat-sidenav>
+    <mat-sidenav-content
+      class="app-content-wrapper"
+      [class.content-collapsed]="!isMobile() && !isExpanded()"
+      [class.content-expanded]="!isMobile() && isExpanded()">
 
-  <mat-sidenav-content
-    class="app-content-wrapper"
-    [class.content-collapsed]="!isMobile() && !isExpanded()"
-    [class.content-expanded]="!isMobile() && isExpanded()">
+      <mat-toolbar
+        class="app-header"
+        [class.header-collapsed]="!isMobile() && !isExpanded()"
+        [class.header-expanded]="!isMobile() && isExpanded()">
 
-    <mat-toolbar
-      class="app-header"
-      [class.header-collapsed]="!isMobile() && !isExpanded()"
-      [class.header-expanded]="!isMobile() && isExpanded()">
-
-      <button *ngIf="isMobile()" mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn" aria-label="Abrir Menu">
-        <mat-icon>menu</mat-icon>
-      </button>
-
-      <span class="header-title">AMBIENTE DE TESTE</span>
-      <span class="spacer"></span>
-
-      <!-- Seção do Usuário no Header -->
-      <div class="header-user-section">
-        <span class="user-name" *ngIf="!isMobile()">{{ username() }}</span>
-
-        <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Perfil do Usuário" class="header-profile-btn">
-          <mat-icon>account_circle</mat-icon>
+        <button *ngIf="isMobile()" mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn" aria-label="Abrir Menu">
+          <mat-icon>menu</mat-icon>
         </button>
 
-        <mat-menu #profileMenu="matMenu" xPosition="before">
-          <div class="menu-user-info" *ngIf="isMobile()">
-            <span>{{ username() }}</span>
-          </div>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            <span>Sair</span>
+        <span class="header-title">AMBIENTE DE TESTE</span>
+        <span class="spacer"></span>
+
+        <!-- Seção do Usuário no Header -->
+        <div class="header-user-section">
+          <span class="user-name" *ngIf="!isMobile()">{{ username() }}</span>
+
+          <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Perfil do Usuário" class="header-profile-btn">
+            <mat-icon>account_circle</mat-icon>
           </button>
-        </mat-menu>
+
+          <mat-menu #profileMenu="matMenu" xPosition="before">
+            <div class="menu-user-info" *ngIf="isMobile()">
+              <span>{{ username() }}</span>
+            </div>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Sair</span>
+            </button>
+          </mat-menu>
+        </div>
+
+      </mat-toolbar>
+
+      <div class="header-offset"></div>
+
+      <div class="page-body">
+        <main class="main-content">
+          <router-outlet></router-outlet>
+        </main>
+        <app-footer></app-footer>
       </div>
+    </mat-sidenav-content>
 
-    </mat-toolbar>
+  </mat-sidenav-container>
+} @else {
+  <div class="page-body">
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+    <app-footer></app-footer>
+  </div>
+}
 
-    <div class="header-offset"></div>
-
-    <div class="page-body">
-      <main class="main-content">
-        <router-outlet></router-outlet>
-      </main>
-      <app-footer></app-footer>
-    </div>
-  </mat-sidenav-content>
-
-</mat-sidenav-container>

@@ -8,19 +8,49 @@ import {
 } from './pages/territorio/consulta-territorio.component/consulta-territorio.component';
 import {authGuard} from './auth/auth.guard';
 import {ConsultaAnaliseComponent} from './pages/analise/consulta-analise.component/consulta-analise.component';
+import {AcessoNegadoComponent} from './pages/acesso-negado.component/acesso-negado.component';
 
 
 export const routes: Routes = [
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   {
     path: 'home',
     component: HomeComponent,
-    canActivate: [authGuard],
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
   },
-  {path: 'cadastro-territorio', component: CadastraTerritorioComponent, canActivate: [authGuard]},
-  {path: 'consulta-territorio', component: ConsultaTerritorioComponent, canActivate: [authGuard]},
-  {path: 'consulta-car', component: ConsultaCarComponent, canActivate: [authGuard]},
-  {path: 'consulta-prodes', component: ConsultaProdesComponent, canActivate: [authGuard]},
-  {path: 'consulta-analise', component: ConsultaAnaliseComponent, canActivate: [authGuard]},
-  {path: '**', redirectTo: 'home'}
+  {
+    path: 'cadastro-territorio',
+    component: CadastraTerritorioComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
+  },
+  {
+    path: 'consulta-territorio',
+    component: ConsultaTerritorioComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
+  },
+  {
+    path: 'consulta-car',
+    component: ConsultaCarComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
+  },
+  {
+    path: 'consulta-prodes',
+    component: ConsultaProdesComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
+  },
+  {
+    path: 'consulta-analise',
+    component: ConsultaAnaliseComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] } // Restrito apenas para Admin e Analista
+  },
+  {
+    path: 'acesso-negado',
+    component: AcessoNegadoComponent
+  },
+  { path: '**', redirectTo: 'home' }
 ];
