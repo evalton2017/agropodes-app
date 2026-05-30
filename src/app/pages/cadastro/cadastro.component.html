@@ -1,0 +1,86 @@
+<div class="cadastro-container">
+  <mat-card class="cadastro-card">
+
+    <!-- Logo e Identificação Superior -->
+    <div class="logo-header">
+      <img src="images/logo.png" alt="Logo AgroProdes" class="form-logo">
+      <h1 class="logo-text">AgroProdes</h1>
+      <p class="subtitle">Crie sua conta na plataforma</p>
+    </div>
+
+    <mat-card-content>
+      <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+
+        <!-- Nome Completo (Lado a Lado) -->
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="firstName" placeholder="Ex: João">
+            @if (cadastroForm.get('firstName')?.hasError('required')) {
+              <mat-error>O nome é obrigatório</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Sobrenome</mat-label>
+            <input matInput formControlName="lastName" placeholder="Ex: Silva">
+            @if (cadastroForm.get('lastName')?.hasError('required')) {
+              <mat-error>O sobrenome é obrigatório</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Usuário -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nome de usuário (Username)</mat-label>
+          <input matInput formControlName="username" placeholder="Ex: joao.silva">
+          <mat-icon matSuffix>account_circle</mat-icon>
+          @if (cadastroForm.get('username')?.hasError('required')) {
+            <mat-error>O nome de usuário é obrigatório</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- E-mail -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>E-mail</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="Ex: joao@email.com">
+          <mat-icon matSuffix>email</mat-icon>
+          @if (cadastroForm.get('email')?.hasError('required')) {
+            <mat-error>O e-mail é obrigatório</mat-error>
+          }
+          @if (cadastroForm.get('email')?.hasError('email')) {
+            <mat-error>Informe um e-mail válido</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Senha -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Senha</mat-label>
+          <input matInput [type]="esconderSenha ? 'password' : 'text'" formControlName="password">
+          <button type="button" mat-icon-button matSuffix (click)="esconderSenha = !esconderSenha" [attr.aria-label]="'Esconder senha'" [attr.aria-pressed]="esconderSenha">
+            <mat-icon>{{esconderSenha ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if (cadastroForm.get('password')?.hasError('required')) {
+            <mat-error>A senha é obrigatória</mat-error>
+          }
+          @if (cadastroForm.get('password')?.hasError('minlength')) {
+            <mat-error>A senha deve ter no mínimo 6 caracteres</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Botões de Ação -->
+        <div class="actions-row">
+          <button mat-flat-button color="primary" type="submit" class="btn-submit" [disabled]="cadastroForm.invalid">
+            <mat-icon>person_add</mat-icon> Cadastrar Conta
+          </button>
+
+          <button mat-button type="button" class="btn-back" (click)="voltar()">
+            Voltar para o início
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+
+  </mat-card>
+</div>

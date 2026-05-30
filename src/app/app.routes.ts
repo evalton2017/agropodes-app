@@ -9,6 +9,7 @@ import {
 import {authGuard} from './auth/auth.guard';
 import {ConsultaAnaliseComponent} from './pages/analise/consulta-analise.component/consulta-analise.component';
 import {AcessoNegadoComponent} from './pages/acesso-negado.component/acesso-negado.component';
+import {CadastroComponent} from './pages/cadastro/cadastro.component';
 
 
 export const routes: Routes = [
@@ -17,6 +18,10 @@ export const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
+  },
+  {
+    path: 'cadastrar-usuario',
+    component: CadastroComponent
   },
   {
     path: 'cadastro-territorio',

@@ -6,6 +6,9 @@ import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 import {Router} from '@angular/router';
 import {routes} from '../../app.routes';
+import Keycloak from 'keycloak-js';
+import {MatDialog} from '@angular/material/dialog';
+import {ConsultaPropriedadeModalComponent} from '../../model/consulta-propriedade-modal-component';
 
 interface CarouselItem {
   url: string;
@@ -20,8 +23,10 @@ interface CarouselItem {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  private location = inject(Location);
-  private router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
+  private readonly keycloak = inject(Keycloak);
+  private dialog = inject(MatDialog);
 
   carouselImages = signal<CarouselItem[]>([
     { url: 'images/regeneracao.png', alt: 'Maquinário agrícola moderno' },
@@ -62,4 +67,25 @@ export class HomeComponent {
   fazerLogin(): void {
     this.router.navigate(['consulta-car']);
   }
+
+  cadastrarUsuario(){
+    this.router.navigate(['cadastrar-usuario']);
+  }
+
+  abrirModalConsulta() {
+    this.dialog.open(ConsultaPropriedadeModalComponent, {
+      width: '90%',          // Ocupa a maior parte da largura em telas menores
+      maxWidth: '1050px',     // Limite confortável para resoluções de desktop
+      minHeight: '400px',    // Garante uma boa área vertical inicial
+      maxHeight: '85vh',
+    });
+  }
+
+  isAutenticado(): boolean {
+    if(this.keycloak.authenticated) {
+     return true;
+    }
+    return false;
+  }
+
 }

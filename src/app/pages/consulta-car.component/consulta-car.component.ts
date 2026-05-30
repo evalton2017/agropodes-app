@@ -18,6 +18,7 @@ import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {ElegibilidadeModalComponent} from '../../components/modal/elegibilidade-model/elegibilidade-modal.component';
 import {ElegibilidadeResponse} from '../../dto/response/elegibilidade';
+import {DetalheCarModal} from '../../model/detalhe-car.modal';
 
 
 
@@ -124,10 +125,17 @@ export class ConsultaCarComponent implements OnInit {
 
     dialogRef.beforeClosed().subscribe(result => {
       if (result) {
-        this.elegibilidade.set(result); // Atualiza o sinal instantaneamente
+        this.elegibilidade.set(result);
       }
     });
   }
 
+  abrirDetalhes() {
+    this.dialog.open(DetalheCarModal, {
+      width: '850px',
+      maxHeight: '90vh',
+      data: { numeroCar: this.elegibilidade()?.codigoCar }
+    });
+  }
 
 }

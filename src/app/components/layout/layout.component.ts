@@ -28,8 +28,8 @@ import { MatMenuModule } from '@angular/material/menu';
 })
 export class LayoutComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
-  private keycloak = inject(Keycloak);
-  private platformId = inject(PLATFORM_ID);
+  private readonly keycloak = inject(Keycloak);
+  private readonly platformId = inject(PLATFORM_ID);
 
   username = signal<string>('Usuário');
   isMobile = signal(false);

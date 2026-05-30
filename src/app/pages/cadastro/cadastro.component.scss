@@ -1,0 +1,97 @@
+.cadastro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #a4cfa8; // Mantém o fundo verde padrão do container principal do app
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.cadastro-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 32px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.logo-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  text-align: center;
+
+  .form-logo {
+    height: 64px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 8px;
+  }
+
+  .logo-text {
+    font-weight: 700;
+    color: #1b5e20;
+    font-size: 2.2rem;
+    margin: 0;
+  }
+
+  .subtitle {
+    color: #555;
+    margin: 4px 0 0 0;
+    font-size: 1rem;
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+// Customização para seguir a identidade do AgroProdes
+::v-deep .mat-mdc-form-field-focus-overlay {
+  background-color: transparent;
+}
+
+.actions-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+
+  .btn-submit {
+    background-color: #1b5e20 !important; // Cor padrão verde floresta escuro
+    color: white !important;
+    padding: 24px 0 !important; // Deixa o botão mais alto e robusto
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+
+  .btn-back {
+    color: #1b5e20 !important;
+  }
+}
+
+// Responsividade para smartphones
+@media (max-width: 480px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .cadastro-card {
+    padding: 16px;
+  }
+}

@@ -47,8 +47,8 @@ export const authGuard: CanActivateFn = async (
     ? Object.values(keycloak.resourceAccess).flatMap(access => access.roles || [])
     : [];
 
-  // CORREÇÃO: Altera de .every() para .some()
-  // O usuário precisa possuir PELO MENOS UMA das roles especificadas na rota
+  console.log(realmRoles);
+
   const hasRequiredRole = requiredRoles.some((role) =>
     realmRoles.includes(role) || resourceRoles.includes(role)
   );

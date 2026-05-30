@@ -1,21 +1,31 @@
 <div class="home-container">
 
   <!-- Header Superior -->
-  <mat-toolbar class="header">
-    <div class="logo-wrapper">
-      <img [src]="resolveImageUrl('images/logo.png')" alt="Logo AgroProdes" class="logo-img">
-      <span class="logo-text">AgroProdes</span>
-    </div>
-    <span class="spacer"></span>
-    <button mat-flat-button class="btn-entrar" (click)="fazerLogin()">
-      <mat-icon>login</mat-icon> Entrar
-    </button>
-  </mat-toolbar>
+  @if(!isAutenticado()){
+    <mat-toolbar class="header">
+      <div class="logo-wrapper">
+        <img [src]="resolveImageUrl('images/logo.png')" alt="Logo AgroProdes" class="logo-img">
+        <span class="logo-text">AgroProdes </span>
+      </div>
+
+      <span class="spacer">Ambiente de teste, para testar nosso produto entre em contato </span>
+
+      <!-- Agrupamento dos botões de ação -->
+      <div class="actions-wrapper">
+        <button mat-stroked-button class="btn-cadastrar" (click)="cadastrarUsuario()">
+          <mat-icon>person_add</mat-icon> Cadastrar
+        </button>
+
+        <button mat-flat-button class="btn-entrar" (click)="fazerLogin()">
+          <mat-icon>login</mat-icon> Entrar
+        </button>
+      </div>
+    </mat-toolbar>
+  }
 
   <!-- Conteúdo Principal -->
   <main class="content">
-
-    <!-- Carrossel de Imagens -->
+    <!-- O restante do seu código do carrossel e info-section permanece exatamente igual -->
     <div class="carousel-container">
       <div class="carousel">
         @for (image of carouselImages(); track image.url; let i = $index) {
@@ -23,8 +33,6 @@
             <img [src]="resolveImageUrl(image.url)" [alt]="image.alt">
           </div>
         }
-
-        <!-- Controles do Carrossel -->
         <button class="carousel-btn prev" (click)="prevSlide()">
           <mat-icon>chevron_left</mat-icon>
         </button>
@@ -34,7 +42,6 @@
       </div>
     </div>
 
-    <!-- Texto Informativo (AgroProdes) -->
     <section class="info-section">
       <mat-card class="info-card">
         <mat-card-header>
@@ -43,31 +50,65 @@
         </mat-card-header>
 
         <mat-card-content>
-          <p>
-            O <strong>AgroProdes</strong> é uma plataforma inteligente voltada para a gestão territorial ambiental.
-            Nosso sistema oferece soluções robustas para a consulta e validação do Cadastro Ambiental Rural (CAR),
-            além do monitoramento preciso de áreas de desmatamento através da integração com os dados oficiais do Prodes.
+          <p class="about-text">
+            O <strong>AgroProdes</strong> é uma plataforma que oferece soluções robustas para a consulta, validação e gestão territorial ambiental.
+            Através da integração automatizada com diversas bases públicas — como o Sistema de Consulta do CAR,
+            o portal CAR federal, o TerraBrasilis (INPE) e bases estaduais — o
+            sistema consolida dados estratégicos para embasar relatórios e laudos de monitoramento de áreas em regeneração.
           </p>
 
           <div class="features-grid">
+            <!-- Item 1 -->
             <div class="feature-item">
               <mat-icon color="primary">verified_user</mat-icon>
-              <span>Validação e Consulta de CAR</span>
+              <div class="feature-text">
+                <strong class="feature-title">Validação e Consulta de CAR  </strong>
+                <span class="feature-description">Sincronização com bases federais e estaduais para checagem de regularidade.</span>
+              </div>
             </div>
+
+            <!-- Item 2 -->
             <div class="feature-item">
               <mat-icon color="warn">terrain</mat-icon>
-              <span>Análise de Desmatamento (Prodes)</span>
+              <div class="feature-text">
+                <strong class="feature-title">Análise de Desmatamento (Prodes)  </strong>
+                <span class="feature-description">Cruzamento geográfico com dados oficiais do INPE para identificar alertas de supressão.</span>
+              </div>
             </div>
+
+            <!-- Item 3 (Aplicativo Móvel) -->
             <div class="feature-item">
               <mat-icon color="primary">eco</mat-icon>
-              <span>Cadastro de Áreas para Regeneração</span>
+              <div class="feature-text">
+                <strong class="feature-title">Aplicativo Móvel (Offline)  </strong>
+                <span class="feature-description">Permite a coleta de dados diretamente no campo, capturando pontos de controle, fotos geotagged e coordenadas.</span>
+              </div>
             </div>
+
+            <!-- Item 4 -->
             <div class="feature-item">
               <mat-icon color="primary">phonelink_setup</mat-icon>
-              <span>Acompanhamento via Aplicativo Mobile</span>
+              <div class="feature-text">
+                <strong class="feature-title">Acompanhamento e Laudos </strong>
+                <span class="feature-description">Geração automatizada de relatórios com mapas e históricos consolidados do imóvel.</span>
+              </div>
             </div>
           </div>
         </mat-card-content>
+      </mat-card>
+    </section>
+
+    <section class="action-section">
+      <mat-card class="action-card">
+        <div class="action-card-content">
+          <div class="action-card-text">
+            <mat-card-title>Consulte aqui sua propriedade</mat-card-title>
+            <mat-card-subtitle>Verifique a situação ambiental, polígonos e temas associados ao seu CAR</mat-card-subtitle>
+          </div>
+          <button mat-flat-button class="btn-consultar-prop" (click)="abrirModalConsulta()">
+            <mat-icon>search</mat-icon> Iniciar Consulta
+          </button>
+        </div>
       </mat-card>
     </section>
 
