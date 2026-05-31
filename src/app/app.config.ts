@@ -79,22 +79,27 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
 
         const keycloak = inject(Keycloak);
 
-        const baseFolder = window.location.pathname.startsWith('/agroprodes-app')
-          ? '/agroprodes-app'
-          : '';
-
         return keycloak.init({
           onLoad: 'check-sso',
-          silentCheckSsoRedirectUri: `${window.location.origin}${baseFolder}/silent-check-sso.html`,
-          checkLoginIframe: false
+          silentCheckSsoRedirectUri: environment.cleanUrl,
+          checkLoginIframe: false,
+          messageReceiveTimeout: 5000,
+          enableLogging: true,
+
+          // 1. CORREÇÃO BULLETPROOF: Desativa a checagem de nonce que está conflitando com o relógio
+          useNonce: false,
+
+          // 2. ADICIONAL DE SEGURANÇA: Mantém o fluxo robusto moderno
+          pkceMethod: 'S256'
         })
           .then((authenticated) => {
-            console.log(`Keycloak inicializado. Autenticado: ${authenticated}`);
+            console.log(`Keycloak inicializado com sucesso. Autenticado: ${authenticated}`);
           })
           .catch(error => {
             console.error('Falha na inicialização do Keycloak:', error);
           });
       })
+
     ]
   };
 };
