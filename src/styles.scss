@@ -59,3 +59,41 @@ body {
   background-color: #931803 !important; /* Laranja */
   color: white !important;
 }
+
+// ==========================================================================
+// RESET COMPLETO DOS BOTÕES DO MENU (Adicionar no styles.scss global)
+// ==========================================================================
+.custom-header-menu {
+  // Alvos diretos nas tags de botão geradas pelo Angular Material
+  button.mat-mdc-menu-item,
+  button[mat-menu-item],
+  .mat-mdc-menu-item {
+    background: transparent !important; // Remove o fundo cinza nativo
+    border: none !important;             // Remove a borda preta/cinza de botão comum
+    box-shadow: none !important;         // Remove sombras indesejadas do navegador
+    width: 100% !important;              // Força ocupar a largura total do menu
+    padding: 12px 16px !important;       // Espaçamento confortável para o clique
+    color: #1b5e20 !important;           // Força o texto verde escuro
+    font-size: 1rem !important;
+    font-family: inherit !important;
+    cursor: pointer;
+
+    // Alinhamento interno do ícone com o texto
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+
+    // Garante que o ícone herde a cor correta e não suma
+    mat-icon, .mat-icon {
+      color: #1b5e20 !important;
+      margin: 0 !important;
+    }
+
+    // Efeito de hover suave
+    &:hover {
+      background-color: rgba(27, 94, 32, 0.08) !important;
+    }
+  }
+}

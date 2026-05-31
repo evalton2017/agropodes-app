@@ -5,20 +5,37 @@
     <mat-toolbar class="header">
       <div class="logo-wrapper">
         <img [src]="resolveImageUrl('images/logo.png')" alt="Logo AgroProdes" class="logo-img">
-        <span class="logo-text">AgroProdes </span>
+        <span class="logo-text">AgroProdes</span>
       </div>
 
-      <span class="spacer">Ambiente de teste, para testar nosso produto entre em contato </span>
+      <!-- Texto centralizado que sumirá em telas médias/pequenas -->
+      <span class="spacer text-teste">Ambiente de teste, para testar nosso produto entre em contato</span>
 
-      <!-- Agrupamento dos botões de ação -->
-      <div class="actions-wrapper">
+      <!-- Bloco Desktop Puro -->
+      <div class="actions-wrapper desktop-only">
         <button mat-stroked-button class="btn-cadastrar" (click)="cadastrarUsuario()">
           <mat-icon>person_add</mat-icon> Cadastrar
         </button>
-
         <button mat-flat-button class="btn-entrar" (click)="fazerLogin()">
           <mat-icon>login</mat-icon> Entrar
         </button>
+      </div>
+
+      <!-- Bloco Mobile Puro -->
+      <div class="mobile-only">
+        <button mat-icon-button class="btn-menu-mobile" [matMenuTriggerFor]="menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu" class="custom-header-menu">
+          <button mat-menu-item (click)="cadastrarUsuario()">
+            <mat-icon class="icon-menu-cadastrar">person_add</mat-icon>
+            <span class="text-menu-cadastrar">Cadastrar</span>
+          </button>
+          <button mat-menu-item (click)="fazerLogin()">
+            <mat-icon class="icon-menu-entrar">login</mat-icon>
+            <span class="text-menu-entrar">Entrar</span>
+          </button>
+        </mat-menu>
       </div>
     </mat-toolbar>
   }

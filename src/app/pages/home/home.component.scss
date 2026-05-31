@@ -1,12 +1,16 @@
-// 1. CONTAINER PRINCIPAL (Fundo verde escuro cobrindo o mapa)
+// ==========================================================================
+// 1. CONTAINER PRINCIPAL
+// ==========================================================================
 .home-container {
   min-height: 100vh;
-  background-color: #a4cfa8; // Tom verde folha fechado/corporativo (Material Green 800)
+  background-color: #a4cfa8;
   display: flex;
   flex-direction: column;
 }
 
-// 2. HEADER SUPERIOR (Verde Claro Fixado)
+// ==========================================================================
+// 2. HEADER SUPERIOR (Correção de quebra de fluxo do Angular Material)
+// ==========================================================================
 .header {
   position: fixed;
   top: 0;
@@ -16,83 +20,92 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
   background-color: #e8f5e9 !important;
   color: #1b5e20 !important;
-  display: flex;
-  align-items: center;
+
+  // Forçando o comportamento flex sobre a estrutura do Angular
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+
   padding: 0 24px !important;
-  height: 80px; // Comporta a logo maior com folga
+  height: 80px !important;
+  box-sizing: border-box;
 }
 
 // Elementos Internos do Header
 .logo-wrapper {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
   gap: 16px;
-  height: 100%;
-  padding: 8px 0;
+  height: 100% !important;
   box-sizing: border-box;
+  flex-shrink: 0; // Impede que o logo seja esmagado lateralmente
 }
 
 .logo-img {
-  height: 56px;
-  width: auto;
-  object-fit: contain;
+  height: 56px !important; // Altura fixa para alinhar dentro dos 80px do header
+  width: auto !important;
+  object-fit: contain !important;
 }
 
 .logo-text {
   font-weight: 700;
   letter-spacing: 0.5px;
-  font-size: 2.8rem;
+  font-size: 2.2rem; // Reduzido de 2.8rem para dar margem de segurança ao layout
   line-height: 1;
 }
 
 .spacer {
   flex: 1 1 auto;
+  text-align: center;
+  padding: 0 20px;
 }
 
-// Agrupamento dos botões de ação à direita
-.actions-wrapper {
-  display: flex;
+// Classes utilitárias de controle de visualização rígida
+.desktop-only {
+  display: flex !important;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
-// Botão Detalhar Resultado (Novo botão verde adicionado)
-.btn-detalhar {
-  background-color: #2e7d32 !important;
-  color: white !important;
-  font-weight: 500 !important;
-
-  mat-icon {
-    margin-right: 4px;
-  }
+.mobile-only {
+  display: none !important; // Oculta completamente o botão hambúrguer no desktop
 }
 
-// Botão Cadastrar (Angular Material Stroked Button)
+.btn-menu-mobile {
+  color: #1b5e20 !important;
+}
+
+// Botões do Header
 .btn-cadastrar {
   color: #1b5e20 !important;
   border-color: #1b5e20 !important;
   border-width: 1.5px !important;
   font-weight: 600 !important;
+  white-space: nowrap;
 
-  mat-icon {
-    margin-right: 4px;
-  }
+  mat-icon { margin-right: 4px; }
 }
 
-// Botão Entrar (Angular Material Flat Button)
 .btn-entrar {
   background-color: #1b5e20 !important;
   color: white !important;
   font-weight: 500 !important;
+  white-space: nowrap;
 
-  mat-icon {
-    margin-right: 4px;
-  }
+  mat-icon { margin-right: 4px; }
 }
 
-// 3. CONTEÚDO PRINCIPAL (Ajustado para colar o carrossel no header de 80px)
+// Ícones internos do menu responsivo
+.icon-menu-cadastrar { color: #1b5e20 !important; }
+.icon-menu-entrar { color: #2e7d32 !important; }
+
+// ==========================================================================
+// 3. CONTEÚDO PRINCIPAL (Ajuste de posicionamento vertical)
+// ==========================================================================
 .content {
-  margin-top: 80px; // Alterado para 80px para empurrar o conteúdo exatamente abaixo do novo tamanho do header
+  margin-top: 80px !important; // Garante o alinhamento perfeito colado abaixo do header
   padding: 0 0 32px 0;
   display: flex;
   flex-direction: column;
@@ -100,12 +113,14 @@
   gap: 32px;
 }
 
+// ==========================================================================
 // 4. ESTRUTURA DO CARROSSEL
+// ==========================================================================
 .carousel-container {
   width: 100%;
   max-width: 1200px;
   height: 500px;
-  border-radius: 0 0 16px 16px; // Reto no topo e arredondado na base
+  border-radius: 0 0 16px 16px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   position: relative;
@@ -137,54 +152,97 @@
       object-fit: cover;
     }
   }
+}
 
-  .carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.4);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    cursor: pointer;
-    z-index: 2;
-    display: flex;
+
+// ==========================================================================
+// 5. RESPONSIVIDADE MOBILE COMPLETA (Telas até 768px)
+// ==========================================================================
+@media (max-width: 768px) {
+  // Estrutura do Header
+  .header {
+    height: 64px !important;
+    padding: 0 12px !important;
+  }
+
+  .logo-img {
+    height: 40px !important;
+  }
+
+  .logo-text {
+    font-size: 1.4rem;
+  }
+
+  // Oculta o texto de teste longo no mobile para não quebrar o layout
+  .text-teste {
+    display: none !important;
+  }
+
+  // Alternância de blocos de ações
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
     align-items: center;
-    justify-content: center;
-    transition: background 0.3s;
+  }
 
-    &:hover {
-      background: rgba(0, 0, 0, 0.7);
+  // Alinhamento do Conteúdo Principal
+  .content {
+    margin-top: 64px !important;
+    padding: 0 16px 24px 16px; // Adiciona margem lateral para os cards não colarem na tela
+    gap: 24px;
+  }
+
+  // Ajustes do Carrossel
+  .carousel-container {
+    height: 220px; // Reduz a altura para telas verticais
+    border-radius: 0 0 12px 12px;
+  }
+
+  // Botões de navegação do carrossel menores no mobile
+  .carousel-btn {
+    width: 36px !important;
+    height: 36px !important;
+
+    mat-icon {
+      font-size: 20px !important;
+      width: 20px !important;
+      height: 20px !important;
     }
-
-    &.prev { left: 16px; }
-    &.next { right: 16px; }
   }
-}
 
-// 5. SEÇÃO DO CARTÃO INFORMATIVO (Largura alinhada com o carrossel)
-.info-section {
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 24px;
-  box-sizing: border-box;
-
+  // Seção de Informações e Grid de Funcionalidades
   .info-card {
-    padding: 24px;
-    background: rgba(255, 255, 255, 0.96);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 16px !important;
   }
 
-  .about-text {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #2c3e50;
-    margin-bottom: 32px; // Margem para espaçamento uniforme antes do grid
+  .features-grid {
+    display: flex !important;
+    flex-direction: column !important; // Transforma o grid horizontal em uma lista vertical
+    gap: 20px !important;
+  }
+
+  .feature-item {
+    align-items: flex-start !important;
+  }
+
+  // Seção de Ação (Card de Consulta)
+  .action-card-content {
+    display: flex !important;
+    flex-direction: column !important; // Empilha o texto e o botão de consulta verticalmente
+    align-items: stretch !important;
+    gap: 16px !important;
+    text-align: center;
+  }
+
+  .btn-consultar-prop {
+    width: 100% !important; // Botão ocupa a largura total para facilitar o clique com o polegar
   }
 }
+
+
 
 // Ajustes do Grid para empilhar Título e Descrição verticalmente
 .features-grid {
@@ -287,3 +345,4 @@
     }
   }
 }
+

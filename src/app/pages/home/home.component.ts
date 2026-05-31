@@ -9,6 +9,7 @@ import {routes} from '../../app.routes';
 import Keycloak from 'keycloak-js';
 import {MatDialog} from '@angular/material/dialog';
 import {ConsultaPropriedadeModalComponent} from '../../model/consulta-propriedade-modal-component';
+import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
 
 interface CarouselItem {
   url: string;
@@ -18,7 +19,7 @@ interface CarouselItem {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatCardModule, MatIconModule],
+  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatCardModule, MatIconModule, MatMenu, MatMenuTrigger],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
