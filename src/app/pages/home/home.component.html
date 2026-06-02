@@ -8,8 +8,13 @@
         <span class="logo-text">AgroProdes</span>
       </div>
 
-      <!-- Texto centralizado que sumirá em telas médias/pequenas -->
-      <span class="spacer text-teste">Ambiente de teste, para testar nosso produto entre em contato</span>
+      <!-- Grupo centralizado com a mensagem e o novo botão -->
+      <div class="spacer test-environment-container">
+        <span class="text-teste">Ambiente de teste, para testar nosso produto entre em contato</span>
+        <button mat-flat-button color="primary" class="btn-contato" (click)="abrirModalContato()">
+          <mat-icon>mail</mat-icon> Contato
+        </button>
+      </div>
 
       <!-- Bloco Desktop Puro -->
       <div class="actions-wrapper desktop-only">

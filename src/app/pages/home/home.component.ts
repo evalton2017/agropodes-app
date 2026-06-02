@@ -10,6 +10,7 @@ import Keycloak from 'keycloak-js';
 import {MatDialog} from '@angular/material/dialog';
 import {ConsultaPropriedadeModalComponent} from '../../model/consulta-propriedade-modal-component';
 import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
+import {ContatoModalComponent} from '../../components/modal/email/contato-modal.component';
 
 interface CarouselItem {
   url: string;
@@ -87,6 +88,13 @@ export class HomeComponent {
      return true;
     }
     return false;
+  }
+
+  abrirModalContato() {
+    this.dialog.open(ContatoModalComponent, {
+      width: '450px',
+      disableClose: true
+    });
   }
 
 }

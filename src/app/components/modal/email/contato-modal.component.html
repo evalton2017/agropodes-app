@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Entrar em Contato</h2>
+<mat-dialog-content [formGroup]="formContato" style="display: flex; flex-direction: column; gap: 16px; min-width: 350px; padding-top: 10px;">
+
+  <mat-form-field appearance="outline">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="nome" placeholder="Seu nome completo">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Telefone</mat-label>
+    <input matInput formControlName="telefone" placeholder="(00) 00000-0000">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>E-mail</mat-label>
+    <input matInput formControlName="email" type="email" placeholder="seuemail@exemplo.com">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Mensagem</mat-label>
+    <textarea matInput formControlName="mensagem" rows="4" placeholder="Escreva sua mensagem aqui..."></textarea>
+  </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="fechar()">Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="formContato.invalid" (click)="enviar()">Enviar</button>
+</mat-dialog-actions>
