@@ -21,6 +21,7 @@ export interface ImagemTerritorio {
 }
 
 export interface Territorio {
+  id?: number;
   dataAtualizacao: string | null;
   dataCadastro: string;
   hashTransacao: string;

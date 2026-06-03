@@ -1,138 +1,27 @@
 <div class="home-container">
 
-  <!-- Header Superior -->
-  @if(!isAutenticado()){
-    <mat-toolbar class="header">
-      <div class="logo-wrapper">
-        <img [src]="resolveImageUrl('images/logo.png')" alt="Logo AgroProdes" class="logo-img">
-        <span class="logo-text">AgroProdes</span>
-      </div>
-
-      <!-- Grupo centralizado com a mensagem e o novo botão -->
-      <div class="spacer test-environment-container">
-        <span class="text-teste">Ambiente de teste, para testar nosso produto entre em contato</span>
-        <button mat-flat-button color="primary" class="btn-contato" (click)="abrirModalContato()">
-          <mat-icon>mail</mat-icon> Contato
-        </button>
-      </div>
-
-      <!-- Bloco Desktop Puro -->
-      <div class="actions-wrapper desktop-only">
-        <button mat-stroked-button class="btn-cadastrar" (click)="cadastrarUsuario()">
-          <mat-icon>person_add</mat-icon> Cadastrar
-        </button>
-        <button mat-flat-button class="btn-entrar" (click)="fazerLogin()">
-          <mat-icon>login</mat-icon> Entrar
-        </button>
-      </div>
-
-      <!-- Bloco Mobile Puro -->
-      <div class="mobile-only">
-        <button mat-icon-button class="btn-menu-mobile" [matMenuTriggerFor]="menu">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu" class="custom-header-menu">
-          <button mat-menu-item (click)="cadastrarUsuario()">
-            <mat-icon class="icon-menu-cadastrar">person_add</mat-icon>
-            <span class="text-menu-cadastrar">Cadastrar</span>
-          </button>
-          <button mat-menu-item (click)="fazerLogin()">
-            <mat-icon class="icon-menu-entrar">login</mat-icon>
-            <span class="text-menu-entrar">Entrar</span>
-          </button>
-        </mat-menu>
-      </div>
-    </mat-toolbar>
+  @if (!isAutenticado()) {
+    <home-publico />
   }
-
-  <!-- Conteúdo Principal -->
-  <main class="content">
-    <!-- O restante do seu código do carrossel e info-section permanece exatamente igual -->
-    <div class="carousel-container">
-      <div class="carousel">
-        @for (image of carouselImages(); track image.url; let i = $index) {
-          <div class="carousel-item" [class.active]="i === currentIndex()">
-            <img [src]="resolveImageUrl(image.url)" [alt]="image.alt">
-          </div>
-        }
-        <button class="carousel-btn prev" (click)="prevSlide()">
-          <mat-icon>chevron_left</mat-icon>
-        </button>
-        <button class="carousel-btn next" (click)="nextSlide()">
-          <mat-icon>chevron_right</mat-icon>
-        </button>
-      </div>
-    </div>
-
-    <section class="info-section">
-      <mat-card class="info-card">
-        <mat-card-header>
-          <mat-card-title>Sobre o AgroProdes</mat-card-title>
-          <mat-card-subtitle>Tecnologia e Sustentabilidade no Campo</mat-card-subtitle>
-        </mat-card-header>
-
-        <mat-card-content>
-          <p class="about-text">
-            O <strong>AgroProdes</strong> é uma plataforma que oferece soluções robustas para a consulta, validação e gestão territorial ambiental.
-            Através da integração automatizada com diversas bases públicas — como o Sistema de Consulta do CAR,
-            o portal CAR federal, o TerraBrasilis (INPE) e bases estaduais — o
-            sistema consolida dados estratégicos para embasar relatórios e laudos de monitoramento de áreas em regeneração.
-          </p>
-
-          <div class="features-grid">
-            <!-- Item 1 -->
-            <div class="feature-item">
-              <mat-icon color="primary">verified_user</mat-icon>
-              <div class="feature-text">
-                <strong class="feature-title">Validação e Consulta de CAR  </strong>
-                <span class="feature-description">Sincronização com bases federais e estaduais para checagem de regularidade.</span>
-              </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="feature-item">
-              <mat-icon color="warn">terrain</mat-icon>
-              <div class="feature-text">
-                <strong class="feature-title">Análise de Desmatamento (Prodes)  </strong>
-                <span class="feature-description">Cruzamento geográfico com dados oficiais do INPE para identificar alertas de supressão.</span>
-              </div>
-            </div>
-
-            <!-- Item 3 (Aplicativo Móvel) -->
-            <div class="feature-item">
-              <mat-icon color="primary">eco</mat-icon>
-              <div class="feature-text">
-                <strong class="feature-title">Aplicativo Móvel (Offline)  </strong>
-                <span class="feature-description">Permite a coleta de dados diretamente no campo, capturando pontos de controle, fotos geotagged e coordenadas.</span>
-              </div>
-            </div>
-
-            <!-- Item 4 -->
-            <div class="feature-item">
-              <mat-icon color="primary">phonelink_setup</mat-icon>
-              <div class="feature-text">
-                <strong class="feature-title">Acompanhamento e Laudos </strong>
-                <span class="feature-description">Geração automatizada de relatórios com mapas e históricos consolidados do imóvel.</span>
-              </div>
-            </div>
-          </div>
+  @else if (possuiRole('USER_PRODUTOR')) {
+    <main class="content">
+      <home-logado />
+    </main>
+  }
+  @else if (possuiRole('USER_ANALISTA')) {
+    <main class="content">
+      <home-analista />
+    </main>
+  }
+  @else {
+    <main class="content" style="padding: 32px; text-align: center;">
+      <mat-card appearance="outlined" style="padding: 24px; max-width: 400px; margin: 0 auto;">
+        <mat-card-title color="warn">Acesso Restrito</mat-card-title>
+        <mat-card-content style="margin-top: 16px;">
+          Seu usuário não possui as permissões necessárias para visualizar este painel.
         </mat-card-content>
       </mat-card>
-    </section>
+    </main>
+  }
 
-    <section class="action-section">
-      <mat-card class="action-card">
-        <div class="action-card-content">
-          <div class="action-card-text">
-            <mat-card-title>Consulte aqui sua propriedade</mat-card-title>
-            <mat-card-subtitle>Verifique a situação ambiental, polígonos e temas associados ao seu CAR</mat-card-subtitle>
-          </div>
-          <button mat-flat-button class="btn-consultar-prop" (click)="abrirModalConsulta()">
-            <mat-icon>search</mat-icon> Iniciar Consulta
-          </button>
-        </div>
-      </mat-card>
-    </section>
-
-  </main>
 </div>

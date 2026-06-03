@@ -22,5 +22,9 @@ export class TerritorioService {
     return this.http.get<TerritorioResponse>(`${environment.url}/territorio/imagens?hash=${hash}`);
   }
 
+  consultaTerritorios(): Observable<TerritorioResponse[]> {
+    return this.http.get<TerritorioResponse[]>(`${environment.url}/territorio`);
+  }
+
 
 }

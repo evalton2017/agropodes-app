@@ -1,0 +1,494 @@
+// ==========================================================================
+// 1. CONTAINER PRINCIPAL
+// ==========================================================================
+.home-container {
+  min-height: 100vh;
+  background-color: #a4cfa8;
+  display: flex;
+  flex-direction: column;
+}
+
+// ==========================================================================
+// 2. HEADER SUPERIOR (Correção de quebra de fluxo do Angular Material)
+// ==========================================================================
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  background-color: #e8f5e9 !important;
+  color: #1b5e20 !important;
+
+  // Forçando o comportamento flex sobre a estrutura do Angular
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+
+  padding: 0 24px !important;
+  height: 80px !important;
+  box-sizing: border-box;
+}
+
+// Elementos Internos do Header
+.logo-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px;
+  height: 100% !important;
+  box-sizing: border-box;
+  flex-shrink: 0; // Impede que o logo seja esmagado lateralmente
+}
+
+.logo-img {
+  height: 56px !important; // Altura fixa para alinhar dentro dos 80px do header
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+.logo-text {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 2.2rem; // Reduzido de 2.8rem para dar margem de segurança ao layout
+  line-height: 1;
+}
+
+.spacer {
+  flex: 1 1 auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+// Classes utilitárias de controle de visualização rígida
+.desktop-only {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.mobile-only {
+  display: none !important; // Oculta completamente o botão hambúrguer no desktop
+}
+
+.btn-menu-mobile {
+  color: #1b5e20 !important;
+}
+
+// Botões do Header
+.btn-cadastrar {
+  color: #1b5e20 !important;
+  border-color: #1b5e20 !important;
+  border-width: 1.5px !important;
+  font-weight: 600 !important;
+  white-space: nowrap;
+
+  mat-icon { margin-right: 4px; }
+}
+
+.btn-entrar {
+  background-color: #1b5e20 !important;
+  color: white !important;
+  font-weight: 500 !important;
+  white-space: nowrap;
+
+  mat-icon { margin-right: 4px; }
+}
+
+// Ícones internos do menu responsivo
+.icon-menu-cadastrar { color: #1b5e20 !important; }
+.icon-menu-entrar { color: #2e7d32 !important; }
+
+// ==========================================================================
+// 3. CONTEÚDO PRINCIPAL (Ajuste de posicionamento vertical)
+// ==========================================================================
+.content {
+  margin-top: 80px !important; // Garante o alinhamento perfeito colado abaixo do header
+  padding: 0 0 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+// ==========================================================================
+// 4. ESTRUTURA DO CARROSSEL
+// ==========================================================================
+.carousel-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 500px;
+  border-radius: 0 0 16px 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+.carousel {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .carousel-item {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+
+    &.active {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+
+// ==========================================================================
+// 5. RESPONSIVIDADE MOBILE COMPLETA (Telas até 768px)
+// ==========================================================================
+@media (max-width: 768px) {
+  // Estrutura do Header
+  .header {
+    height: 64px !important;
+    padding: 0 12px !important;
+  }
+
+  .logo-img {
+    height: 40px !important;
+  }
+
+  .logo-text {
+    font-size: 1.4rem;
+  }
+
+  // Oculta o texto de teste longo no mobile para não quebrar o layout
+  .text-teste {
+    display: none !important;
+  }
+
+  // Alternância de blocos de ações
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
+    align-items: center;
+  }
+
+  // Alinhamento do Conteúdo Principal
+  .content {
+    margin-top: 64px !important;
+    padding: 0 16px 24px 16px; // Adiciona margem lateral para os cards não colarem na tela
+    gap: 24px;
+  }
+
+  // Ajustes do Carrossel
+  .carousel-container {
+    height: 220px; // Reduz a altura para telas verticais
+    border-radius: 0 0 12px 12px;
+  }
+
+  // Botões de navegação do carrossel menores no mobile
+  .carousel-btn {
+    width: 36px !important;
+    height: 36px !important;
+
+    mat-icon {
+      font-size: 20px !important;
+      width: 20px !important;
+      height: 20px !important;
+    }
+  }
+
+  // Seção de Informações e Grid de Funcionalidades
+  .info-card {
+    padding: 16px !important;
+  }
+
+  .features-grid {
+    display: flex !important;
+    flex-direction: column !important; // Transforma o grid horizontal em uma lista vertical
+    gap: 20px !important;
+  }
+
+  .feature-item {
+    align-items: flex-start !important;
+  }
+
+  // Seção de Ação (Card de Consulta)
+  .action-card-content {
+    display: flex !important;
+    flex-direction: column !important; // Empilha o texto e o botão de consulta verticalmente
+    align-items: stretch !important;
+    gap: 16px !important;
+    text-align: center;
+  }
+
+  .btn-consultar-prop {
+    width: 100% !important; // Botão ocupa a largura total para facilitar o clique com o polegar
+  }
+}
+
+
+
+// Ajustes do Grid para empilhar Título e Descrição verticalmente
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); // Aumentado o mínimo para comportar textos mais longos
+  gap: 24px;
+
+  .feature-item {
+    display: flex;
+    align-items: flex-start; // Mantém o ícone preso no topo caso a descrição cresça
+    gap: 16px;
+    padding: 16px;
+    background: #f1f8e9;
+    border-left: 4px solid #4caf50;
+    border-radius: 0 8px 8px 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    mat-icon {
+      font-size: 28px; // Tamanho levemente maior para equilibrar com as descrições
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0; // Evita que o ícone amasse
+    }
+  }
+
+  .feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; // Espaço exato entre o título e a descrição abaixo
+  }
+
+  .feature-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #33691e;
+  }
+
+  .feature-description {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: #555555;
+    line-height: 1.4;
+  }
+}
+.action-section {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 24px;
+  box-sizing: border-box;
+
+  .action-card {
+    padding: 24px;
+    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .action-card-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .action-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    mat-card-title {
+      color: white !important;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    mat-card-subtitle {
+      color: #e8f5e9 !important;
+      font-size: 1rem;
+    }
+  }
+
+  .btn-consultar-prop {
+    background-color: #e8f5e9 !important;
+    color: #1b5e20 !important;
+    font-weight: 600 !important;
+    padding: 12px 24px !important;
+    height: auto !important;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    mat-icon {
+      margin-right: 6px;
+    }
+  }
+}
+
+/* Container Geral do Fluxograma */
+.fluxo-steps {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0;
+  overflow-x: auto;
+}
+
+.passo-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+/* Card Individual de cada Passo */
+.passo-card {
+  flex: 1;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.passo-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.passo-id {
+  background: #757575;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.passo-titulo {
+  font-size: 14px;
+  color: #212121;
+}
+
+.passo-desc {
+  font-size: 12px;
+  color: #616161;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+/* Alinhamento dos Ícones de Status */
+.passo-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Modificadores de Estado */
+.passo-card.concluido {
+  border-left: 4px solid #4caf50;
+  background: #f1f8e9;
+}
+.passo-card.concluido .passo-id { background: #4caf50; }
+.success { color: #2e7d32; }
+.success-icon { color: #4caf50; }
+
+.passo-card.processando {
+  border-left: 4px solid #2196f3;
+  background: #e3f2fd;
+  animation: pulseCard 2s infinite ease-in-out;
+}
+.passo-card.processando .passo-id { background: #2196f3; }
+.process { color: #1565c0; }
+.process-icon {
+  color: #2196f3;
+  animation: spinIcon 2s infinite linear;
+}
+
+.passo-card.pendente {
+  opacity: 0.75;
+}
+.pending { color: #757575; }
+.pending-icon { color: #9e9e9e; }
+
+/* Setas de Conexão */
+.fluxo-seta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bdbdbd;
+  padding: 0 8px;
+}
+
+.fluxo-seta.ativa {
+  color: #4caf50;
+}
+
+/* Animações */
+@keyframes spinIcon {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseCard {
+  0% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.2); }
+  70% { box-shadow: 0 0 0 6px rgba(33, 150, 243, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
+}
+
+/* Responsividade Mobile */
+@media (max-width: 960px) {
+  .fluxo-steps {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .passo-wrapper {
+    flex-direction: column;
+    width: 100%;
+  }
+  .fluxo-seta {
+    transform: rotate(90deg);
+    padding: 8px 0;
+  }
+}

@@ -1,4 +1,6 @@
 @use '@angular/material' as mat;
+@import "leaflet/dist/leaflet.css";
+
 
 // 1. Inclui os estilos estruturais obrigatórios do Material
 @include mat.core();

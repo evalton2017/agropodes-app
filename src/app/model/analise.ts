@@ -1,10 +1,11 @@
 import {ImagemTerritorio} from './territorio';
 
 
-export type StatusAnaliseType = 'EM_ANALISE' | 'APROVADO' | 'REPROVADO';
+export type StatusAnaliseType = 'EM_ANALISE' | 'COM_PENDENCIA' | 'APROVADO' | 'REPROVADO';
 
 export const StatusAnaliseLabel: Record<StatusAnaliseType, string> = {
   EM_ANALISE: 'Em Análise',
+  COM_PENDENCIA: 'Com Pendência',
   APROVADO: 'Aprovado',
   REPROVADO: 'Reprovado'
 };
