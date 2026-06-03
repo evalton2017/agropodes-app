@@ -83,8 +83,8 @@ export class HomeAnalistaComponent implements OnInit, AfterViewInit {
 
   async ngAfterViewInit(): Promise<void> {
     if (isPlatformBrowser(this.platformId)) {
-      // Carrega o módulo da biblioteca Leaflet dinamicamente no carregamento da página
-      this.L = await import('leaflet');
+      const leafletModule = await import('leaflet');
+      this.L = leafletModule.default || leafletModule;
     }
   }
 
@@ -148,8 +148,6 @@ export class HomeAnalistaComponent implements OnInit, AfterViewInit {
         return geojson.coordinates[0].map((coord: number[]) => [coord[1], coord[0]]);
       }
 
-      // 2. Tratamento robusto para WKT (Ex: POLYGON((lng lat, lng lat, ...)))
-      // Remove o texto inicial e todos os parênteses da string, deixando apenas os números e vírgulas
       const limpo = wkt.replace(/[a-zA-Z]/g, '').replace(/[\(\)]/g, '').trim();
 
       // Separa os pontos por vírgula
