@@ -4,75 +4,68 @@ on:
   push:
     branches:
       - develop
-    pull request:
-      types: [opened, synchronize, edited]
-      branches:
-        - develop
+  pull_request:
+    types: [opened, synchronize, edited]
+    branches:
+      - develop
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: build
+      - name: Checkout Código
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      # Otimização: Cache do Docker para acelerar builds subsequentes
+      - name: Set up Docker Buildx
+        uses: docker/setup-qemu-action@v3
         with:
-          node-version: '22'
-          cache: 'npm'
+          run: |
+            echo "Buildx pronto"
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build NestJS
-        run: npm run build
-
-      - name: login docker
+      - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Build e Push da imagem
+      - name: Build e Push da Imagem
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/agroprodes-app:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   deploy:
     needs: build
+
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - name: deploy vps
-        uses: actions/checkout@v4
-
-      - name: copiando imagem para vps
+      - name: Executar Deploy na VPS via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 4832
+          port: 2214
           script: |
-            # Garante que o diretório existe (o -p cria os pais se necessário)
-            #mkdir -p ~/homolog
+            # Acessa a pasta onde está o docker-compose-deploy.yml na VPS
+            cd ~/develop || mkdir -p ~/develop && cd ~/develop
 
-            # Autentica a VPS no Docker Hub
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+            # Autentica no Docker Hub usando Token seguro
+            echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
-            # Pull latest image and restart container
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/agroprodes-app:latest
-
-            # Para e remove o container se ele existir, sem travar se não existir
-            docker ps -aqf "name=agroprodes-app" | xargs -r docker rm -f
-
-            # Sobe o novo container
-            #docker run -d -p 80:4200  --name agroprodes-app ${{ secrets.DOCKER_HUB_USERNAME }}/agroprodes-app:latest
-
-            # 1. Garanta que a rede externa existe (se não existir, o Traefik falha)
+            # Garante a existência da rede do Traefik
             docker network inspect traefik-network >/dev/null 2>&1 || docker network create traefik-network
 
-            # 2. compose run sobe o traefik e api
-            docker compose -f docker-compose-deploy.yml up -d
+            # Pull da imagem nova
+            docker compose -f docker-compose-deploy.yml pull angular-ssr
 
-
+            # Sobe a aplicação atualizada sem derrubar o Traefik (Zero Downtime relativo)
+            docker compose -f docker-compose-deploy.yml up -d --remove-orphans
