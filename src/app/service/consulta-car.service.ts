@@ -8,6 +8,7 @@ import {environment} from '../../environments/environment';
 import {ElegibilidadeRequest} from '../dto/request/elegibilidade-request';
 import {ElegibilidadeResponse} from '../dto/response/elegibilidade';
 import {DetalheCarResponse} from '../dto/response/detalhe-car-response';
+import {SolicitacaoRelatorio} from '../model/solicitacao-relatorio';
 
 @Injectable({
   providedIn: 'root',
@@ -32,8 +33,8 @@ export class ConsultaCarService {
     return this.http.post<ElegibilidadeResponse>(`${environment.url}/prods/elegibilidade`, request);
   }
 
-  detalharCar(codigoCar: string): Observable<DetalheCarResponse> {
-    return this.http.get<DetalheCarResponse>(`${environment.url}/prods/detalhado/${codigoCar}`);
+  detalharCar(codigoCar: string): Observable<SolicitacaoRelatorio> {
+    return this.http.get<SolicitacaoRelatorio>(`${environment.url}/prods/solicitacao-relatorio/${codigoCar}`);
   }
 
   consultaCarPublica(filtro: any): Observable<CarResponse[]> {

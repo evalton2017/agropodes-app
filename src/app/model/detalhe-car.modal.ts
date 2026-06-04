@@ -88,8 +88,11 @@ export class DetalheCarModal {
   constructor() {
     this.carService.detalharCar(this.data.numeroCar).subscribe({
       next: (res) => {
-        this.dados.set(res);
-        this.loading.set(false);
+        if(res.consultaCar){
+          this.dados.set(res?.consultaCar);
+          this.loading.set(false);
+        }
+
       },
       error: () => {
         this.loading.set(false);
