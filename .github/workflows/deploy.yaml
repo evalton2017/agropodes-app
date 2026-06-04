@@ -55,7 +55,7 @@ jobs:
           port: 4832
           script: |
             # Garante que o diretório existe (o -p cria os pais se necessário)
-            mkdir -p ~/homolog
+            #mkdir -p ~/homolog
 
             # Autentica a VPS no Docker Hub
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
