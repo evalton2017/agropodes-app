@@ -1,7 +1,7 @@
 import { KeycloakConfig } from 'keycloak-js';
 
 const keycloakConfig: KeycloakConfig = {
-  url: 'https://auth.busca-car.api.br',
+  url: 'https://auth-dev.agroprodes.com.br',
   realm: 'EKD-TEC',
   clientId: 'agroprodes_app'
 };

@@ -19,7 +19,7 @@ const angularApp = new AngularNodeAppEngine({
     'x-forwarded-proto',
     'x-forwarded-server'
   ],
-  allowedHosts: ['busca-car.api.br']
+  allowedHosts: ['dev.agroprodes.com.br']
 });
 
 app.set('trust proxy', true);
