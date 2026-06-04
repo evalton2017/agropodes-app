@@ -12,14 +12,8 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 const app = express();
 
 const angularApp = new AngularNodeAppEngine({
-  trustProxyHeaders: [
-    'x-forwarded-for',
-    'x-forwarded-port',
-    'x-forwarded-host',
-    'x-forwarded-proto',
-    'x-forwarded-server'
-  ],
-  allowedHosts: ['dev.agroprodes.com.br']
+  trustProxyHeaders: true,
+  allowedHosts: ['dev.agroprodes.com.br'],
 });
 
 app.set('trust proxy', true);
