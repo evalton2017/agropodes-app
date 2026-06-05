@@ -1,0 +1,31 @@
+/* notification-button.component.css */
+.no-notifications {
+  padding: 16px;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  min-width: 200px;
+}
+
+.notif-item {
+  height: auto !important;
+  line-height: initial !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #eee;
+}
+
+.notif-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.notif-tipo {
+  font-size: 14px;
+  color: #333;
+}
+
+.notif-user {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}

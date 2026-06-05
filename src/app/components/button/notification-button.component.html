@@ -1,0 +1,28 @@
+<!-- notification-button.component.html -->
+<button mat-icon-button [matMenuTriggerFor]="notifMenu" aria-label="Notificações">
+  <!-- O matBadge exibe a quantidade automaticamente sobre o ícone se for maior que 0 -->
+  <mat-icon
+    [matBadge]="notificationService.notifications().length"
+    [matBadgeHidden]="notificationService.notifications().length === 0"
+    matBadgeColor="warn">
+    notifications
+  </mat-icon>
+</button>
+
+<!-- Menu Dropdown nativo do Angular Material -->
+<mat-menu #notifMenu="matMenu" xPosition="before" class="notification-dropdown-panel">
+  @if (notificationService.notifications().length === 0) {
+    <div class="no-notifications">
+      Nenhuma notificação pendente
+    </div>
+  } @else {
+    @for (notif of notificationService.notifications(); track notif.id) {
+      <button mat-menu-item (click)="lerNotificacao(notif.id)" class="notif-item">
+        <div class="notif-content">
+          <span class="notif-tipo"><strong>{{ notif.tipo }}</strong></span>
+          <span class="notif-user">Usuário: {{ notif.usuario }}</span>
+        </div>
+      </button>
+    }
+  }
+</mat-menu>

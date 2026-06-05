@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {CarResponse} from '../dto/response/car';
@@ -7,7 +7,6 @@ import {ProdesResponse} from '../dto/response/prodes-response';
 import {environment} from '../../environments/environment';
 import {ElegibilidadeRequest} from '../dto/request/elegibilidade-request';
 import {ElegibilidadeResponse} from '../dto/response/elegibilidade';
-import {DetalheCarResponse} from '../dto/response/detalhe-car-response';
 import {SolicitacaoRelatorio} from '../model/solicitacao-relatorio';
 
 @Injectable({
