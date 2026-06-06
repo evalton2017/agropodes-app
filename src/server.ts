@@ -18,10 +18,10 @@ const angularApp = new AngularNodeAppEngine({
 
 app.set('trust proxy', true);
 
-const baseHref = '/agroprodes-app/';
+const baseHref = '/app/';
 
 app.use('/images', express.static(join(browserDistFolder, 'images'), { redirect: false }));
-app.use('/agroprodes-app/images', express.static(join(browserDistFolder, 'images'), { redirect: false }));
+app.use('/app/images', express.static(join(browserDistFolder, 'images'), { redirect: false }));
 
 app.use(
   baseHref,

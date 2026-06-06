@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "baseHref": "/agroprodes-app/",
+            "baseHref": "/app/",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -70,12 +70,12 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "servePath": "/agroprodes-app/"
+            "servePath": "/app/"
           },
           "configurations": {
             "production": {
               "buildTarget": "agroprodes:build:development",
-              "servePath": "/agroprodes-app/"
+              "servePath": "/app/"
             },
             "development": {
               "buildTarget": "agroprodes:build:development"
