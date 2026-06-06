@@ -1,0 +1,81 @@
+<div class="container mat-elevation-z8">
+  <div class="header-container">
+    <h2>Relatórios do Produtor</h2>
+  </div>
+
+  <!-- Controle de Fluxo Nativo para Estado de Carregamento -->
+  @if (carregando()) {
+    <div class="loading-shade">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
+
+  <!-- Controle de Fluxo Nativo para Mensagem de Erro -->
+  @if (erroMsg()) {
+    <div class="error-message">
+      <mat-icon color="warn">error</mat-icon>
+      <span>{{ erroMsg() }}</span>
+    </div>
+  }
+
+  <!-- Renderização condicional da Tabela Angular Material -->
+  @if (!carregando() && dataSource.data.length > 0) {
+    <table mat-table [dataSource]="dataSource">
+
+      <!-- Coluna Código CAR -->
+      <ng-container matColumnDef="codigoCar">
+        <th mat-header-cell *matHeaderCellDef> Código CAR </th>
+        <td mat-cell *matCellDef="let element"> {{ element.consultaCar?.codigoCar }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="nomePropriedade">
+        <th mat-header-cell *matHeaderCellDef> Nome da Propriedade </th>
+        <td mat-cell *matCellDef="let element"> {{ element.nomePropriedade }} </td>
+      </ng-container>
+
+      <!-- Coluna Status Imóvel -->
+      <ng-container matColumnDef="statusImovel">
+        <th mat-header-cell *matHeaderCellDef> Status Imóvel </th>
+        <td mat-cell *matCellDef="let element"> {{ element.consultaCar?.statusImovel }} </td>
+      </ng-container>
+
+      <!-- Coluna Município -->
+      <ng-container matColumnDef="municipio">
+        <th mat-header-cell *matHeaderCellDef> Município </th>
+        <td mat-cell *matCellDef="let element"> {{ element.consultaCar?.municipio }} </td>
+      </ng-container>
+
+      <!-- Coluna Estado -->
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef> Estado </th>
+        <td mat-cell *matCellDef="let element"> {{ element.consultaCar?.estado }} </td>
+      </ng-container>
+
+      <!-- Coluna Relatório -->
+      <ng-container matColumnDef="relatorio">
+        <th mat-header-cell *matHeaderCellDef> Relatório </th>
+        <td mat-cell *matCellDef="let element"> {{ element.relatorio }} </td>
+      </ng-container>
+
+      <!-- Coluna Ações (Botão Gerar) -->
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef> Ações </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button color="primary" (click)="gerarRelatorio(element)">
+            <mat-icon>description</mat-icon>
+            Gerar Relatório
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  } @else if (!carregando() && dataSource.data.length === 0) {
+    <!-- Mensagem de Lista Vazia usando Bloco Embutido -->
+    <div class="empty-message">
+      <mat-icon>assignment_late</mat-icon>
+      <p>Nenhum registro encontrado.</p>
+    </div>
+  }
+</div>

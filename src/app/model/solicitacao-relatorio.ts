@@ -4,6 +4,7 @@ export interface SolicitacaoRelatorio {
   id: number;
   consultaCar?: DetalheCarResponse;
   codigoCar?: string;
+  nomePropriedade?: string;
   usuario?: string;
   relatorio?: string;
   dataCadastro: Date | string;

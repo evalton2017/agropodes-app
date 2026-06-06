@@ -1,11 +1,11 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild, NgZone, signal} from '@angular/core';
+import {Component, OnInit, signal, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
-import {MatTableModule, MatTableDataSource} from '@angular/material/table';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {CarResponse} from '../../dto/response/car';
 import {ClipboardModule} from '@angular/cdk/clipboard';
@@ -18,7 +18,7 @@ import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {ElegibilidadeModalComponent} from '../../components/modal/elegibilidade-model/elegibilidade-modal.component';
 import {ElegibilidadeResponse} from '../../dto/response/elegibilidade';
-import {DetalheCarModal} from '../../model/detalhe-car.modal';
+import {RelatorioService} from '../../service/relatorio.service';
 
 
 @Component({
@@ -68,6 +68,7 @@ export class ConsultaCarComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly service: ConsultaCarService,
+    private readonly relatorioService: RelatorioService,
     private readonly snackBar: SnackbarService,
     private readonly router: Router,
     private readonly dialog: MatDialog
@@ -135,19 +136,12 @@ export class ConsultaCarComponent implements OnInit {
     });
   }
 
-  abrirDetalhes() {
-    this.dialog.open(DetalheCarModal, {
-      width: '850px',
-      maxHeight: '90vh',
-      data: {numeroCar: this.elegibilidade()?.codigoCar}
-    });
-  }
 
   solicitarRelatorio() {
     const codigo = this.elegibilidade()?.codigoCar;
 
     if (codigo !== undefined && codigo !== null) {
-      this.service.detalharCar(String(codigo)).subscribe({
+      this.relatorioService.solicitarRelatorio(String(codigo)).subscribe({
         next: (res) => {
           if (res) {
             this.snackBar.success(

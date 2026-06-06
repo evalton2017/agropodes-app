@@ -14,6 +14,9 @@ import Keycloak from 'keycloak-js';
 import { environment } from '../../../environments/environment';
 import { MatMenuModule } from '@angular/material/menu';
 import {NotificationButtonComponent} from '../button/notificacao-button.component';
+import {MENU_ITEMS} from '../model/menu-item';
+import { MatTooltipModule } from "@angular/material/tooltip";
+
 
 @Component({
   selector: 'layout-app',
@@ -21,7 +24,7 @@ import {NotificationButtonComponent} from '../button/notificacao-button.componen
   imports: [
     CommonModule, RouterOutlet, RouterLink, RouterLinkActive,
     MatSidenavModule, MatListModule, MatToolbarModule, MatButtonModule, MatIconModule,
-    MatExpansionModule, FooterComponent,
+    MatExpansionModule, FooterComponent, MatTooltipModule,
     MatMenuModule, NotificationButtonComponent
   ],
   templateUrl: './layout.component.html',
@@ -36,49 +39,10 @@ export class LayoutComponent implements OnInit {
   isMobile = signal(false);
   isExpanded = signal(false);
 
-  // Signal para armazenar as roles ativas capturadas do Keycloak
   private userRoles = signal<string[]>([]);
 
-  // Lista base com mapeamento das roles configuradas nas suas rotas
-  private readonly allMenuItems: MenuItem[] = [
-    {
-      route: '/home',
-      label: 'Home',
-      icon: 'home',
-      roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
-    },
-    {
-      route: '/consulta-car',
-      label: 'Consulta Car',
-      icon: 'grain',
-      roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
-    },
-    {
-      route: '/consulta-prodes',
-      label: 'Consulta Prodes',
-      icon: 'forest',
-      roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
-    },
-    {
-      label: 'Analises',
-      icon: 'rate_review',
-      roles: ['USER_ADMIN', 'USER_ANALISTA'], // Pai restrito
-      children: [
-        { route: '/consulta-analise', label: 'Consultar Analise', icon: 'search', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
-      ]
-    },
-    {
-      label: 'Territórios',
-      icon: 'terrain',
-      roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'],
-      children: [
-        { route: '/cadastro-territorio', label: 'Cadastrar', icon: 'add_location', roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] },
-        { route: '/consulta-territorio', label: 'Consultar', icon: 'terrain', roles: ['USER_ADMIN', 'USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
-      ]
-    }
-  ];
+  private readonly allMenuItems: MenuItem[] = MENU_ITEMS;
 
-  // Signal Computado: Filtra os menus dinamicamente e reativamente
   menuItems = computed(() => {
     const roles = this.userRoles();
     return this.filterMenusByRoles(this.allMenuItems, roles);
@@ -107,7 +71,6 @@ export class LayoutComponent implements OnInit {
         ? Object.values(this.keycloak.resourceAccess).flatMap(access => access.roles || [])
         : [];
 
-      // Consolida todas as roles do usuário e atualiza o Signal
       this.userRoles.set([...realmRoles, ...resourceRoles]);
     }
   }
@@ -125,7 +88,7 @@ export class LayoutComponent implements OnInit {
         }
         return item;
       })
-      .filter(item => !item.children || item.children.length > 0); // Remove menus pai vazios
+      .filter(item => !item.children || item.children.length > 0);
   }
 
   private async loadUserProfile() {

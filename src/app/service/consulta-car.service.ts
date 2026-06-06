@@ -32,9 +32,6 @@ export class ConsultaCarService {
     return this.http.post<ElegibilidadeResponse>(`${environment.url}/prods/elegibilidade`, request);
   }
 
-  detalharCar(codigoCar: string): Observable<SolicitacaoRelatorio> {
-    return this.http.get<SolicitacaoRelatorio>(`${environment.url}/prods/solicitacao-relatorio/${codigoCar}`);
-  }
 
   consultaCarPublica(filtro: any): Observable<CarResponse[]> {
     const maparParams = {cpf: 'cpf', cnpf: 'cnpf', codigoCar: 'codigoCar'}

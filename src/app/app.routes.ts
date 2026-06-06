@@ -7,9 +7,12 @@ import {
   ConsultaTerritorioComponent
 } from './pages/territorio/consulta-territorio.component/consulta-territorio.component';
 import {authGuard} from './auth/auth.guard';
-import {ConsultaAnaliseComponent} from './pages/analise/consulta-analise.component/consulta-analise.component';
+import {ConsultaAnaliseComponent} from './pages/analise/anlista/consulta-analise.component';
 import {AcessoNegadoComponent} from './pages/acesso-negado.component/acesso-negado.component';
 import {CadastroComponent} from './pages/cadastro/cadastro.component';
+import {RelatorioDetalheCarComponent} from './pages/relatorios/produtor/detalhe-car/relatorio-detalhe-car.component';
+import {RelatorioAnalistaComponent} from './pages/relatorios/analista/relatorio-analista.component';
+import {ConsultaAnaliseProdutorComponent} from './pages/analise/produtor/consulta-analise-produtor.component';
 
 
 export const routes: Routes = [
@@ -51,7 +54,25 @@ export const routes: Routes = [
     path: 'consulta-analise',
     component: ConsultaAnaliseComponent,
     canActivate: [authGuard],
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] } // Restrito apenas para Admin e Analista
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] }
+  },
+  {
+    path: 'consulta-analise-produtor',
+    component: ConsultaAnaliseProdutorComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_PRODUTOR'] }
+  },
+  {
+    path: 'relatorio-detalhe-car',
+    component: RelatorioDetalheCarComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_PRODUTOR'] }
+  },
+  {
+    path: 'relatorios-analista',
+    component: RelatorioAnalistaComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] }
   },
   {
     path: 'acesso-negado',

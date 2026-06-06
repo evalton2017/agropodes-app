@@ -1,0 +1,73 @@
+<h4>Consulta Analise</h4>
+<div class="table-container mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource()">
+
+    <!-- ID Coluna -->
+    <ng-container matColumnDef="idAnalise">
+      <th mat-header-cell *matHeaderCellDef> ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.idAnalise}} </td>
+    </ng-container>
+
+    <!-- Imagem Coluna -->
+    <ng-container matColumnDef="imagem">
+      <th mat-header-cell *matHeaderCellDef> Imagem Territorio </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="primary" (click)="verImagem(element.imagemProdes.imageUrl)">
+          <mat-icon>image</mat-icon>
+          Visualizar Imagem
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Coordenadas Coluna -->
+    <ng-container matColumnDef="coordenadas">
+      <th mat-header-cell *matHeaderCellDef> Lat / Long </th>
+      <td mat-cell *matCellDef="let element">
+        {{element.latitude}} / {{element.longitude}}
+      </td>
+    </ng-container>
+
+    <!-- Polígono Coluna -->
+    <ng-container matColumnDef="poligono">
+      <th mat-header-cell *matHeaderCellDef> Polígono </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-stroked-button color="accent" (click)="abrirModalPoligono('Simples', element.poligono)">
+          <mat-icon>layers</mat-icon> Ver Polígono
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Polígono Unificado Coluna -->
+    <ng-container matColumnDef="poligonoUnificado">
+      <th mat-header-cell *matHeaderCellDef> Polígono Unificado </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-stroked-button color="warn" (click)="abrirModalPoligono('Unificado', element.poligonoUnificado)">
+          <mat-icon>unfold_more</mat-icon> Ver Unificado
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="imagemUnificada">
+      <th mat-header-cell *matHeaderCellDef> Imagem Unificada </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="primary" (click)="verImagem(element.imageUrl)">
+          <mat-icon>image</mat-icon>
+          Visualizar Imagem
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Status Coluna -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let element">
+    <span class="badge" [ngClass]="obterClasseStatus(element.statusAnalise)">
+      {{ obterDescricaoStatus(element.statusAnalise) }}
+    </span>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

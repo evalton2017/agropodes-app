@@ -46,9 +46,7 @@ export const authGuard: CanActivateFn = async (
   const resourceRoles = keycloak.resourceAccess
     ? Object.values(keycloak.resourceAccess).flatMap(access => access.roles || [])
     : [];
-
-  console.log(realmRoles);
-
+  
   const hasRequiredRole = requiredRoles.some((role) =>
     realmRoles.includes(role) || resourceRoles.includes(role)
   );
