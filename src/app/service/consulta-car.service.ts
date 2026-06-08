@@ -33,10 +33,16 @@ export class ConsultaCarService {
   }
 
 
+  consultaCarNacional(filtro: any): Observable<CarResponse[]> {
+    const maparParams = { codigoCar: 'codigoCar'}
+    const params = limparParams(filtro, maparParams);
+    return this.http.get<CarResponse[]>(`${environment.url}/consulta/car`, {params: params});
+  }
+
   consultaCarPublica(filtro: any): Observable<CarResponse[]> {
     const maparParams = {cpf: 'cpf', cnpf: 'cnpf', codigoCar: 'codigoCar'}
     const params = limparParams(filtro, maparParams);
-    return this.http.get<CarResponse[]>(`${environment.url}/consulta/car`, {params: params});
+    return this.http.get<CarResponse[]>(`${environment.url}/consulta/car-mt`, {params: params});
   }
 
 }

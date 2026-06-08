@@ -25,7 +25,7 @@ export class RelatorioDetalheCarComponent implements OnInit {
   private relatorioService = inject(RelatorioService);
 
   // Colunas da tabela
-  displayedColumns: string[] = ['codigoCar', 'nomePropriedade', 'statusImovel', 'municipio', 'estado', 'relatorio', 'acoes'];
+  displayedColumns: string[] = ['codigoCar', 'statusImovel', 'municipio', 'estado', 'relatorio', 'acoes'];
 
   // Utilização de Signals para controle de estado reativo e nativo
   dataSource = new MatTableDataSource<SolicitacaoRelatorio>();

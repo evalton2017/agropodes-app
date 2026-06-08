@@ -60,7 +60,7 @@ export class LayoutComponent implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.loadUserProfile();
-      this.extractUserRoles(); // Captura as permissões ao iniciar
+      this.extractUserRoles();
     }
   }
 

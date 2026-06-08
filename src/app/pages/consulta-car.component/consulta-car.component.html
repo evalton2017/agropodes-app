@@ -10,16 +10,6 @@
         <form [formGroup]="filterForm" class="filter-form">
 
           <mat-form-field appearance="outline">
-            <mat-label>CPF</mat-label>
-            <input mask="000.000.000-00" matInput formControlName="cpf" placeholder="000.000.000-00">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>CNPJ</mat-label>
-            <input mask="00.000.000/0000-00" matInput formControlName="cnpj" placeholder="00.000.000/0000-00">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
             <mat-label>CAR Federal</mat-label>
             <input matInput formControlName="codigoCar" [dropSpecialCharacters]="false" [mask]="carMask"
                    placeholder="Ex: BR-XXXXXXX...">
@@ -66,10 +56,6 @@
                 </td>
               </ng-container>
 
-              <ng-container matColumnDef="nomePropriedade">
-                <th mat-header-cell *matHeaderCellDef> Tema</th>
-                <td mat-cell *matCellDef="let element"> {{ element.nomePropriedade }}</td>
-              </ng-container>
 
               <ng-container matColumnDef="nomeTema">
                 <th mat-header-cell *matHeaderCellDef> Tema</th>
@@ -114,7 +100,7 @@
 
           <div class="actions-container">
             <button matButton="filled" class="btn-search" (click)="consultarElegibilidade()">
-              Consultar Elegibilidade
+              Consultar Prodes
             </button>
           </div>
 

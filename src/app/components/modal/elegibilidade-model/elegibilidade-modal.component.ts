@@ -10,6 +10,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {CarResponse} from '../../../dto/response/car';
 import {ConsultaCarService} from '../../../service/consulta-car.service';
 import {SnackbarService} from '../../../shared/service/snack-bar.service';
+import {RelatorioService} from '../../../service/relatorio.service';
 
 @Component({
   selector: 'app-consulta-modal',
@@ -37,6 +38,7 @@ export class ElegibilidadeModalComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { propriedades: CarResponse[] },
     private readonly dialogRef: MatDialogRef<ElegibilidadeModalComponent>,
+    private readonly relatorioService: RelatorioService,
     private readonly snackBar: SnackbarService,
     private readonly service: ConsultaCarService) {
     this.propriedades  = data.propriedades;
@@ -56,6 +58,27 @@ export class ElegibilidadeModalComponent {
         this.propriedadeSelecionada = null;
       }
     })
+  }
+
+  solicitarRelatorio() {
+    const codigo = this.propriedadeSelecionada.codigoCar
+
+    if (codigo !== undefined && codigo !== null) {
+      this.relatorioService.solicitarRelatorio(String(codigo)).subscribe({
+        next: (res) => {
+          if (res) {
+            this.snackBar.success(
+              "Relatorio Solicitado. Aguarde e logo receberá a notificação. ",
+              "Fechar"
+            );
+          }
+        },
+        error: (err) => {
+          this.snackBar.error(err.error.detail);
+        }
+      });
+    }
+
   }
 
   fechar() {

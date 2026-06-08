@@ -32,11 +32,17 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="fechar()">Cancelar</button>
+  <button mat-button class="btn-delete" (click)="fechar()">Cancelar</button>
   <button mat-flat-button
-          color="primary"
+          class="btn-pesquisar"
           [disabled]="!propriedadeSelecionada || carregando"
           (click)="consultar()">
     {{ carregando ? 'Consultando...' : 'Consultar' }}
   </button>
+
+  <button
+    mat-raised-button
+    class="btn-search"
+    [disabled]="!propriedadeSelecionada || carregando"
+    (click)="solicitarRelatorio()">  {{ carregando ? 'Emitindo Relatorio...' : 'Emitir Relatorio' }}</button>
 </mat-dialog-actions>

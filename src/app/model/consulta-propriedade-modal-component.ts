@@ -12,12 +12,13 @@ import { DecimalPipe } from '@angular/common';
 import { ConsultaCarService } from '../service/consulta-car.service';
 import { CarResponse } from '../dto/response/car';
 import {parse} from 'wellknown';
+import {NgxMaskDirective} from 'ngx-mask';
 
 @Component({
   selector: 'app-consulta-propriedade-modal',
   standalone: true,
   imports: [
-    MatDialogModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
+    MatDialogModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,NgxMaskDirective,
     MatButtonModule, MatCardModule, MatProgressSpinnerModule, MatDividerModule,
     MatIconModule, DecimalPipe
   ],
@@ -42,7 +43,7 @@ import {parse} from 'wellknown';
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Código do CAR</mat-label>
-            <input matInput formControlName="codigoCar" placeholder="BR-XX-XXXXXXX-XXXX...">
+            <input matInput formControlName="codigoCar" placeholder="BR-XX-XXXXXXX-XXXX..." [dropSpecialCharacters]="false" [mask]="carMask">
           </mat-form-field>
 
           @if (erroForm()) {
@@ -162,6 +163,8 @@ export class ConsultaPropriedadeModalComponent {
   private dialogRef = inject(MatDialogRef<ConsultaPropriedadeModalComponent>);
   private fb = inject(FormBuilder);
   private service = inject(ConsultaCarService);
+
+  readonly carMask = 'SS-0000000-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 
   loading = signal(false);
   erroForm = signal<string | null>(null);

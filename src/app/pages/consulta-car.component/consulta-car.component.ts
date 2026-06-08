@@ -48,7 +48,6 @@ export class ConsultaCarComponent implements OnInit {
   displayedColumns: string[] = [
     'id',
     'codigoCar',
-    'nomePropriedade',
     'nomeTema',
     'status',
     'numeroArea',
@@ -81,8 +80,6 @@ export class ConsultaCarComponent implements OnInit {
 
   initForm(): void {
     this.filterForm = this.fb.group({
-      cpf: [''],
-      cnpj: [''],
       codigoCar: ['']
     });
   }
@@ -90,7 +87,7 @@ export class ConsultaCarComponent implements OnInit {
   pesquisar(): void {
     const filtros = this.filterForm.value;
 
-    this.service.consultaCar(filtros).subscribe({
+    this.service.consultaCarNacional(filtros).subscribe({
       next: (res) => {
         this.dataSource.data = res;
       },
