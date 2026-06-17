@@ -42,12 +42,17 @@
               <div class="grid-column">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Proprietário / Possuidor *</mat-label>
-                  <input matInput formControlName="proprietario" readonly>
+                  <input matInput formControlName="proprietario" [readonly]="true">
                 </mat-form-field>
+
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>CPF / CNPJ *</mat-label>
-                  <input matInput formControlName="cpf_cnpj" placeholder="000.000.000-00">
+                  <input matInput
+                         formControlName="cpf_cnpj"
+                         placeholder="000.000.000-00"
+                         [readonly]="!!formWizard.get('cpf_cnpj')?.value">
                 </mat-form-field>
+
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>CAR Vinculado *</mat-label>
                   <input matInput formControlName="numero_car">
@@ -61,7 +66,10 @@
             </div>
 
             <div class="actions-row">
-              <button mat-raised-button color="primary" [disabled]="!isPasso1Valido || carregando()" (click)="validarPasso1()">
+              <button mat-raised-button
+                      color="primary"
+                      [disabled]="!isPasso1Valido || carregando()"
+                      (click)="validarPasso1()">
                 Avançar
               </button>
             </div>

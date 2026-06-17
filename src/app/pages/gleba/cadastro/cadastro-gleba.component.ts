@@ -73,27 +73,22 @@ export class CadastroGlebaComponent implements OnInit {
     effect(() => {
       const produtor = this.pessoaService.produtorAtual();
       this.listaSafras = this.gerarListaSafras();
+
       if (produtor && this.formWizard) {
+        const cpfCnpjCtrl = this.formWizard.get('cpf_cnpj');
+        const proprietarioCtrl = this.formWizard.get('proprietario');
+
         // 1. Atualiza os valores do formulário
         this.formWizard.patchValue({
           proprietario: produtor.nome,
           cpf_cnpj: produtor.cpfCnpj
         });
 
-        // 2. Desabilita ou habilita o campo 'proprietario' baseado no valor
-        const proprietarioCtrl = this.formWizard.get('proprietario');
-        if (produtor.nome !== null && produtor.nome !== undefined && produtor.nome !== '') {
-          proprietarioCtrl?.disable();
-        } else {
-          proprietarioCtrl?.enable();
-        }
-
-        // 3. Desabilita ou habilita o campo 'cpf_cnpj' baseado no valor
-        const cpfCnpjCtrl = this.formWizard.get('cpf_cnpj');
-        if (produtor.cpfCnpj !== null && produtor.cpfCnpj !== undefined && produtor.cpfCnpj !== '') {
-          cpfCnpjCtrl?.disable();
-        } else {
-          cpfCnpjCtrl?.enable();
+        // 2. Se o CPF/CNPJ já veio preenchido pelo servidor, limpa validadores complexos
+        // e deixa apenas o Required básico para não travar o fluxo
+        if (produtor.cpfCnpj) {
+          cpfCnpjCtrl?.setValidators([Validators.required]);
+          cpfCnpjCtrl?.updateValueAndValidity();
         }
 
         this.cdr.detectChanges();
@@ -220,9 +215,6 @@ export class CadastroGlebaComponent implements OnInit {
       dispositivo_token: 'angular_ssr_token_2026'
     };
 
-    console.log(payload);
-    return;
-
     this.glebaService.cadastrarGleba(payload).subscribe({
       next: () => {
         this.carregando.set(false);
@@ -310,5 +302,6 @@ export class CadastroGlebaComponent implements OnInit {
     }
     return safras;
   }
+
 
 }
