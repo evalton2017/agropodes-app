@@ -76,10 +76,6 @@ export class Map3DViewerComponent implements OnInit {
       await this.inicializarMotores3D();
     });
 
-    /**
-     * Reatividade Angular 20 estável: Repassa as camadas atualizadas
-     * para o controle unificado assim que a gleba muda
-     */
     effect(async () => {
       const glebaAtiva = this.selectedGlebe();
       const mapaPronto = this.isMapLoaded();
@@ -129,7 +125,7 @@ export class Map3DViewerComponent implements OnInit {
 
     try {
       const { Map } = await import('maplibre-gl');
-      const { MapboxOverlay } = await import('@deck.gl/mapbox') as any;
+      const { MapboxOverlay } = await import('@deck.gl/mapbox');
 
       // 1. Inicializa o mapa base raster padrão
       this.maplibreInstance = new Map({
