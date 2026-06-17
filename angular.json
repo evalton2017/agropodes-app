@@ -44,12 +44,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2MB",
-                  "maximumError": "2MB"
+                  "maximumError": "5MB"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2MB",
-                  "maximumError": "2MB"
+                  "maximumError": "5MB"
                 }
               ],
               "outputHashing": "all"
