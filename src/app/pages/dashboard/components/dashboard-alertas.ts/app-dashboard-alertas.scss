@@ -1,0 +1,95 @@
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .card-title-custom {
+    margin-bottom: 0;
+  }
+
+  .card-header-link {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #2563eb; /* Azul corporativo link */
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.scroll-lista-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-right: 4px;
+
+  /* Customização de Scrollbar Fina */
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+}
+
+.alerta-linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem 0.5rem;
+  border-bottom: 1px solid #f9fafb;
+  font-size: 0.75rem;
+  color: #374151;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+}
+
+.alerta-texto {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-weight: 500;
+}
+
+.alerta-icon-style {
+  font-size: 1.125rem; /* 18px */
+  width: 1.125rem;
+  height: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // Atribuição de cores baseadas nas strings de tipo vindas do backend
+  &[data-alert-type*="ZARC"]               { color: #ea580c; }
+  &[data-alert-type*="Embargo"]            { color: #dc2626; }
+  &[data-alert-type*="Divergência"]        { color: #f97316; }
+  &[data-alert-type*="produtividade"]      { color: #d97706; }
+  &[data-alert-type*="chuva"]              { color: #2563eb; }
+  &[data-alert-type*="Veranico"]           { color: #eab308; }
+}
+
+.alerta-badge-valor {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  min-width: 24px;
+  text-align: center;
+
+  // Variação de intensidade de cor do badge baseada no volume do alerta
+  &[data-count-level="high"] {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+  &[data-count-level="normal"] {
+    background-color: #f8fafc;
+    color: #64748b;
+  }
+}

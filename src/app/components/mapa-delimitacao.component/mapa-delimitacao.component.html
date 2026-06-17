@@ -1,0 +1,59 @@
+<div class="delimitacao-step-container">
+
+  <!-- Painel Lateral Esquerdo: Ferramentas e Métricas -->
+  <div class="control-panel-column">
+    <div class="section-title">
+      <h2>Delimitação da Gleba</h2>
+      <p>Desenhe o polígono da gleba no mapa.</p>
+    </div>
+
+    <!-- Bloco 1: Ferramentas de Desenho -->
+    <div class="panel-box">
+      <span class="box-label">Ferramentas de desenho</span>
+
+      <button mat-flat-button
+              [class.active-tool]="modoDesenhoAtivo()"
+              class="tool-btn text-left"
+              (click)="ativarFerramentaDesenho()">
+        <mat-icon>pentagon</mat-icon> Desenhar Polígono
+      </button>
+
+      <button mat-button class="tool-btn text-left" disabled>
+        <mat-icon>add_location</mat-icon> Adicionar Ponto
+      </button>
+
+      <button mat-button class="tool-btn text-left" disabled>
+        <mat-icon>wrong_location</mat-icon> Remover Ponto
+      </button>
+
+      <button mat-button class="tool-btn text-left color-warn" (click)="limparDesenho()">
+        <mat-icon>delete_sweep</mat-icon> Limpar Desenho
+      </button>
+    </div>
+
+    <!-- Bloco 2: Área Calculada -->
+    <div class="panel-box metric-box">
+      <span class="box-label">Área calculada</span>
+      <h2 class="metric-value green-text">{{ areaCalculada() }}</h2>
+    </div>
+
+    <!-- Bloco 3: Perímetro -->
+    <div class="panel-box metric-box">
+      <span class="box-label">Perímetro</span>
+      <h2 class="metric-value">{{ perimetroCalculado() }}</h2>
+    </div>
+  </div>
+
+  <!-- Janela da Direita: Mapa Interativo com Instrução Flutuante -->
+  <div class="map-render-column">
+    <div class="map-frame-wrapper">
+      <div id="drawMap" class="leaflet-draw-canvas"></div>
+
+      <!-- Banner de Instrução Inferior do Protótipo -->
+      <div class="map-instruction-banner">
+        <mat-icon>mouse</mat-icon>
+        <span>Clique nos pontos do mapa para criar o polígono da gleba.</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="ia-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
+  }
+
+  <h3 class="ia-card-title">Produtividade Estimada (IA)</h3>
+
+  <div class="ia-grid-split">
+    <!-- Lado Esquerdo -->
+    <div class="ia-stats-column">
+      <div class="stat-block">
+        <span class="label-subtext">Média geral predita</span>
+        <p class="stat-main-text">
+          <strong class="huge-num">{{ dados()?.produtividade_media_sacas ?? 67 }}</strong> sacas/ha
+        </p>
+      </div>
+      <div class="stat-block">
+        <span class="label-subtext">Área estimada</span>
+        <p class="stat-sub-text">{{ dados()?.area_estimada_ha ?? '3.251.985' }} ha</p>
+      </div>
+      <div class="stat-block">
+        <span class="label-subtext">Volume comercializável</span>
+        <p class="stat-sub-text">{{ dados()?.volume_estimado_sacas ?? '13.751.594' }} sc</p>
+      </div>
+    </div>
+
+    <!-- Lado Direito: Canvas -->
+    <div class="ia-chart-column">
+      <span class="label-subtext absolute-top">Evolução (sacas/ha)</span>
+      <div class="canvas-container">
+        <canvas #miniGraficoLinha></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="ia-card-footer">
+    <button class="ia-footer-link">Ver evolução detalhada</button>
+  </div>
+</div>

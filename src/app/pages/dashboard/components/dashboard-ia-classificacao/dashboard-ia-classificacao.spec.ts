@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HomeAnalistaComponent } from './home-analista.component';
+import { DashboardIaClassificacao } from './dashboard-ia-classificacao';
 
-describe('HomeAnalistaComponent', () => {
-  let component: HomeAnalistaComponent;
-  let fixture: ComponentFixture<HomeAnalistaComponent>;
+describe('DashboardIaClassificacao', () => {
+  let component: DashboardIaClassificacao;
+  let fixture: ComponentFixture<DashboardIaClassificacao>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeAnalistaComponent]
+      imports: [DashboardIaClassificacao]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HomeAnalistaComponent);
+    fixture = TestBed.createComponent(DashboardIaClassificacao);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

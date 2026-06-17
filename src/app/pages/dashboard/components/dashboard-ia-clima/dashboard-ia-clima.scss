@@ -1,0 +1,109 @@
+.ia-card {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 1.25rem;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.ia-card-title {
+  font-size: 0.813rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.clima-quad-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  flex: 1;
+  margin: 0.5rem 0;
+}
+
+.clima-box {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.5rem 0.625rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+
+  .c-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.text-blue { color: #3b82f6; }
+    &.text-orange { color: #f97316; }
+    &.text-amber { color: #d97706; }
+    &.text-teal { color: #0d9488; }
+  }
+
+  .c-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+
+    .c-title {
+      font-size: 0.625rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .c-value {
+      font-size: 0.875rem;
+      color: #0f172a;
+      font-weight: 800;
+      margin-top: 1px;
+    }
+    .c-trend {
+      font-size: 0.58rem;
+      font-weight: 700;
+      margin-top: 2px;
+
+      &.txt-rose { color: #f43f5e; }
+      &.txt-blue { color: #2563eb; }
+      &.txt-slate { color: #64748b; }
+    }
+  }
+}
+
+.ia-card-footer {
+  border-top: 1px solid #f8fafc;
+  padding-top: 0.5rem;
+  text-align: center;
+  margin-top: auto;
+
+  .ia-footer-link {
+    font-size: 0.715rem;
+    color: #2563eb;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 0;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.ia-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}

@@ -65,7 +65,7 @@ jobs:
             docker network inspect traefik-network >/dev/null 2>&1 || docker network create traefik-network
 
             # Pull da imagem nova
-            docker compose -f docker-compose-deploy.yml pull angular-ssr
+            docker compose -f docker-compose-deploy.yml pull agroprods-web
 
             # Sobe a aplicação atualizada sem derrubar o Traefik (Zero Downtime relativo)
             docker compose -f docker-compose-deploy.yml up -d --remove-orphans

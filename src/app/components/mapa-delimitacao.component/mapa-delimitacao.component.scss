@@ -1,0 +1,169 @@
+/* =========================================================================
+   CONTAINER DO PASSO 3 (GRID PRINCIPAL DE DUAS COLUNAS)
+   ========================================================================= */
+.delimitacao-step-container {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  padding: 1rem 0;
+  box-sizing: border-box;
+}
+
+/* =========================================================================
+   COLUNA DA ESQUERDA: PAINEL DE CONTROLE E MÉTRICAS
+   ========================================================================= */
+.control-panel-column {
+  flex: 0.8;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .section-title {
+    h2 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+    p {
+      margin: 0.25rem 0 0 0;
+      color: #7f8c8d;
+      font-size: 0.88rem;
+    }
+  }
+
+  .panel-box {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1rem;
+    box-sizing: border-box;
+
+    .box-label {
+      font-size: 0.78rem;
+      font-weight: bold;
+      color: #909399;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    .tool-btn {
+      width: 100%;
+      justify-content: flex-start;
+      text-align: left;
+      height: 40px;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+
+      mat-icon {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+    }
+
+    .text-left ::ng-deep .mdc-button__label {
+      width: 100%;
+      text-align: left;
+    }
+
+    /* Estilo do botão de desenho ativo conforme protótipo */
+    .active-tool {
+      background-color: #e8f5e9 !important;
+      color: #2e7d32 !important;
+      border: 1px solid #a5d6a7;
+    }
+
+    .color-warn {
+      color: #d32f2f;
+    }
+  }
+
+  /* Cartões estruturais de métricas físicas */
+  .metric-box {
+    padding: 0.75rem 1rem;
+
+    .metric-value {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #303133;
+    }
+
+    .green-text {
+      color: #2e7d32;
+    }
+  }
+}
+
+/* =========================================================================
+   COLUNA DA DIREITA: VIEWPORT DE RENDERIZAÇÃO DO LEAFLET DRAW
+   ========================================================================= */
+.map-render-column {
+  flex: 2;
+  display: flex;
+
+  .map-frame-wrapper {
+    position: relative;
+    width: 100%;
+    height: 440px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #bcc0c4;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+
+    /* 🟢 CORREÇÃO CRÍTICA: ID mapeado com dimensões em pixels para o Leaflet expandir a malha */
+    #drawMap {
+      width: 100%;
+      height: 100%;
+      min-height: 440px;
+      display: block;
+      position: relative;
+    }
+
+    /* Esconde controles nativos para usar a barra lateral customizada */
+    ::ng-deep .leaflet-draw-toolbar {
+      display: none !important;
+    }
+
+    /* Banner informativo flutuante inferior do protótipo */
+    .map-instruction-banner {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 0.5rem 1.25rem;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      z-index: 1000; /* Garante soberania visual sobre as camadas raster */
+      font-size: 0.85rem;
+      color: #606266;
+      white-space: nowrap;
+
+      mat-icon {
+        font-size: 1.1rem;
+        width: 1.1rem;
+        height: 1.1rem;
+        color: #1e88e5;
+      }
+    }
+  }
+}
+
+/* =========================================================================
+   RESPONSIVIDADE (DISPOSITIVOS MÓVEIS)
+   ========================================================================= */
+@media (max-width: 900px) {
+  .delimitacao-step-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}

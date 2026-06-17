@@ -13,6 +13,7 @@ import {CadastroComponent} from './pages/cadastro/cadastro.component';
 import {RelatorioDetalheCarComponent} from './pages/relatorios/produtor/detalhe-car/relatorio-detalhe-car.component';
 import {RelatorioAnalistaComponent} from './pages/relatorios/analista/relatorio-analista.component';
 import {ConsultaAnaliseProdutorComponent} from './pages/analise/produtor/consulta-analise-produtor.component';
+import {CadastroGlebaComponent} from './pages/gleba/cadastro/cadastro-gleba.component';
 
 
 export const routes: Routes = [
@@ -29,6 +30,12 @@ export const routes: Routes = [
   {
     path: 'cadastro-territorio',
     component: CadastraTerritorioComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
+  },
+  {
+    path: 'cadastro-gleba',
+    component: CadastroGlebaComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
   },

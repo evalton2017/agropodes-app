@@ -1,0 +1,86 @@
+.donut-chart-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(100% - 30px);
+  gap: 1rem;
+}
+
+.canvas-donut-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+// Texto absoluto centralizado dentro da rosca
+.donut-inner-labels {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+
+  .donut-total-value {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .donut-total-text {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+.donut-legend-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 140px;
+
+  .legend-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #374151;
+  }
+
+  .legend-label-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+  }
+
+  .legend-bullet {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    display: inline-block;
+
+    // Cores específicas mapeadas por cultura baseadas na imagem
+    &[data-culture="Soja"]    { background-color: #16a34a; }
+    &[data-culture="Milho"]   { background-color: #eab308; }
+    &[data-culture="Algodão"] { background-color: #a855f7; }
+    &[data-culture="Sorgo"]   { background-color: #ef4444; }
+    &[data-culture="Feijão"]  { background-color: #3b82f6; }
+    &[data-culture="Outras"]  { background-color: #9ca3af; }
+  }
+
+  .legend-percentage {
+    font-weight: 600;
+    color: #111827;
+  }
+}

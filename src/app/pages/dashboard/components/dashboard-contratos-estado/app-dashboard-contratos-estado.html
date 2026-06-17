@@ -1,0 +1,12 @@
+<div class="dashboard-chart-card">
+  @if (carregando()) {
+    <div class="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+      <mat-spinner diameter="35"></mat-spinner>
+    </div>
+  }
+
+  <h4 class="card-title-custom">Contratos por Estado</h4>
+  <div class="canvas-barras-wrapper flex-1 w-full relative">
+    <canvas #canvasBarras></canvas>
+  </div>
+</div>

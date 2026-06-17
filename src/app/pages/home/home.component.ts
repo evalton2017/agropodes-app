@@ -1,15 +1,14 @@
-import { Component, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
+import {Component, inject} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
 import Keycloak from 'keycloak-js';
 
-// Importações dos seus subcomponentes de visão
-import { HomeLogadoComponent } from './logado/home-logado.component/home-logado.component';
-import { HomePublicoComponent } from './logado/home-publico.component/home-publico.component';
-import { HomeAnalistaComponent } from './logado/home-analista.component/home-analista.component'; // Nova importação sugerida
+import {HomeLogadoComponent} from './logado/home-logado.component/home-logado.component';
+import {HomePublicoComponent} from './logado/home-publico.component/home-publico.component';
+import {DashboardAnalistaComponent} from '../dashboard/dashboard-analista/dashboard-analista.component';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +21,7 @@ import { HomeAnalistaComponent } from './logado/home-analista.component/home-ana
     MatIconModule,
     HomeLogadoComponent,
     HomePublicoComponent,
-    HomeAnalistaComponent
+    DashboardAnalistaComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']

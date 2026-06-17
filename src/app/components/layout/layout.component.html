@@ -25,10 +25,10 @@
           @if (item.children && item.children.length > 0) {
             <mat-expansion-panel
               class="menu-expansion-panel"
-              [disabled]="!isExpanded() && !isMobile()"
-              [expanded]="isExpanded() && !isMobile()">
+              [disabled]="!isExpanded() && !isMobile()">
 
-              <mat-expansion-panel-header class="menu-expansion-header" [matTooltip]="item.label" matTooltipPosition="right">
+              <mat-expansion-panel-header class="menu-expansion-header" [matTooltip]="item.label"
+                                          matTooltipPosition="right">
                 <mat-panel-title>
                   <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
                   <span class="menu-text">{{ item.label }}</span>
@@ -49,8 +49,7 @@
                 }
               </mat-nav-list>
             </mat-expansion-panel>
-          }
-          @else {
+          } @else {
             <!-- CASO 2: Item sem Submenu -->
             <a mat-list-item
                [routerLink]="item.route"
@@ -94,7 +93,8 @@
             <span class="user-name">{{ username() }}</span>
           }
 
-          <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Perfil do Usuário" class="header-profile-btn">
+          <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Perfil do Usuário"
+                  class="header-profile-btn">
             <mat-icon>account_circle</mat-icon>
           </button>
 

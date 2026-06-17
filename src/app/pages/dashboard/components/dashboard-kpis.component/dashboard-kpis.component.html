@@ -1,0 +1,85 @@
+@if (dados()) {
+  <div class="grid-container-kpis">
+
+    <!-- 1. Contratos Ativos -->
+    <div class="kpi-card-custom card-contratos">
+      <div class="kpi-icon-circle"><mat-icon>assignment</mat-icon></div>
+      <div class="kpi-content-box">
+        <p class="kpi-title">Contratos Ativos</p>
+        <h3 class="kpi-value">{{ dados()?.contratos?.valor_atual | number }}</h3>
+        <p class="kpi-subtext">
+          <span class="kpi-trend">↑ {{ dados()?.contratos?.variacao_percentual }}%</span>
+          <span class="kpi-subtext-label">vs. safra anterior</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- 2. Glebas Monitoradas -->
+    <div class="kpi-card-custom card-glebas">
+      <div class="kpi-icon-circle"><mat-icon>map</mat-icon></div>
+      <div class="kpi-content-box">
+        <p class="kpi-title">Glebas Monitoradas</p>
+        <h3 class="kpi-value">{{ dados()?.glebas_monitoradas?.valor_atual | number }}</h3>
+        <p class="kpi-subtext">
+          <span class="kpi-trend">↑ {{ dados()?.glebas_monitoradas?.variacao_percentual }}%</span>
+          <span class="kpi-subtext-label">vs. safra anterior</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- 3. Área Monitorada -->
+    <div class="kpi-card-custom card-area">
+      <div class="kpi-icon-circle"><mat-icon>architecture</mat-icon></div>
+      <div class="kpi-content-box">
+        <p class="kpi-title">Área Monitorada</p>
+        <h3 class="kpi-value">
+          {{ dados()?.glebas_monitoradas?.valor_atual | number }}<span class="kpi-unit">ha</span>
+        </h3>
+        <p class="kpi-subtext">
+          <span class="kpi-trend">↑ {{ dados()?.glebas_monitoradas?.variacao_percentual }}%</span>
+          <span class="kpi-subtext-label">vs. safra anterior</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- 4. Alertas Ativos -->
+    <div class="kpi-card-custom card-alertas">
+      <div class="kpi-icon-circle"><mat-icon>warning_amber</mat-icon></div>
+      <div class="kpi-content-box">
+        <p class="kpi-title">Alertas Ativos</p>
+        <h3 class="kpi-value">{{ dados()?.alertas_ativos?.valor_atual | number }}</h3>
+        <p class="kpi-subtext">
+          <span class="kpi-trend">↓ {{ dados()?.alertas_ativos?.variacao_percentual }}%</span>
+          <span class="kpi-subtext-label">vs. safra anterior</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- 5. Atestados Emitidos -->
+    <div class="kpi-card-custom card-atestados">
+      <div class="kpi-icon-circle"><mat-icon>verified_user</mat-icon></div>
+      <div class="kpi-content-box">
+        <p class="kpi-title">Atestados Emitidos</p>
+        <h3 class="kpi-value">{{ dados()?.atestados_emitidos?.valor_atual | number }}</h3>
+        <p class="kpi-subtext">
+          <span class="kpi-trend">↑ {{ dados()?.atestados_emitidos?.variacao_percentual }}%</span>
+          <span class="kpi-subtext-label">vs. safra anterior</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- 6. Produtores Ativos-->
+    <div class="kpi-card-custom card-produtores">
+      <div class="kpi-icon-circle"><mat-icon>people_outline</mat-icon></div>
+      <div class="kpi-content-box">
+        <p class="kpi-title">Produtores Ativos</p>
+        <h3 class="kpi-value">{{ dados()?.produtores_ativos?.valor_atual | number }}</h3>
+        <p class="kpi-subtext">
+          <span class="kpi-trend">↑ {{ dados()?.produtores_ativos?.variacao_percentual }}%</span>
+          <span class="kpi-subtext-label">vs. safra anterior</span>
+        </p>
+      </div>
+    </div>
+
+  </div>
+}

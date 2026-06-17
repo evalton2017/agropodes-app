@@ -1,0 +1,39 @@
+<div class="dashboard-chart-card relative min-h-[300px]">
+
+  @if (carregando()) {
+    <div class="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  @if (erro()) {
+    <div class="p-6 text-center text-red-500">Não foi possível carregar as culturas.</div>
+  } @else {
+    <h4 class="card-title-custom">Contratos por Cultura</h4>
+    <div class="donut-chart-container">
+
+      <!-- Lado Esquerdo: Rosca Centralizada -->
+      <div class="canvas-donut-wrapper">
+        <canvas #canvasCultura></canvas>
+        <div class="donut-inner-labels">
+          <p class="donut-total-value">{{ totalContratosCultura() }}</p>
+          <p class="donut-total-text">Total</p>
+        </div>
+      </div>
+
+      <!-- Lado Direito: Legendas -->
+      <div class="donut-legend-column">
+        @for (c of dadosCulturas(); track c.cultura) {
+          <div class="legend-row">
+            <span class="legend-label-group">
+              <span class="legend-bullet" [attr.data-culture]="c.cultura"></span>
+              {{ c.cultura }}
+            </span>
+            <span class="legend-percentage">{{ c.percentual }}%</span>
+          </div>
+        }
+      </div>
+
+    </div>
+  }
+</div>

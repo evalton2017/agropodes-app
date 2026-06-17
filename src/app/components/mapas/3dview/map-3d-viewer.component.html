@@ -1,0 +1,92 @@
+@if(this.produtor()?.id) {
+  <div class="map-container">
+    <!-- Container principal da renderização tridimensional -->
+    <div #mapCanvas id="deckgl-map-canvas" class="map-render-target"></div>
+
+    <!-- Painel Lateral de Controle e Informações -->
+    <mat-card class="glebe-info-card" appearance="raised">
+      <mat-card-header>
+        <mat-icon mat-card-avatar color="primary">layers</mat-icon>
+        <mat-card-title>Áreas de Produção</mat-card-title>
+        <mat-card-subtitle>Pessoa ID: {{ this.produtor()?.id }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-divider class="card-divider"></mat-divider>
+
+        @if (isLoading()) {
+          <div class="loading-container">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Buscando talhões mapeados...</p>
+          </div>
+        } @else if (errorMessage()) {
+          <div class="error-container">
+            <mat-icon color="warn">error</mat-icon>
+            <span class="mat-body-medium">{{ errorMessage() }}</span>
+          </div>
+        } @else {
+
+          <!-- SELETOR DE GLEBAS DO PRODUTOR -->
+          @if (glebesList().length > 0) {
+            <div class="list-section">
+              <span class="section-title text-muted">Selecione o Talhão</span>
+              <mat-selection-list [multiple]="false" class="glebe-selection-list">
+                @for (gleba of glebesList(); track gleba.id_gleba) {
+                  <mat-list-option
+                    [selected]="selectedGlebe()?.id_gleba === gleba.id_gleba"
+                    (click)="selecionarGleba(gleba)">
+                    <mat-icon matLine color="primary">landscape</mat-icon>
+                    <span matLine class="glebe-title-text">Gleba #{{ gleba.id_gleba }}</span>
+                    <span matLine class="glebe-sub-text text-muted">CAR: {{ gleba.codigo_car | slice:0:15 }}...</span>
+                  </mat-list-option>
+                }
+              </mat-selection-list>
+            </div>
+
+            <mat-divider class="card-divider"></mat-divider>
+
+            <!-- DADOS DE AUDITORIA VMG DO REGISTRO SELECIONADO -->
+            @if (selectedGlebe()) {
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="label text-muted">Código CAR Completo</span>
+                  <span class="value mat-body-large" style="word-break: break-all; font-family: monospace;">{{ carCode() }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="label text-muted">Área Territorial</span>
+                  <span class="value mat-body-large">{{ totalArea() }}</span>
+                </div>
+
+                <div class="info-item">
+                  <span class="label text-muted">Cultura Declarada</span>
+                  <div class="value-chip">
+                    <mat-chip-set>
+                      <mat-chip-row color="accent" highlighted>
+                        <mat-icon matChipAvatar>agriculture</mat-icon>
+                        {{ declaredCrop() }}
+                      </mat-chip-row>
+                    </mat-chip-set>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <span class="label text-muted">Previsão de Plantio</span>
+                  <span class="value mat-body-large">
+                  {{ dataPlantioTratada() | date:'dd/MM/yyyy' }}
+                </span>
+                </div>
+              </div>
+            }
+          } @else {
+            <div class="empty-container">
+              <mat-icon style="font-size: 36px; width:36px; height:36px; color:#bbb;">eco</mat-icon>
+              <p class="mat-body-medium text-muted">Nenhuma gleba registrada para este produtor.</p>
+            </div>
+          }
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+}
+

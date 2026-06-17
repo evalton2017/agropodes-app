@@ -24,7 +24,7 @@ export class NotificationService {
 
   // Inicia a consulta automática a cada 50 segundos (50000 ms)
   private startPolling(): void {
-    timer(0, 50000).pipe(
+    timer(0, 80000).pipe(
       switchMap(() => this.http.get<Notificacao[]>(`${environment.url}/consulta/notificacao`))
     ).subscribe({
       next: (data) => {

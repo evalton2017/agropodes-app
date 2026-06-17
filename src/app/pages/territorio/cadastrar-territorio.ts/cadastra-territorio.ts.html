@@ -18,7 +18,7 @@
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Código CAR</mat-label>
-            <input matInput formControlName="codigoCar" placeholder="Ex: BR12345678901234" readonly>
+            <input matInput formControlName="codigoCar" placeholder="Ex: BR12345678901234">
             @if (cadastroForm.get('codigoCar')?.errors?.['required']) {
               <mat-error>O nome do território é obrigatório</mat-error>
             }

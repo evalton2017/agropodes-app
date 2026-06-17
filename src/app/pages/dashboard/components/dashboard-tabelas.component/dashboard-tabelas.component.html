@@ -1,0 +1,324 @@
+<div class="grid-container-tabelas">
+
+  <!-- Eventos Climáticos -->
+  <section class="dashboard-card">
+
+    <div class="card-header">
+      <h3>Eventos Climáticos Recentes</h3>
+      <a>Ver todos</a>
+    </div>
+
+    <table class="dashboard-table">
+
+      <thead>
+
+      <tr>
+        <th>Evento</th>
+        <th>Município</th>
+        <th>Data</th>
+        <th>Impacto</th>
+        <th>Glebas</th>
+      </tr>
+
+      </thead>
+
+      <tbody>
+
+        @for(evento of eventosClimaticos();track evento){
+
+          <tr>
+
+            <td>
+
+              <div class="evento">
+
+                <mat-icon class="evento-icon">
+
+                  water_drop
+
+                </mat-icon>
+
+                {{evento.evento}}
+
+              </div>
+
+            </td>
+
+            <td>{{evento.municipio}}</td>
+
+            <td>{{evento.data | date:'dd/MM/yyyy'}}</td>
+
+            <td>
+
+            <span class="badge"
+
+                  [class.sucesso]="evento.impacto=='Baixo'"
+                  [class.alerta]="evento.impacto=='Médio'"
+                  [class.critico]="evento.impacto=='Alto'">
+
+                {{evento.impacto}}
+
+            </span>
+
+            </td>
+
+            <td>{{evento.glebas_afetadas}}</td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </section>
+
+  <!-- Contratos por Programa -->
+
+  <section class="dashboard-card">
+
+    <div class="card-header">
+
+      <h3>Contratos por Programa</h3>
+
+    </div>
+
+    <div class="programa-list">
+
+      <div class="programa-item">
+
+        <span>Plano Safra</span>
+
+        <div class="barra">
+
+          <div class="valor verde" style="width:80%"></div>
+
+        </div>
+
+        <strong>6.320</strong>
+
+      </div>
+
+      <div class="programa-item">
+
+        <span>Proagro</span>
+
+        <div class="barra">
+
+          <div class="valor azul" style="width:60%"></div>
+
+        </div>
+
+        <strong>3.400</strong>
+
+      </div>
+
+      <div class="programa-item">
+
+        <span>PSR</span>
+
+        <div class="barra">
+
+          <div class="valor amarelo" style="width:45%"></div>
+
+        </div>
+
+        <strong>2.150</strong>
+
+      </div>
+
+      <div class="programa-item">
+
+        <span>Outros</span>
+
+        <div class="barra">
+
+          <div class="valor cinza" style="width:20%"></div>
+
+        </div>
+
+        <strong>984</strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Linha do Tempo -->
+
+  <section class="dashboard-card">
+
+    <div class="card-header">
+
+      <h3>Linha do Tempo de Análises</h3>
+
+      <a>Ver todas</a>
+
+    </div>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+
+        <div class="timeline-left">
+
+          <mat-icon class="verde">check_circle</mat-icon>
+
+          <span>Validação Geométrica</span>
+
+        </div>
+
+        <span class="timeline-count sucesso">5.981</span>
+
+      </div>
+
+      <div class="timeline-item">
+
+        <div class="timeline-left">
+
+          <mat-icon class="verde">check_circle</mat-icon>
+
+          <span>Consulta CAR</span>
+
+        </div>
+
+        <span class="timeline-count sucesso">5.981</span>
+
+      </div>
+
+      <div class="timeline-item">
+
+        <div class="timeline-left">
+
+          <mat-icon class="laranja">radio_button_checked</mat-icon>
+
+          <span>Análise Ambiental</span>
+
+        </div>
+
+        <span class="timeline-count alerta">5.432</span>
+
+      </div>
+
+      <div class="timeline-item">
+
+        <div class="timeline-left">
+
+          <mat-icon class="amarelo">warning</mat-icon>
+
+          <span>IA - Classificação</span>
+
+        </div>
+
+        <span class="timeline-count alerta">5.981</span>
+
+      </div>
+
+      <div class="timeline-item">
+
+        <div class="timeline-left">
+
+          <mat-icon class="laranja">radio_button_checked</mat-icon>
+
+          <span>ZARC</span>
+
+        </div>
+
+        <span class="timeline-count alerta">5.764</span>
+
+      </div>
+
+      <div class="timeline-item">
+
+        <div class="timeline-left">
+
+          <mat-icon class="laranja">radio_button_checked</mat-icon>
+
+          <span>Produtividade IA</span>
+
+        </div>
+
+        <span class="timeline-count critico">4.937</span>
+
+      </div>
+
+      <div class="timeline-item">
+
+        <div class="timeline-left">
+
+          <mat-icon class="verde">check_circle</mat-icon>
+
+          <span>Emissão de Atestado</span>
+
+        </div>
+
+        <span class="timeline-count sucesso">4.558</span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Últimos Atestados -->
+
+  <section class="dashboard-card">
+
+    <div class="card-header">
+
+      <h3>Últimos Atestados Emitidos</h3>
+
+      <a>Ver todos</a>
+
+    </div>
+
+    <table class="dashboard-table">
+
+      <thead>
+
+      <tr>
+
+        <th>Código</th>
+
+        <th>Produtor</th>
+
+        <th>Município</th>
+
+        <th>Data</th>
+
+        <th>Área</th>
+
+      </tr>
+
+      </thead>
+
+      <tbody>
+
+        @for(atestado of ultimosAtestados();track atestado){
+
+          <tr>
+
+            <td>{{atestado.codigo_gleba}}</td>
+
+            <td>{{atestado.produtor}}</td>
+
+            <td>{{atestado.municipio}}</td>
+
+            <td>{{atestado.data | date:'dd/MM/yyyy'}}</td>
+
+            <td>{{atestado.area_ha}}</td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </section>
+
+</div>
+

@@ -16,6 +16,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import {NotificationButtonComponent} from '../button/notificacao-button.component';
 import {MENU_ITEMS} from '../model/menu-item';
 import { MatTooltipModule } from "@angular/material/tooltip";
+import {PessoaService} from '../../service/pessoa.service';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class LayoutComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly keycloak = inject(Keycloak);
   private readonly platformId = inject(PLATFORM_ID);
-
+  private readonly pessoaService = inject(PessoaService);
   username = signal<string>('Usuário');
   isMobile = signal(false);
   isExpanded = signal(false);
@@ -61,6 +62,7 @@ export class LayoutComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.loadUserProfile();
       this.extractUserRoles();
+      this.consultarProdutorLogado();
     }
   }
 
@@ -108,8 +110,18 @@ export class LayoutComponent implements OnInit {
     }
   }
 
+  private async consultarProdutorLogado(): Promise<void> {
+    if (this.keycloak.authenticated && this.keycloak.tokenParsed) {
+      const idKeycloak = this.keycloak.tokenParsed.sub;
+      if (idKeycloak) {
+        await this.pessoaService.carregarProdutorPorKeycloakId(idKeycloak);
+      }
+    }
+  }
+
   async logout() {
     if (isPlatformBrowser(this.platformId)) {
+      this.pessoaService.limparSessao();
       await this.keycloak.logout({
         redirectUri: environment.postLogoutRedirectUri
       });

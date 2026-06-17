@@ -1,0 +1,35 @@
+<div class="dashboard-chart-card relative min-h-[300px]">
+
+  @if (carregando()) {
+    <div class="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  @if (erro()) {
+    <div class="p-6 text-center text-red-500">Erro ao atualizar alertas críticos.</div>
+  } @else {
+    <div class="card-header-row">
+      <h4 class="card-title-custom">Alertas Críticos</h4>
+      <a class="card-header-link">Ver todos</a>
+    </div>
+
+    <div class="scroll-lista-container">
+      @for (alerta of alertas(); track alerta.tipo_alerta) {
+        <div class="alerta-linha">
+          <span class="alerta-texto">
+            <mat-icon class="alerta-icon-style" [attr.data-alert-type]="alerta.tipo_alerta">
+              {{ alerta.tipo_alerta.includes('ZARC') ? 'gpp_maybe' : 'report_problem' }}
+            </mat-icon>
+            {{ alerta.tipo_alerta }}
+          </span>
+          <span class="alerta-badge-valor" [attr.data-count-level]="alerta.quantidade > 40 ? 'high' : 'normal'">
+            {{ alerta.quantidade }}
+          </span>
+        </div>
+      } @empty {
+        <p class="text-sm text-gray-400 text-center py-6">Nenhum alerta crítico ativo.</p>
+      }
+    </div>
+  }
+</div>

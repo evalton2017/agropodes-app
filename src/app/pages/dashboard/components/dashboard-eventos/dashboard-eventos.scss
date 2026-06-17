@@ -1,0 +1,64 @@
+.table-responsive {
+  flex: 1;
+  overflow-y: auto;
+  width: 100%;
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.715rem;
+
+  thead tr {
+    border-bottom: 1px solid #f1f5f9;
+    th {
+      color: #94a3b8;
+      font-weight: 600;
+      padding: 0.5rem 0.375rem;
+      text-transform: uppercase;
+      font-size: 0.563rem;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f8fafc;
+    &:hover { background: #f8fafc; }
+
+    td {
+      color: #334155;
+      padding: 0.55rem 0.375rem;
+      vertical-align: middle;
+    }
+  }
+}
+
+.badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+
+  &.sucesso { background: #f0fdf4; color: #16a34a; }
+  &.alerta { background: #fffbeb; color: #d97706; }
+  &.critico { background: #fef2f2; color: #dc2626; }
+}
+
+.evento-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+
+  .evento-icon {
+    font-size: 0.95rem;
+    width: 0.95rem;
+    height: 0.95rem;
+    display: flex;
+    align-items: center;
+    color: #3b82f6;
+  }
+}

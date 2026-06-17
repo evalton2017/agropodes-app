@@ -1,56 +1,89 @@
-import {MenuItem} from '../../dto/menu-item';
+import { MenuItem } from '../../dto/menu-item';
 
 export const MENU_ITEMS: MenuItem[] = [
+  // ==========================================
+  // MENUS COMUNS / DASHBOARD
+  // ==========================================
   {
     route: '/home',
-    label: 'Home',
-    icon: 'home',
+    label: 'Dashboard',
+    icon: 'dashboard',
     roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
   },
   {
     route: '/consulta-car',
-    label: 'Consulta Car',
+    label: 'Consulta CAR',
     icon: 'grain',
     roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
   },
+
+  // ==========================================
+  // MENUS EXCLUSIVOS: PRODUTOR
+  // ==========================================
   {
-    route: '/consulta-prodes',
-    label: 'Consulta Prodes',
-    icon: 'forest',
-    roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
+    label: 'Minhas Glebas',
+    icon: 'crop_free',
+    roles: ['USER_PRODUTOR'],
+    children: [
+      { route: '/cadastro-gleba', label: 'Cadastrar', icon: 'terrain', roles: ['USER_PRODUTOR'] },
+      { route: '/consulta-gleba', label: 'Consultar', icon: 'search', roles: ['USER_PRODUTOR'] }
+    ]
   },
   {
-    label: 'Analises',
+    label: 'Análises',
     icon: 'rate_review',
-    roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'],
+    roles: ['USER_PRODUTOR'],
     children: [
-      { route: '/consulta-analise', label: 'Consultar Analise', icon: 'search', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
-      { route: '/consulta-analise-produtor', label: 'Consultar Analise', icon: 'search', roles: ['USER_PRODUTOR'] },
+      { route: '/consulta-analise-produtor', label: 'Situação', icon: 'info', roles: ['USER_PRODUTOR'] }
     ]
   },
   {
-    label: 'Territórios',
-    icon: 'terrain',
-    roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'],
-    children: [
-      { route: '/cadastro-territorio', label: 'Cadastrar', icon: 'add_location', roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] },
-      { route: '/consulta-territorio', label: 'Consultar', icon: 'terrain', roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
-    ]
-  },
-  {
-    route: '/relatorios-produtor',
     label: 'Relatórios',
     icon: 'description',
     roles: ['USER_PRODUTOR'],
     children: [
-      { route: '/relatorio-detalhe-car', label: 'Detalhe Car', icon: 'terrain', roles: ['USER_PRODUTOR'] },
-      { route: '/relatorio-analise-car', label: 'Analise Car', icon: 'add_location', roles: ['USER_PRODUTOR'] },
+      { route: '/relatorio-atestados', label: 'Atestados', icon: 'verified', roles: ['USER_PRODUTOR'] },
+      { route: '/relatorio-caderno-campo', label: 'Caderno de Campo', icon: 'menu_book', roles: ['USER_PRODUTOR'] }
+    ]
+  },
+
+  // ==========================================
+  // MENUS EXCLUSIVOS: ANALISTA / ADMIN
+  // ==========================================
+  {
+    route: '/glebas',
+    label: 'Glebas',
+    icon: 'map',
+    roles: ['USER_ADMIN', 'USER_ANALISTA']
+  },
+  {
+    label: 'Monitoramento',
+    icon: 'monitor_heart',
+    roles: ['USER_ADMIN', 'USER_ANALISTA'],
+    children: [
+      { route: '/monitoramento-ambiental', label: 'Ambiental', icon: 'eco', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+      { route: '/monitoramento-ia-culturas', label: 'IA Culturas', icon: 'psychology', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+      { route: '/monitoramento-clima', label: 'Clima', icon: 'cloud', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+      { route: '/monitoramento-produtividade', label: 'Produtividade', icon: 'trending_up', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+      { route: '/monitoramento-zarc', label: 'ZARC', icon: 'calendar_today', roles: ['USER_ADMIN', 'USER_ANALISTA'] }
     ]
   },
   {
-    route: '/relatorios-analista',
     label: 'Relatórios',
-    icon: 'description',
-    roles: ['USER_ADMIN', 'USER_ANALISTA']
+    icon: 'analytics',
+    roles: ['USER_ADMIN', 'USER_ANALISTA'],
+    children: [
+      { route: '/relatorio-atestados-vmg', label: 'Atestados VMG', icon: 'assignment', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+      { route: '/relatorio-eventos-climaticos', label: 'Eventos Climáticos', icon: 'thunderstorm', roles: ['USER_ADMIN', 'USER_ANALISTA'] }
+    ]
   },
+  {
+    label: 'Painel Mapa',
+    icon: 'layers',
+    roles: ['USER_ADMIN', 'USER_ANALISTA'],
+    children: [
+      { route: '/mapa-contratos', label: 'Contratos', icon: 'description', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+      { route: '/mapa-auditoria', label: 'Auditoria', icon: 'gavel', roles: ['USER_ADMIN', 'USER_ANALISTA'] }
+    ]
+  }
 ];

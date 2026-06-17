@@ -1,0 +1,88 @@
+<div class="localizacao-step-container" [formGroup]="formWizard">
+
+  <!-- Coluna da Esquerda: Formulários Reorganizados -->
+  <div class="form-inputs-column">
+    <div class="section-title">
+      <h2>Localização</h2>
+      <p>Informe onde a gleba está localizada.</p>
+    </div>
+
+    <!-- 1. Estado posicionado em primeiro lugar -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Estado *</mat-label>
+      <mat-select formControlName="estado">
+        @for (e of listaEstados; track e.sigla) {
+          <mat-option [value]="e.sigla">{{ e.sigla }} - {{ e.nome }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- 2. Município adaptado com input de busca Autocomplete -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Digite ou selecione o Município *</mat-label>
+      <input type="text"
+             matInput
+             formControlName="codigo_municipio"
+             [matAutocomplete]="auto"
+             (input)="formWizard.get('codigo_municipio')?.value ? onFiltrarMunicipio($event) : null"
+             placeholder="Ex: Bom Jesus">
+
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="exibirNome.bind(this)">
+        @for (m of municipiosFiltrados(); track m.codigo_municipio) {
+          <mat-option [value]="m.codigo_municipio">
+            {{ m.nome_municipio }} - <span class="text-muted">{{ m.sigla_uf }}</span>
+          </mat-option>
+        } @empty {
+          <mat-option disabled>Nenhum município localizado</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- 3. Campos opcionais mantidos na base do formulário -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Bacia Hidrográfica (Opcional)</mat-label>
+      <mat-select formControlName="bacia_hidrografica">
+        <mat-option value="Bacia do Parnaíba">Bacia do Parnaíba</mat-option>
+        <mat-option value="Bacia do São Francisco">Bacia do São Francisco</mat-option>
+        <mat-option value="Bacia do Tocantins-Araguaia">Bacia do Tocantins-Araguaia</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Região / Microrregião (Opcional)</mat-label>
+      <mat-select formControlName="regiao_planejamento">
+        <mat-option value="Sul Piauiense">Sul Piauiense</mat-option>
+        <mat-option value="Médio Parnaíba">Médio Parnaíba</mat-option>
+        <mat-option value="Norte Mato-grossense">Norte Mato-grossense</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Coluna da Direita: Mantém a estrutura de mapas e caixa flutuante intocadas -->
+  <div class="map-preview-column">
+    <div class="map-wrapper">
+      <div id="modalMap" class="canvas-map-element"></div>
+
+      <div class="coordenadas-floating-card">
+        <h3>Coordenadas do Centróide</h3>
+        <div class="coord-row">
+          <span class="label">Latitude</span>
+          <span class="value">{{ latitudeCentroide() }}°</span>
+        </div>
+        <div class="coord-row">
+          <span class="label">Longitude</span>
+          <span class="value">{{ longitudeCentroide() }}°</span>
+        </div>
+        <div class="datum-info">Datum: SIRGAS 2000</div>
+        <button mat-stroked-button class="btn-recalcular" (click)="recalcularCentroide()">
+          Recalcular Centróide
+        </button>
+      </div>
+    </div>
+
+    <div class="info-banner">
+      <mat-icon class="banner-icon">info</mat-icon>
+      <span>O centróide será utilizado para análises de raio e cruzamento de camadas.</span>
+    </div>
+  </div>
+</div>

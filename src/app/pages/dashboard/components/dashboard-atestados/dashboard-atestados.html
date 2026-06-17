@@ -1,0 +1,37 @@
+<section class="dashboard-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
+  }
+
+  <div class="card-header">
+    <h3>Últimos Atestados Emitidos</h3>
+    <a class="header-link">Ver todos</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="dashboard-table">
+      <thead>
+      <tr>
+        <th>Código Gleba</th>
+        <th>Produtor</th>
+        <th>Município</th>
+        <th>Data</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (atestado of ultimosAtestados(); track atestado) {
+          <tr>
+            <td class="code-text font-mono">{{ atestado.codigo_gleba }}</td>
+            <td class="truncate max-w-[140px]" [title]="atestado.produtor">{{ atestado.produtor }}</td>
+            <td>{{ atestado.municipio }}</td>
+            <td class="whitespace-nowrap">{{ atestado.data | date:'dd/MM/yyyy' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="empty-row">Nenhum atestado emitido encontrado.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

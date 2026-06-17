@@ -1,0 +1,59 @@
+<div class="dashboard-chart-card">
+  <!-- ⏳ INDICADOR DE CARREGAMENTO ISOLADO -->
+  @if (carregando()) {
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="35"></mat-spinner>
+    </div>
+  }
+
+  <!-- Título Atualizado conforme Novo Modelo -->
+  <h4 class="card-title-custom">Glebas por UF</h4>
+
+  <div class="mapa-conteudo-container">
+
+    <!-- 🟢 NOVA LEGENDA: Tonalidades de Verde por Faixa de Volume -->
+    <div class="mapa-legenda-uf">
+      <span class="legenda-title">Nº de Glebas</span>
+
+      <div class="legenda-item">
+        <span class="color-box range-plus-2000"></span>
+        <span class="range-text">+ 2.000</span>
+      </div>
+      <div class="legenda-item">
+        <span class="color-box range-1000-2000"></span>
+        <span class="range-text">1.000 - 2.000</span>
+      </div>
+      <div class="legenda-item">
+        <span class="color-box range-500-1000"></span>
+        <span class="range-text">500 - 1.000</span>
+      </div>
+      <div class="legenda-item">
+        <span class="color-box range-100 - 500"></span>
+        <span class="range-text">100 - 500</span>
+      </div>
+      <div class="legenda-item">
+        <span class="color-box range-sub-100"></span>
+        <span class="range-text">- 100</span>
+      </div>
+    </div>
+
+    <!-- 🗺️ ÁREA DE RENDERIZAÇÃO DO MAPA (Leaflet / SVG GeoJSON) -->
+    <div class="mapa-render-area">
+      <div #mapaLeaflet class="leaflet-map-canvas"></div>
+    </div>
+
+    <!-- 🎛️ CONTROLES FLUTUANTES DE ZOOM (Lado Direito) -->
+    <div class="mapa-controles-zoom">
+      <button class="zoom-btn" (click)="resetarZoom()" title="Resetar Visão">
+        <mat-icon>home</mat-icon>
+      </button>
+      <button class="zoom-btn border-top-none" (click)="aproximarZoom()" title="Aproximar">
+        <mat-icon>add</mat-icon>
+      </button>
+      <button class="zoom-btn border-top-none" (click)="afastarZoom()" title="Afastar">
+        <mat-icon>remove</mat-icon>
+      </button>
+    </div>
+
+  </div>
+</div>

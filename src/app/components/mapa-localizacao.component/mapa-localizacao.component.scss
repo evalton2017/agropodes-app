@@ -1,0 +1,144 @@
+/* =========================================================================
+   CONTAINER DO PASSO 2 (GRID DE DUAS COLUNAS DO PROTÓTIPO)
+   ========================================================================= */
+.localizacao-step-container {
+  display: flex;
+  gap: 2.5rem;
+  width: 100%;
+  padding: 1rem 0;
+  box-sizing: border-box;
+}
+
+/* Coluna da Esquerda: Inputs reativos do Angular Material */
+.form-inputs-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  .section-title {
+    margin-bottom: 1.5rem;
+    h2 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+    p {
+      margin: 0.25rem 0 0 0;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* =========================================================================
+   COLUNA DA DIREITA: MAPA RASTER LEAFLET E CARD FLUTUANTE
+   ========================================================================= */
+.map-preview-column {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  /* Moldura de contenção do mapa */
+  .map-wrapper {
+    position: relative; /* 🟢 Permite ancorar o card absoluto internamente */
+    width: 100%;
+    height: 380px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    /* Elemento DIV real onde o Leaflet injeta a tag canvas/svg */
+    .canvas-map-element {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 🟢 CARD FLUTUANTE: Ajustado para flutuar de forma soberana sobre as camadas */
+    .coordenadas-floating-card {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.98);
+      padding: 1.25rem;
+      border-radius: 8px;
+      width: 220px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+
+      /* 🔴 AJUSTE CRÍTICO: Força o card a ficar à frente dos blocos raster do Leaflet (Z: 400) */
+      z-index: 1000;
+
+      h3 {
+        margin: 0 0 0.75rem 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .coord-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+
+        .label {
+          color: #777;
+        }
+        .value {
+          color: #111;
+          font-family: monospace;
+          font-weight: bold;
+        }
+      }
+
+      .datum-info {
+        font-size: 0.75rem;
+        color: #999;
+        margin: 0.75rem 0;
+      }
+
+      .btn-recalcular {
+        width: 100%;
+        font-size: 0.8rem;
+        height: 32px;
+        line-height: 30px;
+      }
+    }
+  }
+
+  /* Banner informativo inferior azul do protótipo */
+  .info-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #e8f4fd;
+    border: 1px solid #d2e9fc;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    color: #1e88e5;
+    font-size: 0.85rem;
+
+    .banner-icon {
+      font-size: 1.2rem;
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+}
+
+/* =========================================================================
+   RESPONSIVIDADE E QUEBRA DE LAYOUT (MOBILE/TABLETS)
+   ========================================================================= */
+@media (max-width: 900px) {
+  .localizacao-step-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}

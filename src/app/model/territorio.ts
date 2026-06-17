@@ -7,6 +7,7 @@ export interface ImagemTerritorio {
 }
 
 export interface TerritorioResponse {
+  id: number;
   hashTransacao: string;
   numeroCar: string;
   nomePropriedade: string;

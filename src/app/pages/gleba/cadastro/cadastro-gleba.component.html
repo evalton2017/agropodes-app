@@ -1,0 +1,199 @@
+<div class="wizard-container font-material">
+  @if (produtor()) {
+    <!-- Cabeçalho de Identificação -->
+    <mat-card class="produtor-header-card">
+      <mat-card-content>
+        <p>Produtor Conectado: <strong>{{ produtor()?.nome }}</strong> ({{ produtor()?.email }})</p>
+        <h1>Formulário de Cadastro de Área Agrícola</h1>
+      </mat-card-content>
+    </mat-card>
+
+    @if (erroMensagem()) {
+      <div class="alert-error-box"><span>{{ erroMensagem() }}</span></div>
+    }
+
+    <!-- Configuração central com as 5 etapas rígidas do protótipo -->
+    <mat-stepper [linear]="false" #stepper (animationDone)="onPassoAnimacaoConcluida()">
+
+
+    <!-- ========================================== -->
+      <!-- 1º PASSO: DADOS GERAIS -->
+      <!-- ========================================== -->
+      <mat-step [completed]="isPasso1Valido">
+        <form [formGroup]="formWizard">
+          <ng-template matStepLabel>Dados Gerais</ng-template>
+          <div class="step-content">
+            <h3>Dados Gerais</h3>
+            <div class="form-grid-2-columns">
+              <div class="grid-column">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Nome da Gleba *</mat-label>
+                  <input matInput formControlName="nome_gleba">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Código Interno</mat-label>
+                  <input matInput formControlName="codigo_interno">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Matrícula / Transcrição</mat-label>
+                  <input matInput formControlName="matricula_transcricao">
+                </mat-form-field>
+              </div>
+              <div class="grid-column">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Proprietário / Possuidor *</mat-label>
+                  <input matInput formControlName="proprietario" readonly>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>CPF / CNPJ *</mat-label>
+                  <input matInput formControlName="cpf_cnpj" placeholder="000.000.000-00">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>CAR Vinculado *</mat-label>
+                  <input matInput formControlName="numero_car">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="tip-box">
+              <span class="material-icons info-icon">info</span>
+              <p>Dica: o CAR vinculado deve ser do mesmo proprietário da gleba.</p>
+            </div>
+
+            <div class="actions-row">
+              <button mat-raised-button color="primary" [disabled]="!isPasso1Valido || carregando()" (click)="validarPasso1()">
+                Avançar
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- ========================================== -->
+      <!-- 2º PASSO: LOCALIZAÇÃO (TELA DO PROTÓTIPO COM MAPA E INFOS) -->
+      <!-- ========================================== -->
+      <mat-step [completed]="isPasso2Valido">
+        <ng-template matStepLabel>Localização</ng-template>
+
+        <app-mapa-localizacao
+          [formWizard]="formWizard"
+          [listaMunicipios]="listaMunicipios()"
+          [wktGeometriaCar]="dadosCar()?.geometria"
+          (centroideCalculado)="atualizarCoordenadasDoCentroide($event.lat, $event.lng)">
+        </app-mapa-localizacao>
+
+        <div class="actions-row">
+          <button mat-button (click)="voltarPasso()">Voltar</button>
+          <button mat-raised-button color="primary" [disabled]="!isPasso2Valido" (click)="avancarPasso()">Avançar</button>
+        </div>
+      </mat-step>
+
+      <!-- ========================================== -->
+      <!-- 3º PASSO: DELIMITAÇÃO -->
+      <!-- ========================================== -->
+      <mat-step>
+        <ng-template matStepLabel>Delimitação</ng-template>
+
+        <app-mapa-delimitacao
+          [formWizard]="formWizard"
+          [latitudeFoco]="latitudeCentroide()"
+          [longitudeFoco]="longitudeCentroide()"
+          (metricasProcessadas)="definirMetricasCalculadasPostGis($event.area, $event.perimetro)">
+        >
+        </app-mapa-delimitacao>
+
+        <div class="actions-row">
+          <button mat-button (click)="voltarPasso()">Voltar</button>
+          <button mat-raised-button color="primary" [disabled]="formWizard.get('geometria')?.invalid" (click)="avancarPasso()">Avançar</button>
+        </div>
+      </mat-step>
+
+      <!-- ========================================== -->
+      <!-- 4º PASSO: INFORMAÇÕES AGRÍCOLAS -->
+      <!-- ========================================== -->
+      <mat-step [completed]="isPasso4Valido">
+        <form [formGroup]="formWizard">
+          <ng-template matStepLabel>Informações Agrícolas</ng-template>
+          <div class="step-content">
+            <h3>Planejamento Agronômico</h3>
+
+            <div class="form-grid-2-columns">
+              <div class="grid-column">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Cultura Principal *</mat-label>
+                  <mat-select formControlName="cultura_declarada">
+                    <mat-option value="c">Selecione...</mat-option>
+                    @for (c of filtrosAgricolas(); track c) {
+                      <mat-option [value]="c.nome">{{ c.nome }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Safra Vigente *</mat-label>
+                  <mat-select formControlName="safra">
+                    <mat-option value="">Selecione...</mat-option>
+                    @for (s of listaSafras; track s) {
+                      <mat-option [value]="s">Safra {{ s }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="grid-column">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Data Estimada de Plantio *</mat-label>
+                  <input matInput type="date" formControlName="data_estimada_plantio">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="actions-row">
+              <button mat-button (click)="voltarPasso()">Voltar</button>
+              <button mat-raised-button color="primary" [disabled]="!isPasso4Valido" (click)="avancarPasso()">Revisar Cadastro</button>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- ========================================== -->
+      <!-- 5º PASSO: REVISÃO FINAL -->
+      <!-- ========================================== -->
+      <mat-step>
+        <ng-template matStepLabel>Revisão</ng-template>
+        <div class="step-content">
+          <h3>Revisão de Dados e Assinatura Digital</h3>
+
+          <mat-card class="summary-card" appearance="outlined">
+            <mat-card-content>
+              <p><strong>Identificação:</strong> {{ formWizard.get('nome_gleba')?.value }} (CAR: {{ formWizard.get('numero_car')?.value }})</p>
+              <p><strong>Localização:</strong> {{ formWizard.get('estado')?.value }} - Centróide: [{{ latitudeCentroide() }}°, {{ longitudeCentroide() }}°]</p>
+              <p><strong>Área Geodésica Medida:</strong> {{ areaFormatadaRevisao() }}</p>
+              <p><strong>Perímetro Geodésico:</strong> {{ perimetroFormatadoRevisao() }}</p>
+              <p><strong>Planejamento:</strong> {{ formWizard.get('cultura_declarada')?.value }} (Safra {{ formWizard.get('safra')?.value }})</p>
+            </mat-card-content>
+          </mat-card>
+
+          <div class="legal-notice-box">
+            <mat-checkbox checked="true" disabled="true">
+              Declaro consentimento regulatório nos termos da LGPD para este dispositivo assinar criptograficamente esta transação distribuída, anexando-a imutavelmente ao livro-razão (Ledger Audit).
+            </mat-checkbox>
+          </div>
+
+          <div class="actions-row">
+            <button mat-button [disabled]="carregando()" (click)="voltarPasso()">Voltar</button>
+            <button mat-raised-button color="success" [disabled]="carregando() || formWizard.invalid" (click)="finalizarCadastro()">
+              {{ carregando() ? 'Gravando Blocos...' : 'Confirmar e Finalizar Cadastro' }}
+            </button>
+          </div>
+        </div>
+      </mat-step>
+
+    </mat-stepper>
+  } @else {
+    <div class="loading-session-box">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Carregando perfil de segurança do produtor...</p>
+    </div>
+  }
+</div>

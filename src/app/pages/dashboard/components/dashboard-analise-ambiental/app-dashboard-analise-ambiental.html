@@ -1,0 +1,28 @@
+<div class="ia-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+  }
+
+  <h3 class="ia-card-title">Análise Ambiental (Conformidade)</h3>
+
+  <div class="ia-card-body flex-row-center">
+    <!-- Donut Centralizado -->
+    <div class="ia-donut-wrapper">
+      <span class="ia-donut-value">{{ dados()?.percentual_conforme ?? 87 }}%</span>
+      <span class="ia-donut-label">Conforme</span>
+    </div>
+
+    <!-- Legenda Lateral -->
+    <div class="ia-legend-list">
+      <div class="legend-item"><span class="bullet bg-green"></span>Conforme <strong class="val">87%</strong></div>
+      <div class="legend-item"><span class="bullet bg-amber"></span>Atenção <strong class="val">8%</strong></div>
+      <div class="legend-item"><span class="bullet bg-rose"></span>Não Conf. <strong class="val">5%</strong></div>
+    </div>
+  </div>
+
+  <div class="ia-card-footer">
+    <button class="ia-footer-link">Ver detalhes ambientais</button>
+  </div>
+</div>

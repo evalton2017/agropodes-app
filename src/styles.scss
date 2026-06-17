@@ -1,6 +1,20 @@
 @use '@angular/material' as mat;
 @import "leaflet/dist/leaflet.css";
+@import "maplibre-gl/dist/maplibre-gl.css";
+@import "leaflet/dist/leaflet.css";
+@import "leaflet-draw/dist/leaflet.draw.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+html,
+body{
+
+  font-family:'Inter',sans-serif;
+
+  background:#f5f7fb;
+
+  color:#0f172a;
+
+}
 
 // 1. Inclui os estilos estruturais obrigatórios do Material
 @include mat.core();
@@ -100,3 +114,49 @@ body {
   }
 }
 
+/* CLASSE BASE (Comum para todos os botões) */
+.btn-action-custom {
+  border-radius: 20px;          /* Bordas arredondadas padrão */
+  padding: 8px 16px;            /* Espaçamento interno */
+  font-size: 14px;              /* Tamanho da fonte */
+  font-weight: 500;             /* Peso da fonte */
+  cursor: pointer;              /* Cursor de clique */
+  transition: all 0.2s ease;    /* Transição suave ao passar o mouse */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;                     /* Espaço caso use ícone com texto */
+}
+
+/* VARIANTE VERDE CLARO */
+.btn-action-custom.btn-green {
+  background-color: #e8f5e9;    /* Verde bem claro */
+  color: #2e7d32;               /* Texto verde escuro */
+  border: 1px solid #c8e6c9;    /* Borda sutil */
+}
+.btn-action-custom.btn-green:hover {
+  background-color: #c8e6c9;    /* Escurece levemente no hover */
+  color: #1b5e20;
+}
+
+/* VARIANTE AZUL CLARO */
+.btn-action-custom.btn-blue {
+  background-color: #e3f2fd;    /* Azul bem claro */
+  color: #1565c0;               /* Texto azul escuro */
+  border: 1px solid #bbdefb;    /* Borda sutil */
+}
+.btn-action-custom.btn-blue:hover {
+  background-color: #bbdefb;    /* Escurece levemente no hover */
+  color: #0d47a1;
+}
+
+/* VARIANTE LARANJA CLARO */
+.btn-action-custom.btn-orange {
+  background-color: #fff3e0;    /* Laranja bem claro */
+  color: #e65100;               /* Texto laranja escuro */
+  border: 1px solid #ffe0b2;    /* Borda sutil */
+}
+.btn-action-custom.btn-orange:hover {
+  background-color: #ffe0b2;    /* Escurece levemente no hover */
+  color: #bf360c;
+}

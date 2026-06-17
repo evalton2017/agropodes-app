@@ -1,0 +1,139 @@
+
+.impacto-alto { background-color: #fee2e2; color: #b91c1c; }
+.impacto-medio { background-color: #fef3c7; color: #b45309; }
+.impacto-baixo { background-color: #f1f5f9; color: #475569; }
+
+
+.grid-container-graficos {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem; /* 24px */
+  width: 100%;
+  margin-top: 1.5rem;
+
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.dashboard-chart-card {
+  background-color: #ffffff;
+  border: 1px solid #f3f4f6; /* gray-100 */
+  border-radius: 0.5rem; /* 8px */
+  padding: 1.25rem; /* 20px */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  height: 380px; /* Altura idêntica para alinhar todos horizontalmente */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.dashboard-card {
+  background: #ffffff !important;
+  border: 1px solid #f1f5f9 !important;
+  border-radius: 12px !important;
+  padding: 1.25rem !important;
+  height: 340px !important; // Altura idêntica para alinhar os dois blocos horizontalmente
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.01) !important;
+  overflow: hidden !important;
+}
+
+.card-title-custom {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 700;
+  color: #1f2937; /* gray-800 */
+  margin-bottom: 1.25rem;
+}
+
+.ia-grid-container {
+  display: grid !important;
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  gap: 1.25rem !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 10px;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  @media (min-width: 1400px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+.grid-container-tabelas {
+  display: grid !important;
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important; // 1 coluna no mobile
+  gap: 1.25rem !important;
+  width: 100% !important;
+  margin-top: 1.5rem !important;
+  box-sizing: border-box !important;
+
+  // Em monitores desktop, divide a tela exatamente ao meio para dar espaço às tabelas
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+.header-dashboard-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.filters-action-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+
+  /* Customização cirúrgica para diminuir a altura dos campos do Material */
+  ::v-deep .mat-mdc-form-field-wrapper {
+    padding-bottom: 0 !important;
+  }
+
+  ::v-deep .mat-mdc-text-field-wrapper {
+    background-color: #ffffff !important;
+    border-radius: 8px !important;
+    height: 46px !important; /* Altura compacta do protótipo */
+    padding-top: 4px !important;
+  }
+
+  ::v-deep .mat-mdc-form-field-infix {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    min-height: 40px !important;
+  }
+}
+
+/* 🔘 ESTILIZAÇÃO DO NOVO BOTÃO ATUALIZAR */
+.btn-atualizar-custom {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important; /* border-slate-200 */
+  border-radius: 8px !important;
+  height: 46px !important; /* Mesma altura dos inputs para alinhar */
+  padding: 0 1.25rem !important;
+  box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05) !important;
+  transition: background-color 0.2s, border-color 0.2s !important;
+
+  &:hover {
+    background-color: #f8fafc !important; /* slate-50 */
+    border-color: #cbd5e1 !important; /* slate-300 */
+  }
+
+  mat-icon {
+    font-size: 1.125rem !important;
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}

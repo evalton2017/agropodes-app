@@ -1,0 +1,55 @@
+<div class="ia-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
+  }
+
+  <h3 class="ia-card-title">Resumo Climático (60 meses)</h3>
+
+  <div class="clima-quad-grid">
+
+    <!-- Chuva -->
+    <div class="clima-box">
+      <mat-icon class="c-icon text-blue">water_drop</mat-icon>
+      <div class="c-info">
+        <span class="c-title">Chuva acumulada</span>
+        <span class="c-value">{{ dados()?.chuva_acumulada_mm ?? '654 mm' }}</span>
+        <span class="c-trend txt-rose">↓ -8% hist.</span>
+      </div>
+    </div>
+
+    <!-- Temperatura -->
+    <div class="clima-box">
+      <mat-icon class="c-icon text-orange">thermostat</mat-icon>
+      <div class="c-info">
+        <span class="c-title">Temp. média</span>
+        <span class="c-value">{{ dados()?.temp_media_celsius ?? '24,8 °C' }}</span>
+        <span class="c-trend txt-blue">↑ +0,6°C hist.</span>
+      </div>
+    </div>
+
+    <!-- Dias Sem Chuva -->
+    <div class="clima-box">
+      <mat-icon class="c-icon text-amber">wb_sunny</mat-icon>
+      <div class="c-info">
+        <span class="c-title">Dias sem chuva</span>
+        <span class="c-value">{{ dados()?.dias_sem_chuva ?? '126' }}</span>
+        <span class="c-trend txt-rose">↑ +15 dias</span>
+      </div>
+    </div>
+
+    <!-- Vento -->
+    <div class="clima-box">
+      <mat-icon class="c-icon text-teal">air</mat-icon>
+      <div class="c-info">
+        <span class="c-title">Vel. vento médio</span>
+        <span class="c-value">{{ dados()?.vel_vento_kmh ?? '12,4 km/h' }}</span>
+        <span class="c-trend txt-slate">↓ -1,2 km/h</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ia-card-footer">
+    <button class="ia-footer-link">Ver painel climático</button>
+  </div>
+</div>

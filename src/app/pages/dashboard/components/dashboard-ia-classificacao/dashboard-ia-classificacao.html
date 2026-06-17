@@ -1,0 +1,38 @@
+<div class="ia-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
+  }
+
+  <h3 class="ia-card-title">IA - Classificação de Culturas</h3>
+
+  <div class="ia-grid-split">
+    <!-- Lado Esquerdo -->
+    <div class="ia-meta-column">
+      <span class="label-subtext">Acurácia média (60 meses)</span>
+      <div class="ia-value-badge-row">
+        <span class="ia-huge-value">{{ dados()?.acuracia_media ?? '98,7' }}%</span>
+        <span class="trend-badge">↑ 2,1%</span>
+      </div>
+
+      <span class="label-subtext margin-top-md">Glebas analisadas</span>
+      <span class="ia-medium-value">{{ dados()?.total_glebas_analisadas ?? '5.981' }}</span>
+
+      <span class="label-subtext margin-top-md">Última análise</span>
+      <span class="date-text">{{ dados()?.data_ultima_analise ?? '13/06/2026 07:30' }}</span>
+    </div>
+
+    <!-- Lado Direito -->
+    <div class="ia-cultures-column">
+      <span class="section-title">Top culturas</span>
+      <div class="culture-row"><span class="lbl"><span class="dot b-green"></span>Soja</span><strong>65%</strong></div>
+      <div class="culture-row"><span class="lbl"><span class="dot b-amber"></span>Milho</span><strong>20%</strong></div>
+      <div class="culture-row"><span class="lbl"><span class="dot b-purple"></span>Algodão</span><strong>8%</strong></div>
+      <div class="culture-row"><span class="lbl"><span class="dot b-blue"></span>Sorgo</span><strong>4%</strong></div>
+      <div class="culture-row"><span class="lbl"><span class="dot b-slate"></span>Outras</span><strong>2%</strong></div>
+    </div>
+  </div>
+
+  <div class="ia-card-footer">
+    <button class="ia-footer-link">Ver análise de IA</button>
+  </div>
+</div>
