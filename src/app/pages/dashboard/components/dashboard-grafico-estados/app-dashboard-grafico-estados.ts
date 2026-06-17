@@ -65,14 +65,16 @@ export class AppDashboardGraficoEstados {
     const refMapa = this.canvasMapaContainer();
 
     if (refMapa && !this.mapInstance) {
-      this.L = await import('leaflet');
+      // Destrutura a propriedade default do import dinâmico
+      const leafletModule = await import('leaflet');
+      this.L = leafletModule.default || leafletModule;
+
       this.inicializarMapaLeaflet(refMapa.nativeElement);
     }
 
     if (this.mapInstance && this.dadosEstados().length > 0) {
       this.atualizarCoresDoMapa(this.dadosEstados());
     }
-
   }
 
   private inicializarMapaLeaflet(container: HTMLDivElement): void {
