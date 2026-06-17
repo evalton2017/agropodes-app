@@ -11,6 +11,10 @@ import {
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 
+import { Map } from 'maplibre-gl';
+import { MapboxOverlay } from '@deck.gl/mapbox';
+import { PolygonLayer } from '@deck.gl/layers';
+
 import {MatCardModule} from '@angular/material/card';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatChipsModule} from '@angular/material/chips';
@@ -124,8 +128,7 @@ export class Map3DViewerComponent implements OnInit {
     if (!container) return;
 
     try {
-      const { Map } = await import('maplibre-gl');
-      const { MapboxOverlay } = await import('@deck.gl/mapbox');
+
 
       // 1. Inicializa o mapa base raster padrão
       this.maplibreInstance = new Map({
@@ -206,8 +209,6 @@ export class Map3DViewerComponent implements OnInit {
       pitch: 50,
       essential: true
     });
-
-    const { PolygonLayer } = await import('@deck.gl/layers');
 
     const camadaGleba3D = new PolygonLayer({
       id: 'camada-vmg-gleba-3d',

@@ -4,4 +4,5 @@ export interface Pessoa {
   email: string;
   idKeycloak: string;
   tipo: string;
+  cpfCnpj?: string;
 }

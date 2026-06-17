@@ -74,7 +74,28 @@ export class CadastroGlebaComponent implements OnInit {
       const produtor = this.pessoaService.produtorAtual();
       this.listaSafras = this.gerarListaSafras();
       if (produtor && this.formWizard) {
-        this.formWizard.patchValue({ proprietario: produtor.nome });
+        // 1. Atualiza os valores do formulário
+        this.formWizard.patchValue({
+          proprietario: produtor.nome,
+          cpf_cnpj: produtor.cpfCnpj
+        });
+
+        // 2. Desabilita ou habilita o campo 'proprietario' baseado no valor
+        const proprietarioCtrl = this.formWizard.get('proprietario');
+        if (produtor.nome !== null && produtor.nome !== undefined && produtor.nome !== '') {
+          proprietarioCtrl?.disable();
+        } else {
+          proprietarioCtrl?.enable();
+        }
+
+        // 3. Desabilita ou habilita o campo 'cpf_cnpj' baseado no valor
+        const cpfCnpjCtrl = this.formWizard.get('cpf_cnpj');
+        if (produtor.cpfCnpj !== null && produtor.cpfCnpj !== undefined && produtor.cpfCnpj !== '') {
+          cpfCnpjCtrl?.disable();
+        } else {
+          cpfCnpjCtrl?.enable();
+        }
+
         this.cdr.detectChanges();
       }
     });
@@ -101,9 +122,9 @@ export class CadastroGlebaComponent implements OnInit {
       nome_gleba: ['Fazenda Boa Vista', [Validators.required, Validators.maxLength(150)]],
       codigo_interno: ['FBV-01'],
       matricula_transcricao: ['12.345'],
-      numero_car: ['MT-5103304-693FC4B7A70A40AC859181B90AF73FBA', [Validators.required]],
+      numero_car: ['', [Validators.required]],
       cpf_cnpj: ['', [Validators.required]],
-      proprietario: [{ value: produtorAtual?.nome || '', disabled: true }, [Validators.required]],
+      proprietario: ['', [Validators.required]],
       codigo_municipio: [null, [Validators.required]],
       bioma: ['Cerrado'],
       bacia_hidrografica: [''],
@@ -198,6 +219,9 @@ export class CadastroGlebaComponent implements OnInit {
       ip_origem: '127.0.0.1',
       dispositivo_token: 'angular_ssr_token_2026'
     };
+
+    console.log(payload);
+    return;
 
     this.glebaService.cadastrarGleba(payload).subscribe({
       next: () => {
