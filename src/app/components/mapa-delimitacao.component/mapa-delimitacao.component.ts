@@ -75,7 +75,7 @@ export class MapaDelimitacaoComponent implements OnInit {
           this.map.setView(centro, 15);
           this.cdr.detectChanges();
         }
-      }, 250);
+      }, 500);
 
       // Elementos de controle do Leaflet Draw
       this.drawnItems = new L.FeatureGroup();

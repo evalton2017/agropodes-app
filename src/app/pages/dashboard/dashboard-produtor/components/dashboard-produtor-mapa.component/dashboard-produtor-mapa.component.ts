@@ -8,9 +8,9 @@ import {
   SimpleChanges
 } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import * as WKT from 'terraformer-wkt-parser';
-import { GlebaGeometriaResponse } from '../../../model/dashboard-produtor.model';
+import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
 
 @Component({
   selector: 'app-dashboard-produtor-mapa',
@@ -22,7 +22,7 @@ import { GlebaGeometriaResponse } from '../../../model/dashboard-produtor.model'
 })
 export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
-  @Input({ required: true })
+  @Input({required: true})
   glebas: GlebaGeometriaResponse[] = [];
 
   private map: any;
@@ -33,68 +33,42 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   private readonly lonPadrao = -59.757567;
 
   constructor() {
-
     afterNextRender(async () => {
-
       await this.inicializarMapa();
-
     });
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-
     if (
       this.map &&
       changes['glebas']
     ) {
-
       this.desenharGlebas();
-
     }
-
   }
 
   private async inicializarMapa(): Promise<void> {
-
     try {
-
       const leafletModule = await import('leaflet');
-
       this.L = leafletModule.default || leafletModule;
-
       this.map = this.L.map('vmg-leaflet-map', {
-
         center: [this.latPadrao, this.lonPadrao],
-
         zoom: 4,
-
         zoomControl: true
-
       });
 
       this.L.tileLayer(
-
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-
         {
-
           attribution: 'Tiles © Esri',
-
           maxZoom: 19,
-
           maxNativeZoom: 18
-
         }
-
       ).addTo(this.map);
 
       this.geoJsonLayer = this.L.geoJSON(null, {
-
         style: (feature: any) => this.obterEstilo(feature),
-
-        onEachFeature: (feature: any, layer: any) =>
-          this.criarPopup(feature, layer),
+        onEachFeature: (feature: any, layer: any) =>          this.criarPopup(feature, layer),
 
         coordsToLatLng: (coords: [number, number]) => {
 
@@ -110,7 +84,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
         this.desenharGlebas();
 
-      }, 300);
+      }, 500);
 
     } catch (e) {
 
@@ -133,7 +107,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     if (!this.glebas || this.glebas.length === 0) {
 
       this.map.setView(
-
         [
 
           this.latPadrao,
@@ -143,7 +116,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         ],
 
         4
-
       );
 
       return;
@@ -163,9 +135,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       try {
 
         const geometry = WKT.parse(
-
           gleba.geometria
-
         );
 
         features.push({
@@ -190,9 +160,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
         });
 
-      }
-
-      catch (e) {
+      } catch (e) {
 
         console.error("Erro ao converter WKT", e);
 
@@ -221,7 +189,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       const centro = bounds.getCenter();
 
       this.map.setView(
-
         [
 
           centro.lat,
@@ -231,15 +198,11 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         ],
 
         16
-
       );
 
-    }
-
-    else {
+    } else {
 
       this.map.fitBounds(
-
         bounds,
 
         {
@@ -249,7 +212,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
           maxZoom: 15
 
         }
-
       );
 
     }
