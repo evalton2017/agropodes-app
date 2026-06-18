@@ -7,9 +7,7 @@ import {
   OnDestroy,
   SimpleChanges
 } from '@angular/core';
-
 import {CommonModule} from '@angular/common';
-import * as WKT from 'terraformer-wkt-parser';
 import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
 
 @Component({
@@ -134,9 +132,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
       try {
 
-        const geometry = WKT.parse(
-          gleba.geometria
-        );
+        const geometry = gleba.geometria;
 
         features.push({
 
