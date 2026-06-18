@@ -84,6 +84,13 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         }
       }).addTo(this.map);
 
+      setTimeout(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+          this.cdr.detectChanges();
+        }
+      }, 250);
+
       // Se os dados PostGIS já tiverem chegado antes do término da renderização do DOM, desenha
       if (this.glebas && this.glebas.length > 0) {
         this.desenharPoligonosGlebas();
