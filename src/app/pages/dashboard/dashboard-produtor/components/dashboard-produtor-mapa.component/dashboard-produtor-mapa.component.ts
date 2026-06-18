@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
+import * as wktParser from 'terraformer-wkt-parser';
 
 @Component({
   selector: 'app-dashboard-produtor-mapa',
@@ -102,7 +103,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     this.glebas.forEach((gleba) => {
       try {
         if (!gleba.geometria) return;
-        const geoJsonGeometria = gleba.geometria
+        const geoJsonGeometria =  wktParser.parse(gleba.geometria);
 
         recursosGeoJson.push({
           type: 'Feature',
@@ -130,7 +131,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       if (limites.isValid()) {
         setTimeout(() => {
           this.map.fitBounds(limites, { padding: [30, 30] });
-          this.map.invalidateSize(); 
+          this.map.invalidateSize();
           this.cdr.detectChanges();
         }, 50);
       }
