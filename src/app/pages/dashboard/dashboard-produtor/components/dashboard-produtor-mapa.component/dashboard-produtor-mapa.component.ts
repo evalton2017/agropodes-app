@@ -1,13 +1,15 @@
 import {
   afterNextRender,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
   SimpleChanges
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
 
 @Component({
@@ -16,46 +18,50 @@ import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
   imports: [CommonModule],
   templateUrl: './dashboard-produtor-mapa.component.html',
   styleUrls: ['./dashboard-produtor-mapa.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush // 🟢 Adicionado OnPush conforme seu padrão
 })
 export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
+  @Input({ required: true }) glebas: GlebaGeometriaResponse[] = [];
 
-  @Input({required: true})
-  glebas: GlebaGeometriaResponse[] = [];
+  private cdr = inject(ChangeDetectorRef);
 
   private map: any;
   private geoJsonLayer: any;
-  private L: any;
+  private LeafletCore: any; // Armazena a instância dinâmica do Leaflet carregada no cliente
 
   private readonly latPadrao = -13.975810;
   private readonly lonPadrao = -59.757567;
 
   constructor() {
+    // 🛡️ PADRÃO HOMOLOGADO: Garante execução estrita no navegador pós-ssr
     afterNextRender(async () => {
-      await this.inicializarMapa();
+      await this.inicializarMapaVisualizacao();
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      this.map &&
-      changes['glebas']
-    ) {
-      this.desenharGlebas();
+    // Só atualiza os polígonos se a instância do mapa já tiver sido criada pelo afterNextRender
+    if (this.map && changes['glebas'] && !changes['glebas'].firstChange) {
+      this.desenharPoligonosGlebas();
     }
   }
 
-  private async inicializarMapa(): Promise<void> {
+  private async inicializarMapaVisualizacao(): Promise<void> {
     try {
+      // Carregamento dinâmico assíncrono do Leaflet idêntico ao seu exemplo
       const leafletModule = await import('leaflet');
-      this.L = leafletModule.default || leafletModule;
-      this.map = this.L.map('vmg-leaflet-map', {
-        center: [this.latPadrao, this.lonPadrao],
+      this.LeafletCore = (leafletModule.default || leafletModule) as any;
+
+      // Inicializa o mapa com as coordenadas globais padrão do projeto
+      const centro: [number, number] = [this.latPadrao, this.lonPadrao];
+      this.map = this.LeafletCore.map('vmg-leaflet-map', {
+        center: centro,
         zoom: 4,
         zoomControl: true
       });
 
-      this.L.tileLayer(
+      // 🟢 CORREÇÃO: String limpa e idêntica ao seu mapa de delimitação que já funciona
+      this.LeafletCore.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         {
           attribution: 'Tiles © Esri',
@@ -64,260 +70,116 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         }
       ).addTo(this.map);
 
-      this.geoJsonLayer = this.L.geoJSON(null, {
-        style: (feature: any) => this.obterEstilo(feature),
-        onEachFeature: (feature: any, layer: any) =>          this.criarPopup(feature, layer),
+      // Inicia a camada de coleção de feições geográficas vazia
+      this.geoJsonLayer = this.LeafletCore.geoJSON(null, {
+        style: (feature: any) => this.obterEstiloPoligono(feature),
+        onEachFeature: (feature: any, layer: any) => this.vincularPopupInformativo(feature, layer),
 
+        // Intercepta o array [Lng, Lat] do PostGIS e mapeia para o objeto LatLng correto do Leaflet
         coordsToLatLng: (coords: [number, number]) => {
-
-          return this.L.latLng(coords[1], coords[0]);
-
+          const longitude = coords[0];
+          const latitude = coords[1];
+          return new this.LeafletCore.LatLng(latitude, longitude);
         }
-
       }).addTo(this.map);
 
-      setTimeout(() => {
+      // Se os dados PostGIS já tiverem chegado antes do término da renderização do DOM, desenha
+      if (this.glebas && this.glebas.length > 0) {
+        this.desenharPoligonosGlebas();
+      }
 
-        this.map.invalidateSize(true);
-
-        this.desenharGlebas();
-
-      }, 500);
-
-    } catch (e) {
-
-      console.error(e);
-
+    } catch (error) {
+      console.error('Erro ao inicializar mapa do produtor via afterNextRender:', error);
     }
-
   }
 
-  private desenharGlebas(): void {
-
-    if (!this.map || !this.geoJsonLayer) {
-
-      return;
-
-    }
+  private desenharPoligonosGlebas(): void {
+    if (!this.map || !this.geoJsonLayer || !this.glebas || this.glebas.length === 0) return;
 
     this.geoJsonLayer.clearLayers();
+    const recursosGeoJson: any[] = [];
 
-    if (!this.glebas || this.glebas.length === 0) {
-
-      this.map.setView(
-        [
-
-          this.latPadrao,
-
-          this.lonPadrao
-
-        ],
-
-        4
-      );
-
-      return;
-
-    }
-
-    const features: any[] = [];
-
-    this.glebas.forEach(gleba => {
-
-      if (!gleba.geometria) {
-
-        return;
-
-      }
-
+    this.glebas.forEach((gleba) => {
       try {
+        if (!gleba.geometria) return;
+        const geoJsonGeometria = gleba.geometria
 
-        const geometry = gleba.geometria;
-
-        features.push({
-
+        recursosGeoJson.push({
           type: 'Feature',
-
-          geometry,
-
+          geometry: geoJsonGeometria,
           properties: {
-
             id_gleba: gleba.id_gleba,
-
             codigo_car: gleba.codigo_car,
-
             area: gleba.area_hectares,
-
             cultura: gleba.cultura_declarada,
-
-            status: gleba.status_vmg ?? 'Conforme'
-
+            status: gleba.status_vmg || 'Conforme'
           }
-
         });
-
-      } catch (e) {
-
-        console.error("Erro ao converter WKT", e);
-
+      } catch (error) {
+        console.error(`Falha ao converter WKT no dashboard:`, error);
       }
-
     });
 
-    this.geoJsonLayer.addData({
+    if (recursosGeoJson.length > 0) {
+      this.geoJsonLayer.addData({
+        type: 'FeatureCollection',
+        features: recursosGeoJson
+      } as any);
 
-      type: 'FeatureCollection',
-
-      features
-
-    });
-
-    const bounds = this.geoJsonLayer.getBounds();
-
-    if (!bounds.isValid()) {
-
-      return;
-
+      const limites = this.geoJsonLayer.getBounds();
+      if (limites.isValid()) {
+        setTimeout(() => {
+          this.map.fitBounds(limites, { padding: [30, 30] });
+          this.map.invalidateSize(); 
+          this.cdr.detectChanges();
+        }, 50);
+      }
     }
-
-    if (this.glebas.length === 1) {
-
-      const centro = bounds.getCenter();
-
-      this.map.setView(
-        [
-
-          centro.lat,
-
-          centro.lng
-
-        ],
-
-        16
-      );
-
-    } else {
-
-      this.map.fitBounds(
-        bounds,
-
-        {
-
-          padding: [40, 40],
-
-          maxZoom: 15
-
-        }
-      );
-
-    }
-
-    setTimeout(() => {
-
-      this.map.invalidateSize(true);
-
-    }, 100);
-
   }
 
-  private obterEstilo(feature: any): any {
-
+  private obterEstiloPoligono(feature: any): any {
     const status = feature.properties.status;
+    let corBorda = '#16a34a';
+    let corPreenchimento = '#22c55e';
 
-    switch (status) {
-
-      case 'Não conforme':
-
-      case 'Bloqueada':
-
-        return {
-
-          color: '#dc2626',
-
-          weight: 2,
-
-          fillColor: '#ef4444',
-
-          fillOpacity: 0.35
-
-        };
-
-      case 'Atenção':
-
-      case 'Em análise':
-
-        return {
-
-          color: '#ea580c',
-
-          weight: 2,
-
-          fillColor: '#f97316',
-
-          fillOpacity: 0.35,
-
-          dashArray: '5,5'
-
-        };
-
-      default:
-
-        return {
-
-          color: '#15803d',
-
-          weight: 2,
-
-          fillColor: '#22c55e',
-
-          fillOpacity: 0.35
-
-        };
-
+    if (status === 'Não conforme' || status === 'Bloqueada') {
+      corBorda = '#dc2626';
+      corPreenchimento = '#ef4444';
+    } else if (status === 'Atenção' || status === 'Em análise') {
+      corBorda = '#ea580c';
+      corPreenchimento = '#f97316';
     }
 
+    return {
+      color: corBorda,
+      weight: 2,
+      fillColor: corPreenchimento,
+      fillOpacity: 0.3,
+      dashArray: status === 'Em análise' ? '5, 5' : undefined
+    };
   }
 
-  private criarPopup(feature: any, layer: any): void {
-
-    const p = feature.properties;
-
-    layer.bindPopup(`
-
-      <div style="font-family:Inter;padding:8px;min-width:220px;">
-
-        <h4 style="margin:0 0 8px 0;">
-          Gleba ${p.id_gleba}
-        </h4>
-
-        <b>Cultura:</b> ${p.cultura}<br>
-
-        <b>Área:</b> ${Number(p.area).toFixed(2)} ha<br>
-
-        <b>CAR:</b><br>
-
-        <small>${p.codigo_car}</small>
-
-        <hr>
-
-        <b>Status:</b>
-
-        ${p.status}
-
+  private vincularPopupInformativo(feature: any, layer: any): void {
+    const props = feature.properties;
+    const conteudoPopup = `
+      <div class="vmg-map-popup" style="font-family: 'Inter', sans-serif; font-size: 12px; padding: 4px;">
+        <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 13px; font-weight: 700;">Gleba ID: ${props.id_gleba}</h4>
+        <p style="margin: 2px 0; color: #475569;"><strong>Cultura:</strong> ${props.cultura}</p>
+        <p style="margin: 2px 0; color: #475569;"><strong>Área:</strong> ${Number(props.area).toFixed(2)} ha</p>
+        <p style="margin: 2px 0; color: #475569; font-size: 11px; word-break: break-all;"><strong>CAR:</strong> ${props.codigo_car}</p>
+        <div style="margin-top: 6px; padding: 4px; border-radius: 4px; text-align: center; font-weight: 700;
+                    background-color: ${props.status === 'Conforme' ? '#f0fdf4' : '#fff5f5'};
+                    color: ${props.status === 'Conforme' ? '#16a34a' : '#dc2626'};">
+          Status: ${props.status}
+        </div>
       </div>
-
-    `);
-
+    `;
+    layer.bindPopup(conteudoPopup);
   }
 
   ngOnDestroy(): void {
-
     if (this.map) {
-
       this.map.remove();
-
     }
-
   }
-
 }
