@@ -8,9 +8,9 @@ import {
   SimpleChanges
 } from '@angular/core';
 
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import * as WKT from 'terraformer-wkt-parser';
-import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
+import { GlebaGeometriaResponse } from '../../../model/dashboard-produtor.model';
 
 @Component({
   selector: 'app-dashboard-produtor-mapa',
@@ -22,7 +22,7 @@ import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
 })
 export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
-  @Input({required: true})
+  @Input({ required: true })
   glebas: GlebaGeometriaResponse[] = [];
 
   private map: any;
@@ -57,60 +57,66 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
   private async inicializarMapa(): Promise<void> {
 
-    const leaflet = await import('leaflet');
+    try {
 
-    this.L = leaflet.default || leaflet;
+      const leafletModule = await import('leaflet');
 
-    this.map = this.L.map('vmg-leaflet-map', {
+      this.L = leafletModule.default || leafletModule;
 
-      center: [this.latPadrao, this.lonPadrao],
+      this.map = this.L.map('vmg-leaflet-map', {
 
-      zoom: 4,
+        center: [this.latPadrao, this.lonPadrao],
 
-      zoomControl: true
+        zoom: 4,
 
-    });
+        zoomControl: true
 
-    this.L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      });
 
-      {
+      this.L.tileLayer(
 
-        attribution: 'Tiles © Esri',
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
 
-        maxZoom: 19,
+        {
 
-        maxNativeZoom: 18
+          attribution: 'Tiles © Esri',
 
-      }
-    ).addTo(this.map);
+          maxZoom: 19,
 
-    this.geoJsonLayer = this.L.geoJSON(null, {
+          maxNativeZoom: 18
 
-      style: (feature: any) => this.obterEstilo(feature),
+        }
 
-      onEachFeature: (feature: any, layer: any) =>
-        this.criarPopup(feature, layer),
+      ).addTo(this.map);
 
-      coordsToLatLng: (coords: [number, number]) => {
+      this.geoJsonLayer = this.L.geoJSON(null, {
 
-        return this.L.latLng(
-          coords[1],
+        style: (feature: any) => this.obterEstilo(feature),
 
-          coords[0]
-        );
+        onEachFeature: (feature: any, layer: any) =>
+          this.criarPopup(feature, layer),
 
-      }
+        coordsToLatLng: (coords: [number, number]) => {
 
-    }).addTo(this.map);
+          return this.L.latLng(coords[1], coords[0]);
 
-    setTimeout(() => {
+        }
 
-      this.map.invalidateSize(true);
+      }).addTo(this.map);
 
-      this.desenharGlebas();
+      setTimeout(() => {
 
-    }, 300);
+        this.map.invalidateSize(true);
+
+        this.desenharGlebas();
+
+      }, 300);
+
+    } catch (e) {
+
+      console.error(e);
+
+    }
 
   }
 
@@ -127,6 +133,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     if (!this.glebas || this.glebas.length === 0) {
 
       this.map.setView(
+
         [
 
           this.latPadrao,
@@ -136,6 +143,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         ],
 
         4
+
       );
 
       return;
@@ -155,7 +163,9 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       try {
 
         const geometry = WKT.parse(
+
           gleba.geometria
+
         );
 
         features.push({
@@ -180,9 +190,11 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
         });
 
-      } catch (e) {
+      }
 
-        console.error(e);
+      catch (e) {
+
+        console.error("Erro ao converter WKT", e);
 
       }
 
@@ -198,27 +210,55 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
     const bounds = this.geoJsonLayer.getBounds();
 
-    if (bounds.isValid()) {
+    if (!bounds.isValid()) {
+
+      return;
+
+    }
+
+    if (this.glebas.length === 1) {
+
+      const centro = bounds.getCenter();
+
+      this.map.setView(
+
+        [
+
+          centro.lat,
+
+          centro.lng
+
+        ],
+
+        16
+
+      );
+
+    }
+
+    else {
 
       this.map.fitBounds(
+
         bounds,
 
         {
 
           padding: [40, 40],
 
-          maxZoom: 16
+          maxZoom: 15
 
         }
+
       );
 
-      setTimeout(() => {
-
-        this.map.invalidateSize(true);
-
-      }, 100);
-
     }
+
+    setTimeout(() => {
+
+      this.map.invalidateSize(true);
+
+    }, 100);
 
   }
 
@@ -256,7 +296,9 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
           fillColor: '#f97316',
 
-          fillOpacity: 0.35
+          fillOpacity: 0.35,
+
+          dashArray: '5,5'
 
         };
 
@@ -284,11 +326,11 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
     layer.bindPopup(`
 
-      <div style="font-family:Inter;padding:6px">
+      <div style="font-family:Inter;padding:8px;min-width:220px;">
 
-        <b>Gleba ${p.id_gleba}</b>
-
-        <hr>
+        <h4 style="margin:0 0 8px 0;">
+          Gleba ${p.id_gleba}
+        </h4>
 
         <b>Cultura:</b> ${p.cultura}<br>
 
@@ -296,7 +338,9 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
         <b>CAR:</b><br>
 
-        ${p.codigo_car}<br><br>
+        <small>${p.codigo_car}</small>
+
+        <hr>
 
         <b>Status:</b>
 
