@@ -1,0 +1,14 @@
+<div class="vmg-widget-map-header">
+  <div class="header-left">
+    <h3>Situação Ambiental</h3>
+    <p>Visualização geoespacial das glebas registradas (CRS EPSG:4326)</p>
+  </div>
+  <div class="header-right">
+    <span class="map-badge-total">{{ glebas.length }} Camadas</span>
+  </div>
+</div>
+
+<!-- Div mestre onde a biblioteca do Leaflet injetará o mapa físico -->
+<div class="vmg-map-viewport-wrapper">
+  <div id="vmg-leaflet-map" class="leaflet-map-canvas"></div>
+</div>

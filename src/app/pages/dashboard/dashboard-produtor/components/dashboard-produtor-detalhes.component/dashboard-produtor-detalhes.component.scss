@@ -1,0 +1,51 @@
+.vmg-dashboard-row-two {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 1.5rem;
+  align-items: stretch; // Garante que todos terminem na mesma altura no rodapé
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+
+  .vmg-widget-col {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+    display: flex;
+    flex-direction: column;
+    min-height: 520px; // Aumentado levemente para acomodar confortavelmente o subtítulo da tabela
+
+    // Força o alinhamento cirúrgico de todas as tags h3 e p de cabeçalho dos widgets filhos
+    ::ng-deep {
+      .vmg-widget-table-header,
+      .vmg-widget-status-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.25rem; // Espaçamento fixo entre o título e o conteúdo (tabela/gráfico)
+        font-family: 'Inter', sans-serif;
+
+        .header-left {
+          h3 {
+            margin: 0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+          }
+          p {
+            margin: 2px 0 0 0;
+            font-size: 0.75rem;
+            color: #94a3b8;
+          }
+        }
+      }
+    }
+  }
+}

@@ -15,6 +15,9 @@ import { DashboardProdutorService } from '../service/dashboard-produtor.service'
 import { PessoaService } from '../../../service/pessoa.service';
 import { RespostaDashboardProdutor } from '../model/dashboard-produtor.model';
 import { DashboardProdutorResumoComponent } from './components/dashboard-produtor-resumo.component/dashboard-produtor-resumo.component';
+import {
+  DashboardProdutorDetalhesComponent
+} from './components/dashboard-produtor-detalhes.component/dashboard-produtor-detalhes.component';
 
 @Component({
   selector: 'app-dashboard-produtor',
@@ -28,7 +31,8 @@ import { DashboardProdutorResumoComponent } from './components/dashboard-produto
     MatNativeDateModule,
     MatButtonModule,
     MatIconModule,
-    DashboardProdutorResumoComponent
+    DashboardProdutorResumoComponent,
+    DashboardProdutorDetalhesComponent,
     // Adicione aqui os futuros widgets da tela do produtor (ex: Tabelas, Gráficos)
   ],
   templateUrl: './dashboard-produtor.html',

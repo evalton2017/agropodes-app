@@ -1,0 +1,38 @@
+// Estilos de Destaque da Tabela
+.vmg-minimal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+
+  th { text-align: left; padding: 0.75rem 0.5rem; color: #64748b; font-weight: 600; border-bottom: 1px solid #f1f5f9; }
+  td { padding: 0.65rem 0.5rem; border-bottom: 1px solid #f8fafc; color: #0f172a; }
+  .text-right { text-align: right; }
+  .font-bold { font-weight: 600; }
+  .text-muted { color: #64748b; }
+}
+
+.vmg-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  &.badge-success { background: #f0fdf4; color: #16a34a; }
+  &.badge-warning { background: #fff7ed; color: #ea580c; }
+  &.badge-danger { background: #fff5f5; color: #dc2626; }
+}
+
+.vmg-table-footer-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: auto; // Empurra o banner fixo para o rodapé do card
+
+  h4 { margin: 0; font-size: 0.9rem; color: #15803d; font-weight: 700; }
+  p { margin: 0; font-size: 0.75rem; color: #64748b; }
+  .score-pct { font-size: 1.75rem; font-weight: 800; color: #16a34a; }
+}

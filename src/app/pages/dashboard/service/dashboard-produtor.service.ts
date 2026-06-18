@@ -3,7 +3,11 @@ import { Injectable } from '@angular/core';
 import {map, Observable} from 'rxjs';
 import { FiltrosDashboard } from './dashboard-filtro.service';
 import {environment} from '../../../../environments/environment';
-import {RespostaDashboardProdutor} from '../model/dashboard-produtor.model';
+import {
+  GlebaGeometriaResponse, RespostaConformidadeAmbientalDTO,
+  RespostaDashboardProdutor,
+  RespostaStatusAtividades
+} from '../model/dashboard-produtor.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +32,22 @@ export class DashboardProdutorService {
         conformidade_ambiental_pct: Number(dados.conformidade_ambiental_pct)
       }))
     );
+  }
+
+  // Endpoint 1: Mapa (Camada Geográfica)
+  obterGlebasGeometria(idProdutor: number): Observable<GlebaGeometriaResponse[]> {
+    return this.http.get<GlebaGeometriaResponse[]>(`${environment.urlProc}/produtor/${idProdutor}/glebas`);
+  }
+
+  // Endpoint 2: Tabela de Critérios
+  obterConformidadeAmbiental(idProdutor: number, filtros: FiltrosDashboard): Observable<RespostaConformidadeAmbientalDTO> {
+    let params = new HttpParams().set('idProdutor', idProdutor.toString()).set('safra', filtros.safra || '2025/2026');
+    return this.http.get<RespostaConformidadeAmbientalDTO>(`${this.baseUrl}/conformidade-ambiental`, { params });
+  }
+
+  // Endpoint 3: Pizza & Atividades
+  obterStatusEAtividades(idProdutor: number, filtros: FiltrosDashboard): Observable<RespostaStatusAtividades> {
+    let params = new HttpParams().set('idProdutor', idProdutor.toString()).set('safra', filtros.safra || '2025/2026');
+    return this.http.get<RespostaStatusAtividades>(`${this.baseUrl}/status-atividades`, { params });
   }
 }

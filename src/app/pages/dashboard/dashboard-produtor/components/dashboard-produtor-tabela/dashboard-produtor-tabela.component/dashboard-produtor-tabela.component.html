@@ -1,0 +1,45 @@
+<div class="vmg-widget-table-header">
+  <div class="header-left">
+    <h3>Resumo de Conformidade</h3>
+    <p>Matriz de validações socioambientais do ecossistema Ledger</p>
+  </div>
+</div>
+
+
+<div class="vmg-table-responsive">
+  <table class="vmg-minimal-table">
+    <thead>
+    <tr>
+      <th>Critério</th>
+      <th>Status</th>
+      <th class="text-right">Área (ha)</th>
+      <th class="text-right">%</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (item of conformidade.criterios; track item.criterio) {
+        <tr>
+          <td class="font-bold">{{ item.criterio }}</td>
+          <td>
+            <span class="vmg-badge" [ngClass]="{
+              'badge-success': item.status === 'Conforme',
+              'badge-warning': item.status === 'Atenção',
+              'badge-danger': item.status === 'Não Conforme'
+            }">✓ {{ item.status }}</span>
+          </td>
+          <td class="text-right text-muted">{{ item.area_ha | number:'1.2-2' }}</td>
+          <td class="text-right font-bold">{{ item.percentual }}%</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<div class="vmg-table-footer-banner">
+  <div class="footer-left">
+    <h4>✓ Conformidade Ambiental Geral</h4>
+    <p>Com base nas validações da safra atual</p>
+  </div>
+  <div class="footer-right">
+    <span class="score-pct">{{ conformidade.conformidade_geral_pct }}%</span>
+  </div></div>

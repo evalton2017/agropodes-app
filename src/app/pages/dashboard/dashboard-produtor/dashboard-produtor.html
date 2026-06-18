@@ -33,14 +33,11 @@
     </div>
   </div>
 
-  <!-- Renderização Reativa dos Componentes Filhos -->
   <div class="dashboard-content-body">
     @if (dadosProdutor()) {
       <app-dashboard-produtor-resumo [dados]="dadosProdutor()!"></app-dashboard-produtor-resumo>
 
-      <!-- 💡 Próximos componentes (Widgets) lerão do mesmo serviço e se encaixarão aqui automaticamente -->
-        <!-- <app-dashboard-produtor-tabelas></app-dashboard-produtor-tabelas> -->
-
+      <app-dashboard-produtor-detalhes></app-dashboard-produtor-detalhes>
     } @else {
       <div class="vmg-loading-box">
         <div class="vmg-spinner"></div>

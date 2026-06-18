@@ -1,0 +1,22 @@
+<div class="vmg-dashboard-row-two">
+
+  <!-- Componente 1: Mapa da Situação Ambiental -->
+  <div class="vmg-widget-col col-mapa">
+    <app-dashboard-produtor-mapa [glebas]="dadosMapa()"></app-dashboard-produtor-mapa>
+  </div>
+
+  <!-- Componente 2: Tabela de Resumo de Conformidade -->
+  <div class="vmg-widget-col col-tabela">
+    @if (dadosTabela()) {
+      <app-dashboard-produtor-tabela [conformidade]="dadosTabela()!"></app-dashboard-produtor-tabela>
+    }
+  </div>
+
+  <!-- Componente 3: Status das Glebas e Atividades -->
+  <div class="vmg-widget-col col-status">
+    @if (dadosStatusAtividades()) {
+      <app-dashboard-produtor-status-atividades [dados]="dadosStatusAtividades()!"></app-dashboard-produtor-status-atividades>
+    }
+  </div>
+
+</div>

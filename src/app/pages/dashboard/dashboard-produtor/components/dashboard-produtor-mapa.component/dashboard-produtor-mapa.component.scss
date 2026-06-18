@@ -1,0 +1,90 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.vmg-widget-map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  font-family: 'Inter', sans-serif;
+
+  .header-left {
+    h3 {
+      margin: 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    p {
+      margin: 2px 0 0 0;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+  }
+
+  .map-badge-total {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+  }
+}
+
+.vmg-map-viewport-wrapper {
+  width: 100%;
+  flex-grow: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  position: relative;
+  min-height: 380px;
+
+  .leaflet-map-canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background-color: #0b0f19; // Tom escuro de fundo enquanto as imagens de satélite carregam
+  }
+}
+
+// Customização de elementos internos injetados pelo Leaflet para seguir o design do Agro Brasil
+::ng-deep {
+  .leaflet-bar {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    border-radius: 6px !important;
+    overflow: hidden;
+
+    a {
+      background-color: #ffffff !important;
+      color: #334155 !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+      font-weight: 700 !important;
+
+      &:hover {
+        background-color: #f8fafc !important;
+        color: #16a34a !important; // Realce verde ao passar o mouse nos botões de zoom
+      }
+    }
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+  }
+}
