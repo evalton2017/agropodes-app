@@ -1,7 +1,7 @@
 import {Component, input, ViewEncapsulation} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { EventoClimatico, UltimoAtestado } from '../../model/dashboard.model';
+import { EventoClimatico, UltimoAtestado } from '../../model/dashboard-analista.model';
 
 @Component({
   selector: 'app-dashboard-tabelas',

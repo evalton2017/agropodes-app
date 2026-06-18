@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { finalize } from 'rxjs/operators';
 import { DashboardAnalistaService } from '../../service/dashboard-analista.service';
 import { DashboardFiltroService } from '../../service/dashboard-filtro.service';
-import { AlertaCritico } from '../../model/dashboard.model';
+import { AlertaCritico } from '../../model/dashboard-analista.model';
 
 @Component({
   selector: 'app-dashboard-alertas',

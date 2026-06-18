@@ -1,0 +1,66 @@
+.dashboard-produtor-main {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  font-family: 'Inter', sans-serif;
+
+  .vmg-filter-bar-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+
+    .filter-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      .vmg-mat-field {
+        margin-bottom: -1.25rem; // Neutraliza o espaçamento inferior nativo do material form-field
+        min-width: 180px;
+      }
+
+      .vmg-btn-filter {
+        background-color: #16a34a !important; // Cor padrão Agro Brasil
+        height: 48px;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .dashboard-content-body {
+    width: 100%;
+
+    .vmg-loading-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem;
+
+      p {
+        margin-top: 1rem;
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      .vmg-spinner {
+        width: 36px;
+        height: 36px;
+        border: 4px solid #e2e8f0;
+        border-top-color: #16a34a;
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

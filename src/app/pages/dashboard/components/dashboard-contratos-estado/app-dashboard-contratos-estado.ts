@@ -4,7 +4,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {finalize} from 'rxjs/operators';
 import {DashboardAnalistaService} from '../../service/dashboard-analista.service';
 import {DashboardFiltroService} from '../../service/dashboard-filtro.service';
-import {DataEstado} from '../../model/dashboard.model';
+import {DataEstado} from '../../model/dashboard-analista.model';
 import Chart from 'chart.js/auto';
 
 @Component({

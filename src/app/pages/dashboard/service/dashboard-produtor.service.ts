@@ -1,99 +1,32 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {map, Observable} from 'rxjs';
+import { FiltrosDashboard } from './dashboard-filtro.service';
 import {environment} from '../../../../environments/environment';
-import {
-  AlertaCritico,
-  CulturaData,
-  EventoClimatico,
-  FiltrosDashboard,
-  GraficoData,
-  KpisDashboard, ResumoClimatico,
-  UltimoAtestado,
-} from '../model/dashboard.model';
+import {RespostaDashboardProdutor} from '../model/dashboard-produtor.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class DashboardAnalistaService {
+export class DashboardProdutorService {
 
-  private readonly baseUrl = `${environment.urlProc}/dashboard`;
+  private readonly baseUrl = `${environment.urlProc}/dashboard-produtor`;
 
   constructor(private readonly http: HttpClient) { }
 
-  private obterParametrosFiltro(filtros: FiltrosDashboard): HttpParams {
-    let params = new HttpParams();
+  obterResumoProdutor(idProdutor: number, filtros: FiltrosDashboard): Observable<RespostaDashboardProdutor> {
+    let params = new HttpParams().set('idProdutor', idProdutor.toString());
     const safraLimpa = filtros?.safra ? filtros.safra.trim() : '2025/2026';
     params = params.set('safra', safraLimpa);
-    if (filtros?.estado && filtros.estado !== 'Todos') {
-      params = params.set('estado', filtros.estado.trim());
-    } else {
-      params = params.set('estado', 'Todos');
-    }
-    return params;
+
+    return this.http.get<RespostaDashboardProdutor>(`${this.baseUrl}/resumo`, { params }).pipe(
+      map(dados => ({
+        ...dados,
+        area_conforme_ha: Number(dados.area_conforme_ha),
+        area_total_ha: Number(dados.area_total_ha),
+        glebas_monitoradas_pct: Number(dados.glebas_monitoradas_pct),
+        conformidade_ambiental_pct: Number(dados.conformidade_ambiental_pct)
+      }))
+    );
   }
-
-  obterDashboardKbpis(filtros: FiltrosDashboard): Observable<KpisDashboard> {
-    const params = this.obterParametrosFiltro(filtros);
-    return this.http.get<KpisDashboard>(`${this.baseUrl}/consolidado`, { params });
-  }
-
-  obterDashboardDistribuicaoEstado(filtros: FiltrosDashboard): Observable<GraficoData> {
-    return this.http.get<GraficoData>(`${this.baseUrl}/grafico/estados?safra=${filtros.safra}`);
-  }
-
-  obterDashboardCultura(filtros: FiltrosDashboard): Observable<CulturaData> {
-    const params = this.obterParametrosFiltro(filtros);
-    return this.http.get<CulturaData>(`${this.baseUrl}/grafico/culturas?safra=${filtros.safra}`, { params });
-  }
-
-  obterDashboardAlertas(): Observable<AlertaCritico[]> {
-    return this.http.get<AlertaCritico[]>(`${this.baseUrl}/alertas`);
-  }
-
-  obterDashboardAtestados(): Observable<UltimoAtestado[]> {
-    return this.http.get<UltimoAtestado[]>(`${this.baseUrl}/atestados`);
-  }
-
-  obterHeatmap(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/heatmap`);
-  }
-
-  getEventosClimaticos(): Observable<EventoClimatico[]> {
-    return this.http.get<EventoClimatico[]>(`${this.baseUrl}/eventos-climaticos`);
-  }
-
-  getUltimosAtestados(): Observable<UltimoAtestado[]> {
-    return this.http.get<UltimoAtestado[]>(`${this.baseUrl}/ultimos-atestados`);
-  }
-
-
-  // ==========================================
-  // 🚀 NOVAS REQUISIÇÕES DE INTELIGÊNCIA ARTIFICIAL E TIMELINE
-  // ==========================================
-
-  obterIaAnaliseAmbiental(filtros: FiltrosDashboard): Observable<any> {
-    const params = this.obterParametrosFiltro(filtros);
-    return this.http.get<any>(`${this.baseUrl}/analise-ambiental`, { params });
-  }
-
-  obterIaClassificacaoCulturas(filtros: FiltrosDashboard): Observable<any> {
-    const params = this.obterParametrosFiltro(filtros);
-    return this.http.get<any>(`${this.baseUrl}/ia-classificacao`, { params });
-  }
-
-  obterIaProdutividadeEstimada(filtros: FiltrosDashboard): Observable<any> {
-    const params = this.obterParametrosFiltro(filtros);
-    return this.http.get<any>(`${this.baseUrl}/produtividade-estimada`, { params });
-  }
-
-  obterIaResumoClimatico(filtros: FiltrosDashboard): Observable<ResumoClimatico> {
-    const params = this.obterParametrosFiltro(filtros);
-    return this.http.get<ResumoClimatico>(`${this.baseUrl}/resumo-climatico`, { params });
-  }
-
-  obterTimelineGleba(idGleba: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/timeline/${idGleba}`);
-  }
-
 }

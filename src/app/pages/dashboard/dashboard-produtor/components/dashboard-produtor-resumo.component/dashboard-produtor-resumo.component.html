@@ -1,0 +1,86 @@
+<div class="vmg-welcome-banner">
+  <h2>Olá, {{ dados.produtor_nome }}! 👋</h2>
+  <p>Aqui está o resumo da conformidade e do monitoramento das suas propriedades.</p>
+</div>
+
+<div class="vmg-kpi-container">
+
+  <!-- Card 1: Glebas Ativas -->
+  <div class="vmg-card">
+    <div class="card-icon icon-green">
+      <!-- Ícone de Folha/Natureza -->
+      <mat-icon>eco</mat-icon>
+    </div>
+    <div class="card-content">
+      <h3 class="text-green">Glebas Ativas</h3>
+      <span class="value">{{ dados.glebas_ativas_total }}</span>
+      <p class="card-subtext">{{ dados.glebas_monitoradas_pct }}% monitoradas</p>
+    </div>
+  </div>
+
+  <!-- Card 2: Conformidade Ambiental -->
+  <div class="vmg-card">
+    <div class="card-icon icon-green">
+      <!-- Ícone de Escudo/Proteção -->
+      <mat-icon>verified_user</mat-icon>
+    </div>
+    <div class="card-content">
+      <h3 class="text-green">Conformidade Ambiental</h3>
+      <span class="value">{{ dados.conformidade_ambiental_pct }}%</span>
+      <p class="card-subtext">Área conforme: {{ (dados.area_conforme_ha || 0) | number:'1.2-2' }} ha</p>
+    </div>
+  </div>
+
+  <!-- Card 3: Área Total -->
+  <div class="vmg-card">
+    <div class="card-icon icon-blue">
+      <!-- Ícone de Planta/Crescimento -->
+      <mat-icon>grass</mat-icon>
+    </div>
+    <div class="card-content">
+      <h3 class="text-blue">Área Total</h3>
+      <span class="value">{{ (dados.area_total_ha || 0) | number:'1.2-2' }} ha</span>
+      <p class="card-subtext">Em {{ dados.total_municipios }} municípios</p>
+    </div>
+  </div>
+
+  <!-- Card 4: Atestados Emitidos -->
+  <div class="vmg-card">
+    <div class="card-icon icon-purple">
+      <!-- Ícone de Documento/Certificado -->
+      <mat-icon>assignment</mat-icon>
+    </div>
+    <div class="card-content">
+      <h3 class="text-purple">Atestados Emitidos</h3>
+      <span class="value">{{ dados.atestados_emitidos_total }}</span>
+      <p class="card-subtext">Nesta safra</p>
+    </div>
+  </div>
+
+  <!-- Card 5: Alertas -->
+  <div class="vmg-card" [class.vmg-card-alert]="dados.alertas_total > 0">
+    <div class="card-icon icon-orange">
+      <!-- Ícone de Alerta/Atenção -->
+      <mat-icon>warning</mat-icon>
+    </div>
+    <div class="card-content">
+      <h3 class="text-orange">Alertas</h3>
+      <span class="value" [class.text-red]="dados.alertas_total > 0">{{ dados.alertas_total }}</span>
+      <p class="card-subtext">Requerem atenção</p>
+    </div>
+  </div>
+
+  <!-- Card 6: Próxima Validação -->
+  <div class="vmg-card">
+    <div class="card-icon icon-blue-dark">
+      <!-- Ícone de Checagem/Cronograma -->
+      <mat-icon>check_circle</mat-icon>
+    </div>
+    <div class="card-content">
+      <h3 class="text-blue-dark">Próxima Validação</h3>
+      <span class="value date-style">{{ dados.proxima_validacao_data }}</span>
+      <p class="card-subtext">Próxima análise agendada</p>
+    </div>
+  </div>
+
+</div>

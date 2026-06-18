@@ -10,7 +10,7 @@ import {
   GraficoData,
   KpisDashboard, ResumoClimatico,
   UltimoAtestado,
-} from '../model/dashboard.model';
+} from '../model/dashboard-analista.model';
 
 @Injectable({
   providedIn: 'root',

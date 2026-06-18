@@ -1,0 +1,52 @@
+<div class="dashboard-produtor-main">
+
+  <!-- Barra de Filtros Superior Padronizada do Projeto -->
+  <div class="vmg-filter-bar-container">
+    <div class="filter-actions-row">
+
+      <!-- Seletor Angular Material para Safra -->
+      <mat-form-field appearance="outline" class="vmg-mat-field">
+        <mat-label>Safra</mat-label>
+        <mat-select [(value)]="filtroSafra">
+          @for (safra of listaSafras; track safra) {
+            <mat-option [value]="safra">{{ safra }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Seletor de Período Data Range -->
+      <mat-form-field appearance="outline" class="vmg-mat-field">
+        <mat-label>Período de Análise</mat-label>
+        <mat-date-range-input [formGroup]="rangeData" [rangePicker]="picker">
+          <input matStartDate formControlName="inicio" placeholder="Início">
+          <input matEndDate formControlName="fim" placeholder="Fim">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+
+      <!-- Botão de Ação -->
+      <button mat-flat-button color="primary" class="vmg-btn-filter" (click)="aplicarFiltros()">
+        <mat-icon>filter_list</mat-icon> Filtrar
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Renderização Reativa dos Componentes Filhos -->
+  <div class="dashboard-content-body">
+    @if (dadosProdutor()) {
+      <app-dashboard-produtor-resumo [dados]="dadosProdutor()!"></app-dashboard-produtor-resumo>
+
+      <!-- 💡 Próximos componentes (Widgets) lerão do mesmo serviço e se encaixarão aqui automaticamente -->
+        <!-- <app-dashboard-produtor-tabelas></app-dashboard-produtor-tabelas> -->
+
+    } @else {
+      <div class="vmg-loading-box">
+        <div class="vmg-spinner"></div>
+        <p>Sincronizando blocos imutáveis e análises de IA...</p>
+      </div>
+    }
+  </div>
+
+</div>
