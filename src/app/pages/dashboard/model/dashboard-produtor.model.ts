@@ -14,15 +14,18 @@ export interface RespostaDashboardProdutor {
 }
 
 export interface GlebaGeometriaResponse {
-  id_gleba: number;
-  id_produtor: number;
-  codigo_car: string;
+  idGleba: number;
+  idProdutor: number;
+  codigoCar: string;
   geometria: string;
-  area_hectares: number;
-  data_criacao: string;
-  data_estimada_plantio: string;
-  cultura_declarada: string;
-  status_vmg?: string;
+  areaHectares: number;
+  culturaDeclarada: string;
+  dataCriacao: string;
+  dataEstimadaPlantio: string;
+
+  // PROPRIEDADES ANALÍTICAS INCORPORADAS DA API PYTHON:
+  statusVmg: 'CONFORME' | 'ATENCAO' | 'NAO_CONFORME';
+  conformidadePct: number;
 }
 
 export interface ItemStatusPizza {

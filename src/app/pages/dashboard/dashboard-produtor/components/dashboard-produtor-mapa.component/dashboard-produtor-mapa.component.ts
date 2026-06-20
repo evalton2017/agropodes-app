@@ -9,8 +9,8 @@ import {
   OnDestroy,
   SimpleChanges
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { GlebaGeometriaResponse } from '../../../model/dashboard-produtor.model';
+import {CommonModule} from '@angular/common';
+import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
 import * as wktParser from 'terraformer-wkt-parser';
 
 @Component({
@@ -22,13 +22,13 @@ import * as wktParser from 'terraformer-wkt-parser';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
-  @Input({ required: true }) glebas: GlebaGeometriaResponse[] = [];
+  @Input({required: true}) glebas: GlebaGeometriaResponse[] = [];
 
-  private cdr = inject(ChangeDetectorRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   private map: any;
   private geoJsonLayer: any;
-  private legendaControl: any; // 🟢 Control da legenda adicionado
+  private legendaControl: any;
   private LeafletCore: any;
 
   private readonly latPadrao = -13.975810;
@@ -77,7 +77,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         }
       }).addTo(this.map);
 
-      // 🟢 Cria a instância do controle da legenda nativa no canto inferior esquerdo
       this.inicializarControleLegenda();
 
       if (this.glebas && this.glebas.length > 0) {
@@ -89,11 +88,10 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     }
   }
 
-  // 🟢 Método para instanciar a estrutura do controle no mapa
   private inicializarControleLegenda(): void {
     if (!this.map || !this.LeafletCore) return;
 
-    this.legendaControl = new this.LeafletCore.Control({ position: 'bottomleft' });
+    this.legendaControl = new this.LeafletCore.Control({position: 'bottomleft'});
 
     this.legendaControl.onAdd = () => {
       // Cria a div injetando a classe CSS do SCSS
@@ -103,32 +101,32 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     this.legendaControl.addTo(this.map);
   }
 
-  // 🟢 Método responsável por contar e redesenhar os valores na tela
   private atualizarHTMLLegenda(): void {
     if (!this.legendaControl) return;
 
     const container = this.legendaControl.getContainer();
     if (!container) return;
 
-    // Normalização dos contadores baseada na sua lógica de cores/estilo
-    const totalConforme = this.glebas.filter(g => !g.status_vmg || g.status_vmg === 'Conforme').length;
-    const totalAtencao = this.glebas.filter(g => g.status_vmg === 'Atenção' || g.status_vmg === 'Em análise').length;
-    const totalNaoConforme = this.glebas.filter(g => g.status_vmg === 'Não conforme' || g.status_vmg === 'Bloqueada').length;
+    // CORREÇÃO CRÍTICA: Filtros adaptados para o padrão literal de string da API Python (Upper Case)
+    const totalConforme = this.glebas.filter(g => !g.statusVmg || g.statusVmg === 'CONFORME').length;
+    const totalAtencao = this.glebas.filter(g => g.statusVmg === 'ATENCAO').length;
+    const totalNaoConforme = this.glebas.filter(g => g.statusVmg === 'NAO_CONFORME').length;
 
+    // Monta a estrutura HTML interna mantendo as classes CSS originais de estilização do Agro Brasil
     container.innerHTML = `
-      <div class="legend-item">
-        <span class="legend-color conforme"></span>
-        Conforme (${totalConforme})
-      </div>
-      <div class="legend-item">
-        <span class="legend-color atencao"></span>
-        Atenção (${totalAtencao})
-      </div>
-      <div class="legend-item">
-        <span class="legend-color nao-conforme"></span>
-        Não Conforme (${totalNaoConforme})
-      </div>
-    `;
+    <div class="legend-item">
+      <span class="legend-color conforme"></span>
+      Conforme (${totalConforme})
+    </div>
+    <div class="legend-item">
+      <span class="legend-color atencao"></span>
+      Atenção (${totalAtencao})
+    </div>
+    <div class="legend-item">
+      <span class="legend-color nao-conforme"></span>
+      Não Conforme (${totalNaoConforme})
+    </div>
+  `;
   }
 
   private desenharPoligonosGlebas(): void {
@@ -146,11 +144,12 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
           type: 'Feature',
           geometry: geoJsonGeometria,
           properties: {
-            id_gleba: gleba.id_gleba,
-            codigo_car: gleba.codigo_car,
-            area: gleba.area_hectares,
-            cultura: gleba.cultura_declarada,
-            status: gleba.status_vmg || 'Conforme'
+            id_gleba: gleba.idGleba,
+            codigo_car: gleba.codigoCar,
+            area: gleba.areaHectares,
+            cultura: gleba.culturaDeclarada,
+            // Garante que o status vá rigorosamente em caixa alta
+            status: gleba.statusVmg ? gleba.statusVmg.toUpperCase() : 'CONFORME'
           }
         });
       } catch (error) {
@@ -159,18 +158,47 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     });
 
     if (recursosGeoJson.length > 0) {
+      // 1. Alimenta as feições espaciais na camada GeoJSON primeiro
       this.geoJsonLayer.addData({
         type: 'FeatureCollection',
         features: recursosGeoJson
       } as any);
 
-      // 🟢 Atualiza os dados de texto da legenda sempre que o mapa plotar as feições
+      // 2. CORREÇÃO CRÍTICA: Aplica a função de estilo LOGO APÓS os dados existirem na camada
+      this.geoJsonLayer.setStyle((feature: any) => {
+        const statusVmg = feature?.properties?.status;
+
+        if (statusVmg === 'NAO_CONFORME') {
+          return {
+            color: '#dc2626',       // Borda Vermelha (Inconformidade Crítica)
+            fillColor: '#ef4444',   // Preenchimento Vermelho translúcido
+            fillOpacity: 0.35,
+            weight: 2
+          };
+        } else if (statusVmg === 'ATENCAO') {
+          return {
+            color: '#ea580c',       // Borda Laranja
+            fillColor: '#f97316',   // Preenchimento Laranja
+            fillOpacity: 0.35,
+            weight: 2
+          };
+        } else {
+          return {
+            color: '#16a34a',       // Borda Verde Agro Brasil
+            fillColor: '#22c55e',   // Preenchimento Verde
+            fillOpacity: 0.3,
+            weight: 2
+          };
+        }
+      });
+
+      // 3. Atualiza os dados de texto da legenda em perfeita sincronia
       this.atualizarHTMLLegenda();
 
       const limites = this.geoJsonLayer.getBounds();
       if (limites.isValid()) {
         setTimeout(() => {
-          this.map.fitBounds(limites, { padding: [30, 30] });
+          this.map.fitBounds(limites, {padding: [30, 30]});
           this.map.invalidateSize();
           this.cdr.detectChanges();
         }, 50);
