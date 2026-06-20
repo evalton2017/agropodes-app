@@ -258,6 +258,8 @@ export class CadastroGlebaComponent implements OnInit {
     const payload = {
       ...this.formWizard.getRawValue(),
       id_produtor: produtorAtual.id,
+      data_estimada_plantio: this.converterData(this.formWizard.get('data_estimada_plantio')?.value),
+      data_estimada_colheita: this.converterData(this.formWizard.get('data_estimada_colheita')?.value),
       area_hectares: this.areaCalculadaMapa()?.area_hectares || 0,
       ip_origem: '127.0.0.1',
       dispositivo_token: 'angular_ssr_token_2026'
@@ -273,6 +275,14 @@ export class CadastroGlebaComponent implements OnInit {
         this.erroMensagem.set(err.error?.detail || 'Erro ao registrar.');
       }
     });
+  }
+
+  converterData(dataBR: string): string {
+    // Separa o dia, mês e ano
+    const [dia, mes, ano] = dataBR.split('/');
+
+    // Retorna no formato yyyy-mm-dd
+    return `${ano}-${mes}-${dia}`;
   }
 
   avancarPasso(): void {
