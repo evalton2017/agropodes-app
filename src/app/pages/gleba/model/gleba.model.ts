@@ -22,12 +22,25 @@ export interface MunicipioResponse {
   estado: string;
 }
 
-export interface FiltrosAgricolasResponse {
-  safras: string[];
-  culturas: string[];
+export interface ValidarZarcSimplificadoResponse {
+  status_validacao: 'CONFORME' | 'INCONFORME';
+  mensagem: string;
 }
 
-export interface CalculoAreaResponse {
-  area_hectares: number;
-  perimetro_metros: number;
+
+export interface JanelaSugerida {
+  decendio: number;
+  periodo_sugerido: string;
+  risco_pct: number;
 }
+
+export interface JanelaGeralZarcResponse {
+  cultura: string;
+  municipio_ibge: number;
+  data_inicio_permitida: string; // Formato ISO "YYYY-MM-DD"
+  data_fim_permitida: string;    // Formato ISO "YYYY-MM-DD"
+  sugestoes_janelas_plantio: JanelaSugerida[];
+  mensagem_auxiliar: string;
+}
+
+

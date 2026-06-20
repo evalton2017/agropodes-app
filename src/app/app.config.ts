@@ -7,7 +7,7 @@ import { routes } from './app.routes';
 import { provideNgxMask } from 'ngx-mask';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { loadingInterceptor } from './interceptor/loading-interceptor';
-
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { environment } from '../environments/environment';
 
 import Keycloak from 'keycloak-js';
@@ -38,6 +38,7 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
       provideZonelessChangeDetection(),
       provideNgxMask(),
       importProvidersFrom(MatSnackBarModule),
+      provideNativeDateAdapter(),
 
       provideHttpClient(
         withFetch(),

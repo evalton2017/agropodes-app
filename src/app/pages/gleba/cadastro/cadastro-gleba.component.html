@@ -117,7 +117,7 @@
       </mat-step>
 
       <!-- ========================================== -->
-      <!-- 4º PASSO: INFORMAÇÕES AGRÍCOLAS -->
+      <!-- 4º PASSO: INFORMAÇÕES AGRÍCOLAS            -->
       <!-- ========================================== -->
       <mat-step [completed]="isPasso4Valido">
         <form [formGroup]="formWizard">
@@ -127,10 +127,11 @@
 
             <div class="form-grid-2-columns">
               <div class="grid-column">
+                <!-- 1. Cultura Principal: Ao mudar, aciona as janelas do banco -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Cultura Principal *</mat-label>
-                  <mat-select formControlName="cultura_declarada">
-                    <mat-option value="c">Selecione...</mat-option>
+                  <mat-select formControlName="cultura_declarada" (selectionChange)="carregarSugestoesZarc()">
+                    <mat-option value="">Selecione...</mat-option>
                     @for (c of filtrosAgricolas(); track c) {
                       <mat-option [value]="c.nome">{{ c.nome }}</mat-option>
                     }
@@ -150,15 +151,93 @@
 
               <div class="grid-column">
                 <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Volume Declarado Comercializar *</mat-label>
+                  <input matInput type="number" formControlName="volume_declarado_comercializar">
+                </mat-form-field>
+              </div>
+
+              <!-- 2. Data de Plantio Obrigatória Guiada por Clique (Readonly total) -->
+              <div class="grid-column">
+                <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Data Estimada de Plantio *</mat-label>
-                  <input matInput type="date" formControlName="data_estimada_plantio">
+                  <input matInput formControlName="data_estimada_plantio" placeholder="Selecione um período abaixo..." readonly>
+                  <mat-icon matSuffix color="primary">lock_clock</mat-icon>
+                </mat-form-field>
+              </div>
+
+              <!-- 3. Data de Colheita Automática -->
+              <div class="grid-column">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Data Estimada da Colheita (Cálculo Automático) *</mat-label>
+                  <input matInput formControlName="data_estimada_colheita" readonly>
+                  <mat-icon matSuffix color="primary">lock_clock</mat-icon>
                 </mat-form-field>
               </div>
             </div>
 
-            <div class="actions-row">
-              <button mat-button (click)="voltarPasso()">Voltar</button>
-              <button mat-raised-button color="primary" [disabled]="!isPasso4Valido" (click)="avancarPasso()">Revisar Cadastro</button>
+            <!-- ======================================================= -->
+            <!-- SEÇÃO OBRIGATÓRIA DO CONTRATO ZARC                      -->
+            <!-- ======================================================= -->
+            <div class="zarc-secao-obrigatoria mt-3">
+              <h4 class="zarc-titulo-secao">📅 Períodos Disponíveis pelo ZARC (Risco Máximo 20%)</h4>
+              <p class="zarc-subtitulo-secao">Obrigatório selecionar um intervalo abaixo para habilitar o preenchimento das datas:</p>
+
+              @if (carregandoSugestoes()) {
+                <div class="zarc-loading-container">
+                  <mat-spinner diameter="30"></mat-spinner>
+                  <span>Buscando janelas climáticas oficiais no banco...</span>
+                </div>
+              }
+
+              @if (sugestoesZarcDisponiveis(); as infoZarc) {
+                <div class="grid-sugestoes-zarc animate-fade-in">
+                  @for (janela of infoZarc.sugestoes_janelas_plantio; track janela.decendio) {
+                    <div class="card-sugestao-clicavel"
+                         [class.selected]="decendioSelecionado() === janela.decendio"
+                         (click)="selecionarJanelaObrigatoria(janela)"
+                         matRipple>
+
+                      <div class="card-left-info">
+                        <span class="periodo-badge-calendar">📅 {{ janela.periodo_sugerido }}</span>
+                        <small class="decendio-sub">Decêndio {{ janela.decendio }} • {{ infoZarc.cultura }}</small>
+                      </div>
+
+                      <div class="card-right-status">
+                        <span class="tag-risco risco-baixo">Risco: {{ janela.risco_pct }}%</span>
+                        <mat-icon class="arrow-forward">
+                          {{ decendioSelecionado() === janela.decendio ? 'check_circle' : 'chevron_right' }}
+                        </mat-icon>
+                      </div>
+
+                    </div>
+                  } @empty {
+                    <div class="empty-zarc-state">⚠️ Nenhum período de baixo risco localizado para esta cultura neste município.</div>
+                  }
+                </div>
+              } @else if (!carregandoSugestoes() && !formWizard.get('cultura_declarada')?.value) {
+                <div class="info-alert-zarc">💡 Selecione a <strong>Cultura Principal</strong> para carregar os períodos de plantio autorizados do ZARC.</div>
+              }
+            </div>
+
+            <!-- PAINEL DE RETORNO DO BACK-END CASO OCORRA OUTRA ATUALIZAÇÃO -->
+            @if (statusZarc(); as resultado) {
+              <div class="zarc-feedback-panel mt-3" [ngClass]="resultado.status_validacao === 'CONFORME' ? 'success' : 'error'">
+                <div class="zarc-header-row">
+                  <mat-icon svgIcon="{{ resultado.status_validacao === 'CONFORME' ? 'vmg-seta-subir' : 'vmg-seta-descer' }}"></mat-icon>
+                  <strong>Validação Final: {{ resultado.status_validacao }}</strong>
+                </div>
+                <p class="zarc-main-msg">{{ resultado.mensagem }}</p>
+              </div>
+            }
+
+            <div class="actions-row mt-4">
+              <button mat-button type="button" (click)="voltarPasso()">Voltar</button>
+              <button mat-raised-button
+                      color="primary"
+                      [disabled]="!formWizard.valid"
+                      (click)="executarEnvioFinalCadastro()">
+                Revisar Cadastro
+              </button>
             </div>
           </div>
         </form>

@@ -1,0 +1,77 @@
+<div class="consulta-car-container">
+
+  <!-- Formulário de Filtro Nativo -->
+  <div class="card filter-card">
+    <div class="card-header">
+      <h2>Consulta CAR Nacional</h2>
+    </div>
+
+    <div class="card-content">
+      <form [formGroup]="filterForm" (ngSubmit)="pesquisar()" class="filter-form">
+        <div class="form-group">
+          <label for="codigoCar">Código CAR</label>
+          <input id="codigoCar"
+                 type="text"
+                 formControlName="codigoCar"
+                 [mask]="carMask"
+                 [dropSpecialCharacters]="false"
+                 [specialCharacters]="['-']"
+                 style="text-transform: uppercase;"
+                 placeholder="DF-5300108-40289181C3CA4753905FBA898C3CAE90">
+        </div>
+
+        <div class="actions-container">
+          <button class="btn btn-secondary" type="button" (click)="limpar()">
+            Limpar
+          </button>
+          <button class="btn btn-primary" type="submit" [disabled]="!filterForm.value.codigoCar">
+            Pesquisar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tabela Nativa de Resultados -->
+  <div class="card table-card" *ngIf="dadosCar.length > 0">
+    <div class="card-content">
+      <div class="table-responsive">
+        <table class="native-table">
+          <thead>
+          <tr>
+            <th>Código do Imóvel</th>
+            <th>Status</th>
+            <th>Área Total (ha)</th>
+            <th>Reserva Legal</th>
+            <th>Geometria</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let element of dadosCar">
+            <td>
+              <div class="codigo-imovel-cell">
+                <span>{{ element.cod_imovel }}</span>
+                <button class="btn-icon" type="button" (click)="copiarCodigo(element.cod_imovel)" title="Copiar código">
+                  📋
+                </button>
+              </div>
+            </td>
+            <td>
+              <!-- CORREÇÃO 1: Substituído 'element.status?.toLowerCase()' por 'element.status.toLowerCase()' -->
+              <span class="badge" [ngClass]="element.status.toLowerCase()">
+                {{ element.status }}
+              </span>
+            </td>
+            <td>{{ element.area_total_declarada_ha | number:'1.2-4' }}</td>
+            <td>
+              {{ element.detalhamento_ambiental.reserva_legal ? 'Possui' : 'Não Informado' }}
+            </td>
+            <td class="truncate-cell" [title]="element.geometria">{{ element.geometria }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

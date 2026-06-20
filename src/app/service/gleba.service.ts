@@ -1,11 +1,14 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { GlebeApiResponse } from '../dto/response/gleba.response';
-import { environment } from '../../environments/environment';
-import { CadastroGlebaResponse } from '../dto/response/cadastro-gleba.response';
-import { AnaliseClimatica } from '../dto/response/analise-climatica';
-import {CarFeicoesAmbientaisResponse, MunicipioResponse} from '../pages/gleba/model/gleba.model';
+import {inject, Injectable, signal} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {map, Observable} from 'rxjs';
+import {GlebeApiResponse} from '../dto/response/gleba.response';
+import {environment} from '../../environments/environment';
+import {CadastroGlebaResponse} from '../dto/response/cadastro-gleba.response';
+import {AnaliseClimatica} from '../dto/response/analise-climatica';
+import {
+  CarFeicoesAmbientaisResponse, JanelaGeralZarcResponse,
+  MunicipioResponse, ValidarZarcSimplificadoResponse
+} from '../pages/gleba/model/gleba.model';
 
 export interface GlebaPainel extends GlebeApiResponse {
   coordenadas: [number, number][];
@@ -18,10 +21,16 @@ export interface CalculoAreaResponse {
   perimetro_metros: number;
 }
 
-export interface FiltrosAgricolasResponse {
-  safras: string[];
-  culturas: string[];
+export interface ValidarZarcRequest {
+  id_gleba: number;
+  municipio_ibge: number;
+  cultura: string;
+  safra: string;
+  volumeDeclaradoComercializar: number;
+  dataEstimadaPlantio: string; // Formato YYYY-MM-DD
+  dataEstimadaColheita: string; // Formato YYYY-MM-DD
 }
+
 
 export interface DominioCultura {
   id: number;
@@ -74,6 +83,18 @@ export class GlebaService {
     return this.http.get<DominioCultura[]>(
       `${environment.urlProc}/produtor/culturas?ativo=true`
     );
+  }
+
+  validarZarcSimplificado(payload: ValidarZarcRequest): Observable<ValidarZarcSimplificadoResponse> {
+    return this.http.post<ValidarZarcSimplificadoResponse>(`${environment.urlProc}/produtor/validar-zarc`, payload);
+  }
+
+  public obtenerJanelaGeralZarc(cultura: string, municipioIbge: number): Observable<JanelaGeralZarcResponse> {
+    const params = new HttpParams()
+      .set('cultura', cultura.trim())
+      .set('municipio_ibge', municipioIbge.toString());
+
+    return this.http.get<JanelaGeralZarcResponse>(`${environment.urlProc}/produtor/janela-geral`, { params });
   }
 
 

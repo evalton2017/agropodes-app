@@ -1,0 +1,45 @@
+<!-- dashboard-produtividade.component.html -->
+<div class="vmg-card-analitico">
+  <div class="card-produtividade-header">
+    <h3>Produtividade Estimada (IA) - Safra {{ dados.safra }}</h3>
+    <span class="unidade-label">sc/ha</span>
+  </div>
+
+  <div class="card-produtividade-layout">
+    <!-- Bloco Esquerdo: Métricas Numéricas Corrigidas Conforme o Protótipo -->
+    <div class="metricas-grid">
+
+      <div class="metrica-item">
+        <span class="metrica-title">Média geral</span>
+        <span class="metrica-value highlight">{{ dados.media_geral_sc_ha }} sc/ha</span>
+      </div>
+
+      <div class="metrica-item">
+        <span class="metrica-title">Volume</span>
+        <!-- Correção da máscara de formatação para evitar caracteres flutuantes -->
+        <span class="metrica-value">{{ dados.volume_total_sacas | number:'1.0-0':'pt-BR' }} sacas</span>
+      </div>
+
+      <div class="metrica-item">
+        <!-- Protótipo: Esta linha indica a produtividade mínima calculada ou totalizador estável -->
+        <span class="metrica-title">Mínima Estimada</span>
+        <span class="metrica-value">{{ (dados.media_geral_sc_ha * 0.8) | number:'1.1-1':'pt-BR' }} sc/ha</span>
+      </div>
+
+      <div class="metrica-item">
+        <span class="metrica-title">Área Total</span>
+        <span class="metrica-value">{{ dados.area_total_ha | number:'1.2-2':'pt-BR' }} ha</span>
+      </div>
+
+    </div>
+
+    <!-- Bloco Central: Gráfico de Evolução (Perfeito) -->
+    <div class="canvas-container">
+      <canvas #chartCanvas></canvas>
+    </div>
+  </div>
+
+  <div class="card-footer-actions">
+    <button mat-stroked-button class="vmg-btn-detalhes">Ver detalhes por gleba</button>
+  </div>
+</div>

@@ -13,11 +13,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { DashboardFiltroService } from '../service/dashboard-filtro.service';
 import { DashboardProdutorService } from '../service/dashboard-produtor.service';
 import { PessoaService } from '../../../service/pessoa.service';
-import { RespostaDashboardProdutor } from '../model/dashboard-produtor.model';
-import { DashboardProdutorResumoComponent } from './components/dashboard-produtor-resumo.component/dashboard-produtor-resumo.component';
 import {
-  DashboardProdutorDetalhesComponent
-} from './components/dashboard-produtor-detalhes.component/dashboard-produtor-detalhes.component';
+  RespostaDashboardProdutor,
+  ProdutividadeEstimadaResponse,
+  ClimaResumoResponse
+} from '../model/dashboard-produtor.model';
+
+import { DashboardProdutorResumoComponent } from './components/dashboard-produtor-resumo.component/dashboard-produtor-resumo.component';
+import { DashboardProdutorDetalhesComponent } from './components/dashboard-produtor-detalhes.component/dashboard-produtor-detalhes.component';
+import { DashboardProdutividadeComponent } from './components/dashboard-produtividade/dashboard-produtividade';
+import { DashboardClimaComponent } from './components/dashboard-clima.component/dashboard-clima.component';
 
 @Component({
   selector: 'app-dashboard-produtor',
@@ -33,7 +38,8 @@ import {
     MatIconModule,
     DashboardProdutorResumoComponent,
     DashboardProdutorDetalhesComponent,
-    // Adicione aqui os futuros widgets da tela do produtor (ex: Tabelas, Gráficos)
+    DashboardProdutividadeComponent,
+    DashboardClimaComponent
   ],
   templateUrl: './dashboard-produtor.html',
   styleUrls: ['./dashboard-produtor.scss']
@@ -44,7 +50,7 @@ export class DashboardProdutorComponent implements OnInit {
   private readonly pessoaService = inject(PessoaService);
   private readonly destroyRef = inject(DestroyRef);
 
-  // Formulário Reativo para seleção do Período de Análise (Igual ao Analista)
+  // Formulário Reativo para seleção do Período de Análise
   public rangeData = new FormGroup({
     inicio: new FormControl<Date | null>(new Date('2021-06-01')),
     fim: new FormControl<Date | null>(new Date('2026-06-13')),
@@ -57,8 +63,10 @@ export class DashboardProdutorComponent implements OnInit {
   // Sinal computado para ler reativamente a sessão assíncrona do Keycloak
   produtor = computed(() => this.pessoaService.produtorAtual());
 
-  // Sinal que guardará o resultado consolidado vindo da API Python
+  // Sinais de estado para armazenar as respostas das consultas analíticas
   dadosProdutor = signal<RespostaDashboardProdutor | null>(null);
+  dadosProdutividade = signal<ProdutividadeEstimadaResponse | null>(null);
+  dadosClima = signal<ClimaResumoResponse | null>(null);
 
   constructor() {
     this.listaSafras = this.generarListaSafras();
@@ -74,12 +82,28 @@ export class DashboardProdutorComponent implements OnInit {
         return;
       }
 
-      // Executa a busca assíncrona baseada no barramento estável de dados
+      // 1. Busca assíncrona: Resumo Geral do Produtor
       this.produtorService.obterResumoProdutor(produtorLogado.id, filtrosAtivos)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (resposta) => this.dadosProdutor.set(resposta),
           error: (err) => console.error('Erro ao processar resumo do produtor no Ledger:', err)
+        });
+
+      // 2. Busca assíncrona: Produtividade Estimada via IA
+      this.produtorService.obterProdutividadeEstimada(produtorLogado.id, filtrosAtivos)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (resposta) => this.dadosProdutividade.set(resposta),
+          error: (err) => console.error('Erro ao obter dados de produtividade por IA:', err)
+        });
+
+      // 3. Busca assíncrona: Resumo Climático (Últimos 60 dias padrão)
+      this.produtorService.obterResumoClimatico(produtorLogado.id, filtrosAtivos, 60)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (resposta) => this.dadosClima.set(resposta),
+          error: (err) => console.error('Erro ao obter resumo climatológico regional:', err)
         });
     });
   }
@@ -100,7 +124,7 @@ export class DashboardProdutorComponent implements OnInit {
       safra: this.filtroSafra ? this.filtroSafra.trim() : '2025/2026',
       inicio: dataInicioFormatada,
       fim: dataFimFormatada,
-      estado: 'Todos' // O Dashboard do produtor foca nas propriedades dele, mantendo o default
+      estado: 'Todos'
     });
   }
 

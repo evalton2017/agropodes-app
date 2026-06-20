@@ -1,14 +1,14 @@
 import {Routes} from '@angular/router';
 import {HomeComponent} from './pages/home/home.component';
-import {ConsultaCarComponent} from './pages/consulta-car.component/consulta-car.component';
-import {ConsultaProdesComponent} from './pages/consulta-prodes.component/consulta-prodes.component';
+import {ConsultaCarComponent} from './pages/consulta-car/consulta-car.component';
+import {ConsultaProdesComponent} from './pages/consulta-prodes/consulta-prodes.component';
 import {CadastraTerritorioComponent} from './pages/territorio/cadastrar-territorio.ts/cadastra-territorio.ts';
 import {
   ConsultaTerritorioComponent
 } from './pages/territorio/consulta-territorio.component/consulta-territorio.component';
 import {authGuard} from './auth/auth.guard';
 import {ConsultaAnaliseComponent} from './pages/analise/anlista/consulta-analise.component';
-import {AcessoNegadoComponent} from './pages/acesso-negado.component/acesso-negado.component';
+import {AcessoNegadoComponent} from './pages/acesso-negado/acesso-negado.component';
 import {CadastroComponent} from './pages/cadastro/cadastro.component';
 import {RelatorioDetalheCarComponent} from './pages/relatorios/produtor/detalhe-car/relatorio-detalhe-car.component';
 import {RelatorioAnalistaComponent} from './pages/relatorios/analista/relatorio-analista.component';

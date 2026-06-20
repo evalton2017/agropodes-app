@@ -1,3 +1,5 @@
+/* app/dashboard-produtor/components/dashboard-produtor.scss */
+
 .dashboard-produtor-main {
   width: 100%;
   min-height: 100vh;
@@ -37,6 +39,24 @@
 
   .dashboard-content-body {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    /* Grid Layout para empenhar os componentes de Produtividade e Clima lado a lado */
+    .vmg-analytics-row {
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
+
+      app-dashboard-produtividade,
+      app-dashboard-clima {
+        flex: 1 1 calc(50% - 0.75rem);
+        min-width: 0; // Previne o estouro de largura na renderização do ChartJS
+      }
+    }
 
     .vmg-loading-box {
       display: flex;
@@ -65,4 +85,16 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Breakpoint para Tablets e Smartphones: colapsa o grid analítico em coluna única */
+@media (max-width: 1024px) {
+  .dashboard-produtor-main .dashboard-content-body .vmg-analytics-row {
+    flex-direction: column;
+
+    app-dashboard-produtividade,
+    app-dashboard-clima {
+      flex: 1 1 100%;
+    }
+  }
 }

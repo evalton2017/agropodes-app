@@ -57,3 +57,28 @@ export interface RespostaConformidadeAmbientalDTO {
   criterios: Criterio[];
   conformidade_geral_pct: number;
 }
+
+export interface ClimaResumoResponse {
+  chuva_acumulada_mm: number;
+  chuva_variacao_vs_media: number;
+  temperatura_media_celsius: number;
+  temperatura_variacao_vs_media: number;
+  dias_sem_chuva: number;
+  dias_sem_chuva_variacao_vs_media: number;
+  velocidade_vento_km_h: number;
+  velocidade_vento_status: string;
+}
+
+export interface SerieProdutividadeMensal {
+  mes: string;
+  valor: number;
+}
+
+export interface ProdutividadeEstimadaResponse {
+  safra: string;
+  media_geral_sc_ha: number;
+  volume_total_sacas: number;
+  area_total_ha: number;
+  grafico_linha: SerieProdutividadeMensal[];
+}
+

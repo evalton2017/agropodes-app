@@ -61,7 +61,7 @@
   }
 }
 
-// Customização de elementos internos injetados pelo Leaflet para seguir o design do Agro Brasil
+// Customização de elementos internos injetados dinamicamente pelo Leaflet
 ::ng-deep {
   .leaflet-bar {
     border: 1px solid #e2e8f0 !important;
@@ -86,5 +86,50 @@
     border-radius: 8px !important;
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  /* 🟢 Adicionado dentro do ng-deep para que o Angular aplique o estilo no elemento HTML injetado pelo Leaflet */
+  .vmg-map-legend {
+    padding: 10px 12px;
+    background: rgba(15, 23, 42, 0.9) !important; /* Slate 900 com opacidade do layout original */
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    line-height: 18px;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(4px);
+    margin-left: 10px !important; /* Espaçamento da borda do mapa */
+    margin-bottom: 10px !important;
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+      font-weight: 600;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      margin-right: 8px;
+      border-radius: 2px;
+      display: inline-block;
+
+      /* Mapeamento das chaves de cores geradas no innerHTML do TypeScript */
+      &.conforme {
+        background-color: #22c55e;
+      }
+      &.atencao {
+        background-color: #f97316;
+      }
+      &.nao-conforme {
+        background-color: #ef4444;
+      }
+    }
   }
 }

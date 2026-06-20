@@ -10,7 +10,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {GlebaGeometriaResponse} from '../../../model/dashboard-produtor.model';
+import { GlebaGeometriaResponse } from '../../../model/dashboard-produtor.model';
 import * as wktParser from 'terraformer-wkt-parser';
 
 @Component({
@@ -19,7 +19,7 @@ import * as wktParser from 'terraformer-wkt-parser';
   imports: [CommonModule],
   templateUrl: './dashboard-produtor-mapa.component.html',
   styleUrls: ['./dashboard-produtor-mapa.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush // 🟢 Adicionado OnPush conforme seu padrão
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   @Input({ required: true }) glebas: GlebaGeometriaResponse[] = [];
@@ -28,20 +28,19 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
   private map: any;
   private geoJsonLayer: any;
-  private LeafletCore: any; // Armazena a instância dinâmica do Leaflet carregada no cliente
+  private legendaControl: any; // 🟢 Control da legenda adicionado
+  private LeafletCore: any;
 
   private readonly latPadrao = -13.975810;
   private readonly lonPadrao = -59.757567;
 
   constructor() {
-    // 🛡️ PADRÃO HOMOLOGADO: Garante execução estrita no navegador pós-ssr
     afterNextRender(async () => {
       await this.inicializarMapaVisualizacao();
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Só atualiza os polígonos se a instância do mapa já tiver sido criada pelo afterNextRender
     if (this.map && changes['glebas'] && !changes['glebas'].firstChange) {
       this.desenharPoligonosGlebas();
     }
@@ -49,11 +48,9 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
   private async inicializarMapaVisualizacao(): Promise<void> {
     try {
-      // Carregamento dinâmico assíncrono do Leaflet idêntico ao seu exemplo
       const leafletModule = await import('leaflet');
       this.LeafletCore = (leafletModule.default || leafletModule) as any;
 
-      // Inicializa o mapa com as coordenadas globais padrão do projeto
       const centro: [number, number] = [this.latPadrao, this.lonPadrao];
       this.map = this.LeafletCore.map('vmg-leaflet-map', {
         center: centro,
@@ -61,7 +58,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         zoomControl: true
       });
 
-      // 🟢 CORREÇÃO: String limpa e idêntica ao seu mapa de delimitação que já funciona
       this.LeafletCore.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         {
@@ -71,12 +67,9 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         }
       ).addTo(this.map);
 
-      // Inicia a camada de coleção de feições geográficas vazia
       this.geoJsonLayer = this.LeafletCore.geoJSON(null, {
         style: (feature: any) => this.obterEstiloPoligono(feature),
         onEachFeature: (feature: any, layer: any) => this.vincularPopupInformativo(feature, layer),
-
-        // Intercepta o array [Lng, Lat] do PostGIS e mapeia para o objeto LatLng correto do Leaflet
         coordsToLatLng: (coords: [number, number]) => {
           const longitude = coords[0];
           const latitude = coords[1];
@@ -84,7 +77,9 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         }
       }).addTo(this.map);
 
-      // Se os dados PostGIS já tiverem chegado antes do término da renderização do DOM, desenha
+      // 🟢 Cria a instância do controle da legenda nativa no canto inferior esquerdo
+      this.inicializarControleLegenda();
+
       if (this.glebas && this.glebas.length > 0) {
         this.desenharPoligonosGlebas();
       }
@@ -92,6 +87,48 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     } catch (error) {
       console.error('Erro ao inicializar mapa do produtor via afterNextRender:', error);
     }
+  }
+
+  // 🟢 Método para instanciar a estrutura do controle no mapa
+  private inicializarControleLegenda(): void {
+    if (!this.map || !this.LeafletCore) return;
+
+    this.legendaControl = new this.LeafletCore.Control({ position: 'bottomleft' });
+
+    this.legendaControl.onAdd = () => {
+      // Cria a div injetando a classe CSS do SCSS
+      return this.LeafletCore.DomUtil.create('div', 'vmg-map-legend');
+    };
+
+    this.legendaControl.addTo(this.map);
+  }
+
+  // 🟢 Método responsável por contar e redesenhar os valores na tela
+  private atualizarHTMLLegenda(): void {
+    if (!this.legendaControl) return;
+
+    const container = this.legendaControl.getContainer();
+    if (!container) return;
+
+    // Normalização dos contadores baseada na sua lógica de cores/estilo
+    const totalConforme = this.glebas.filter(g => !g.status_vmg || g.status_vmg === 'Conforme').length;
+    const totalAtencao = this.glebas.filter(g => g.status_vmg === 'Atenção' || g.status_vmg === 'Em análise').length;
+    const totalNaoConforme = this.glebas.filter(g => g.status_vmg === 'Não conforme' || g.status_vmg === 'Bloqueada').length;
+
+    container.innerHTML = `
+      <div class="legend-item">
+        <span class="legend-color conforme"></span>
+        Conforme (${totalConforme})
+      </div>
+      <div class="legend-item">
+        <span class="legend-color atencao"></span>
+        Atenção (${totalAtencao})
+      </div>
+      <div class="legend-item">
+        <span class="legend-color nao-conforme"></span>
+        Não Conforme (${totalNaoConforme})
+      </div>
+    `;
   }
 
   private desenharPoligonosGlebas(): void {
@@ -103,7 +140,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     this.glebas.forEach((gleba) => {
       try {
         if (!gleba.geometria) return;
-        const geoJsonGeometria =  wktParser.parse(gleba.geometria);
+        const geoJsonGeometria = wktParser.parse(gleba.geometria);
 
         recursosGeoJson.push({
           type: 'Feature',
@@ -126,6 +163,9 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         type: 'FeatureCollection',
         features: recursosGeoJson
       } as any);
+
+      // 🟢 Atualiza os dados de texto da legenda sempre que o mapa plotar as feições
+      this.atualizarHTMLLegenda();
 
       const limites = this.geoJsonLayer.getBounds();
       if (limites.isValid()) {

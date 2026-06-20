@@ -2,18 +2,17 @@
    CONTAINER PRINCIPAL E ALINHAMENTO GLOBAL
    ========================================================================= */
 .wizard-container {
-  max-width: 900px;
+  max-width: 1024px;
   margin: 2rem auto;
-  padding: 0 1.5rem;
+  padding: 0 1.5rem 3rem 1.5rem;
   box-sizing: border-box;
+  overflow: visible !important;
 }
 
-/* Força tipografia limpa padrão material */
 .font-material {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-/* Box de feedback de erro */
 .alert-error-box {
   background-color: #ffebee;
   color: #c62828;
@@ -33,34 +32,39 @@
   margin-bottom: 2rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
   border: 1px solid #dcdfe6;
-}
 
-.produtor-header-card p {
-  margin: 0 0 0.5rem 0;
-  color: #606266;
-  font-size: 0.9rem;
-}
+  p {
+    margin: 0 0 0.5rem 0;
+    color: #606266;
+    font-size: 0.9rem;
+  }
 
-.produtor-header-card h1 {
-  margin: 0;
-  color: #2c3e50;
-  font-size: 1.6rem;
-  font-weight: 500;
+  h1 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
 }
 
 /* =========================================================================
-   ESTRUTURA DAS ETAPAS DO STEPPER
+   ESTRUTURA DAS ETAPAS DO STEPPER E MATERIAL OVERRIDES
    ========================================================================= */
-/* Container interno de cada passo */
-.step-content {
-  padding: 1.5rem 0.5rem;
+::ng-deep .mat-horizontal-stepper-content,
+::ng-deep .mat-horizontal-content-container {
+  overflow: visible !important;
+  padding: 0 !important;
 }
 
-.step-content h3 {
-  margin: 0 0 1.5rem 0;
-  color: #303133;
-  font-size: 1.25rem;
-  font-weight: 500;
+.step-content {
+  padding: 1.5rem 0.5rem;
+
+  h3 {
+    margin: 0 0 1.5rem 0;
+    color: #303133;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
 }
 
 .instruction-text {
@@ -69,50 +73,223 @@
   margin-bottom: 1rem;
 }
 
-/* Ocupação total para os inputs do Material */
 .full-width {
   width: 100%;
   margin-bottom: 1rem;
 }
 
-/* Grid de botões de navegação inferior */
+.form-grid-2-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 .actions-row {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #f2f6fc;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  width: 100%;
 }
 
-/* Customização para botões de sucesso */
 button[color="success"] {
   background-color: #2e7d32 !important;
   color: #ffffff !important;
-}
 
-button[color="success"]:disabled {
-  background-color: #e0e0e0 !important;
-  color: #a6a6a6 !important;
+  &:disabled {
+    background-color: #e0e0e0 !important;
+    color: #a6a6a6 !important;
+  }
 }
 
 /* =========================================================================
-   ETAPA 5: CARD DE REVISÃO E TERMOS LEGAIS
+   ESTRUTURA INTEGRADA DO ZONEAMENTO SELECIONÁVEL (ZARC)
+   ========================================================================= */
+.zarc-secao-obrigatoria {
+  background: #fbfbfb;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+
+  .zarc-titulo-secao {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+
+  .zarc-subtitulo-secao {
+    font-size: 12px;
+    color: #64748b;
+    margin: 2px 0 12px 0;
+  }
+}
+
+.zarc-loading-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.info-alert-zarc {
+  background-color: #f0fdf4;
+  border: 1px dashed #bbf7d0;
+  color: #166534;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.grid-sugestoes-zarc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-sugestao-clicavel {
+  background-color: #ffffff;
+  border: 1px solid #ebeeeb;
+  border-radius: 6px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    border-color: #a5d6a7;
+    background-color: #f1f8e9;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.04);
+  }
+
+  /* Estado ativo/selecionado injetado no clique */
+  &.selected {
+    background-color: #f0fdf4 !important;
+    border-color: #22c55e !important;
+    box-shadow: 0 0 0 1px #22c55e;
+
+    .periodo-badge-calendar {
+      color: #15803d !important;
+    }
+    .arrow-forward {
+      color: #22c55e !important;
+    }
+  }
+
+  .card-left-info {
+    display: flex;
+    flex-direction: column;
+
+    .periodo-badge-calendar {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .decendio-sub {
+      font-size: 11px;
+      color: #888;
+      margin-top: 2px;
+    }
+  }
+
+  .card-right-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .tag-risco {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+
+      &.risco-baixo {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+      }
+    }
+
+    .arrow-forward {
+      color: #bbb;
+      transition: transform 0.2s;
+    }
+  }
+
+  &:hover .arrow-forward {
+    color: #2e7d32;
+    transform: translateX(2px);
+  }
+}
+
+.empty-zarc-state {
+  text-align: center;
+  font-size: 13px;
+  color: #999;
+  padding: 16px;
+}
+
+/* Painel de Feedback da Validação Final */
+.zarc-feedback-panel {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+
+  &.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+  }
+
+  &.error {
+    background-color: #ffebee;
+    color: #c62828;
+    border-left: 4px solid #c62828;
+  }
+
+  .zarc-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .zarc-main-msg {
+    margin: 0;
+    font-size: 13px;
+  }
+}
+
+/* =========================================================================
+   REVISÃO EXTRA E RESPONSIVIDADE
    ========================================================================= */
 .summary-card {
   background-color: #fafafa;
   border: 1px dashed #bcc0c4;
   margin-bottom: 1.5rem;
-}
 
-.summary-card p {
-  margin: 0.5rem 0;
-  font-size: 1rem;
-  color: #303133;
-}
-
-.summary-card strong {
-  color: #1a1a1a;
+  p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    color: #303133;
+  }
+  strong {
+    color: #1a1a1a;
+  }
 }
 
 .legal-notice-box {
@@ -123,7 +300,6 @@ button[color="success"]:disabled {
   margin-bottom: 1.5rem;
 }
 
-/* Força quebra de linha correta no checkbox do Material */
 .legal-notice-box ::ng-deep .mdc-form-field {
   white-space: normal !important;
   font-size: 0.88rem;
@@ -131,9 +307,6 @@ button[color="success"]:disabled {
   line-height: 1.4;
 }
 
-/* =========================================================================
-   TELA DE AGUARDO (LOADING PRODUTOR)
-   ========================================================================= */
 .loading-session-box {
   display: flex;
   flex-direction: column;
@@ -141,63 +314,26 @@ button[color="success"]:disabled {
   justify-content: center;
   min-height: 300px;
   text-align: center;
+
+  p {
+    margin-top: 1.5rem;
+    color: #909399;
+    font-size: 1rem;
+  }
 }
 
-.loading-session-box p {
-  margin-top: 1.5rem;
-  color: #909399;
-  font-size: 1rem;
-}
-
-/* =========================================================================
-   RESPONSIVIDADE (TABLETS E CELULARES)
-   ========================================================================= */
 @media (max-width: 600px) {
   .wizard-container {
     margin: 1rem auto;
-    padding: 0 0.75rem;
-  }
-
-  .produtor-header-card h1 {
-    font-size: 1.3rem;
+    padding: 0 0.75rem 2rem 0.75rem;
   }
 
   .actions-row {
     flex-direction: column-reverse;
     gap: 0.75rem;
+
+    button {
+      width: 100%;
+    }
   }
-
-  .actions-row button {
-    width: 100%;
-  }
-}
-/* Garante que o container principal tenha espaço fluido para crescer verticalmente */
-.wizard-container {
-  max-width: 1024px; /* Expandido para dar mais conforto ao mapa lateral */
-  margin: 2rem auto;
-  padding: 0 1.5rem 3rem 1.5rem; /* Adicionado padding inferior extra para os botões respirarem */
-  box-sizing: border-box;
-  overflow: visible !important; /* Libera qualquer trava de overflow herdada */
-}
-
-/* 🟢 Força os passos internos do Angular Material a terem altura flexível e rolagem caso necessário */
-::ng-deep .mat-horizontal-stepper-content {
-  overflow: visible !important;
-  padding: 0 !important;
-}
-
-::ng-deep .mat-horizontal-content-container {
-  overflow: visible !important;
-  padding: 0 !important;
-}
-
-/* Garante que a linha de ações (Voltar / Avançar) fique sempre visível ao final de cada etapa */
-.actions-row {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e0e0e0;
-  width: 100%;
 }

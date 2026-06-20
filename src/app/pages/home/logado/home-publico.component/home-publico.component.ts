@@ -8,7 +8,6 @@ import {Router} from '@angular/router';
 import Keycloak from 'keycloak-js';
 import {MatDialog} from '@angular/material/dialog';
 import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
-import {ConsultaPropriedadeModalComponent} from '../../../../model/consulta-propriedade-modal-component';
 import {ContatoModalComponent} from '../../../../components/modal/email/contato-modal.component';
 
 interface CarouselItem {
@@ -80,14 +79,6 @@ export class HomePublicoComponent  {
     this.router.navigate(['cadastrar-usuario']);
   }
 
-  abrirModalConsulta() {
-    this.dialog.open(ConsultaPropriedadeModalComponent, {
-      width: '90%',          // Ocupa a maior parte da largura em telas menores
-      maxWidth: '1050px',     // Limite confortável para resoluções de desktop
-      minHeight: '400px',    // Garante uma boa área vertical inicial
-      maxHeight: '85vh',
-    });
-  }
 
   isAutenticado(): boolean {
     if(this.keycloak.authenticated) {

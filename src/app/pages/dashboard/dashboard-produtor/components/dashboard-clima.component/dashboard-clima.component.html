@@ -1,0 +1,69 @@
+<!-- dashboard-clima.component.html -->
+<div class="vmg-card-analitico">
+  <div class="card-clima-header">
+    <h3>Clima - Últimos 60 dias (Média da região)</h3>
+  </div>
+
+  <div class="card-clima-grid">
+    <!-- Card 1: Chuva Acumulada -->
+    <div class="clima-subcard">
+      <div class="clima-icon-box blue-theme">
+        <mat-icon svgIcon="vmg-chuva"></mat-icon>
+      </div>
+      <div class="clima-info">
+        <span class="clima-title">Chuva acumulada</span>
+        <span class="clima-value">{{ dados.chuva_acumulada_mm }} mm</span>
+        <span class="clima-delta" [ngClass]="dados.chuva_variacao_vs_media >= 0 ? 'up' : 'down'">
+          <mat-icon [svgIcon]="dados.chuva_variacao_vs_media >= 0 ? 'vmg-seta-subir' : 'vmg-seta-descer'"></mat-icon>
+          {{ getAbsVal(dados.chuva_variacao_vs_media) }}% vs. média
+        </span>
+      </div>
+    </div>
+
+    <!-- Card 2: Temperatura Média -->
+    <div class="clima-subcard">
+      <div class="clima-icon-box orange-theme">
+        <mat-icon svgIcon="vmg-termo"></mat-icon>
+      </div>
+      <div class="clima-info">
+        <span class="clima-title">Temperatura média</span>
+        <span class="clima-value">{{ dados.temperatura_media_celsius | number:'1.1-1':'pt-BR' }} °C</span>
+        <span class="clima-delta" [ngClass]="dados.temperatura_variacao_vs_media >= 0 ? 'up' : 'down'">
+          <mat-icon [svgIcon]="dados.temperatura_variacao_vs_media >= 0 ? 'vmg-seta-subir' : 'vmg-seta-descer'"></mat-icon>
+          {{ dados.temperatura_variacao_vs_media >= 0 ? '+' : '' }}{{ dados.temperatura_variacao_vs_media }} °C vs. média
+        </span>
+      </div>
+    </div>
+
+    <!-- Card 3: Dias sem Chuva -->
+    <div class="clima-subcard">
+      <div class="clima-icon-box red-theme">
+        <mat-icon svgIcon="vmg-folha"></mat-icon>
+      </div>
+      <div class="clima-info">
+        <span class="clima-title">Dias sem chuva</span>
+        <span class="clima-value">{{ dados.dias_sem_chuva }} dias</span>
+        <span class="clima-delta" [ngClass]="dados.dias_sem_chuva_variacao_vs_media >= 0 ? 'danger-up' : 'down'">
+          <mat-icon [svgIcon]="dados.dias_sem_chuva_variacao_vs_media >= 0 ? 'vmg-seta-subir' : 'vmg-seta-descer'"></mat-icon>
+          {{ getAbsVal(dados.dias_sem_chuva_variacao_vs_media) }}% vs. média
+        </span>
+      </div>
+    </div>
+
+    <!-- Card 4: Velocidade do Vento -->
+    <div class="clima-subcard">
+      <div class="clima-icon-box green-theme">
+        <mat-icon svgIcon="vmg-vento"></mat-icon>
+      </div>
+      <div class="clima-info">
+        <span class="clima-title">Velocidade do vento</span>
+        <span class="clima-value">{{ dados.velocidade_vento_km_h | number:'1.1-1':'pt-BR' }} km/h</span>
+        <span class="clima-status-txt">{{ dados.velocidade_vento_status }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer-actions alignment-center">
+    <button mat-stroked-button class="vmg-btn-detalhes">Ver detalhes climáticos</button>
+  </div>
+</div>

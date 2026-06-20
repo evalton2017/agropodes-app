@@ -1,10 +1,8 @@
-import { Injectable, inject, signal } from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import { timer, switchMap, repeat } from 'rxjs';
+import {inject, Injectable, signal} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {switchMap, timer} from 'rxjs';
 import {Notificacao} from '../model/notificacao';
 import {environment} from '../../../environments/environment';
-import {limparParams} from '../../shared/service/request-util';
-import {CarResponse} from '../../dto/response/car';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +22,7 @@ export class NotificationService {
 
   // Inicia a consulta automática a cada 50 segundos (50000 ms)
   private startPolling(): void {
-    timer(0, 80000).pipe(
+    timer(0, 100000).pipe(
       switchMap(() => this.http.get<Notificacao[]>(`${environment.url}/consulta/notificacao`))
     ).subscribe({
       next: (data) => {

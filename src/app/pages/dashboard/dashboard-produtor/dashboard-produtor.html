@@ -38,6 +38,15 @@
       <app-dashboard-produtor-resumo [dados]="dadosProdutor()!"></app-dashboard-produtor-resumo>
 
       <app-dashboard-produtor-detalhes></app-dashboard-produtor-detalhes>
+
+      <div class="vmg-analytics-row">
+        @if (dadosProdutividade()) {
+          <app-dashboard-produtividade [dados]="dadosProdutividade()!"></app-dashboard-produtividade>
+        }
+        @if (dadosClima()) {
+          <app-dashboard-clima [dados]="dadosClima()!"></app-dashboard-clima>
+        }
+      </div>
     } @else {
       <div class="vmg-loading-box">
         <div class="vmg-spinner"></div>
