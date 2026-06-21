@@ -1,0 +1,152 @@
+<div class="vmg-detalhe-gleba-card-grid">
+
+  <!-- BLOCO DA ESQUERDA: MINI MAPA E METADADOS CADASTRAIS -->
+  <div class="bloco-info-mapa-wrapper">
+    <div class="mini-mapa-frame">
+      <div id="mini-mapa-gleba-detalhe" style="width: 100%; height: 100%; border-radius: 8px;"></div>
+      <button class="btn-expand-map" type="button">
+        <mat-icon>fullscreen</mat-icon>
+      </button>
+    </div>
+
+    <div class="metadados-gleba-content">
+      <span class="sub-label-top">Gleba selecionada</span>
+      <h2 class="titulo-gleba">{{ gleba.codigo }} - {{ gleba.nomeGleba }}</h2>
+
+      <span class="status-badge-vmg" [ngClass]="gleba.status.toLowerCase().replace(' ', '-')">
+        {{ gleba.status }}
+      </span>
+
+      <div class="metadados-items-grid">
+        <div class="meta-item">
+          <mat-icon class="icon-green">location_on</mat-icon>
+          <div class="meta-info">
+            <span class="lbl">Município</span>
+            <span class="val">{{ gleba.municipio }}</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <mat-icon class="icon-green">agriculture</mat-icon>
+          <div class="meta-info">
+            <span class="lbl">Cultura</span>
+            <span class="val">{{ gleba.culturaDeclarada }}</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <mat-icon class="icon-green">layers</mat-icon>
+          <div class="meta-info">
+            <span class="lbl">CAR</span>
+            <span class="val car-flex">
+              {{ gleba.codigoCar }}
+              <mat-icon class="copy-icon" (click)="copiarCar(gleba.codigoCar)">content_copy</mat-icon>
+            </span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <mat-icon class="icon-green">aspect_ratio</mat-icon>
+          <div class="meta-info">
+            <span class="lbl">Área (ha)</span>
+            <span class="val">{{ gleba.areaHa | number:'1.1-2':'pt-BR' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="txt-atualizacao">Última atualização: {{ gleba.ultimaAtualizacao }}</p>
+
+      <div class="botoes-acoes-row">
+        <button mat-stroked-button class="btn-detalhes-completos" type="button">
+          Ver detalhes completos <mat-icon>open_in_new</mat-icon>
+        </button>
+        <button mat-stroked-button class="btn-baixar-atestado-laudo" type="button">
+          Baixar atestado <mat-icon>download</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCO DA DIREITA: ESTEIRA HORIZONTAL DE ANÁLISES E HISTÓRICO -->
+  <div class="bloco-esteira-atividades-wrapper">
+    <div class="secao-esteira-vmg">
+      <h3>Status das Análises</h3>
+
+      <div class="timeline-horizontal-vmg-row">
+
+        <!-- Passo 1: Geometria -->
+        <div class="step-node" [ngClass]="obterClasseNo(gleba.statusPassos.geometria)">
+          <mat-icon class="icon-step">{{ obterIconeNo(gleba.statusPassos.geometria) }}</mat-icon>
+          <span class="step-name">Geometria</span>
+          <span class="step-status">{{ obterTextoNo(gleba.statusPassos.geometria) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(gleba.statusPassos.geometria, gleba.statusPassos.consultaCar)"></div>
+
+        <!-- Passo 2: Consulta CAR -->
+        <div class="step-node" [ngClass]="obterClasseNo(gleba.statusPassos.consultaCar)">
+          <mat-icon class="icon-step">{{ obterIconeNo(gleba.statusPassos.consultaCar) }}</mat-icon>
+          <span class="step-name">Consulta CAR</span>
+          <span class="step-status">{{ obterTextoNo(gleba.statusPassos.consultaCar) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(gleba.statusPassos.consultaCar, gleba.statusPassos.ambiental)"></div>
+
+        <!-- Passo 3: Ambiental -->
+        <div class="step-node" [ngClass]="obterClasseNo(gleba.statusPassos.ambiental)">
+          <mat-icon class="icon-step">{{ obterIconeNo(gleba.statusPassos.ambiental) }}</mat-icon>
+          <span class="step-name">Ambiental</span>
+          <span class="step-status">{{ obterTextoNo(gleba.statusPassos.ambiental) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(gleba.statusPassos.ambiental, gleba.statusPassos.culturaIa)"></div >
+
+        <!-- Passo 4: Cultura (IA) -->
+        <div class="step-node" [ngClass]="obterClasseNo(gleba.statusPassos.culturaIa)">
+          <mat-icon class="icon-step">{{ obterIconeNo(gleba.statusPassos.culturaIa) }}</mat-icon>
+          <span class="step-name">Cultura (IA)</span>
+          <span class="step-status">{{ obterTextoNo(gleba.statusPassos.culturaIa) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(gleba.statusPassos.culturaIa, gleba.statusPassos.zarc)"></div>
+
+        <!-- Passo 5: ZARC -->
+        <div class="step-node" [ngClass]="obterClasseNo(gleba.statusPassos.zarc)">
+          <mat-icon class="icon-step">{{ obterIconeNo(gleba.statusPassos.zarc) }}</mat-icon>
+          <span class="step-name">ZARC</span>
+          <span class="step-status">{{ obterTextoNo(gleba.statusPassos.zarc) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(gleba.statusPassos.zarc, gleba.statusPassos.produtividade)"></div>
+
+        <!-- Passo 6: Produtividade -->
+        <div class="step-node" [ngClass]="obterClasseNo(gleba.statusPassos.produtividade)">
+          <mat-icon class="icon-step">{{ obterIconeNo(gleba.statusPassos.produtividade) }}</mat-icon>
+          <span class="step-name">Produtividade</span>
+          <span class="step-status">{{ obterTextoNo(gleba.statusPassos.produtividade) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(gleba.statusPassos.produtividade, gleba.statusPassos.atestado)"></div>
+
+        <!-- Passo 7: Atestado -->
+        <div class="step-node" [ngClass]="obterClasseNo(gleba.statusPassos.atestado)">
+          <mat-icon class="icon-step">{{ gleba.statusPassos.atestado === 'CONCLUIDO' ? 'description' : 'article' }}</mat-icon>
+          <span class="step-name">Atestado</span>
+          <span class="step-status">{{ gleba.statusPassos.atestado === 'CONCLUIDO' ? 'Emitido' : 'Pendente' }}</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ULTIMAS ATIVIDADES COM TIMELINE SEPARADA EM DIVS -->
+    <div class="secao-ultimas-atividades">
+      <div class="header-atividades-row">
+        <h3>Últimas atividades</h3>
+        <button class="link-ver-todas" type="button">Ver todas</button>
+      </div>
+
+      <div class="atividades-timeline-vertical-list">
+        @for (act of gleba.ultimasAtividades; track act.descricao) {
+          <div class="atividade-item-row">
+            <div class="status-bullet" [ngClass]="act.tipo"></div>
+            <span class="atividade-desc">{{ act.descricao }}</span>
+            <span class="atividade-timestamp">{{ act.dataHora }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+
+</div>

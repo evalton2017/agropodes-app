@@ -106,6 +106,7 @@ export interface EventoClimatico {
 
 
 export interface ResumoClimatico {
+  uf:string;
   chuva_acumulada_mm: number;
   variacao_chuva_pct: number;
   temp_media_celsius: number;

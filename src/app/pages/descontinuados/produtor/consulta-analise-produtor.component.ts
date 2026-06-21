@@ -1,6 +1,6 @@
 import {Component, inject, signal} from '@angular/core';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {AnaliseService} from '../../../service/analise.service';
+import {AnaliseService} from '../../../service/descontinuados/analise.service';
 import {SnackbarService} from '../../../shared/service/snack-bar.service';
 import {Analise, StatusAnaliseLabel, StatusAnaliseType} from '../../../model/analise';
 import {MapModalComponent} from '../../../components/modal/map-modal-component';

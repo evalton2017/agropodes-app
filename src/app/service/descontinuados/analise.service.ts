@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {environment} from '../../environments/environment';
-import {Analise} from '../model/analise';
-import {AnaliseClimatica} from '../dto/response/analise-climatica';
+import {environment} from '../../../environments/environment';
+import {Analise} from '../../model/analise';
+import {AnaliseClimatica} from '../../dto/response/analise-climatica';
 
 @Injectable({
   providedIn: 'root',

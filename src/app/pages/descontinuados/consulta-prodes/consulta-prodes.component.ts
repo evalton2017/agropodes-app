@@ -10,9 +10,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
-import {ProdesResponse} from '../../dto/response/prodes-response';
-import {ConsultaCarService} from '../../service/consulta-car.service';
-import {MapModalComponent} from '../../components/modal/map-modal-component';
+import {ProdesResponse} from '../../../dto/response/prodes-response';
+import {ConsultaCarService} from '../../../service/consulta-car.service';
+import {MapModalComponent} from '../../../components/modal/map-modal-component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({

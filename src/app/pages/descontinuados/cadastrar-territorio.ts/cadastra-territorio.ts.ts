@@ -7,7 +7,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {TerritorioResponse} from '../../../model/territorio';
-import {TerritorioService} from '../../../service/territorio.service';
+import {TerritorioService} from '../../../service/descontinuados/territorio.service';
 import {MatDialog} from '@angular/material/dialog';
 import {MapModalComponent} from '../../../components/modal/map-modal-component';
 import {SnackbarService} from '../../../shared/service/snack-bar.service';

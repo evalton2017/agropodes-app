@@ -10,7 +10,7 @@ import {UsuarioService} from '../../service/usuario.service';
 import {SnackbarService} from '../../shared/service/snack-bar.service';
 
 @Component({
-  selector: 'app-cadastro',
+  selector: 'app-cadastro-gleba',
   standalone: true,
   imports: [
     ReactiveFormsModule,

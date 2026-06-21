@@ -1,109 +1,79 @@
 .ia-card {
-  background: #ffffff;
-  border: 1px solid #f1f5f9;
-  border-radius: 12px;
-  padding: 1.25rem;
-  height: 280px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  width: 100%;
   position: relative;
   box-sizing: border-box;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.02);
-}
 
-.ia-card-title {
-  font-size: 0.813rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 0.5rem 0;
-}
-
-.clima-quad-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-  flex: 1;
-  margin: 0.5rem 0;
-}
-
-.clima-box {
-  background: #f8fafc;
-  border-radius: 8px;
-  padding: 0.5rem 0.625rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-sizing: border-box;
-
-  .c-icon {
-    font-size: 1.25rem;
-    width: 1.25rem;
-    height: 1.25rem;
+  /* CONTÊINER DA ESTEIRA ROLANTE HORIZONTAL */
+  .clima-scroller-container {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    gap: 1.5rem;
+    width: 100%;
+    overflow-x: auto;          /* Ativa a rolagem da esquerda para a direita */
+    scroll-behavior: smooth;   /* Suaviza a transição da rolagem */
+    padding-bottom: 0.75rem;   /* Espaço para a barra de rolagem não cobrir o conteúdo */
+    box-sizing: border-box;
 
-    &.text-blue { color: #3b82f6; }
-    &.text-orange { color: #f97316; }
-    &.text-amber { color: #d97706; }
-    &.text-teal { color: #0d9488; }
+    /* Estilização elegante para a barra de rolagem (Scrollbar) */
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+      &:hover { background: #94a3b8; }
+    }
   }
 
-  .c-info {
+  /* CARD INDIVIDUAL DE CADA ESTADO DENTRO DA ESTEIRA */
+  .estado-clima-wrapper {
+    flex: 0 0 calc(100% - 0.5rem); /* Ocupa um estado por vez na tela em dispositivos menores */
+    min-width: 480px;              /* Garante largura estável para não esmagar as 4 caixas */
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+    box-sizing: border-box;
+
+    .estado-badge-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #334155;
+
+      .map-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: #16a34a;
+      }
+    }
+  }
+
+  /* REAPROVEITAMENTO DAS SUAS CLASSES DE CORES E TRENDS */
+  .clima-quad-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .txt-blue { color: #2563eb !important; }
+  .txt-rose { color: #e11d48 !important; }
+  .txt-slate { color: #64748b !important; }
+
+  .clima-empty-state {
     display: flex;
     flex-direction: column;
-    line-height: 1.2;
-
-    .c-title {
-      font-size: 0.625rem;
-      color: #64748b;
-      font-weight: 600;
-    }
-    .c-value {
-      font-size: 0.875rem;
-      color: #0f172a;
-      font-weight: 800;
-      margin-top: 1px;
-    }
-    .c-trend {
-      font-size: 0.58rem;
-      font-weight: 700;
-      margin-top: 2px;
-
-      &.txt-rose { color: #f43f5e; }
-      &.txt-blue { color: #2563eb; }
-      &.txt-slate { color: #64748b; }
-    }
-  }
-}
-
-.ia-card-footer {
-  border-top: 1px solid #f8fafc;
-  padding-top: 0.5rem;
-  text-align: center;
-  margin-top: auto;
-
-  .ia-footer-link {
-    font-size: 0.715rem;
-    color: #2563eb;
-    font-weight: 600;
-    background: none;
-    border: none;
-    cursor: pointer;
+    align-items: center;
     width: 100%;
-    padding: 0;
-    &:hover { text-decoration: underline; }
+    padding: 2rem;
+    color: #64748b;
+    mat-icon { font-size: 36px; width: 36px; height: 36px; }
   }
-}
-
-.ia-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
 }

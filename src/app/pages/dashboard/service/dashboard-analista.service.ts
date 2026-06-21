@@ -66,9 +66,9 @@ export class DashboardAnalistaService {
     return this.http.get<any>(`${this.baseUrl}/produtividade-estimada`, { params });
   }
 
-  obterIaResumoClimatico(filtros: FiltrosDashboard): Observable<ResumoClimatico> {
+  obterIaResumoClimatico(filtros: FiltrosDashboard): Observable<ResumoClimatico[]> {
     const params = this.obterParametrosFiltro(filtros);
-    return this.http.get<ResumoClimatico>(`${this.baseUrl}/resumo-climatico`, { params });
+    return this.http.get<ResumoClimatico[]>(`${this.baseUrl}/resumo-climatico`, { params });
   }
 
   obterDashboardAtestados(): Observable<UltimoAtestado[]> {

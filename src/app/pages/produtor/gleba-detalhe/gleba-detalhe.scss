@@ -1,0 +1,202 @@
+.vmg-detalhe-gleba-card-grid {
+  display: grid;
+  grid-template-columns: 4.5fr 5.5fr;
+  gap: 2rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+
+  /* BLOCO ESQUERDO: MAPA + METADADOS */
+  .bloco-info-mapa-wrapper {
+    display: flex;
+    gap: 1.5rem;
+
+    .mini-mapa-frame {
+      width: 200px;
+      height: 220px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      position: relative;
+      flex-shrink: 0;
+
+      .btn-expand-map {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background: #ffffff;
+        border: none;
+        border-radius: 6px;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        mat-icon { font-size: 18px; color: #475569; }
+      }
+    }
+
+    .metadados-gleba-content {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+
+      .sub-label-top { font-size: 0.75rem; color: #64748b; font-weight: 500; }
+      .titulo-gleba { font-size: 1.2rem; font-weight: 700; color: #0f172a; margin: 2px 0 6px 0; }
+
+      .status-badge-vmg {
+        display: inline-block;
+        align-self: flex-start;
+        font-size: 0.725rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 6px;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        &.conforme { background: #dcfce7; color: #16a34a; }
+        &.alerta { background: #fee2e2; color: #dc2626; }
+      }
+
+      .metadados-items-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.85rem;
+        margin-bottom: 1rem;
+
+        .meta-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 6px;
+          .icon-green { font-size: 18px; width: 18px; height: 18px; color: #16a34a; margin-top: 2px; }
+
+          .meta-info {
+            display: flex;
+            flex-direction: column;
+            .lbl { font-size: 0.7rem; color: #94a3b8; font-weight: 500; text-transform: uppercase; }
+            .val {
+              font-size: 0.85rem;
+              font-weight: 600;
+              color: #334155;
+              &.car-flex {
+                display: flex; align-items: center; gap: 4px;
+                .copy-icon { font-size: 14px; width: 14px; height: 14px; color: #94a3b8; cursor: pointer; &:hover { color: #475569; } }
+              }
+            }
+          }
+        }
+      }
+
+      .txt-atualizacao { font-size: 0.75rem; color: #94a3b8; margin: 0 0 1rem 0; }
+
+      .botoes-acoes-row {
+        display: flex;
+        gap: 0.5rem;
+        button {
+          height: 38px; font-size: 0.775rem; font-weight: 600; border-radius: 6px; border-color: #cbd5e1;
+          &.btn-detalhes-completos { color: #16a34a; border-color: rgba(22,163,74,0.3); }
+          &.btn-baixar-atestado-laudo { color: #475569; }
+          .icon-inline { font-size: 14px; width: 14px; height: 14px; margin-left: 4px; vertical-align: middle; }
+        }
+      }
+    }
+  }
+
+  /* BLOCO DIREITO: ESTEIRA HORIZONTAL + TIMELINE */
+  .bloco-esteira-atividades-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 1px solid #f1f5f9;
+    padding-left: 1.5rem;
+
+    h3 { font-size: 0.9rem; font-weight: 700; color: #334155; margin: 0 0 1rem 0; }
+
+    /* CRIAÇÃO DOS PASSOS COM LINHA CONECTORA */
+    .timeline-horizontal-vmg-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 1.5rem;
+      box-sizing: border-box;
+
+      .step-node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        min-width: 65px; /* Aumentado ligeiramente para evitar quebra de texto truncado */
+        flex-shrink: 0;
+
+        .icon-step { font-size: 20px; width: 20px; height: 20px; margin-bottom: 4px; }
+        .step-name { font-size: 0.65rem; color: #64748b; font-weight: 500; white-space: nowrap; }
+        .step-status { font-size: 0.6rem; font-weight: 600; white-space: nowrap; }
+
+        /* Classes de Controle de Cores dos Nós */
+        &.done { .icon-step, .step-status { color: #16a34a; } }
+        &.working { .icon-step, .step-status { color: #ea580c; } }
+        &.todo { .icon-step, .step-status { color: #cbd5e1; } }
+
+        /* CORREÇÃO CRÍTICA: Força o nó do ZARC (FORA_ZARC) a assumir a cor vermelha de Alerta */
+        &.alert-node {
+          .icon-step, .step-status {
+            color: #dc2626 !important;
+          }
+        }
+      }
+
+
+      .line-connector {
+        flex-grow: 1;
+        height: 2px;
+        margin: -24px 4px 0 4px;
+        min-width: 10px;
+
+        &.done { background-color: #16a34a; }
+        &.in-progress { background: linear-gradient(90deg, #16a34a 0%, #ea580c 100%); }
+        &.todo { background-color: #e2e8f0; }
+
+        /* CORREÇÃO DO CONECTOR: Se o nó atual ou próximo falhar, pinta a linha de vermelho sutil */
+        &.alert-line { background-color: #fca5a5 !important; }
+      }
+    }
+
+    /* TIMELINE VERTICAL DE ATIVIDADES */
+    .secao-ultimas-atividades {
+      .header-atividades-row {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;
+        .link-ver-todas { background: none; border: none; font-size: 0.75rem; color: #16a34a; font-weight: 600; cursor: pointer; }
+      }
+
+      .atividades-timeline-vertical-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+
+        .atividade-item-row {
+          display: flex; align-items: center; font-size: 0.8rem;
+
+          .status-bullet {
+            width: 7px; height: 7px; border-radius: 50%; margin-right: 10px; flex-shrink: 0;
+            &.sucesso { background-color: #16a34a; }
+            &.info { background-color: #2563eb; }
+            &.alerta { background-color: #dc2626; }
+          }
+          .atividade-desc { color: #475569; font-weight: 500; flex-grow: 1; }
+          .atividade-timestamp { color: #94a3b8; font-size: 0.75rem; }
+        }
+      }
+    }
+  }
+}
+
+/* Tratamento Responsivo */
+@media (max-width: 1200px) {
+  .vmg-detalhe-gleba-card-grid { grid-template-columns: 1fr; .bloco-esteira-atividades-wrapper { border-left: none; padding-left: 0; margin-top: 1.5rem; } }
+}

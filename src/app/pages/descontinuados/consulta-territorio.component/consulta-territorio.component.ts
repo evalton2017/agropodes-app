@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import {TerritorioService} from '../../../service/territorio.service';
+import {TerritorioService} from '../../../service/descontinuados/territorio.service';
 import {SnackbarService} from '../../../shared/service/snack-bar.service';
 import {TerritorioResponse} from '../../../model/territorio';
 import {MapModalComponent} from '../../../components/modal/map-modal-component';

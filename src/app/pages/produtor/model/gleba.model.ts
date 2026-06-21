@@ -1,0 +1,138 @@
+import {GlebeApiResponse} from '../../../dto/response/gleba.response';
+import {signal} from '@angular/core';
+import {AnaliseClimatica} from '../../../dto/response/analise-climatica';
+
+export interface DetalhamentoAmbiental {
+  app?: number;
+  banhado?: number;
+  manguezal?: number;
+  reserva_legal?: number;
+  uso_restrito?: number;
+  vegetacao_nativa?: number;
+}
+
+export interface CarFeicoesAmbientaisResponse {
+  status: string;
+  cod_imovel: string;
+  area_total_declarada_ha: number;
+  geometria: string;
+  detalhamento_ambiental: DetalhamentoAmbiental;
+}
+
+export interface MunicipioResponse {
+  codigo_municipio: number;
+  nome_municipio: string;
+  sigla_uf: string;
+  estado: string;
+}
+
+export interface ValidarZarcSimplificadoResponse {
+  status_validacao: 'CONFORME' | 'INCONFORME';
+  mensagem: string;
+}
+
+
+export interface JanelaSugerida {
+  decendio: number;
+  periodo_sugerido: string;
+  risco_pct: number;
+}
+
+export interface JanelaGeralZarcResponse {
+  cultura: string;
+  municipio_ibge: number;
+  data_inicio_permitida: string; // Formato ISO "YYYY-MM-DD"
+  data_fim_permitida: string;    // Formato ISO "YYYY-MM-DD"
+  sugestoes_janelas_plantio: JanelaSugerida[];
+  mensagem_auxiliar: string;
+}
+
+export interface KpisResumoGlebas {
+  totalCadastradas: number;
+  totalConformes: number;
+  totalEmAnalise: number;
+  totalAlertas: number;
+  proximaValidacao: string;
+}
+
+export interface ItemTabelaGleba {
+  idGleba: number;
+  codigo: string;
+  nomeGleba: string;
+  municipio: string;
+  culturaDeclarada: string;
+  areaHa: number;
+  status: 'Conforme' | 'Em analise' | 'Alerta';
+  ultimaAtualizacao: string;
+  geometria: string;
+}
+
+export interface RespostaConsultaGlebasPainel {
+  kpis: KpisResumoGlebas;
+  glebas: Array<ItemTabelaGleba>;
+}
+
+export interface StatusPassos {
+  geometria: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
+  consultaCar: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
+  ambiental: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
+  culturaIa: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
+  zarc: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
+  produtividade: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
+  atestado: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
+}
+
+export interface Atividade {
+  descricao: string;
+  dataHora: string;
+  tipo: 'sucesso' | 'info' | 'alerta' | 'erro';
+}
+
+export interface GlebaData {
+  idGleba: number;
+  idProdutor: number;
+  codigo: string;
+  codigoCar: string;
+  geometria: string;
+  areaHa: number;
+  culturaDeclarada: string;
+  nomeGleba: string;
+  municipio: string;
+  status: 'Conforme' | 'Inconforme' | 'Em Analise';
+  ultimaAtualizacao: string;
+  statusPassos: StatusPassos;
+  ultimasAtividades: Atividade[];
+}
+
+
+export interface GlebaPainel extends GlebeApiResponse {
+  coordenadas: [number, number][];
+  indicadores: ReturnType<typeof signal<AnaliseClimatica | null>>;
+  carregandoIndicadores: ReturnType<typeof signal<boolean>>;
+}
+
+export interface CalculoAreaResponse {
+  area_hectares: number;
+  perimetro_metros: number;
+}
+
+export interface ValidarZarcRequest {
+  id_gleba: number;
+  municipio_ibge: number;
+  cultura: string;
+  safra: string;
+  volumeDeclaradoComercializar: number;
+  dataEstimadaPlantio: string; // Formato YYYY-MM-DD
+  dataEstimadaColheita: string; // Formato YYYY-MM-DD
+}
+
+
+export interface DominioCultura {
+  id: number;
+  codigo: string;
+  nome: string;
+  grupo: string | null;
+  ativo: boolean;
+  permite_zarc: boolean;
+  data_cadastro: string; // ISO 8601 Timestamp string
+}

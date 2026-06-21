@@ -22,12 +22,13 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {DominioCultura, GlebaService} from '../../../service/gleba.service';
+import {GlebaService} from '../service/gleba.service';
 import {PessoaService} from '../../../service/pessoa.service';
 import {
-  CarFeicoesAmbientaisResponse, JanelaGeralZarcResponse,
-  JanelaSugerida,
-  MunicipioResponse, ValidarZarcSimplificadoResponse
+  CarFeicoesAmbientaisResponse, DominioCultura,
+  JanelaGeralZarcResponse,
+  MunicipioResponse,
+  ValidarZarcSimplificadoResponse
 } from '../model/gleba.model';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MapaLocalizacaoComponent} from '../../../components/mapa-localizacao.component/mapa-localizacao.component';
@@ -36,7 +37,6 @@ import {MatIconModule} from '@angular/material/icon';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
-import {debounceTime} from 'rxjs';
 
 export interface ZarcSuccessResponse {
   status_validacao: string;
@@ -45,7 +45,7 @@ export interface ZarcSuccessResponse {
 }
 
 @Component({
-  selector: 'app-cadastro-gleba',
+  selector: 'app-cadastro-gleba-gleba',
   standalone: true,
   imports: [
     CommonModule,

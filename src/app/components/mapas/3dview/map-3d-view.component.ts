@@ -24,7 +24,7 @@ import {MatListModule} from '@angular/material/list';
 
 import {GlebeApiResponse} from '../../../dto/response/gleba.response';
 import {PessoaService} from '../../../service/pessoa.service';
-import {GlebaService} from '../../../service/gleba.service';
+import {GlebaService} from '../../../pages/produtor/service/gleba.service';
 
 type GlebeItem = GlebeApiResponse & { coordenadas: [number, number][] };
 

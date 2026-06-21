@@ -1,46 +1,17 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
-import {GlebeApiResponse} from '../dto/response/gleba.response';
-import {environment} from '../../environments/environment';
-import {CadastroGlebaResponse} from '../dto/response/cadastro-gleba.response';
-import {AnaliseClimatica} from '../dto/response/analise-climatica';
+import {GlebeApiResponse} from '../../../dto/response/gleba.response';
+import {environment} from '../../../../environments/environment';
+import {CadastroGlebaResponse} from '../../../dto/response/cadastro-gleba.response';
+import {AnaliseClimatica} from '../../../dto/response/analise-climatica';
 import {
-  CarFeicoesAmbientaisResponse, JanelaGeralZarcResponse,
-  MunicipioResponse, ValidarZarcSimplificadoResponse
-} from '../pages/gleba/model/gleba.model';
-
-export interface GlebaPainel extends GlebeApiResponse {
-  coordenadas: [number, number][];
-  indicadores: ReturnType<typeof signal<AnaliseClimatica | null>>;
-  carregandoIndicadores: ReturnType<typeof signal<boolean>>;
-}
-
-export interface CalculoAreaResponse {
-  area_hectares: number;
-  perimetro_metros: number;
-}
-
-export interface ValidarZarcRequest {
-  id_gleba: number;
-  municipio_ibge: number;
-  cultura: string;
-  safra: string;
-  volumeDeclaradoComercializar: number;
-  dataEstimadaPlantio: string; // Formato YYYY-MM-DD
-  dataEstimadaColheita: string; // Formato YYYY-MM-DD
-}
+  CalculoAreaResponse,
+  CarFeicoesAmbientaisResponse, DominioCultura, GlebaData, GlebaPainel, JanelaGeralZarcResponse,
+  MunicipioResponse, RespostaConsultaGlebasPainel, ValidarZarcRequest, ValidarZarcSimplificadoResponse
+} from '../model/gleba.model';
 
 
-export interface DominioCultura {
-  id: number;
-  codigo: string;
-  nome: string;
-  grupo: string | null;
-  ativo: boolean;
-  permite_zarc: boolean;
-  data_cadastro: string; // ISO 8601 Timestamp string
-}
 
 @Injectable({
   providedIn: 'root'
@@ -48,27 +19,24 @@ export interface DominioCultura {
 export class GlebaService {
   private readonly http = inject(HttpClient);
 
-  /**
-   * Passo 1: Busca o número do CAR e retorna o balanço de feições ambientais (SICAR)
-   */
   buscarDetalhesCar(numeroCar: string): Observable<CarFeicoesAmbientaisResponse> {
     return this.http.get<CarFeicoesAmbientaisResponse>(
       `${environment.urlProc}/produtor/car/${encodeURIComponent(numeroCar)}`
     );
   }
 
-  /**
-   * Passo 2: Busca a lista de municípios para o dropdown de geolocalização
-   */
+  geocodificarCentroide(lat: number, lon: number): Observable<MunicipioResponse> {
+    return this.http.get<MunicipioResponse>(
+      `${environment.urlProc}/produtor/geocodificar-centroide?lat=${lat}&lon=${lon}`
+    );
+  }
+
   getMunicipios(): Observable<MunicipioResponse[]> {
     return this.http.get<MunicipioResponse[]>(
       `${environment.urlProc}/produtor/municipios`
     );
   }
 
-  /**
-   * Passo 3: Envia o polígono WKT desenhado no mapa para o PostGIS calcular área exata
-   */
   calcularAreaGeometria(wktGeometria: string): Observable<CalculoAreaResponse> {
     return this.http.post<CalculoAreaResponse>(
       `${environment.urlProc}/produtor/calcular-area-geometria`,
@@ -76,9 +44,6 @@ export class GlebaService {
     );
   }
 
-  /**
-   * Passo 4: Busca as safras e culturas vigentes para os dropdowns agrícolas
-   */
   getFiltrosAgricolas(): Observable<DominioCultura[]> {
     return this.http.get<DominioCultura[]>(
       `${environment.urlProc}/produtor/culturas?ativo=true`
@@ -97,27 +62,20 @@ export class GlebaService {
     return this.http.get<JanelaGeralZarcResponse>(`${environment.urlProc}/produtor/janela-geral`, { params });
   }
 
+  obterPainelGerencialGlebas(idProdutor: number, safra: string): Observable<RespostaConsultaGlebasPainel> {
+    const params = new HttpParams()
+      .set('id_produtor', idProdutor.toString())
+      .set('safra', safra.trim());
 
+    return this.http.get<RespostaConsultaGlebasPainel>(`${environment.urlProc}/produtor/${idProdutor}/consulta-glebas`, { params });
+  }
 
-  /**
-   * Busca os dados da gleba e processa a geometria WKT para coordenadas numéricas.
-   */
   getGlebaById(idGleba: number): Observable<GlebeApiResponse & { coordenadas: [number, number][] }> {
     return this.http.get<GlebeApiResponse>(`${environment.urlProc}/produtor/gleba/${idGleba}`).pipe(
       map(response => ({
         ...response,
         coordenadas: this.parseWktPolygon(response.geometria)
       }))
-    );
-  }
-
-  /**
-   * Passo 5: Envia o payload consolidado final do formulário para salvar nos esquemas
-   */
-  cadastrarGleba(gleba: any): Observable<CadastroGlebaResponse> {
-    return this.http.post<CadastroGlebaResponse>(
-      `${environment.urlProc}/produtor/cadastrar-gleba`,
-      gleba
     );
   }
 
@@ -147,9 +105,17 @@ export class GlebaService {
     );
   }
 
-  // =====================================================================
-  // 🗺️ PARSERS ESPACIAIS
-  // =====================================================================
+  cadastrarGleba(gleba: any): Observable<CadastroGlebaResponse> {
+    return this.http.post<CadastroGlebaResponse>(
+      `${environment.urlProc}/produtor/cadastrar-gleba`,
+      gleba
+    );
+  }
+
+  obterDetalheLaudoGleba(idGleba: number): Observable<GlebaData> {
+    return this.http.get<GlebaData>(`${environment.urlProc}/gleba/${idGleba}/laudo-detalhado`);
+  }
+
 
   public parseWktPolygon(wkt: string): [number, number][] {
     try {
@@ -214,11 +180,7 @@ export class GlebaService {
     return coordenadas;
   }
 
-  geocodificarCentroide(lat: number, lon: number): Observable<MunicipioResponse> {
-    return this.http.get<MunicipioResponse>(
-      `${environment.urlProc}/produtor/geocodificar-centroide?lat=${lat}&lon=${lon}`
-    );
-  }
+
 
 
 }

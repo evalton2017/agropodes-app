@@ -18,8 +18,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {parse} from 'wellknown';
-import {MunicipioResponse} from '../../pages/gleba/model/gleba.model';
-import {GlebaService} from '../../service/gleba.service';
+import {MunicipioResponse} from '../../pages/produtor/model/gleba.model';
+import {GlebaService} from '../../pages/produtor/service/gleba.service';
 import {EstadoBrasileiro, ESTADOS_BRASILEIROS} from '../../shared/model/estados.constants';
 
 @Component({
