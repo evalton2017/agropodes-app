@@ -34,7 +34,7 @@
   </div>
 
   <div class="dashboard-content-body">
-    @if (dadosProdutor()) {
+    @if (dadosProdutor() && total_glebas > 0) {
       <app-dashboard-produtor-resumo [dados]="dadosProdutor()!"></app-dashboard-produtor-resumo>
 
       <app-dashboard-produtor-detalhes></app-dashboard-produtor-detalhes>

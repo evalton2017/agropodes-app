@@ -1,0 +1,107 @@
+.vmg-split-dashboard-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr; // Trava a largura da lista lateral conforme a imagem do protótipo
+  gap: 1.5rem;
+  width: 100%;
+  height: calc(100vh - 120px);
+  box-sizing: border-box;
+  background: #f8fafc;
+  padding: 1rem;
+
+  /* SIDEBAR DA ESQUERDA */
+  .sidebar-lotes-list-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem 1rem;
+    height: 100%;
+    box-sizing: border-box;
+
+    .sidebar-header-titles {
+      margin-bottom: 1rem;
+      h3 { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 0; }
+      .counter-lbl { font-size: 0.775rem; color: #64748b; font-weight: 500; }
+    }
+
+    .scroller-items-flex-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto; // Cria rolagem vertical isolada para a lista de fazendas
+      flex-grow: 1;
+      padding-right: 4px;
+
+      &::-webkit-scrollbar { width: 4px; }
+      &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    }
+
+    /* CARD DE ITENS DA BARRA LATERAL */
+    .gleba-sidebar-item-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ffffff;
+      transition: all 0.2s ease-in-out;
+
+      &:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+      /* Visual de Card Ativo Selecionado (Destaque Verde Suave igual imagem) */
+      &.active-card {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+        box-shadow: 0 2px 4px rgba(22, 163, 74, 0.04);
+
+        .glb-code-txt { color: #15803d; }
+        .glb-name-txt { color: #16a34a; }
+      }
+
+      .card-left-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        .glb-code-txt { font-size: 0.75rem; font-weight: 700; color: #64748b; }
+        .glb-name-txt { font-size: 0.875rem; font-weight: 700; color: #1e293b; margin: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .glb-sub-txt { font-size: 0.725rem; color: #94a3b8; font-weight: 500; }
+      }
+
+      .card-right-status-flex {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+        flex-shrink: 0;
+
+        .badge-chip-vmg {
+          display: inline-flex; align-items: center; gap: 4px; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+          &.conforme { background: #dcfce7; color: #16a34a; .icon-bullet { color: #16a34a; } }
+          &.nao_conforme, &.alerta { background: #fee2e2; color: #dc2626; .icon-bullet { color: #dc2626; } }
+          &.em_analise { background: #fef3c7; color: #d97706; .icon-bullet { color: #d97706; } }
+          .icon-bullet { font-size: 8px; width: 8px; height: 8px; }
+        }
+        .arrow-ic { font-size: 16px; width: 16px; height: 16px; color: #cbd5e1; }
+      }
+    }
+  }
+
+  /* CONTAINER DO CONTEÚDO PRINCIPAL DO LAUDO */
+  .main-laudo-content-view {
+    height: 100%;
+    overflow-y: auto; // Permite rolar o laudo detalhado e as tabelas sem mover o sidebar
+    padding-right: 4px;
+    position: relative;
+    box-sizing: border-box;
+
+    &::-webkit-scrollbar { width: 5px; }
+    &::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+  }
+
+  .detail-loading-overlay { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #64748b; font-size: 0.9rem; p { margin-top: 0.5rem; } }
+  .empty-state-view { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #94a3b8; mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 0.5rem; } }
+  .spinner-loader-box { display: flex; justify-content: center; padding: 2rem 0; }
+}

@@ -31,13 +31,13 @@
             <div class="list-section">
               <span class="section-title text-muted">Selecione o Talhão</span>
               <mat-selection-list [multiple]="false" class="glebe-selection-list">
-                @for (gleba of glebesList(); track gleba.id_gleba) {
+                @for (gleba of glebesList(); track gleba.idGleba) {
                   <mat-list-option
-                    [selected]="selectedGlebe()?.id_gleba === gleba.id_gleba"
+                    [selected]="selectedGlebe()?.idGleba === gleba.idGleba"
                     (click)="selecionarGleba(gleba)">
                     <mat-icon matLine color="primary">landscape</mat-icon>
-                    <span matLine class="glebe-title-text">Gleba #{{ gleba.id_gleba }}</span>
-                    <span matLine class="glebe-sub-text text-muted">CAR: {{ gleba.codigo_car | slice:0:15 }}...</span>
+                    <span matLine class="glebe-title-text">Gleba #{{ gleba.idGleba }}</span>
+                    <span matLine class="glebe-sub-text text-muted">CAR: {{ gleba.codigoCar | slice:0:15 }}...</span>
                   </mat-list-option>
                 }
               </mat-selection-list>

@@ -57,9 +57,7 @@ export class MapaLocalizacaoComponent implements OnInit {
   readonly termoBuscaMunicipio = signal<string>('');
   private glebaService = inject(GlebaService);
 
-  // =========================================================================
-  // 🟢 CORREÇÃO DOS ERROS DE COMPILAÇÃO (TS2349 e TS7006)
-  // =========================================================================
+
   municipiosFiltrados = computed(() => {
     const termo = this.termoBuscaMunicipio().toLowerCase().trim();
     const todos = this.listaMunicipios;

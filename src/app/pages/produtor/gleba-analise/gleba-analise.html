@@ -1,0 +1,221 @@
+<div class="vmg-analise-container">
+
+  @if (carregando()) {
+    <div class="vmg-loading-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Buscando assinaturas digitais do livro-razão...</p>
+    </div>
+  }
+
+  @if (gleba(); as dados) {
+    <!-- SEÇÃO 1: CABEÇALHO GERAL DE METADADOS -->
+    <div class="analise-header-box">
+      <div class="title-status-row">
+        <h2>{{ dados.codigo }} - {{ dados.nomeGleba }}</h2>
+        <span class="status-badge" [ngClass]="dados.status.toLowerCase().replace(' ', '-')">
+          {{ dados.status }}
+        </span>
+
+        <div class="actions-top-flex">
+          <button mat-stroked-button class="btn-detalhes">
+            Ver detalhes completos <mat-icon>open_in_new</mat-icon>
+          </button>
+          <button mat-icon-button class="btn-expand"><mat-icon>expand_more</mat-icon></button>
+        </div>
+      </div>
+
+      <div class="meta-data-horizontal-grid">
+        <div class="meta-cell">
+          <mat-icon class="icon-slate">layers</mat-icon>
+          <div class="cell-info">
+            <span class="lbl">CAR</span>
+            <span class="val flex-copy">
+              {{ dados.codigoCar }}
+              <mat-icon class="copy-ic" (click)="copiarTexto(dados.codigoCar)">content_copy</mat-icon>
+            </span>
+          </div>
+        </div>
+
+        <div class="meta-cell">
+          <mat-icon class="icon-slate">location_on</mat-icon>
+          <div class="cell-info">
+            <span class="lbl">Município</span>
+            <span class="val">{{ dados.municipio }}</span>
+          </div>
+        </div>
+
+        <div class="meta-cell">
+          <mat-icon class="icon-slate">agriculture</mat-icon>
+          <div class="cell-info">
+            <span class="lbl">Cultura</span>
+            <span class="val">{{ dados.culturaDeclarada }}</span>
+          </div>
+        </div>
+
+        <div class="meta-cell">
+          <mat-icon class="icon-slate">aspect_ratio</mat-icon>
+          <div class="cell-info">
+            <span class="lbl">Área (ha)</span>
+            <span class="val">{{ dados.areaHa | number:'1.1-2':'pt-BR' }} ha</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="timestamp-footer-label">Última atualização: {{ dados.ultimaAtualizacao }}</p>
+    </div>
+
+    <!-- SEÇÃO 2: ESTEIRA HORIZONTAL DE VALIDAÇÕES -->
+    <div class="analise-body-card-white">
+      <h3>Esteira de Validações</h3>
+
+      <div class="timeline-horizontal-vmg-row">
+        <!-- Geometria -->
+        <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.geometria)">
+          <mat-icon class="icon-step">{{ obterIconeNo(dados.statusPassos.geometria) }}</mat-icon>
+          <span class="step-name">Geometria</span>
+          <span class="step-status">{{ obterTextoNo(dados.statusPassos.geometria) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(dados.statusPassos.geometria, dados.statusPassos.consultaCar)"></div>
+
+        <!-- Consulta CAR -->
+        <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.consultaCar)">
+          <mat-icon class="icon-step">{{ obterIconeNo(dados.statusPassos.consultaCar) }}</mat-icon>
+          <span class="step-name">Consulta CAR</span>
+          <span class="step-status">{{ obterTextoNo(dados.statusPassos.consultaCar) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(dados.statusPassos.consultaCar, dados.statusPassos.ambiental)"></div>
+
+        <!-- Ambiental -->
+        <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.ambiental)">
+          <mat-icon class="icon-step">{{ obterIconeNo(dados.statusPassos.ambiental) }}</mat-icon>
+          <span class="step-name">Ambiental</span>
+          <span class="step-status">{{ obterTextoNo(dados.statusPassos.ambiental) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(dados.statusPassos.ambiental, dados.statusPassos.culturaIa)"></div>
+
+        <!-- Cultura IA -->
+        <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.culturaIa)">
+          <mat-icon class="icon-step">{{ obterIconeNo(dados.statusPassos.culturaIa) }}</mat-icon>
+          <span class="step-name">Cultura IA</span>
+          <span class="step-status">Condizente</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(dados.statusPassos.culturaIa, dados.statusPassos.zarc)"></div>
+
+        <!-- ZARC -->
+        <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.zarc)">
+          <mat-icon class="icon-step">{{ obterIconeNo(dados.statusPassos.zarc) }}</mat-icon>
+          <span class="step-name">ZARC</span>
+          <span class="step-status">{{ obterTextoNo(dados.statusPassos.zarc) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(dados.statusPassos.zarc, dados.statusPassos.produtividade)"></div>
+
+        <!-- Produtividade IA -->
+        <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.produtividade)">
+          <mat-icon class="icon-step">{{ obterIconeNo(dados.statusPassos.produtividade) }}</mat-icon>
+          <span class="step-name">Produtividade IA</span>
+          <span class="step-status">{{ obterTextoNo(dados.statusPassos.produtividade) }}</span>
+        </div>
+        <div class="line-connector" [ngClass]="obterClasseConector(dados.statusPassos.produtividade, dados.statusPassos.atestado)"></div>
+
+        <!-- Atestado VMG -->
+        <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.atestado)">
+          <mat-icon class="icon-step">{{ dados.statusPassos.atestado === 'CONCLUIDO' ? 'verified_user' : 'article' }}</mat-icon>
+          <span class="step-name">Atestado VMG</span>
+          <span class="step-status">{{ dados.statusPassos.atestado === 'CONCLUIDO' ? 'Emitido' : 'Pendente' }}</span>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 3: BLOCO CONDICIONAL DE PENDÊNCIAS IDENTIFICADAS -->
+      @if (dados.statusPassos.zarc == "FORA_ZARC") {
+        <div class="vmg-alert-block-yellow">
+          <div class="alert-icon-title-row">
+            <mat-icon class="amber-ic">warning</mat-icon>
+            <strong>Pendências Identificadas</strong>
+          </div>
+          <p class="alert-msg-txt">
+            Plantio fora da janela de risco do ZARC para a cultura {{ dados.culturaDeclarada }}.
+            Recomendação: Ajustar data estimada de plantio ou justificar tecnicamente junto à VMG.
+          </p>
+          <button mat-stroked-button class="btn-ver-detalhes-alert"><mat-icon>visibility</mat-icon> Ver detalhes</button>
+        </div>
+      }
+
+      <!-- SEÇÃO 4: QUADRO DE INFORMAÇÕES DO ZARC MAPA -->
+      <div class="vmg-zarc-table-box-wrapper">
+        <h4>Informações do ZARC</h4>
+        <div class="zarc-table-row-grid">
+          <div class="zarc-cell">
+            <span class="z-lbl">Portaria</span>
+            <span class="z-val">{{ dados.informacoesZarc.portaria }}</span>
+          </div>
+          <div class="zarc-cell">
+            <span class="z-lbl">Grupo de Risco</span>
+            <span class="z-val">{{ dados.informacoesZarc.grupoDeRisco }}</span>
+          </div>
+          <div class="zarc-cell">
+            <span class="z-lbl">Risco Admissivel</span>
+            <span class="z-val">{{ dados.informacoesZarc.riscoAdmissivel }}</span>
+          </div>
+          <div class="zarc-cell">
+            <span class="z-lbl">Janela de Plantio</span>
+            <span class="z-val">{{ dados.informacoesZarc.janelaDePlantio }}</span>
+          </div>
+          <div class="zarc-cell red-focus-border">
+            <span class="z-lbl color-red">Sua Data Estimada</span>
+            <span class="z-val color-red font-bold">{{ dados.informacoesZarc.suaDataEstimada }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 5: MATRIZ DE RESUMO DAS ANÁLISES (CARDS INFERIORES) -->
+      <div class="vmg-resumo-analises-cards-grid">
+        <h4>Resumo das Análises</h4>
+        <div class="cards-sub-grid">
+
+          <!-- Ambiental -->
+          <div class="sub-card">
+            <div class="card-header-status-flex">
+              <mat-icon class="green-txt">check_circle</mat-icon>
+              <strong>Ambiental</strong>
+            </div>
+            <span class="status-lbl green-txt">{{ dados.resumoAnalises.ambientalStatus }}</span>
+            <p class="desc-lbl">{{ dados.resumoAnalises.ambientalDesc }}</p>
+          </div>
+
+          <!-- Cultura IA -->
+          <div class="sub-card">
+            <div class="card-header-status-flex">
+              <mat-icon class="green-txt">comet</mat-icon>
+              <strong>Cultura IA</strong>
+            </div>
+            <span class="status-lbl green-txt">{{ dados.resumoAnalises.culturaIaStatus }}</span>
+            <p class="desc-lbl">{{ dados.resumoAnalises.culturaIaDesc }}</p>
+          </div>
+
+          <!-- Produtividade IA -->
+          <div class="sub-card">
+            <div class="card-header-status-flex">
+              <mat-icon class="green-txt">trending_up</mat-icon>
+              <strong>Produtividade IA</strong>
+            </div>
+            <span class="status-lbl green-txt">{{ dados.resumoAnalises.produtividadeStatus }}</span>
+            <p class="desc-lbl">{{ dados.resumoAnalises.produtividadeDesc }}</p>
+          </div>
+
+          <!-- Atestado VMG -->
+          <div class="sub-card">
+            <div class="card-header-status-flex">
+              <mat-icon class="green-txt">workspace_premium</mat-icon>
+              <strong>Atestado VMG</strong>
+            </div>
+            <span class="status-lbl green-txt">{{ dados.resumoAnalises.atestadoStatus }}</span>
+            <p class="desc-lbl">{{ dados.resumoAnalises.atestadoDesc }}</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

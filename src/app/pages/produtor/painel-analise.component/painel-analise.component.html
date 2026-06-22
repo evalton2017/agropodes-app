@@ -1,0 +1,62 @@
+<div class="vmg-split-dashboard-layout">
+
+  <!-- COLUNA DA ESQUERDA: LISTA DE GLEBAS (SIDEBAR) -->
+  <aside class="sidebar-lotes-list-wrapper">
+    <div class="sidebar-header-titles">
+      <h3>Lista de Glebas</h3>
+      <span class="counter-lbl">{{ listaGlebasSidebar().length }} glebas encontradas</span>
+    </div>
+
+    @if (carregandoLista()) {
+      <div class="spinner-loader-box">
+        <mat-spinner diameter="30"></mat-spinner>
+      </div>
+    }
+
+    <div class="scroller-items-flex-list">
+      @for (g of listaGlebasSidebar(); track g.idGleba) {
+        <div class="gleba-sidebar-item-card"
+             [ngClass]="{ 'active-card': glebaSelecionadaId() == g.idGleba }"
+             (click)="selecionarGleba(g.idGleba)">
+
+          <div class="card-left-info">
+            <span class="glb-code-txt">GLB-{{ g.idGleba | number:'3.0-0' }}</span>
+            <h4 class="glb-name-txt">Fazenda {{ g.cultura_declarada }} {{ g.idGleba }}</h4>
+            <span class="glb-sub-txt">{{ g.codigoCar | slice:0:13 }}... • {{ g.cultura_declarada }}</span>
+          </div>
+
+          <div class="card-right-status-flex">
+            <!-- Badge dinâmico baseado no status retornado da lista geral do produtor -->
+            <span class="badge-chip-vmg" [ngClass]="g.statusVmg?.toLowerCase() || 'conforme'">
+              <mat-icon class="icon-bullet">fiber_manual_record</mat-icon>
+              {{ g.statusVmg === 'NAO_CONFORME' ? 'Alerta' : 'Conforme' }}
+            </span>
+            <mat-icon class="arrow-ic">chevron_right</mat-icon>
+          </div>
+
+        </div>
+      }
+    </div>
+  </aside>
+
+  <!-- COLUNA DA DIREITA: PAINEL DE DETALHES GLOBAIS DO LEDGER -->
+  <main class="main-laudo-content-view">
+    @if (carregandoDetalhe()) {
+      <div class="detail-loading-overlay">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Acessando chaves de segurança e baixando laudo detalhado...</p>
+      </div>
+    }
+
+    <!-- Injeta o componente filho passando o sinal de laudo recheado direto da API -->
+    @if (laudoDetalhadoAtivo(); as laudo) {
+      <app-gleba-analise [idGleba]="laudo.idGleba"></app-gleba-analise>
+    } @else if (!carregandoDetalhe()) {
+      <div class="empty-state-view">
+        <mat-icon>analytics</mat-icon>
+        <p>Selecione um talhão na barra lateral para carregar a matriz de conformidade da Portaria 739/2025.</p>
+      </div>
+    }
+  </main>
+
+</div>

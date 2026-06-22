@@ -140,7 +140,7 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Safra Vigente *</mat-label>
-                  <mat-select formControlName="safra">
+                  <mat-select formControlName="safra" (selectionChange)="carregarSugestoesZarc()">
                     <mat-option value="">Selecione...</mat-option>
                     @for (s of listaSafras; track s) {
                       <mat-option [value]="s">Safra {{ s }}</mat-option>
@@ -219,7 +219,6 @@
               }
             </div>
 
-            <!-- PAINEL DE RETORNO DO BACK-END CASO OCORRA OUTRA ATUALIZAÇÃO -->
             @if (statusZarc(); as resultado) {
               <div class="zarc-feedback-panel mt-3" [ngClass]="resultado.status_validacao === 'CONFORME' ? 'success' : 'error'">
                 <div class="zarc-header-row">

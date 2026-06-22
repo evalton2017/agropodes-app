@@ -79,19 +79,11 @@ export class CadastroGlebaComponent implements OnInit {
   public sugestoesZarcDisponiveis = signal<JanelaGeralZarcResponse | null>(null);
   public carregandoSugestoes = signal<boolean>(false);
 
-  private readonly CICLO_CULTURAS_DIAS: Record<string, number> = {
-    'SOJA': 120,
-    'MILHO': 135,
-    'FEIJÃO': 90,
-    'ARROZ': 130
-  };
-
-
-  private fb = inject(FormBuilder);
-  private glebaService = inject(GlebaService);
-  private pessoaService = inject(PessoaService);
-  private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
+  private readonly fb = inject(FormBuilder);
+  private readonly glebaService = inject(GlebaService);
+  private readonly pessoaService = inject(PessoaService);
+  private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   passoAtual = signal<number>(1);
   carregando = signal<boolean>(false);
@@ -396,12 +388,15 @@ export class CadastroGlebaComponent implements OnInit {
 
   public carregarSugestoesZarc(): void {
     const cultura = this.formWizard.get('cultura_declarada')?.value;
-    const municipio = this.formWizard.get('municipio_ibge')?.value || 3550308;
+    const municipio = this.formWizard.get('codigo_municipio')?.value || 0;
+    const safra = this.formWizard.get('safra')?.value;
+
+    console.log(municipio, safra, cultura);
 
     if (!cultura) return;
 
     this.carregandoSugestoes.set(true);
-    this.glebaService.obtenerJanelaGeralZarc(cultura, Number(municipio))
+    this.glebaService.obtenerJanelaGeralZarc(cultura, Number(municipio), safra)
       .subscribe({
         next: (resposta) => {
           this.sugestoesZarcDisponiveis.set(resposta);
@@ -447,7 +442,7 @@ export class CadastroGlebaComponent implements OnInit {
   public executarEnvioFinalCadastro(): void {
     if (this.formWizard.invalid) return;
 
-    const codigoIbgeMunicipio = this.formWizard.get('municipio_ibge')?.value || 3550308;
+    const codigoIbgeMunicipio = this.formWizard.get('codigo_municipio')?.value || 0;
     const valores = this.formWizard.value;
 
     // Função interna para converter o formato brasileiro "dd/MM/yyyy" para o padrão ISO "YYYY-MM-DD"

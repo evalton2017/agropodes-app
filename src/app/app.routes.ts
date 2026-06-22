@@ -15,6 +15,7 @@ import {RelatorioAnalistaComponent} from './pages/relatorios/analista/relatorio-
 import {ConsultaAnaliseProdutorComponent} from './pages/descontinuados/produtor/consulta-analise-produtor.component';
 import {CadastroGlebaComponent} from './pages/produtor/cadastro-gleba/cadastro-gleba.component';
 import {ConsultaGlebaComponent} from './pages/produtor/consulta-gleba/consulta-gleba';
+import {PainelAnaliseComponent} from './pages/produtor/painel-analise.component/painel-analise.component';
 
 
 export const routes: Routes = [
@@ -66,7 +67,7 @@ export const routes: Routes = [
   },
   {
     path: 'consulta-analise-produtor',
-    component: ConsultaAnaliseProdutorComponent,
+    component: PainelAnaliseComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_PRODUTOR'] }
   },

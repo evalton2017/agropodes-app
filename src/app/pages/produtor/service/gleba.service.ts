@@ -54,10 +54,11 @@ export class GlebaService {
     return this.http.post<ValidarZarcSimplificadoResponse>(`${environment.urlProc}/produtor/validar-zarc`, payload);
   }
 
-  public obtenerJanelaGeralZarc(cultura: string, municipioIbge: number): Observable<JanelaGeralZarcResponse> {
+  public obtenerJanelaGeralZarc(cultura: string, municipioIbge: number, safra: string): Observable<JanelaGeralZarcResponse> {
     const params = new HttpParams()
       .set('cultura', cultura.trim())
-      .set('municipio_ibge', municipioIbge.toString());
+      .set('municipio_ibge', municipioIbge.toString())
+      .set('safra', safra.toString());
 
     return this.http.get<JanelaGeralZarcResponse>(`${environment.urlProc}/produtor/janela-geral`, { params });
   }

@@ -73,19 +73,38 @@ export interface RespostaConsultaGlebasPainel {
 }
 
 export interface StatusPassos {
-  geometria: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
-  consultaCar: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
-  ambiental: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
-  culturaIa: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
-  zarc: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
-  produtividade: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
-  atestado: 'CONCLUIDO' | 'EM_ANDAMENTO' | 'PENDENTE';
+  geometria: string;
+  consultaCar: string;
+  ambiental: string;
+  culturaIa: string;
+  zarc: string;
+  produtividade: string;
+  atestado: string;
 }
 
 export interface Atividade {
   descricao: string;
   dataHora: string;
   tipo: 'sucesso' | 'info' | 'alerta' | 'erro';
+}
+
+export interface InformacoesZarc {
+  portaria: string;
+  grupoDeRisco: string;
+  riscoAdmissivel: string;
+  janelaDePlantio: string;
+  suaDataEstimada: string;
+}
+
+export interface ResumoAnalises {
+  ambientalStatus: string;
+  ambientalDesc: string;
+  culturaIaStatus: string;
+  culturaIaDesc: string;
+  produtividadeStatus: string;
+  produtividadeDesc: string;
+  atestadoStatus: string;
+  atestadoDesc: string;
 }
 
 export interface GlebaData {
@@ -102,6 +121,8 @@ export interface GlebaData {
   ultimaAtualizacao: string;
   statusPassos: StatusPassos;
   ultimasAtividades: Atividade[];
+  informacoesZarc: InformacoesZarc;
+  resumoAnalises: ResumoAnalises;
 }
 
 

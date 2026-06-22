@@ -59,7 +59,7 @@ export class Map3DViewerComponent implements OnInit {
   readonly isLoading = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
 
-  readonly carCode = computed(() => this.selectedGlebe()?.codigo_car ?? 'Não informado');
+  readonly carCode = computed(() => this.selectedGlebe()?.codigoCar ?? 'Não informado');
   readonly totalArea = computed(() => `${this.selectedGlebe()?.area_hectares ?? 0} ha`);
   readonly declaredCrop = computed(() => this.selectedGlebe()?.cultura_declarada ?? 'Não informada');
 
