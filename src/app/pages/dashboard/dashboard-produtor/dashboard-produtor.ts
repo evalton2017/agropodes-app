@@ -84,7 +84,7 @@ export class DashboardProdutorComponent implements OnInit {
 
   constructor() {
     this.listaSafras = this.generarListaSafras();
-    this.filtroSafra = this.listaSafras[1] || '2025/2026';
+    this.filtroSafra = this.listaSafras[0] || '2025/2026';
 
     // O effect() monitora as mutações do Keycloak e dos Filtros Ativos de forma atômica
     effect(() => {

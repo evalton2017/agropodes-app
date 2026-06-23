@@ -73,7 +73,7 @@ export class DashboardAnalistaComponent implements OnInit {
 
   constructor() {
     this.listaSafras = this.gerarListaSafras();
-    this.filtroSafra = this.listaSafras[1] || '2025/2026';
+    this.filtroSafra = this.listaSafras[0] || '2025/2026';
   }
 
   ngOnInit(): void {
