@@ -1,30 +1,32 @@
+<!-- src/app/pages/dashboard/components/dashboard-atestados/dashboard-atestados.component.html -->
 <section class="dashboard-card">
   @if (carregando()) {
     <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
   }
 
   <div class="card-header">
-    <h3>Últimos Atestados Emitidos</h3>
+    <h3 class="card-title-custom">Últimos Atestados Emitidos</h3>
     <a class="header-link">Ver todos</a>
   </div>
 
-  <div class="table-responsive">
+  <!-- Contêiner que isola a rolagem para a tabela não estourar o card -->
+  <div class="table-responsive-wrapper">
     <table class="dashboard-table">
       <thead>
       <tr>
-        <th>Código Gleba</th>
-        <th>Produtor</th>
-        <th>Município</th>
-        <th>Data</th>
+        <th class="col-codigo">Código Gleba</th>
+        <th class="col-produtor">Produtor</th>
+        <th class="col-municipio">Município</th>
+        <th class="col-data">Data</th>
       </tr>
       </thead>
       <tbody>
         @for (atestado of ultimosAtestados(); track atestado) {
           <tr>
-            <td class="code-text font-mono">{{ atestado.codigo_gleba }}</td>
-            <td class="truncate max-w-[140px]" [title]="atestado.produtor">{{ atestado.produtor }}</td>
-            <td>{{ atestado.municipio }}</td>
-            <td class="whitespace-nowrap">{{ atestado.data | date:'dd/MM/yyyy' }}</td>
+            <td class="td-codigo font-mono">{{ atestado.codigo_gleba }}</td>
+            <td class="td-produtor" [title]="atestado.produtor">{{ atestado.produtor }}</td>
+            <td class="td-municipio">{{ atestado.municipio }}</td>
+            <td class="td-data">{{ atestado.data | date:'dd/MM/yyyy' }}</td>
           </tr>
         } @empty {
           <tr>

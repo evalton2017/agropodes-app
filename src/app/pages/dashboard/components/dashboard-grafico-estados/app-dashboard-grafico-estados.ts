@@ -26,9 +26,19 @@ export class AppDashboardGraficoEstados {
   public carregando = signal<boolean>(false);
   public erro = signal<boolean>(false);
   private mapaInstance!: any;
-  mapInstance: any = null; // Trocado para any para evitar erro de tipo sem import estático
+  mapInstance: any = null;
   geoJsonLayer: any = null;
-  L: any = null; // Armazena a referência global do Leaflet após o import dinâmico
+  L: any = null;
+
+  private readonly mapaUfsPorExtenso: { [key: string]: string } = {
+    'AC': 'Acre', 'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas', 'BA': 'Bahia',
+    'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo', 'GO': 'Goiás',
+    'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul', 'MG': 'Minas Gerais',
+    'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná', 'PE': 'Pernambuco', 'PI': 'Piauí',
+    'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul',
+    'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina', 'SP': 'São Paulo',
+    'SE': 'Sergipe', 'TO': 'Tocantins'
+  };
 
   constructor() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -62,10 +72,13 @@ export class AppDashboardGraficoEstados {
   }
 
   private async inicializarGraficosEMapa(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const refMapa = this.canvasMapaContainer();
 
     if (refMapa && !this.mapInstance) {
-      // Destrutura a propriedade default do import dinâmico
       const leafletModule = await import('leaflet');
       this.L = leafletModule.default || leafletModule;
 
@@ -78,14 +91,15 @@ export class AppDashboardGraficoEstados {
   }
 
   private inicializarMapaLeaflet(container: HTMLDivElement): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     this.mapInstance = this.L.map(container, {
-      zoomControl: true,
+      zoomControl: false,
       attributionControl: false,
       dragging: true,
       scrollWheelZoom: false
-    }).setView([-15.7801, -47.9292], 4); // Centralizado no Brasil
-
-    // Garante que o Leaflet calcule o tamanho do container corretamente
+    }).setView([-15.7801, -47.9292], 4);
     setTimeout(() => {
       this.mapInstance?.invalidateSize();
     }, 100);
@@ -103,69 +117,81 @@ export class AppDashboardGraficoEstados {
           style: (feature: any) => this.estilizarEstado(feature, dados)
         }).addTo(this.mapInstance!);
 
-        // Ajusta o zoom do mapa automaticamente para enquadrar o Brasil perfeitamente na tela
         const bounds = this.geoJsonLayer.getBounds();
         this.mapInstance?.fitBounds(bounds, { padding: [10, 10] });
       });
   }
 
 
-
   private estilizarEstado(feature: any, dados: DataEstado[]): any {
-    const nomeEstadoGeoJson = feature?.properties?.name;
+    // Busca o nome do estado vindo de dentro das propriedades do GeoJSON
+    const nomeEstadoGeoJson = feature?.properties?.name || '';
 
-    // Função interna para remover acentos e espaços extras (evita problemas com "Pará" vs "Para")
     const normalizar = (texto: string) =>
       texto ? texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase() : '';
 
-    // Busca o estado comparando os nomes normalizados
-    const dadosEstado = dados.find(d => normalizar(d.estado) === normalizar(nomeEstadoGeoJson));
+    // 2. Busca o estado conferindo tanto pelo Nome por Extenso quanto por Siglas (Ex: 'MT' ou 'Mato Grosso')
+    const dadosEstado = dados.find(d => {
+      const estadoApiNormalizado = normalizar(d.estado);
+      const nomeGeoJsonNormalizado = normalizar(nomeEstadoGeoJson);
 
-    // Cor padrão do protótipo caso não ache o estado (Verde institucional bem sutil/claro como padrão base)
+      // Converte a sigla da API para extenso se necessário antes de comparar
+      const nomePorExtensoDaSigla = this.mapaUfsPorExtenso[d.estado.toUpperCase()] || '';
+      const extensoNormalizado = normalizar(nomePorExtensoDaSigla);
+
+      return estadoApiNormalizado === nomeGeoJsonNormalizado || extensoNormalizado === nomeGeoJsonNormalizado;
+    });
+
+    // Cor padrão caso a API não tenha registros do estado
     let corEstado = '#e2f5ec';
 
     if (dadosEstado) {
-
       const qtd = dadosEstado.quantidade || 0;
 
-      if (qtd > 1000) {
-        corEstado = '#ef4444'; // Crítico (Vermelho) - Ex: São Paulo / Sul
-      } else if (qtd > 500) {
-        corEstado = '#f97316'; // Alerta (Laranja) - Ex: Minas Gerais / Centro
+      // Suas regras de validação atualizadas para teste
+      if (qtd > 500) {
+        corEstado = '#ef4444'; // Vermelho
       } else if (qtd > 100) {
-        corEstado = '#eab308'; // Atenção (Amarelo) - Ex: Nordeste / GO
+        corEstado = '#f97316'; // Laranja
+      } else if (qtd > 20) {
+        corEstado = '#eab308'; // Amarelo
       } else {
-        corEstado = '#16a34a'; // Normal (Verde) - Menos de 100 ou igual a 0
+        corEstado = '#16a34a'; // Verde
       }
     }
 
     return {
       fillColor: corEstado,
-      weight: 1.5,          /* Espessura da linha */
+      weight: 1.5,
       opacity: 1,
-      color: '#ffffff',     /* Cor branca para destacar as divisões dos estados */
+      color: '#ffffff', // Linhas brancas de divisa
       fillOpacity: 0.85
     };
   }
 
 
-
   public aproximarZoom(): void {
-    if (this.mapaInstance) {
-      this.mapaInstance.zoomIn();
+    if (this.mapInstance) {
+      this.mapInstance.zoomIn();
     }
   }
 
   public afastarZoom(): void {
-    if (this.mapaInstance) {
-      this.mapaInstance.zoomOut();
+    if (this.mapInstance) {
+      this.mapInstance.zoomOut();
     }
   }
 
   public resetarZoom(): void {
-    if (this.mapaInstance) {
-      // Define a visão padrão centralizada no Brasil (ajuste as coordenadas conforme seu mapa)
-      this.mapaInstance.setView([-14.235, -51.925], 4);
+    if (!this.mapInstance) return;
+    if (this.geoJsonLayer) {
+      const bounds = this.geoJsonLayer.getBounds();
+      if (bounds.isValid()) {
+        this.mapInstance.fitBounds(bounds, { padding: [10, 10] });
+        return;
+      }
     }
+
+    this.mapInstance.setView([-15.7801, -47.9292], 4);
   }
 }

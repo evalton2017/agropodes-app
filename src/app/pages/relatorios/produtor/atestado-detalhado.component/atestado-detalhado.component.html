@@ -1,0 +1,264 @@
+<!-- src/app/pages/relatorios/produtor/components/atestado-detalhado/atestado-detalhado.component.html -->
+@if (atestado(); as dados) {
+  <div class="vmg-documento-container" id="atestado-imprimir-escopo">
+
+    <!-- TOPO: TITULO DA TELA E AÇÕES GERAIS -->
+    <div class="vmg-topo-acoes">
+      <div class="vmg-topo-titulos">
+        <h1 class="vmg-main-title">Atestado do Produtor</h1>
+        <p class="vmg-main-subtitle">Documento que comprova a conformidade socioambiental e agrícola da gleba no período analisado.</p>
+      </div>
+
+      <div class="vmg-buttons-group vmg-no-print">
+        <button mat-stroked-button class="vmg-btn-white" (click)="gerarPdfAtestado()" [disabled]="gerandoPdf()">
+          <mat-icon>download</mat-icon>
+          {{ gerandoPdf() ? 'Processando...' : 'Download PDF' }}
+        </button>
+        <button mat-flat-button class="vmg-btn-green">
+          <mat-icon>share</mat-icon> Compartilhar
+        </button>
+      </div>
+
+    </div>
+
+    <!-- SEÇÃO 1: CABEÇALHO HORIZONTAL DE CARDS DE INFORMAÇÃO -->
+    <div class="vmg-grid-cabecalho">
+
+      <!-- Card Gleba -->
+      <div class="vmg-card-meta">
+        <div class="vmg-meta-icon bg-light-green text-green"><mat-icon>gite</mat-icon></div>
+        <div class="vmg-meta-txt">
+          <span class="vmg-lbl">Gleba</span>
+          <span class="vmg-val font-bold">{{ dados.cabecalho.nome_gleba }}</span>
+          <span class="vmg-sub">Área: {{ dados.cabecalho.area_hectares | number:'1.2-2' }} ha</span>
+        </div>
+      </div>
+
+      <!-- Card Cultura -->
+      <div class="vmg-card-meta">
+        <div class="vmg-meta-icon bg-light-green text-green"><mat-icon>grass</mat-icon></div>
+        <div class="vmg-meta-txt">
+          <span class="vmg-lbl">Cultura Principal</span>
+          <span class="vmg-val font-bold text-green">{{ dados.cabecalho.cultura_principal }}</span>
+          <span class="vmg-sub">Safra: {{ dados.cabecalho.safra }}</span>
+        </div>
+      </div>
+
+      <!-- Card Período -->
+      <div class="vmg-card-meta">
+        <div class="vmg-meta-icon bg-light-green text-green"><mat-icon>calendar_today</mat-icon></div>
+        <div class="vmg-meta-txt">
+          <span class="vmg-lbl">Período Analisado</span>
+          <span class="vmg-val font-medium">{{ dados.cabecalho.periodo_analisado }}</span>
+        </div>
+      </div>
+
+      <!-- Card Status -->
+      <div class="vmg-card-meta">
+        <div class="vmg-meta-icon bg-success text-white"><mat-icon>done</mat-icon></div>
+        <div class="vmg-meta-txt">
+          <span class="vmg-lbl">Status do Atestado</span>
+          <span class="vmg-status-final-txt text-success">{{ dados.cabecalho.status_atestado }}</span>
+          <span class="vmg-sub">Emitido em {{ dados.cabecalho.data_emissao_atestado | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SEÇÃO 2: RESUMO DE CONFORMIDADE -->
+    <div class="vmg-secao-box">
+      <h3 class="vmg-secao-titulo">Resumo de Conformidade</h3>
+      <div class="vmg-grid-conformidade">
+
+        <div class="vmg-item-conf">
+          <span class="vmg-conf-lbl">Ambiental</span>
+          <div class="vmg-conf-status text-success">
+            <mat-icon>check_circle</mat-icon> {{ dados.conformidade.ambiental_conforme ? 'Conforme' : 'Divergente' }}
+          </div>
+          <span class="vmg-conf-sub">Validações ambientais aprovadas</span>
+        </div>
+
+        <div class="vmg-item-conf">
+          <span class="vmg-conf-lbl">Agrícola</span>
+          <div class="vmg-conf-status" [ngClass]="dados.conformidade.agricola_conforme ? 'text-success' : 'text-danger'">
+            <mat-icon>{{ dados.conformidade.agricola_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
+            {{ dados.conformidade.agricola_conforme ? 'Conforme' : 'Divergente' }}
+          </div>
+          <span class="vmg-conf-sub">Cultura e janela de plantio</span>
+        </div>
+
+        <div class="vmg-item-conf">
+          <span class="vmg-conf-lbl">Boas Práticas</span>
+          <div class="vmg-conf-status" [ngClass]="dados.conformidade.boas_praticas_conforme ? 'text-success' : 'text-warning'">
+            <mat-icon>{{ dados.conformidade.boas_praticas_conforme ? 'check_circle' : 'error' }}</mat-icon>
+            {{ dados.conformidade.boas_praticas_conforme ? 'Conforme' : 'Pendente' }}
+          </div>
+          <span class="vmg-conf-sub">Certificado de BPA válido</span>
+        </div>
+
+        <div class="vmg-item-conf">
+          <span class="vmg-conf-lbl">ZARC</span>
+          <div class="vmg-conf-status text-success">
+            <mat-icon>check_circle</mat-icon> {{ dados.conformidade.zarc_conforme ? 'Conforme' : 'Fora da Janela' }}
+          </div>
+          <span class="vmg-conf-sub">Risco admissível dentro do limite</span>
+        </div>
+
+        <div class="vmg-item-conf">
+          <span class="vmg-conf-lbl">Produtividade</span>
+          <div class="vmg-conf-status text-success">
+            <mat-icon>check_circle</mat-icon> {{ dados.conformidade.produtividade_conforme ? 'Conforme' : 'Divergente' }}
+          </div>
+          <span class="vmg-conf-sub">{{ dados.conformidade.produtividade_estimada_sacas }} sc/ha estimado</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SEÇÃO 3: INFORMAÇÕES DA GLEBA & MAPA -->
+    <div class="vmg-duas-colunas">
+
+      <!-- Bloco Informações Técnicas -->
+      <div class="vmg-secao-box col-fix">
+        <h3 class="vmg-secao-titulo">Informações da Gleba</h3>
+        <div class="vmg-lista-info">
+
+          <div class="vmg-info-item">
+            <mat-icon>location_on</mat-icon>
+            <div class="vmg-info-pair">
+              <span class="vmg-info-lbl-sub">Município/UF</span>
+              <span class="vmg-info-val-sub">{{ dados.informacoes_gerais.municipio_uf }}</span>
+            </div>
+          </div>
+
+          <div class="vmg-info-item">
+            <mat-icon>layers</mat-icon>
+            <div class="vmg-info-pair">
+              <span class="vmg-info-lbl-sub">Código CAR</span>
+              <span class="vmg-info-val-sub text-break">{{ dados.informacoes_gerais.codigo_car }}</span>
+            </div>
+          </div>
+
+          <div class="vmg-info-item">
+            <mat-icon>explore</mat-icon>
+            <div class="vmg-info-pair">
+              <span class="vmg-info-lbl-sub">Coordenadas (Centróide)</span>
+              <span class="vmg-info-val-sub">{{ dados.informacoes_gerais.coordenadas_centroide }}</span>
+            </div>
+          </div>
+
+          <div class="vmg-info-item">
+            <mat-icon>event_available</mat-icon>
+            <div class="vmg-info-pair">
+              <span class="vmg-info-lbl-sub">Data de Cadastro</span>
+              <span class="vmg-info-val-sub">{{ dados.informacoes_gerais.data_cadastro | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bloco Mapa Geográfico -->
+      <div class="vmg-secao-box col-flex">
+        <h3 class="vmg-secao-titulo">Mapa da Gleba</h3>
+
+        <div class="mini-mapa-frame">
+          <!-- O canvas do Leaflet será injetado estritamente nesta div -->
+          <div id="mini-mapa-gleba-detalhe" style="width: 100%; height: 100%; border-radius: 8px; min-height: 200px;"></div>
+
+          <button class="btn-expand-map" type="button" title="Expandir Mapa">
+            <mat-icon>fullscreen</mat-icon>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SEÇÃO 4: CRONOGRAMA DA SAFRA & GRÁFICO CIRCULAR -->
+    <div class="vmg-duas-colunas">
+
+      <!-- Linha do Tempo -->
+      <div class="vmg-secao-box">
+        <h3 class="vmg-secao-titulo">Linha do Tempo da Safra</h3>
+        <div class="vmg-timeline-horizontal">
+          <div class="vmg-timeline-line"></div>
+
+          @for (evento of dados.linha_tempo_safra; track evento.fase) {
+            <div class="vmg-timeline-node">
+              <div class="vmg-node-circle bg-success"></div>
+              <span class="vmg-node-fase">{{ evento.fase }}</span>
+              <span class="vmg-node-data">{{ evento.data_evento | date:'dd/MM/yyyy' }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Gráfico de Produtividade -->
+      <div class="vmg-secao-box text-center flex-center">
+        <h3 class="vmg-secao-titulo text-left w-full">Produtividade</h3>
+        <div class="vmg-donut-chart-box">
+          <svg class="vmg-donut-svg" viewBox="0 0 36 36">
+            <path class="vmg-donut-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <!-- stroke-dasharray calculado dinamicamente com base no percentual (ex: 56.11 de 76) -->
+            <path class="vmg-donut-fill" stroke-dasharray="73, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div class="vmg-donut-center-txt">
+            <span class="vmg-donut-num">{{ dados.produtividade.estimado_ia_sacas_ha }}</span>
+            <span class="vmg-donut-unit">sc/ha<br>Estimado</span>
+          </div>
+        </div>
+        <div class="vmg-chart-legendas">
+          <div><span class="vmg-lbl">Declarado:</span> <span class="font-bold">{{ dados.produtividade.declarado_sacas_ha }} sc/ha</span></div>
+          <div><span class="vmg-lbl">Ref. Regional:</span> <span class="font-bold">{{ dados.produtividade.referencia_regional_sacas_ha }} sc/ha</span></div>
+        </div>
+      </div>
+
+    </div>
+    <!-- SEÇÃO 5: INTEGRALIDADE E BLOCO DE AUDITORIA CRIPTO -->
+    <div class="vmg-secao-box bg-white shadow-xs">
+      <h3 class="vmg-secao-titulo flex-center gap-1">
+        <mat-icon class="text-muted">shield</mat-icon> Informações do Atestado
+      </h3>
+
+      <div class="vmg-grid-rastreabilidade">
+        <div>
+          <span class="vmg-lbl-rastre">Código do Atestado</span>
+          <span class="vmg-val-rastre font-bold">{{ dados.metadados_atestado.codigo_atestado }}</span>
+        </div>
+        <div>
+          <span class="vmg-lbl-rastre">Órgão Emissor</span>
+          <span class="vmg-val-rastre text-xs leading-sm">{{ dados.metadados_atestado.orgao_emissor }}</span>
+        </div>
+        <div>
+          <span class="vmg-lbl-rastre">Método de Validação</span>
+          <span class="vmg-val-rastre">{{ dados.metadados_atestado.metodo_validacao }}</span>
+        </div>
+        <div>
+          <span class="vmg-lbl-rastre">Validade</span>
+          <span class="vmg-val-rastre">
+            {{ dados.metadados_atestado.validade_inicio | date:'dd/MM/yyyy' }} a {{ dados.metadados_atestado.validade_fim | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Barra de Hash da Blockchain -->
+      <div class="vmg-hash-bar">
+        <div class="vmg-hash-meta truncate">
+          <span class="vmg-lbl-hash-top">Hash do Documento (Blockchain)</span>
+          <code class="vmg-hash-code font-mono font-bold">{{ dados.metadados_atestado.hash_documento_blockchain }}</code>
+        </div>
+        <button mat-icon-button (click)="copiarTexto(dados.metadados_atestado.hash_documento_blockchain)" class="vmg-btn-copy" title="Copiar Hash">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+
+      <!-- Aviso Legal VMG -->
+      <div class="vmg-legal-footer">
+        <mat-icon>verified</mat-icon>
+        Este atestado possui validade jurídica e foi emitido com base nas validações estabelecidas pela Portaria SDI/MAPA nº 739/2025.
+      </div>
+    </div>
+
+  </div>
+}

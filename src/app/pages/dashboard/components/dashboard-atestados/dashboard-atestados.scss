@@ -1,0 +1,115 @@
+/* ==========================================================================
+   📊 TABELAS RESPONSIVAS SEM TAILWIND (FLEXÍVEIS NO MOBILE)
+   ========================================================================== */
+
+// Força o cabeçalho do card a ficar alinhado horizontalmente
+.card-header {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-bottom: 16px !important;
+
+  .header-link {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2563eb; // Azul link
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// 🔄 O SEGREDO DO MOBILE: Cria a janela de rolagem horizontal se a tabela passar do tamanho
+.table-responsive-wrapper {
+  width: 100% !important;
+  overflow-x: auto !important; // Cria o scroll lateral apenas se estourar
+  -webkit-overflow-scrolling: touch !important; // Rolagem fluida no iOS/Android
+  margin-top: 8px !important;
+  box-sizing: border-box !important;
+
+  // Customização de scrollbar discreta para não poluir o visual
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  &::-webkit-scrollbar { height: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+}
+
+// Configuração Rígida da Tabela
+.dashboard-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 12px !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box !important;
+
+  th {
+    background-color: #f8fafc !important; // Fundo cinza bem sutil nas th
+    color: #475569 !important; // Texto slate-600
+    font-weight: 700 !important;
+    padding: 10px 12px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    white-space: nowrap !important; // Não permite o título da coluna quebrar linha e amassar
+  }
+
+  td {
+    padding: 12px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #334155 !important;
+    vertical-align: middle !important;
+  }
+
+  tr:last-child td {
+    border-bottom: none !important;
+  }
+}
+
+// 🔄 LARGURAS MÍNIMAS FIXAS: Impede as colunas de se esmagarem no celular
+.col-codigo, .td-codigo {
+  min-width: 100px !important;
+  font-family: monospace !important;
+  font-weight: 600 !important;
+}
+
+.col-produtor, .td-produtor {
+  min-width: 130px !important;
+  max-width: 160px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important; // Cria as reticências (...) caso o nome do produtor seja longo
+}
+
+.col-municipio, .td-municipio {
+  min-width: 110px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.col-data, .td-data {
+  min-width: 90px !important;
+  white-space: nowrap !important;
+}
+
+// Fallback de tabela vazia
+.empty-row {
+  text-align: center !important;
+  color: #94a3b8 !important;
+  padding: 32px !important;
+}
+
+// Overlay de carregamento assíncrono interno
+.ia-loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 12px;
+}

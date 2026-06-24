@@ -84,3 +84,42 @@
     color: #111827;
   }
 }
+
+.legenda-culturas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 140px;
+}
+
+.legenda-item-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; // Joga o nome para a esquerda e o % para a direita
+  width: 100%;
+  font-size: 13px;
+}
+
+.legenda-label-bloco {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot-cor-cultura {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.nome-cultura {
+  color: #475569; // slate-600
+  font-weight: 500;
+}
+
+.valor-percentual-cultura {
+  color: #0f172a; // slate-900
+  font-weight: 700; // Negrito destacado conforme imagem
+}

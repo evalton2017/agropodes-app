@@ -40,7 +40,7 @@ export class LayoutComponent implements OnInit {
   isMobile = signal(false);
   isExpanded = signal(false);
 
-  private userRoles = signal<string[]>([]);
+  private readonly userRoles = signal<string[]>([]);
 
   private readonly allMenuItems: MenuItem[] = MENU_ITEMS;
 

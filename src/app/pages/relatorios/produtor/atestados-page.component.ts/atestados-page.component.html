@@ -1,0 +1,75 @@
+<!-- src/app/pages/relatorios/produtor/atestados-page.component.ts/atestados-page.component.html -->
+<div class="atestados-container">
+
+  <!-- BARRA LATERAL ESQUERDA: LISTAGEM DE GLEBAS -->
+  <div class="sidebar-glebas">
+    <h3 class="sidebar-titulo">Glebas do Produtor</h3>
+
+    <!-- Busca -->
+    <div class="busca-container">
+      <mat-icon class="icone-busca">search</mat-icon>
+      <input
+        type="text"
+        [ngModel]="buscaTexto()"
+        (ngModelChange)="buscaTexto.set($event)"
+        placeholder="Buscar por nome do talhão..."
+        class="input-busca"
+      />
+    </div>
+
+    <!-- Lista de Cards -->
+    <div class="lista-cards">
+      @if (carregandoLista()) {
+        <div class="loading-container-sidebar">
+          <mat-spinner diameter="24"></mat-spinner>
+          <span class="loading-texto-sidebar">Sincronizando talhões...</span>
+        </div>
+      } @else {
+        @for (gleba of glebasFiltradas(); track gleba.idGleba) {
+          <div
+            (click)="selecionarGleba(gleba.idGleba)"
+            [class.card-gleba-ativo]="glebaSelecionadaId() === gleba.idGleba"
+            class="card-gleba-item"
+          >
+            <div class="card-gleba-conteudo">
+              <div class="avatar-glb">GLB</div>
+              <div class="info-glb">
+                <span class="nome-glb">{{ gleba.codigoCar }}</span>
+                <span class="id-glb">Código ID: {{ gleba.idGleba }}</span>
+              </div>
+            </div>
+            <div class="badge-talhao">TALHÃO</div>
+          </div>
+        } @empty {
+          <div class="lista-vazia">Nenhum talhão localizado.</div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- PAINEL DIREITO: COMPONENTE ISOLADO DE EXIBIÇÃO DO DOCUMENTO -->
+  <div class="painel-detalhe">
+    @if (carregandoDetalhe()) {
+      <div class="loading-container-detalhe">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span class="loading-texto-detalhe">Consultando chaves criptográficas na Blockchain de Auditoria...</span>
+      </div>
+    } @else if (laudoDetalhadoAtivo()) {
+
+      <!-- Chamada do Novo Componente Separado enviando o Signal desempacotado -->
+      <app-atestado-detalhado
+        [gleba]="gleba"
+        [dadosAtestado]="laudoDetalhadoAtivo()!">
+      </app-atestado-detalhado>
+
+    } @else {
+      <!-- Fallback caso não venha retorno estruturado -->
+      <div class="painel-vazio-container">
+        <span class="painel-vazio-emoji">📋</span>
+        <h3 class="painel-vazio-titulo">Nenhum Atestado Carregado</h3>
+        <p class="painel-vazio-texto">Selecione uma das propriedades mapeadas na barra lateral para ler as informações de auditoria.</p>
+      </div>
+    }
+  </div>
+
+</div>

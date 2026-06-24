@@ -16,6 +16,7 @@ import {ConsultaAnaliseProdutorComponent} from './pages/descontinuados/produtor/
 import {CadastroGlebaComponent} from './pages/produtor/cadastro-gleba/cadastro-gleba.component';
 import {ConsultaGlebaComponent} from './pages/produtor/consulta-gleba/consulta-gleba';
 import {PainelAnaliseComponent} from './pages/produtor/painel-analise.component/painel-analise.component';
+import {AtestadosPageComponent} from './pages/relatorios/produtor/atestados-page.component.ts/atestados-page.component';
 
 
 export const routes: Routes = [
@@ -68,6 +69,12 @@ export const routes: Routes = [
   {
     path: 'consulta-analise-produtor',
     component: PainelAnaliseComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_PRODUTOR'] }
+  },
+  {
+    path: 'relatorio-atestados',
+    component: AtestadosPageComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_PRODUTOR'] }
   },

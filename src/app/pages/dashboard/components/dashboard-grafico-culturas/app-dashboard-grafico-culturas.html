@@ -23,13 +23,15 @@
 
       <!-- Lado Direito: Legendas -->
       <div class="donut-legend-column">
-        @for (c of dadosCulturas(); track c.cultura) {
+        @for (item of dadosCulturasComPercentual(); track item.cultura; let i = $index) {
           <div class="legend-row">
-            <span class="legend-label-group">
-              <span class="legend-bullet" [attr.data-culture]="c.cultura"></span>
-              {{ c.cultura }}
-            </span>
-            <span class="legend-percentage">{{ c.percentual }}%</span>
+            <div class="legend-label-group">
+              <!-- Pega a cor correspondente mapeada no array do Chart.js -->
+              <span class="dot-cor-cultura" [style.background-color]="['#16a34a', '#eab308', '#a855f7', '#f97316', '#2563eb', '#94a3b8'][i]"></span>
+              <span class="legend-bulle">{{ item.cultura }}</span>
+            </div>
+            <!-- Exibe o percentual calculado com o símbolo '%' -->
+            <span class="legend-percentage">{{ item.percentual }}%</span>
           </div>
         }
       </div>

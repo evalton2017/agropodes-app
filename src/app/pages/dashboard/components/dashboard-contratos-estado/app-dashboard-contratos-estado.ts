@@ -1,5 +1,5 @@
-import {Component, effect, ElementRef, inject, signal, viewChild, ViewEncapsulation} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {Component, effect, ElementRef, inject, PLATFORM_ID, signal, viewChild, ViewEncapsulation} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {finalize} from 'rxjs/operators';
 import {DashboardAnalistaService} from '../../service/dashboard-analista.service';
@@ -16,6 +16,7 @@ import Chart from 'chart.js/auto';
   encapsulation: ViewEncapsulation.None
 })
 export class AppDashboardContratosEstado {
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly apiService = inject(DashboardAnalistaService);
   private readonly filtroService = inject(DashboardFiltroService);
 
@@ -43,6 +44,9 @@ export class AppDashboardContratosEstado {
   }
 
   private async inicializarGraficosEMapa(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
     const refBarras = this.canvasBarras();
 
     if (this.dadosEstados().length > 0 && refBarras) {
@@ -53,6 +57,10 @@ export class AppDashboardContratosEstado {
 
 
   private renderizarGraficoBarras(canvas: HTMLCanvasElement, dados: DataEstado[]): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     if (this.chartBarInstance) this.chartBarInstance.destroy();
     this.chartBarInstance = new Chart(canvas, {
       type: 'bar',

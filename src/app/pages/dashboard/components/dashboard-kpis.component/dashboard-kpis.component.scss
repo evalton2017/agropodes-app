@@ -1,57 +1,76 @@
+/* ==========================================================================
+   🔄 REESTRUTURAÇÃO RESPONSIVA DO GRID DE KPIS (MOBILE-FRIENDLY)
+   ========================================================================== */
+
 /* Container do Grid */
 .grid-container-kpis {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 📱 Padrão Mobile: 2 colunas elegantes lado a lado */
+  gap: 12px; /* Margem ligeiramente menor para não esmagar textos no celular */
   width: 100%;
   margin-bottom: 24px;
   box-sizing: border-box;
-}
 
-/* Responsividade estrutural */
-@media (max-width: 1400px) {
-  .grid-container-kpis {
+  /* 💻 Tablets e Telas Médias: 3 colunas paralelas */
+  @media (min-width: 640px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
   }
-}
 
-@media (max-width: 768px) {
-  .grid-container-kpis {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+  /* 🖥️ Desktops e Monitores Grandes: Alinhamento horizontal completo em 6 colunas */
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }
 
 /* Base customizada e limpa do card */
 .kpi-card-custom {
   background-color: #ffffff;
-  border: 1px solid #f1f5f9; /* Borda bem sutil cinza claro */
+  border: 1px solid #f1f5f9;
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px; /* Reduzido de 16px para dar mais folga aos textos no mobile */
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 14px;
-  min-height: 96px;
+  gap: 10px; /* Reduzido de 14px para otimizar espaço de leitura */
+  min-height: 84px; /* Ajustado proporcionalmente para telas menores */
   width: 100%;
-  min-width: 0; /* Essencial para conter o flex de textos */
+  min-width: 0;
+
+  @media (min-width: 640px) {
+    padding: 16px;
+    gap: 14px;
+    min-height: 96px;
+  }
 }
 
 /* Círculo do Ícone */
 .kpi-icon-circle {
-  width: 44px;
-  height: 44px;
+  width: 36px; /* Reduzido ligeiramente no mobile para dar prioridade ao número */
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
+  @media (min-width: 640px) {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 .kpi-icon-circle mat-icon {
-  font-size: 22px;
-  width: 22px;
-  height: 22px;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+
+  @media (min-width: 640px) {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
 }
 
 /* Caixa de textos à direita */
@@ -65,73 +84,96 @@
 
 /* Título superior do card */
 .kpi-title {
+  font-size: 10px; /* Ajuste milimétrico para mobile */
+  font-weight: 500;
+  margin: 0 0 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: 640px) {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+}
+
+/* Valor Numérico Central */
+.kpi-value {
+  font-size: 18px; /* Reduzido para evitar que números grandes quebrem a caixa no celular */
+  font-weight: 600;
+  margin: 0 0 2px 0;
+  line-height: 1.1;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: 640px) {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+}
+
+/* Sufixo da Unidade (ex: ha) */
+.kpi-unit {
   font-size: 11px;
-  font-weight: 500; /* Peso médio conforme imagem */
-  margin: 0 0 4px 0;
+  font-weight: 500;
+  margin-left: 2px;
+
+  @media (min-width: 640px) {
+    font-size: 14px;
+    margin-left: 4px;
+  }
+}
+
+/* Seção de rodapé (Subtexto de tendência) */
+.kpi-subtext {
+  font-size: 9px; /* Compactado para mobile */
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* Caso o texto "vs. safra anterior" não caiba, ele quebra sem quebrar o card */
+  gap: 2px;
+
+  @media (min-width: 640px) {
+    font-size: 10px;
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+}
+
+.kpi-subtext-label {
+  color: #94a3b8;
+  font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Valor Numérico Central */
-.kpi-value {
-  font-size: 24px;
-  font-weight: 600; /* Semi-bold elegante */
-  margin: 0 0 4px 0;
-  line-height: 1.1;
-  color: #1e293b; /* Cor cinza escuro neutro para o número principal */
-}
-
-/* Sufixo da Unidade (ex: ha) */
-.kpi-unit {
-  font-size: 14px;
-  font-weight: 500;
-  margin-left: 4px;
-}
-
-/* Seção de rodapé (Subtexto de tendência) */
-.kpi-subtext {
-  font-size: 10px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-}
-
-.kpi-subtext-label {
-  color: #94a3b8; /* Cor neutra suave do protótipo */
-  font-weight: 400;
-}
-
-/* 🎨 PALETA DE CORES DINÂMICA (Conforme a imagem) */
-/* Contratos */
+/* ==========================================================================
+   🎨 PALETA DE CORES MANTIDA (Sem alterações nas regras de negócio)
+   ========================================================================== */
 .card-contratos { background-color: #f4fbf7; border-color: #e2f5ec; }
 .card-contratos .kpi-icon-circle { background-color: #e2f5ec; color: #10b981; }
 .card-contratos .kpi-title, .card-contratos .kpi-trend { color: #047857; }
 
-/* Glebas */
 .card-glebas { background-color: #f0f7ff; border-color: #e0f2fe; }
 .card-glebas .kpi-icon-circle { background-color: #e0f2fe; color: #2563eb; }
 .card-glebas .kpi-title, .card-glebas .kpi-trend { color: #1d4ed8; }
 
-/* Área */
 .card-area { background-color: #fffaf0; border-color: #fef3c7; }
 .card-area .kpi-icon-circle { background-color: #fef3c7; color: #f59e0b; }
 .card-area .kpi-title, .card-area .kpi-trend { color: #b45309; }
 .card-area .kpi-unit { color: #b45309; }
 
-/* Alertas */
 .card-alertas { background-color: #faf5ff; border-color: #f3e8ff; }
 .card-alertas .kpi-icon-circle { background-color: #f3e8ff; color: #7c3aed; }
 .card-alertas .kpi-title, .card-alertas .kpi-trend { color: #6d28d9; }
 
-/* Atestados */
 .card-atestados { background-color: #f7fee7; border-color: #ecfccb; }
 .card-atestados .kpi-icon-circle { background-color: #ecfccb; color: #65a30d; }
 .card-atestados .kpi-title, .card-atestados .kpi-trend { color: #4d7c0f; }
 
-/* Produtores */
 .card-produtores { background-color: #f8fafc; border-color: #f1f5f9; }
 .card-produtores .kpi-icon-circle { background-color: #e2e8f0; color: #475569; }
 .card-produtores .kpi-title, .card-produtores .kpi-trend { color: #334155; }

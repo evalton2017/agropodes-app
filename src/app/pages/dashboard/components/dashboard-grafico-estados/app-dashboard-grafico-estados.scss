@@ -1,127 +1,139 @@
-/* 📦 ESTILIZAÇÃO DO CONTAINER INTERNO */
+/* ==========================================================================
+   🗺️ FIX TOTAL DO MAPA: COMPACTO NO MOBILE E PERFEITO NO DESKTOP
+   ========================================================================== */
+
+/* Container de Conteúdo */
 .mapa-conteudo-container {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  position: relative;
-  flex: 1;
-  width: 100%;
-  height: calc(100% - 30px);
-}
+  display: flex !important;
+  flex-direction: column !important; /* Mobile empilha verticalmente */
+  align-items: stretch !important;
+  position: relative !important;
+  flex: 1 !important;
+  width: 100% !important;
+  height: calc(100% - 40px) !important;
 
-.mapa-render-area {
-  flex: 1;
-  height: 100%;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-
-  .leaflet-map-canvas {
-    width: 100%;
-    height: 100%;
-    background: transparent;
+  @media (min-width: 768px) {
+    flex-direction: row !important; /* Desktop fica lado a lado flutuante */
   }
 }
 
-/* 🟢 NOVA LEGENDA COROPLÉTICA (Inferior Esquerda) */
+/* Área de Renderização do Canvas */
+.mapa-render-area {
+  width: 100% !important;
+  height: 250px !important; /* 🛑 FORÇA uma altura física fixa em pixel no mobile */
+  position: relative !important;
+  z-index: 1 !important;
+  flex-shrink: 0 !important;
+
+  @media (min-width: 768px) {
+    height: 100% !important; /* Desktop volta a preencher todo o card horizontal */
+    flex: 1 !important;
+  }
+
+  .leaflet-map-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+    display: block !important;
+  }
+}
+
+/* Legenda do Mapa */
 .mapa-legenda-uf {
-  position: absolute;
-  bottom: 0.5rem;
-  left: 0.5rem;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  z-index: 10;
-  pointer-events: auto;
+  position: relative !important;
+  background: #ffffff !important;
+  padding: 12px 0 0 0 !important;
+  display: flex !important;
+  flex-direction: row !important; /* Pastilhas horizontais no mobile */
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  z-index: 10 !important;
+  width: 100% !important;
+
+  @media (min-width: 768px) {
+    position: absolute !important;
+    bottom: 0.5rem !important;
+    left: 0.5rem !important;
+    background: transparent !important;
+    padding: 0 !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    gap: 0.45rem !important;
+    width: auto !important;
+  }
 
   .legenda-title {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #1e293b; /* slate-800 */
-    margin-bottom: 0.125rem;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    width: 100% !important;
+    margin-bottom: 2px !important;
   }
 
   .legenda-item {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
 
     .color-box {
-      width: 1rem; /* 16px */
-      height: 0.625rem; /* 10px */
-      border-radius: 2px;
-      display: inline-block;
+      width: 14px !important;
+      height: 10px !important;
+      border-radius: 2px !important;
+      display: inline-block !important;
+      flex-shrink: 0 !important;
 
-      /* Degradê de tons de verde do novo modelo do protótipo */
-      &.range-plus-2000  { background-color: #15803d; } // Verde Escuro (MT, GO)
-      &.range-1000-2000 { background-color: #22c55e; } // Verde Médio (TO, MG)
-      &.range-500-1000  { background-color: #86efac; } // Verde Claro (PA, RO)
-      &.range-100-500   { background-color: #bbf7d0; } // Verde Muito Claro (BA, PR)
-      &.range-sub-100   { background-color: #f0fdf4; } // Verde Quase Branco (AM, AP)
+      &.range-plus-2000  { background-color: #15803d !important; }
+      &.range-1000-2000 { background-color: #22c55e !important; }
+      &.range-500-1000  { background-color: #86efac !important; }
+      &.range-100-500   { background-color: #bbf7d0 !important; }
+      &.range-sub-100   { background-color: #f0fdf4 !important; }
     }
 
     .range-text {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #475569; /* slate-600 */
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      color: #475569 !important;
     }
   }
 }
 
-/* 🎛️ CONTROLES FLUTUANTES DE ZOOM (Lado Direito) */
+/* Controles de Zoom Customizados (Mantidos no canto direito fixo) */
 .mapa-controles-zoom {
-  position: absolute;
-  top: 1rem;
-  right: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  z-index: 10;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
-  border-radius: 6px;
-  overflow: hidden;
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  z-index: 1000 !important; /* Força ficar acima das camadas do mapa */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
 
   .zoom-btn {
-    background: #ffffff;
-    border: 1px solid #e2e8f0; // border-slate-200
-    width: 2rem; /* 32px */
-    height: 2rem; /* 32px */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #64748b; // slate-500
-    padding: 0;
-    transition: background-color 0.2s;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    color: #64748b !important;
+    padding: 0 !important;
 
     &:hover {
-      background-color: #f8fafc;
-      color: #334155;
+      background-color: #f8fafc !important;
+      color: #334155 !important;
     }
 
     &.border-top-none {
-      border-top: none; // Evita linhas duplas coladas
+      border-top: none !important;
     }
 
     mat-icon {
-      font-size: 1.125rem;
-      width: 1.125rem;
-      height: 1.125rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
     }
   }
-}
-
-/* ⏳ OVERLAY DE LOADING ISOLADO */
-.ia-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-  border-radius: 12px;
 }

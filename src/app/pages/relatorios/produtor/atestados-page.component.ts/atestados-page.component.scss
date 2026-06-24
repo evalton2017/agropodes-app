@@ -1,0 +1,249 @@
+/* src/app/pages/relatorios/produtor/atestados-page.component.ts/atestados-page.component.scss */
+.atestados-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 24px !important;
+  padding: 24px !important;
+  background-color: #f8fafc !important; // Cor cinza-claro idêntica ao protótipo
+  min-height: 100vh !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.sidebar-glebas {
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+  flex-shrink: 0 !important;
+  background-color: #ffffff !important;
+  padding: 20px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+// ... Restante do código da busca e dos cards que já estavam alinhados ...
+.painel-detalhe {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+
+// Variáveis de Escopo para Alinhamento Rígido
+$border-color: #e2e8f0;      // Slate-200
+$bg-dashboard: #f8fafc;       // Slate-50 (fundo cinza claro institucional)
+$white: #ffffff;
+$text-dark: #0f172a;        // Slate-900
+$text-muted: #64748b;       // Slate-500
+
+// Forçar reset e modelo de caixa para garantir que nada deforma o layout horizontal
+.atestados-container,
+.atestados-container *,
+.atestados-container *::before,
+.atestados-container *::after {
+  box-sizing: border-box !important;
+}
+
+
+// Caixa que envelopa a lupa e o input de filtragem
+.busca-container {
+  position: relative !important;
+  margin-bottom: 16px !important;
+  width: 100% !important;
+
+  .icone-busca {
+    position: absolute !important;
+    left: 10px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: #94a3b8 !important;
+    font-size: 16px !important;
+    height: 16px !important;
+    width: 16px !important;
+  }
+
+  .input-busca {
+    width: 100% !important;
+    height: 36px !important;
+    padding: 8px 12px 8px 34px !important;
+    border: 1px solid $border-color !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    background-color: #f8fafc !important;
+    color: #334155 !important;
+
+    &:focus {
+      outline: none !important;
+      border-color: #15803d !important;
+      background-color: $white !important;
+    }
+  }
+}
+
+// Área de rolagem vertical dos cartões de talhão
+.lista-cards {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 180px) !important;
+  padding-right: 4px !important;
+  width: 100% !important;
+
+  // Customização estética da barra de rolagem (padrão W3C e Webkit)
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: #f1f5f9; }
+  &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+}
+
+// O Cartão de cada talhão na lista lateral
+.card-gleba-item {
+  padding: 14px !important;
+  border: 1px solid $border-color !important;
+  border-radius: 12px !important;
+  background-color: $white !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  width: 100% !important;
+
+  &:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+  }
+}
+
+// Acionado dinamicamente via [class.card-gleba-ativo]
+.card-gleba-ativo {
+  border-color: #15803d !important;
+  background-color: rgba(21, 128, 61, 0.04) !important;
+}
+
+.card-gleba-conteudo {
+  display: flex !important;
+  gap: 12px !important;
+  min-width: 0 !important; // Proteção contra estouro de texto em resoluções menores
+
+  .avatar-glb {
+    padding: 6px !important;
+    background-color: #f0fdf4 !important;
+    color: #166534 !important;
+    border-radius: 8px !important;
+    height: 32px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+  }
+
+  .info-glb {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+
+    .nome-glb {
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      color: $text-dark !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    .id-glb {
+      font-size: 11px !important;
+      color: $text-muted !important;
+      margin-top: 2px !important;
+      word-break: break-all !important;
+    }
+  }
+}
+
+.badge-talhao {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+  flex-shrink: 0 !important;
+}
+
+// ==========================================
+// PAINEL DE CONTEÚDO DIREITO (ÁREA DO FILHO)
+// ==========================================
+.painel-detalhe {
+  flex: 1 !important;
+  min-width: 0 !important; // Garante expansão fluida adaptando-se à barra lateral
+}
+
+// Componentes Auxiliares de Transição e Loading da Página Pai
+.loading-container-sidebar,
+.loading-container-detalhe,
+.painel-vazio-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.loading-container-detalhe {
+  background-color: $white !important;
+  border: 1px solid $border-color !important;
+  border-radius: 16px !important;
+  min-height: 480px !important;
+  width: 100% !important;
+
+  .loading-texto-detalhe {
+    font-size: 13px !important;
+    color: $text-muted !important;
+    margin-top: 12px !important;
+    font-weight: 500 !important;
+  }
+}
+
+.loading-container-sidebar {
+  padding: 32px 0 !important;
+  color: #94a3b8 !important;
+  .loading-texto-sidebar { font-size: 11px !important; margin-top: 6px !important; }
+}
+
+.painel-vazio-container {
+  background-color: $white !important;
+  border: 1px solid $border-color !important;
+  border-radius: 16px !important;
+  min-height: 450px !important;
+  width: 100% !important;
+
+  .painel-vazio-emoji { font-size: 28px !important; }
+  .painel-vazio-titulo { font-size: 13px !important; font-weight: 700; color: $text-dark; margin: 6px 0 0 0; }
+  .painel-vazio-texto { font-size: 12px !important; color: $text-muted; margin: 4px 0 0 0; max-width: 280px; }
+}
+
+.lista-vazia {
+  text-align: center !important;
+  padding: 32px 0 !important;
+  color: #94a3b8 !important;
+  font-size: 12px !important;
+}
+
+// Alinhamento nativo de fontes de ícones do Angular Material no modo SSR
+mat-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+}

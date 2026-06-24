@@ -1,5 +1,15 @@
-import {Component, computed, effect, ElementRef, inject, signal, viewChild, ViewEncapsulation} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  PLATFORM_ID,
+  signal,
+  viewChild,
+  ViewEncapsulation
+} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {finalize} from 'rxjs/operators';
 import {DashboardAnalistaService} from '../../service/dashboard-analista.service';
@@ -16,6 +26,7 @@ import Chart from 'chart.js/auto';
   encapsulation: ViewEncapsulation.None
 })
 export class AppDashboardGraficoCulturas {
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly apiService = inject(DashboardAnalistaService);
   private readonly filtroService = inject(DashboardFiltroService);
 
@@ -72,6 +83,8 @@ export class AppDashboardGraficoCulturas {
   }
 
   private renderizarGraficoDonut(canvas: HTMLCanvasElement, dados: DataCultura[]): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (this.chartDonutInstance) this.chartDonutInstance.destroy();
     this.chartDonutInstance = new Chart(canvas, {
       type: 'doughnut',
@@ -87,4 +100,13 @@ export class AppDashboardGraficoCulturas {
     });
   }
 
+  public dadosCulturasComPercentual = computed(() => {
+    const total = this.totalContratosCultura();
+    if (total === 0) return this.dadosCulturas().map(item => ({ ...item, percentual: 0 }));
+
+    return this.dadosCulturas().map(item => ({
+      ...item,
+      percentual: parseFloat(((item.quantidade / total) * 100).toFixed(1)) // Retorna ex: 33.3
+    }));
+  });
 }

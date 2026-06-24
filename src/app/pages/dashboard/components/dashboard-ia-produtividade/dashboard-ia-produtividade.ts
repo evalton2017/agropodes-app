@@ -1,5 +1,15 @@
-import {Component, effect, ElementRef, inject, OnDestroy, signal, ViewChild, ViewEncapsulation} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  OnDestroy,
+  PLATFORM_ID,
+  signal,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {finalize} from 'rxjs/operators';
 import {Chart, registerables} from 'chart.js';
@@ -19,14 +29,12 @@ Chart.register(...registerables);
 export class AppDashboardIaProdutividade implements OnDestroy {
   private readonly apiService = inject(DashboardAnalistaService);
   private readonly filtroService = inject(DashboardFiltroService);
+  private readonly platformId = inject(PLATFORM_ID);
 
-  // Captura a referência do elemento canvas com segurança
   @ViewChild('miniGraficoLinha') miniGraficoLinha!: ElementRef<HTMLCanvasElement>;
 
   public dados = signal<any>(null);
   public carregando = signal<boolean>(false);
-
-  // Mantém a instância de referência do gráfico ativa para manipulação
   private chartInstance: Chart | null = null;
 
   constructor() {
@@ -44,7 +52,8 @@ export class AppDashboardIaProdutividade implements OnDestroy {
         next: (res) => {
           this.dados.set(res);
 
-          // 🚀 CORREÇÃO AQUI: Garante que o canvas foi montado no DOM antes de inicializar o Chart.js
+          if (!isPlatformBrowser(this.platformId)) return;
+
           requestAnimationFrame(() => {
             this.renderizarMiniGrafico();
           });
@@ -58,42 +67,37 @@ export class AppDashboardIaProdutividade implements OnDestroy {
   }
 
   private renderizarMiniGrafico(): void {
+    // 🛑 TRAVA CRÍTICA: Bloqueia a execução do Chart.js e manipulação de Canvas Context no Servidor
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (!this.miniGraficoLinha) return;
 
     this.destruirGraficoExistente();
 
-    // 🔍 CAPTURA E PARSE ULTRA SEGURO DOS DADOS CONTRA STRINGS DO BACKEND
     const historico = this.dados()?.evolucao_produtividade ?? [];
-
     let labels: string[] = [];
     let valores: number[] = [];
 
     if (historico && historico.length > 0) {
       historico.forEach((item: any) => {
-        // Tenta capturar a label de várias propriedades comuns para evitar quebra
         const safraLabel = item.safra ?? item.ano ?? item.periodo ?? '';
         labels.push(String(safraLabel));
 
-        // 🚀 HIGHLIGHT DA CORREÇÃO: Captura o valor bruto de qualquer propriedade provável
         const valorBruto = item.valor ?? item.sacas ?? item.produtividade ?? item.quantidade ?? 0;
 
-        // Se o valor vier formatado como String (ex: "59" ou "59.2"), limpa e converte para número puro
         let numeroPuro = 0;
         if (typeof valorBruto === 'string') {
-          // Remove espaços e caracteres não numéricos (mantendo pontos/vírgulas se houver)
           const apenasNumeros = valorBruto.replace(/[^0-9.,-]/g, '').replace(',', '.');
           numeroPuro = parseFloat(apenasNumeros);
         } else {
           numeroPuro = Number(valorBruto);
         }
 
-        // Se a conversão falhar (NaN), joga um valor padrão simulado baseado na média do card para não quebrar a linha
         valores.push(isNaN(numeroPuro) || numeroPuro === 0 ? 59 : numeroPuro);
       });
     } else {
-      // MOCK BACKUP IDÊNTICO AO SEU FORMULÁRIO (Caso o array venha zerado da API)
       labels = ['21/22', '22/23', '23/24', '24/25', '25/26'];
-      valores = [];
+      valores = [] ;
     }
 
     const ctx = this.miniGraficoLinha.nativeElement.getContext('2d');
@@ -105,7 +109,7 @@ export class AppDashboardIaProdutividade implements OnDestroy {
         labels: labels,
         datasets: [{
           label: 'Sacas/ha',
-          data: valores, // <-- Agora garantido como um Array de Numbers puros [48, 52, 65, 55, 59]
+          data: valores,
           borderColor: '#2563eb',
           borderWidth: 2,
           pointRadius: 0,
@@ -152,7 +156,6 @@ export class AppDashboardIaProdutividade implements OnDestroy {
       }
     });
   }
-
 
   private destruirGraficoExistente(): void {
     if (this.chartInstance) {

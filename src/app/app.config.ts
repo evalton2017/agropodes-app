@@ -1,14 +1,15 @@
-import { ApplicationConfig, provideZonelessChangeDetection, provideAppInitializer, inject } from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection, provideAppInitializer, inject,  importProvidersFrom, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
 import { routes } from './app.routes';
 import { provideNgxMask } from 'ngx-mask';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { loadingInterceptor } from './interceptor/loading-interceptor';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { environment } from '../environments/environment';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 
 import Keycloak from 'keycloak-js';
 import {
@@ -18,7 +19,8 @@ import {
   IncludeBearerTokenCondition
 } from 'keycloak-angular';
 
-// 1. Gera a condição mapeada obrigatória para as versões modernas da biblioteca
+registerLocaleData(localePt);
+
 const urlCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
   urlPattern: /^(http|https):\/\/.*$/i,
   bearerPrefix: 'Bearer'
@@ -34,12 +36,11 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
 
   return {
     providers: [
-      // provideBrowserGlobalErrorListeners foi removido (Gerencie erros com o ErrorHandler nativo do Angular)
       provideZonelessChangeDetection(),
       provideNgxMask(),
       importProvidersFrom(MatSnackBarModule),
       provideNativeDateAdapter(),
-
+      { provide: LOCALE_ID, useValue: 'pt-BR' },
       provideHttpClient(
         withFetch(),
         withInterceptors(interceptors)
@@ -86,11 +87,7 @@ export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
           checkLoginIframe: false,
           messageReceiveTimeout: 5000,
           enableLogging: true,
-
-          // 1. CORREÇÃO BULLETPROOF: Desativa a checagem de nonce que está conflitando com o relógio
           useNonce: false,
-
-          // 2. ADICIONAL DE SEGURANÇA: Mantém o fluxo robusto moderno
           pkceMethod: 'S256'
         })
           .then((authenticated) => {

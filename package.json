@@ -31,6 +31,7 @@
     "chart.js": "^4.5.1",
     "d3": "^7.9.0",
     "express": "^5.1.0",
+    "html2pdf.js": "^0.14.0",
     "keycloak-angular": "^20.1.0",
     "keycloak-js": "^20.0.5",
     "leaflet": "^1.9.4",

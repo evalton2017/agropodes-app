@@ -6,27 +6,27 @@
   <h3 class="ia-card-title">Produtividade Estimada (IA)</h3>
 
   <div class="ia-grid-split">
-    <!-- Lado Esquerdo -->
+    <!-- Lado Esquerdo: Indicadores Numéricos -->
     <div class="ia-stats-column">
       <div class="stat-block">
         <span class="label-subtext">Média geral predita</span>
         <p class="stat-main-text">
-          <strong class="huge-num">{{ dados()?.produtividade_media_sacas ?? 67 }}</strong> sacas/ha
+          <strong class="huge-num">{{ dados()?.produtividade_media_sacas ?? 19 }}</strong> sacas/ha
         </p>
       </div>
       <div class="stat-block">
         <span class="label-subtext">Área estimada</span>
-        <p class="stat-sub-text">{{ dados()?.area_estimada_ha ?? '3.251.985' }} ha</p>
+        <p class="stat-sub-text">{{ dados()?.area_estimada_ha ?? '171' }} ha</p>
       </div>
       <div class="stat-block">
         <span class="label-subtext">Volume comercializável</span>
-        <p class="stat-sub-text">{{ dados()?.volume_estimado_sacas ?? '13.751.594' }} sc</p>
+        <p class="stat-sub-text">{{ dados()?.volume_estimado_sacas ?? '55' }} sc</p>
       </div>
     </div>
 
-    <!-- Lado Direito: Canvas -->
+    <!-- Lado Direito: Gráfico de Evolução -->
     <div class="ia-chart-column">
-      <span class="label-subtext absolute-top">Evolução (sacas/ha)</span>
+      <span class="label-subtext-title">Evolução (sacas/ha)</span>
       <div class="canvas-container">
         <canvas #miniGraficoLinha></canvas>
       </div>

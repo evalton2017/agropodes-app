@@ -1,30 +1,48 @@
+/* ==========================================================================
+   📈 GRÁFICOS DE IA RESPONSIVOS (SEM ESMAGAMENTO HORIZONTAL)
+   ========================================================================== */
+
 .ia-card {
   background: #ffffff;
   border: 1px solid #f1f5f9;
   border-radius: 12px;
   padding: 1.25rem;
-  height: 280px;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  box-sizing: border-box;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.02);
+
+  // 🔄 CORREÇÃO: Altura flexível no celular para dar espaço ao empilhamento vertical
+  height: auto;
+  min-height: 290px;
+
+  @media (min-width: 480px) {
+    height: 280px; // Trava o alinhamento em blocos horizontais apenas em telas maiores
+  }
 }
 
 .ia-card-title {
   font-size: 0.813rem;
   font-weight: 700;
   color: #1e293b;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.75rem 0;
 }
 
+// Contêiner divisor das colunas
 .ia-grid-split {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-direction: column; // 🔄 CORREÇÃO: No celular, o gráfico vai para baixo dos números
+  gap: 1.25rem;
   flex: 1;
+  width: 100%;
+
+  @media (min-width: 480px) {
+    flex-direction: row; // Em telas médias e computadores, mantém lado a lado
+    justify-content: space-between;
+    gap: 1rem;
+  }
 }
 
 .ia-stats-column {
@@ -32,7 +50,11 @@
   flex-direction: column;
   justify-content: center;
   gap: 0.625rem;
-  flex: 1;
+  width: 100%;
+
+  @media (min-width: 480px) {
+    flex: 1;
+  }
 }
 
 .label-subtext {
@@ -40,6 +62,15 @@
   color: #94a3b8;
   font-weight: 500;
   display: block;
+}
+
+// Título exclusivo do topo do canvas
+.label-subtext-title {
+  font-size: 0.688rem;
+  color: #94a3b8;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 6px;
 }
 
 .stat-block {
@@ -68,15 +99,19 @@
 .ia-chart-column {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-  height: 100%;
-  padding-top: 0.25rem;
+  justify-content: flex-end;
+  width: 100%;
+  min-width: 0; // Impede que o canvas quebre o tamanho do flexbox pai
+
+  @media (min-width: 480px) {
+    flex: 1;
+    height: 100%;
+  }
 
   .canvas-container {
-    width: 100%;
-    height: 120px;
-    position: relative;
+    width: 100% !important;
+    height: 110px !important; // Reduzido ligeiramente para acomodar o espaço no mobile
+    position: relative !important;
     margin-top: auto;
   }
 }
@@ -85,7 +120,8 @@
   border-top: 1px solid #f8fafc;
   padding-top: 0.5rem;
   text-align: center;
-  margin-top: auto;
+  margin-top: 12px;
+  width: 100%;
 
   .ia-footer-link {
     font-size: 0.715rem;
@@ -108,4 +144,5 @@
   align-items: center;
   justify-content: center;
   z-index: 5;
+  border-radius: 12px;
 }
