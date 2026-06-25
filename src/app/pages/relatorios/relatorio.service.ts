@@ -28,7 +28,7 @@ export class RelatorioService {
   exportarAtestadoPdf(idGleba: number): Observable<Blob> {
     return this.http.get(
       `${environment.urlProc}/relatorio/gleba/${idGleba}/exportar-pdf`,
-      { responseType: 'blob' } // 💡 Crucial: Avisa o Angular que o retorno é um arquivo binário
+      { responseType: 'blob' }
     );
   }
 }

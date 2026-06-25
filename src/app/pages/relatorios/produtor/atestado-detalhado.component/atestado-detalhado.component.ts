@@ -100,9 +100,9 @@ export class AtestadoDetalhadoComponent implements OnChanges, AfterViewInit, OnD
     const recursosGeoJson: any[] = [];
 
     try {
-      if (!this.gleba.geomatria || this.gleba.geomatria.includes('S')) return;
+      if (!this.gleba.wkt || this.gleba.wkt.includes('S')) return;
 
-      const geoJsonGeometria = wktParser.parse(this.gleba.geomatria);
+      const geoJsonGeometria = wktParser.parse(this.gleba.wkt);
 
       recursosGeoJson.push({
         type: 'Feature',
@@ -151,7 +151,6 @@ export class AtestadoDetalhadoComponent implements OnChanges, AfterViewInit, OnD
         }
       });
 
-      // Centralização inteligente e reenquadramento de câmera com correção de tamanho
       const limites = this.geoJsonLayer.getBounds();
       if (limites.isValid()) {
         setTimeout(() => {
@@ -180,19 +179,16 @@ export class AtestadoDetalhadoComponent implements OnChanges, AfterViewInit, OnD
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.gerandoPdf.set(true);
+    console.log(this.gleba.id_gleba)
 
-    this.relatorioService.exportarAtestadoPdf(this.gleba.geomatria.id_gleba)
+    this.relatorioService.exportarAtestadoPdf(this.gleba.id_gleba)
       .subscribe({
         next: (arquivoBlob: Blob) => {
-          // Cria um link temporário na memória do navegador do usuário
           const urlBlob = window.URL.createObjectURL(arquivoBlob);
           const gatilhoDownload = document.createElement('a');
 
           gatilhoDownload.href = urlBlob;
-          // Nome do arquivo gerado automaticamente casando com o código do Ledger
-          gatilhoDownload.download = `Atestado_VMG_Gleba_${this.gleba.geomatria.id_gleba}.pdf`;
-
-          // Dispara o download nativo invisível no navegador e limpa a memória
+          gatilhoDownload.download = `Atestado_VMG_Gleba_${this.gleba.id_gleba}.pdf`;
           document.body.appendChild(gatilhoDownload);
           gatilhoDownload.click();
           document.body.removeChild(gatilhoDownload);
