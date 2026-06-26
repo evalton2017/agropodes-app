@@ -8,7 +8,7 @@ export interface CardGleba {
   cultura_principal: string;
   safra: string;
   periodo_analisado: string;
-  status_atestado: 'APTO' | 'EM ANÁLISE' | 'NÃO APTO' | 'RASCUNHO';
+  status_atestado: string;
   data_emissao_atestado: string | Date;
   area_hectares: number;
 }

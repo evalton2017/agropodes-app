@@ -49,16 +49,23 @@
         <div class="vmg-meta-icon bg-light-green text-green"><mat-icon>calendar_today</mat-icon></div>
         <div class="vmg-meta-txt">
           <span class="vmg-lbl">Período Analisado</span>
-          <span class="vmg-val font-medium">{{ dados.cabecalho.periodo_analisado }}</span>
+          <span class="vmg-val font-medium">{{ periodoFormatado }}</span>
         </div>
       </div>
 
       <!-- Card Status -->
       <div class="vmg-card-meta">
-        <div class="vmg-meta-icon bg-success text-white"><mat-icon>done</mat-icon></div>
+        <div class="vmg-meta-icon  text-white"  [ngClass]="dados.cabecalho.status_atestado == 'REPROVADO' ? 'bg-danger' : 'bg-success'">
+          <mat-icon>done</mat-icon></div>
         <div class="vmg-meta-txt">
           <span class="vmg-lbl">Status do Atestado</span>
-          <span class="vmg-status-final-txt text-success">{{ dados.cabecalho.status_atestado }}</span>
+          @if(dados.cabecalho.status_atestado == 'REPROVADO'){
+            <span class="vmg-status-final-txt text-danger">
+            {{ dados.cabecalho.status_atestado }} </span>
+          } @else {
+            <span class="vmg-status-final-txt text-success">
+            {{ dados.cabecalho.status_atestado }}</span>
+          }
           <span class="vmg-sub">Emitido em {{ dados.cabecalho.data_emissao_atestado | date:'dd/MM/yyyy' }}</span>
         </div>
       </div>
@@ -72,7 +79,7 @@
 
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">Ambiental</span>
-          <div class="vmg-conf-status text-success">
+          <div class="vmg-conf-status text-success" [ngClass]="dados.conformidade.ambiental_conforme ? 'text-success' : 'text-danger'">
             <mat-icon>check_circle</mat-icon> {{ dados.conformidade.ambiental_conforme ? 'Conforme' : 'Divergente' }}
           </div>
           <span class="vmg-conf-sub">Validações ambientais aprovadas</span>
@@ -98,7 +105,7 @@
 
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">ZARC</span>
-          <div class="vmg-conf-status text-success">
+          <div class="vmg-conf-status text-success" >
             <mat-icon>check_circle</mat-icon> {{ dados.conformidade.zarc_conforme ? 'Conforme' : 'Fora da Janela' }}
           </div>
           <span class="vmg-conf-sub">Risco admissível dentro do limite</span>
@@ -106,7 +113,7 @@
 
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">Produtividade</span>
-          <div class="vmg-conf-status text-success">
+          <div class="vmg-conf-status text-success" [ngClass]="dados.conformidade.produtividade_conforme ? 'text-success' : 'text-danger'">
             <mat-icon>check_circle</mat-icon> {{ dados.conformidade.produtividade_conforme ? 'Conforme' : 'Divergente' }}
           </div>
           <span class="vmg-conf-sub">{{ dados.conformidade.produtividade_estimada_sacas }} sc/ha estimado</span>
@@ -237,7 +244,7 @@
         <div>
           <span class="vmg-lbl-rastre">Validade</span>
           <span class="vmg-val-rastre">
-            {{ dados.metadados_atestado.validade_inicio | date:'dd/MM/yyyy' }} a {{ dados.metadados_atestado.validade_fim | date:'dd/MM/yyyy' }}
+            {{ dados.metadados_atestado.validade_inicio | date:'dd/MM/yyyy' }} a {{ dados.metadados_atestado.validade_fim }}
           </span>
         </div>
       </div>

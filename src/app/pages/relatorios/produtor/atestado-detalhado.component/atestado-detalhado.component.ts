@@ -112,6 +112,7 @@ export class AtestadoDetalhadoComponent implements OnChanges, AfterViewInit, OnD
           status_vmg: this.dadosAtestado.cabecalho.status_atestado
         }
       });
+      this.cdr.detectChanges();
     } catch (error) {
       console.error(`Falha ao converter string WKT no mapa do atestado:`, error);
     }
@@ -202,6 +203,19 @@ export class AtestadoDetalhadoComponent implements OnChanges, AfterViewInit, OnD
           this.gerandoPdf.set(false);
         }
       });
+  }
+
+
+  get periodoFormatado(): string {
+    if (!this.atestado()?.cabecalho.periodo_analisado) return '';
+
+    return this.atestado()!!.cabecalho.periodo_analisado
+      .split(' a ')
+      .map(data => {
+        const [ano, mes, dia] = data.split('-');
+        return `${dia}/${mes}/${ano}`;
+      })
+      .join(' a '); // Junta novamente: "25/10/2026 a 23/06/2026"
   }
 
 }
