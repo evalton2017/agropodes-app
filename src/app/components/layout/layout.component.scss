@@ -9,13 +9,34 @@
   --anim-speed: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Estrutura Global */
-.app-container { height: 100vh; background-color: #f8faf8; }
-.header-offset { height: 64px; }
-.page-body { display: flex; flex-direction: column; min-height: calc(100vh - 64px); box-sizing: border-box; }
-.main-content { padding: 24px; box-sizing: border-box; flex: 1; }
+/* ==========================================================================
+   ESTRUTURA GLOBAL
+   ========================================================================== */
+.app-container {
+  height: 100vh;
+  background-color: #f8faf8;
+}
 
-/* Design do Cabeçalho */
+.header-offset {
+  height: 64px;
+}
+
+.page-body {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 64px);
+  box-sizing: border-box;
+}
+
+.main-content {
+  padding: 24px;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+/* ==========================================================================
+   DESIGN DO CABEÇALHO
+   ========================================================================== */
 .app-header {
   background-color: var(--green-bg-light) !important;
   color: var(--green-text-dark);
@@ -26,9 +47,19 @@
   height: 64px;
   z-index: 99;
 }
-.header-profile-btn, .mobile-menu-btn { color: var(--green-text-dark); }
-.header-title { font-weight: 700; font-size: 1.1rem; }
-.spacer { flex: 1 1 auto; }
+
+.header-profile-btn, .mobile-menu-btn {
+  color: var(--green-text-dark);
+}
+
+.header-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
 
 /* Estilos da Seção do Usuário */
 .header-user-section {
@@ -36,11 +67,13 @@
   align-items: center;
   gap: 8px;
 }
+
 .user-name {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--green-text-dark);
 }
+
 .menu-user-info {
   padding: 12px 16px;
   font-weight: 600;
@@ -49,27 +82,107 @@
   color: var(--green-text-dark);
 }
 
-/* Estilização Geral da Barra Lateral */
+/* ==========================================================================
+   ESTILIZAÇÃO GERAL DA BARRA LATERAL
+   ========================================================================== */
 .app-sidenav {
   background-color: var(--green-bg-light) !important;
   border-right: 1px solid rgba(46, 125, 50, 0.12) !important;
+  border-radius: 0px !important; /* Adicione esta linha para tirar o arredondamento do topo */
 }
-::v-deep .mat-drawer-inner-container { overflow-x: hidden !important; }
-.sidenav-logo-container { display: flex; align-items: center; padding: 16px; height: 64px; box-sizing: border-box; gap: 16px; }
-.app-logo { height: 32px; width: 32px; min-width: 32px; object-fit: contain; }
-.brand-name { font-weight: 700; font-size: 1.2rem; color: var(--green-text-dark); white-space: nowrap; }
-.divider { border: 0; border-top: 1px solid rgba(46, 125, 50, 0.12); margin: 0; }
 
-/* Links e Ícones do Menu */
-.app-sidenav mat-nav-list a { color: #556255; margin: 4px 8px; border-radius: 8px; display: flex; align-items: center; }
-.app-sidenav mat-icon { color: var(--green-text-dark); margin-right: 0; transition: margin var(--anim-speed); }
-.active-link { background-color: var(--green-active-bg) !important; color: var(--green-active-text) !important; font-weight: 600; }
-.active-link mat-icon { color: var(--green-active-text) !important; }
+::v-deep .mat-drawer-inner-container {
+  overflow-x: hidden !important;
+}
 
-/* Ajustes e Correções do MatExpansionPanel dentro da Sidebar */
+.sidenav-logo-container {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  height: 64px;
+  box-sizing: border-box;
+  gap: 16px;
+}
+
+.app-logo {
+  height: 32px;
+  width: 32px;
+  min-width: 32px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--green-text-dark);
+  white-space: nowrap;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid rgba(46, 125, 50, 0.12);
+  margin: 0;
+}
+
+/* ==========================================================================
+   LINKS, SUBMENUS E INTERAÇÕES (CANTOS RETOS GARANTIDOS)
+   ========================================================================== */
+.app-sidenav mat-nav-list a {
+  color: #556255;
+  margin: 2px 0 !important;        /* Margem lateral zerada para preencher a largura */
+  border-radius: 0px !important;    /* Força cantos retos na tag base */
+  display: flex;
+  align-items: center;
+}
+
+.app-sidenav mat-icon {
+  color: var(--green-text-dark);
+  margin-right: 0;
+  transition: margin var(--anim-speed);
+}
+
+/* Estado Ativo/Selecionado */
+.active-link {
+  background-color: var(--green-active-bg) !important;
+  color: var(--green-active-text) !important;
+  font-weight: 600;
+  border-radius: 0px !important;
+}
+
+.active-link mat-icon {
+  color: var(--green-active-text) !important;
+}
+
+/* SO BREESCRITA PROFUNDA DAS REGRAS E ANIMAÇÕES INTERNAS DO ANGULAR MATERIAL (MDC) */
+::v-deep .app-sidenav {
+  // Zera as variáveis de forma do Material 3 que moldam o botão e estados de hover/foco
+  --mdc-list-active-indicator-shape: 0px !important;
+  --mdc-shape-small: 0px !important;
+  --mdc-shape-medium: 0px !important;
+  --mat-legacy-list-active-indicator-shape: 0px !important;
+
+  // Alvos de classe específicos que geram o background arredondado
+  .mat-mdc-list-item,
+  .mat-mdc-list-item-interactive,
+  .mat-mdc-list-item-interactive::before,
+  .mdc-list-item__focusable-ring, /* O anel interno que causa o formato pílula */
+  .mat-expansion-panel,
+  .mat-expansion-panel-header,
+  .mat-expansion-panel-header::before,
+  .mat-expansion-panel-header::after,
+  .mat-content,
+  .mat-ripple {
+    border-radius: 0px !important;
+  }
+}
+
+/* ==========================================================================
+   AJUSTES DO MATEXPANSIONPANEL DENTRO DA BARRA LATERAL
+   ========================================================================== */
 .menu-expansion-panel {
   background: transparent !important;
   box-shadow: none !important;
+  border-radius: 0px !important;
 
   &.mat-expanded {
     margin: 0 !important;
@@ -83,6 +196,7 @@
 .menu-expansion-header {
   padding: 0 16px !important;
   height: 48px !important;
+  border-radius: 0px !important;
 
   mat-panel-title {
     display: flex;
@@ -95,12 +209,13 @@
   }
 }
 
-/* Recuo para subitens ficarem aninhados perfeitamente */
+/* Recuo estrutural dos subitens */
 .submenu-list {
   padding-top: 0 !important;
   a {
     padding-left: 32px !important;
-    margin: 2px 8px !important;
+    margin: 2px 0 !important;
+    border-radius: 0px !important;
   }
 }
 
@@ -108,7 +223,7 @@
    ESTADOS DE LAYOUT CONTROLADOS VIA CLASSES DO ANGULAR (DESKTOP)
    ========================================================================== */
 
-/* 1. COMPORTAMENTO DO MENU LATERAL (DESKTOP) */
+/* 1. Comportamento do Menu Lateral */
 .app-sidenav.desktop-collapsed {
   width: var(--sidenav-collapsed-width) !important;
   transition: width var(--anim-speed) !important;
@@ -120,35 +235,38 @@
     height: 0 !important;
   }
 }
+
 .app-sidenav.desktop-expanded {
   width: var(--sidenav-expanded-width) !important;
   box-shadow: 4px 0 16px rgba(0, 0, 0, 0.06) !important;
   transition: width var(--anim-speed) !important;
 }
 
-/* 2. COMPORTAMENTO DO TEXTO DO MENU */
+/* 2. Comportamento do Texto do Menu */
 .desktop-collapsed .menu-text { opacity: 0; white-space: nowrap; transition: opacity 0.1s ease; }
 .desktop-expanded .menu-text { opacity: 1; white-space: nowrap; transition: opacity 0.15s ease 0.05s; }
 .desktop-expanded mat-icon { margin-right: 16px !important; }
 .desktop-expanded .menu-expansion-header mat-panel-title mat-icon { margin-right: 16px !important; }
 
-/* 3. COMPORTAMENTO DA ÁREA DE CONTEÚDO DA PÁGINA */
+/* 3. Comportamento da Área de Conteúdo da Página */
 .app-content-wrapper.content-collapsed {
   margin-left: var(--sidenav-collapsed-width) !important;
   transition: margin-left var(--anim-speed) !important;
 }
+
 .app-content-wrapper.content-expanded {
   margin-left: var(--sidenav-expanded-width) !important;
   transition: margin-left var(--anim-speed) !important;
 }
 
-/* 4. COMPORTAMENTO DO HEADER SUPERIOR */
+/* 4. Comportamento do Header Superior */
 .app-header.header-collapsed {
   left: var(--sidenav-collapsed-width) !important;
   width: calc(100% - var(--sidenav-collapsed-width)) !important;
   padding-left: 24px !important;
   transition: left var(--anim-speed), width var(--anim-speed), padding var(--anim-speed) !important;
 }
+
 .app-header.header-expanded {
   left: var(--sidenav-expanded-width) !important;
   width: calc(100% - var(--sidenav-expanded-width)) !important;

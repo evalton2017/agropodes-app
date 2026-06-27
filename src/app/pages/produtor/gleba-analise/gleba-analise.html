@@ -8,7 +8,6 @@
   }
 
   @if (gleba(); as dados) {
-    <!-- SEÇÃO 1: CABEÇALHO GERAL DE METADADOS -->
     <div class="analise-header-box">
       <div class="title-status-row">
         <h2>{{ dados.codigo }} - {{ dados.nomeGleba }}</h2>
@@ -175,20 +174,24 @@
           <!-- Ambiental -->
           <div class="sub-card">
             <div class="card-header-status-flex">
-              <mat-icon class="green-txt">check_circle</mat-icon>
+              <mat-icon>{{ dados.resumoAnalises.ambientalStatus == 'Conforme' ? 'check_circle' : 'cancel' }}</mat-icon>
               <strong>Ambiental</strong>
             </div>
-            <span class="status-lbl green-txt">{{ dados.resumoAnalises.ambientalStatus }}</span>
+            <div class="vmg-conf-status text-success" [ngClass]="dados.resumoAnalises.ambientalStatus == 'APROVADO' ? 'text-success' : 'text-danger'">
+              <strong> {{ dados.resumoAnalises.ambientalStatus }}</strong>
+            </div>
             <p class="desc-lbl">{{ dados.resumoAnalises.ambientalDesc }}</p>
           </div>
 
           <!-- Cultura IA -->
           <div class="sub-card">
             <div class="card-header-status-flex">
-              <mat-icon class="green-txt">comet</mat-icon>
+              <mat-icon>{{ dados.resumoAnalises.culturaIaStatus ? 'cancel' : 'check_circle' }}</mat-icon>
               <strong>Cultura IA</strong>
             </div>
-            <span class="status-lbl green-txt">{{ dados.resumoAnalises.culturaIaStatus }}</span>
+            <div class="vmg-conf-status text-success" [ngClass]="dados.resumoAnalises.culturaIaStatus == 'APROVADO' ? 'text-success' : 'text-danger'">
+              <strong> {{ dados.resumoAnalises.culturaIaStatus }}</strong>
+            </div>
             <p class="desc-lbl">{{ dados.resumoAnalises.culturaIaDesc }}</p>
           </div>
 

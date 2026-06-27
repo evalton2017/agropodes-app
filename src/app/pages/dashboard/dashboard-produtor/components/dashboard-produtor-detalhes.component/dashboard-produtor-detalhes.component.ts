@@ -43,7 +43,6 @@ export class DashboardProdutorDetalhesComponent {
 
   produtor = computed(() => this.pessoaService.produtorAtual());
 
-  // Signals contendo o estado para os 3 componentes filhos
   dadosMapa = signal<GlebaGeometriaResponse[]>([]);
   dadosTabela = signal<RespostaConformidadeAmbientalDTO | null>(null);
   dadosStatusAtividades = signal<RespostaStatusAtividades | null>(null);
@@ -55,7 +54,6 @@ export class DashboardProdutorDetalhesComponent {
 
       if (!user || !user.id) return;
 
-      // Dispara as consultas de forma unificada e performática
       forkJoin({
         mapa: this.produtorService.obterGlebasGeometria(user.id),
         tabela: this.produtorService.obterConformidadeAmbiental(user.id, filtros),

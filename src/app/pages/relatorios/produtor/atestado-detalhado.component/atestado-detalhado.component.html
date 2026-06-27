@@ -56,7 +56,7 @@
       <!-- Card Status -->
       <div class="vmg-card-meta">
         <div class="vmg-meta-icon  text-white"  [ngClass]="dados.cabecalho.status_atestado == 'REPROVADO' ? 'bg-danger' : 'bg-success'">
-          <mat-icon>done</mat-icon></div>
+          <mat-icon>{{ dados.cabecalho.status_atestado == 'REPROVADO' ? 'cancel' : 'check_circle' }}</mat-icon></div>
         <div class="vmg-meta-txt">
           <span class="vmg-lbl">Status do Atestado</span>
           @if(dados.cabecalho.status_atestado == 'REPROVADO'){
@@ -80,7 +80,8 @@
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">Ambiental</span>
           <div class="vmg-conf-status text-success" [ngClass]="dados.conformidade.ambiental_conforme ? 'text-success' : 'text-danger'">
-            <mat-icon>check_circle</mat-icon> {{ dados.conformidade.ambiental_conforme ? 'Conforme' : 'Divergente' }}
+            <mat-icon>{{ dados.conformidade.ambiental_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
+            {{ dados.conformidade.ambiental_conforme ? 'Conforme' : 'Divergente' }}
           </div>
           <span class="vmg-conf-sub">Validações ambientais aprovadas</span>
         </div>
@@ -97,7 +98,7 @@
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">Boas Práticas</span>
           <div class="vmg-conf-status" [ngClass]="dados.conformidade.boas_praticas_conforme ? 'text-success' : 'text-warning'">
-            <mat-icon>{{ dados.conformidade.boas_praticas_conforme ? 'check_circle' : 'error' }}</mat-icon>
+            <mat-icon>{{ dados.conformidade.boas_praticas_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
             {{ dados.conformidade.boas_praticas_conforme ? 'Conforme' : 'Pendente' }}
           </div>
           <span class="vmg-conf-sub">Certificado de BPA válido</span>
@@ -105,8 +106,9 @@
 
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">ZARC</span>
-          <div class="vmg-conf-status text-success" >
-            <mat-icon>check_circle</mat-icon> {{ dados.conformidade.zarc_conforme ? 'Conforme' : 'Fora da Janela' }}
+          <div class="vmg-conf-status" [ngClass]="dados.conformidade.zarc_conforme ? 'text-success' : 'text-warning'">
+            <mat-icon>{{ dados.conformidade.zarc_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
+            {{ dados.conformidade.zarc_conforme ? 'Conforme' : 'Fora da Janela' }}
           </div>
           <span class="vmg-conf-sub">Risco admissível dentro do limite</span>
         </div>
@@ -114,7 +116,8 @@
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">Produtividade</span>
           <div class="vmg-conf-status text-success" [ngClass]="dados.conformidade.produtividade_conforme ? 'text-success' : 'text-danger'">
-            <mat-icon>check_circle</mat-icon> {{ dados.conformidade.produtividade_conforme ? 'Conforme' : 'Divergente' }}
+            <mat-icon>{{ dados.conformidade.produtividade_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
+            {{ dados.conformidade.produtividade_conforme ? 'Conforme' : 'Divergente' }}
           </div>
           <span class="vmg-conf-sub">{{ dados.conformidade.produtividade_estimada_sacas }} sc/ha estimado</span>
         </div>

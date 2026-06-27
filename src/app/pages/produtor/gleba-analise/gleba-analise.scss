@@ -129,3 +129,10 @@
 @media (max-width: 1200px) {
   .vmg-analise-container { .analise-header-box .meta-data-horizontal-grid, .vmg-zarc-table-box-wrapper .zarc-table-row-grid, .vmg-resumo-analises-cards-grid .cards-sub-grid { grid-template-columns: 1fr; .zarc-cell { border-right: none; border-bottom: 1px solid #e2e8f0; &:last-child { border-bottom: none; } } } }
 }
+
+.bg-success { background: #15803d; }
+.bg-danger { background: #b91c1c; }
+
+.text-success { color: #15803d !important; }
+.text-danger { color: #b91c1c !important; }
+.text-warning { color: #b45309 !important; }
