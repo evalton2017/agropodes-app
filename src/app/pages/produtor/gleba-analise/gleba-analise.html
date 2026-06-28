@@ -8,16 +8,20 @@
   }
 
   @if (gleba(); as dados) {
+    <!-- BOX DO CABEÇALHO -->
     <div class="analise-header-box">
       <div class="title-status-row">
-        <h2>{{ dados.codigo }} - {{ dados.nomeGleba }}</h2>
-        <span class="status-badge" [ngClass]="dados.status.toLowerCase().replace(' ', '-')">
-          {{ dados.status }}
-        </span>
+        <div class="title-badge-group">
+          <h2>{{ dados.codigo }} - {{ dados.nomeGleba }}</h2>
+          <span class="status-badge" [ngClass]="dados.status.toLowerCase().replace(' ', '-')">
+            {{ dados.status }}
+          </span>
+        </div>
 
         <div class="actions-top-flex">
           <button mat-stroked-button class="btn-detalhes">
-            Ver detalhes completos <mat-icon>open_in_new</mat-icon>
+            <span class="btn-txt-desktop">Ver detalhes completos</span>
+            <mat-icon>open_in_new</mat-icon>
           </button>
           <button mat-icon-button class="btn-expand"><mat-icon>expand_more</mat-icon></button>
         </div>
@@ -29,7 +33,7 @@
           <div class="cell-info">
             <span class="lbl">CAR</span>
             <span class="val flex-copy">
-              {{ dados.codigoCar }}
+              <span class="truncate-car">{{ dados.codigoCar }}</span>
               <mat-icon class="copy-ic" (click)="copiarTexto(dados.codigoCar)">content_copy</mat-icon>
             </span>
           </div>
@@ -63,10 +67,11 @@
       <p class="timestamp-footer-label">Última atualização: {{ dados.ultimaAtualizacao }}</p>
     </div>
 
-    <!-- SEÇÃO 2: ESTEIRA HORIZONTAL DE VALIDAÇÕES -->
+    <!-- CORPO PRINCIPAL -->
     <div class="analise-body-card-white">
       <h3>Esteira de Validações</h3>
 
+      <!-- ESTEIRA HORIZONTAL -->
       <div class="timeline-horizontal-vmg-row">
         <!-- Geometria -->
         <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.geometria)">
@@ -124,7 +129,7 @@
         </div>
       </div>
 
-      <!-- SEÇÃO 3: BLOCO CONDICIONAL DE PENDÊNCIAS IDENTIFICADAS -->
+      <!-- SEÇÃO 3: BLOCO DE PENDÊNCIAS -->
       @if (dados.statusPassos.zarc == "FORA_ZARC") {
         <div class="vmg-alert-block-yellow">
           <div class="alert-icon-title-row">
@@ -135,11 +140,18 @@
             Plantio fora da janela de risco do ZARC para a cultura {{ dados.culturaDeclarada }}.
             Recomendação: Ajustar data estimada de plantio ou justificar tecnicamente junto à VMG.
           </p>
-          <button mat-stroked-button class="btn-ver-detalhes-alert"><mat-icon>visibility</mat-icon> Ver detalhes</button>
+          <button mat-stroked-button class="btn-ver-detalhes-alert">
+            <mat-icon>visibility</mat-icon>
+            <span>Ver detalhes</span>
+          </button>
+
+          <button mat-button class="btn-voltar-mobile" (click)="dispararVoltar()">
+            <mat-icon>arrow_back</mat-icon> Voltar para a lista
+          </button>
         </div>
       }
 
-      <!-- SEÇÃO 4: QUADRO DE INFORMAÇÕES DO ZARC MAPA -->
+      <!-- SEÇÃO 4: TABELA INFORMAÇÕES DO ZARC -->
       <div class="vmg-zarc-table-box-wrapper">
         <h4>Informações do ZARC</h4>
         <div class="zarc-table-row-grid">
@@ -166,59 +178,52 @@
         </div>
       </div>
 
-      <!-- SEÇÃO 5: MATRIZ DE RESUMO DAS ANÁLISES (CARDS INFERIORES) -->
+      <!-- SEÇÃO 5: CARDS INFERIORES -->
       <div class="vmg-resumo-analises-cards-grid">
         <h4>Resumo das Análises</h4>
         <div class="cards-sub-grid">
-
           <!-- Ambiental -->
           <div class="sub-card">
             <div class="card-header-status-flex">
-              <mat-icon>{{ dados.resumoAnalises.ambientalStatus == 'Conforme' ? 'check_circle' : 'cancel' }}</mat-icon>
-              <strong>Ambiental</strong>
+              <mat-icon>eco</mat-icon>
+              <span>Ambiental</span>
             </div>
-            <div class="vmg-conf-status text-success" [ngClass]="dados.resumoAnalises.ambientalStatus == 'APROVADO' ? 'text-success' : 'text-danger'">
-              <strong> {{ dados.resumoAnalises.ambientalStatus }}</strong>
-            </div>
-            <p class="desc-lbl">{{ dados.resumoAnalises.ambientalDesc }}</p>
+            <span class="status-lbl text-danger">Alerta</span>
+            <p class="desc-lbl">Sobreposição territorial identificada</p>
           </div>
 
           <!-- Cultura IA -->
           <div class="sub-card">
             <div class="card-header-status-flex">
-              <mat-icon>{{ dados.resumoAnalises.culturaIaStatus ? 'cancel' : 'check_circle' }}</mat-icon>
-              <strong>Cultura IA</strong>
+              <mat-icon>psychology</mat-icon>
+              <span>Cultura IA</span>
             </div>
-            <div class="vmg-conf-status text-success" [ngClass]="dados.resumoAnalises.culturaIaStatus == 'APROVADO' ? 'text-success' : 'text-danger'">
-              <strong> {{ dados.resumoAnalises.culturaIaStatus }}</strong>
-            </div>
-            <p class="desc-lbl">{{ dados.resumoAnalises.culturaIaDesc }}</p>
+            <span class="status-lbl text-warning">Divergente</span>
+            <p class="desc-lbl">Soja</p>
           </div>
 
           <!-- Produtividade IA -->
           <div class="sub-card">
             <div class="card-header-status-flex">
-              <mat-icon class="green-txt">trending_up</mat-icon>
-              <strong>Produtividade IA</strong>
+              <mat-icon>trending_up</mat-icon>
+              <span>Produtividade IA</span>
             </div>
-            <span class="status-lbl green-txt">{{ dados.resumoAnalises.produtividadeStatus }}</span>
-            <p class="desc-lbl">{{ dados.resumoAnalises.produtividadeDesc }}</p>
+            <span class="status-lbl text-muted">BLOQUEADO</span>
+            <p class="desc-lbl">0 sc/ha Estimativa</p>
           </div>
 
           <!-- Atestado VMG -->
           <div class="sub-card">
             <div class="card-header-status-flex">
-              <mat-icon class="green-txt">workspace_premium</mat-icon>
-              <strong>Atestado VMG</strong>
+              <mat-icon>verified</mat-icon>
+              <span>Atestado VMG</span>
             </div>
-            <span class="status-lbl green-txt">{{ dados.resumoAnalises.atestadoStatus }}</span>
-            <p class="desc-lbl">{{ dados.resumoAnalises.atestadoDesc }}</p>
+            <span class="status-lbl text-danger">REPROVADO</span>
+            <p class="desc-lbl">Aguardando análise técnica</p>
           </div>
-
         </div>
       </div>
 
     </div>
   }
-
 </div>

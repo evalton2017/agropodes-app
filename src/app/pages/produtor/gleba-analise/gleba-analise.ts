@@ -1,12 +1,11 @@
-// app/pages/analista/components/gleba-analise/gleba-analise.component.ts
-import { Component, inject, signal, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, signal, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core'; // Adicionado Output e EventEmitter
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {GlebaData} from '../model/gleba.model';
-import {GlebaService} from '../service/gleba.service';
+import { GlebaData } from '../model/gleba.model';
+import { GlebaService } from '../service/gleba.service';
 
 @Component({
   selector: 'app-gleba-analise',
@@ -20,10 +19,10 @@ export class GlebaAnaliseComponent implements OnChanges {
   private glebaService: GlebaService = inject(GlebaService);
 
   @Input({ required: true }) idGleba!: number;
+  @Output() aoVoltar = new EventEmitter<void>(); // Novo evento emissor para controle de fluxo mobile
 
   public carregando = signal<boolean>(false);
   public gleba = signal<GlebaData | null>(null);
-
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['idGleba'] && this.idGleba) {
@@ -44,6 +43,11 @@ export class GlebaAnaliseComponent implements OnChanges {
           this.carregando.set(false);
         }
       });
+  }
+
+  // Método chamado pelo botão de voltar no mobile
+  public dispararVoltar(): void {
+    this.aoVoltar.emit();
   }
 
   // OPERADORES MAPPER VISUAIS (Sincronizados com o CSS unificado)

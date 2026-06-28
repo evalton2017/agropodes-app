@@ -4,7 +4,6 @@
   font-family: 'Inter', sans-serif;
   box-sizing: border-box;
 
-  /* SEÇÃO 1: CABEÇALHO */
   .analise-header-box {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -124,10 +123,94 @@
   }
 
   .vmg-loading-overlay { display: flex; flex-direction: column; align-items: center; padding: 3rem; color: #64748b; p { margin-top: 0.5rem; font-weight: 500; } }
-}
 
-@media (max-width: 1200px) {
-  .vmg-analise-container { .analise-header-box .meta-data-horizontal-grid, .vmg-zarc-table-box-wrapper .zarc-table-row-grid, .vmg-resumo-analises-cards-grid .cards-sub-grid { grid-template-columns: 1fr; .zarc-cell { border-right: none; border-bottom: 1px solid #e2e8f0; &:last-child { border-bottom: none; } } } }
+  /* MEDIA QUERIES CUSTOMIZADOS PARA MOBILE */
+  @media (max-width: 768px) {
+    // Ajuste geral do espaçamento externo do bloco principal se necessário
+    padding: 0.5rem;
+
+    .analise-header-box {
+      padding: 1rem;
+
+      .title-status-row {
+        flex-wrap: wrap; // Permite que a badge quebre de linha caso o título seja longo
+        gap: 0.5rem;
+
+        h2 { font-size: 1.1rem; width: 100%; } // Título ganha destaque ocupando a largura total
+
+        .status-badge { order: 2; }
+        .actions-top-flex { order: 3; margin-left: auto; }
+      }
+
+      .meta-data-horizontal-grid {
+        grid-template-columns: 1fr; // Um dado por linha no mobile
+        gap: 1rem;
+        padding-top: 1rem;
+      }
+    }
+
+    .analise-body-card-white {
+      padding: 1rem;
+
+      // Transforma a esteira horizontal em uma área com scroll horizontal suave (padrão mobile)
+      .timeline-horizontal-vmg-row {
+        overflow-x: auto;
+        padding-bottom: 1rem;
+        -webkit-overflow-scrolling: touch;
+
+        &::-webkit-scrollbar { height: 4px; }
+        &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+        .step-node {
+          min-width: 85px; // Garante tamanho mínimo para não esmagar os nomes das etapas
+        }
+        .line-connector {
+          min-width: 25px; // Mantém as linhas conectoras visíveis entre as etapas
+        }
+      }
+    }
+
+    .vmg-alert-block-yellow {
+      flex-direction: column; // Alinha ícone, texto e botão verticalmente
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem;
+
+      .alert-msg-txt {
+        padding-left: 0;
+      }
+      .btn-ver-detalhes-alert {
+        width: 100%; // Botão ocupa toda a largura facilitando o clique no mobile
+        justify-content: center;
+      }
+    }
+
+    .vmg-zarc-table-box-wrapper {
+      .zarc-table-row-grid {
+        grid-template-columns: 1fr; // Transforma as colunas do ZARC em linhas empilhadas
+
+        .zarc-cell {
+          border-right: none;
+          border-bottom: 1px solid #e2e8f0;
+          padding: 0.75rem 1rem;
+
+          &:last-child {
+            border-bottom: none;
+          }
+          &.red-focus-border {
+            border-radius: 0 0 6px 6px; // Ajusta o raio de borda para o formato empilhado
+          }
+        }
+      }
+    }
+
+    .vmg-resumo-analises-cards-grid {
+      .cards-sub-grid {
+        grid-template-columns: 1fr; // Grid inferior com 1 card por linha
+        gap: 1rem;
+      }
+    }
+  }
 }
 
 .bg-success { background: #15803d; }
@@ -136,3 +219,53 @@
 .text-success { color: #15803d !important; }
 .text-danger { color: #b91c1c !important; }
 .text-warning { color: #b45309 !important; }
+
+@media (max-width: 768px) {
+  .vmg-analise-container {
+    padding: 0.75rem;
+    overflow-x: hidden; // Previne quebras na tela principal
+
+    .title-status-row {
+      flex-direction: column; // Alinha os blocos para baixo no mobile
+      align-items: flex-start !important;
+      gap: 0.75rem !important;
+
+      .title-badge-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .actions-top-flex {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0 !important;
+
+        .btn-detalhes {
+          flex-grow: 1; // Faz o botão ocupar o espaço disponível
+          .btn-txt-desktop {
+            display: none; // Oculta o texto longo no mobile para caber o botão
+          }
+          &::after {
+            content: 'Detalhes'; // Texto curto substituto para celular
+          }
+        }
+      }
+    }
+
+    .meta-data-horizontal-grid {
+      .meta-cell .cell-info .val {
+        font-size: 0.825rem;
+
+        .truncate-car {
+          max-width: 180px; // Evita que a hash gigante do CAR quebre o layout no celular
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}

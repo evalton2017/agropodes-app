@@ -1,4 +1,3 @@
-// app/pages/analista/components/painel-analise/painel-analise.component.ts
 import { Component, inject, signal, effect, OnInit, computed, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -10,7 +9,7 @@ import { GlebaAnaliseComponent } from '../gleba-analise/gleba-analise';
 import { GlebaService } from '../service/gleba.service';
 import { GlebaData } from '../model/gleba.model';
 import { PessoaService } from '../../../service/pessoa.service';
-import {GlebeApiResponse} from '../../../dto/response/gleba.response';
+import { GlebeApiResponse } from '../../../dto/response/gleba.response';
 
 @Component({
   selector: 'app-painel-analise',
@@ -45,6 +44,8 @@ export class PainelAnaliseComponent implements OnInit {
       const idGleba = this.glebaSelecionadaId();
       if (idGleba) {
         this.buscarLaudoDetalhadoGleba(idGleba);
+      } else {
+        this.laudoDetalhadoAtivo.set(null); // Limpa o estado quando id for nulo
       }
     }, { allowSignalWrites: true });
   }
@@ -56,14 +57,15 @@ export class PainelAnaliseComponent implements OnInit {
   private carregarListaLateralGlebas(idProdutor: number): void {
     this.carregandoLista.set(true);
     this.glebaService.getGlebasByProdutorId(idProdutor)
-      .pipe(takeUntilDestroyed(this.destroyRef)) // Acopla segurança para evitar memory leaks
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (glebas) => {
           this.listaGlebasSidebar.set(glebas);
           this.carregandoLista.set(false);
 
-          // UX Smart: Auto-seleciona o primeiro talhão (GLB-001) para abrir a tela preenchida
-          if (glebas && glebas.length > 0) {
+          // UX Smart: Mantém auto-seleção apenas se NÃO estiver em tela mobile
+          // Isso evita que o mobile abra o detalhe direto sem mostrar a lista primeiro
+          if (glebas && glebas.length > 0 && window.innerWidth > 768) {
             const primeiroItem = glebas[0];
             const idAlvo = primeiroItem.idGleba;
             if (idAlvo) {
@@ -81,6 +83,11 @@ export class PainelAnaliseComponent implements OnInit {
   public selecionarGleba(idGleba: number): void {
     if (this.glebaSelecionadaId() === idGleba) return;
     this.glebaSelecionadaId.set(idGleba);
+  }
+
+  // Método reativo disparado pelo OUTPUT do componente filho (Botão Voltar)
+  public limparSelecaoMobile(): void {
+    this.glebaSelecionadaId.set(null);
   }
 
   private buscarLaudoDetalhadoGleba(idGleba: number): void {

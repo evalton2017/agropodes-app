@@ -1,4 +1,4 @@
-// src/app/pages/relatorios/atestados-page/atestados-page.component.ts
+
 import { Component, inject, signal, computed, effect, OnInit, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,8 +12,6 @@ import {PessoaService} from '../../../../service/pessoa.service';
 import {RelatorioService} from '../../relatorio.service';
 import {GlebeApiResponse} from '../../../../dto/response/gleba.response';
 import {AtestadoDetalhadoResponse} from '../relatorio-produtor.model';
-
-
 
 @Component({
   selector: 'app-atestados-page',

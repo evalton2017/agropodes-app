@@ -1,4 +1,4 @@
-<div class="vmg-split-dashboard-layout">
+<div class="vmg-split-dashboard-layout" [class.detalhe-ativo]="glebaSelecionadaId() !== null">
 
   <!-- COLUNA DA ESQUERDA: LISTA DE GLEBAS (SIDEBAR) -->
   <aside class="sidebar-lotes-list-wrapper">
@@ -26,7 +26,6 @@
           </div>
 
           <div class="card-right-status-flex">
-            <!-- Badge dinâmico baseado no status retornado da lista geral do produtor -->
             <span class="badge-chip-vmg" [ngClass]="g.statusVmg?.toLowerCase() || 'conforme'">
               <mat-icon class="icon-bullet">fiber_manual_record</mat-icon>
               {{ g.statusVmg === 'NAO_CONFORME' ? 'Alerta' : 'Conforme' }}
@@ -48,9 +47,12 @@
       </div>
     }
 
-    <!-- Injeta o componente filho passando o sinal de laudo recheado direto da API -->
+    <!-- Escuta o Output correto e limpa o ID usando a função criada no seu TS anterior -->
     @if (laudoDetalhadoAtivo(); as laudo) {
-      <app-gleba-analise [idGleba]="laudo.idGleba"></app-gleba-analise>
+      <app-gleba-analise
+        [idGleba]="laudo.idGleba"
+        (aoVoltar)="limparSelecaoMobile()"
+      ></app-gleba-analise>
     } @else if (!carregandoDetalhe()) {
       <div class="empty-state-view">
         <mat-icon>analytics</mat-icon>

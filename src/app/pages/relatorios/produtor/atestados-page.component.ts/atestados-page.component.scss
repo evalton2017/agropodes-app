@@ -1,39 +1,4 @@
-/* src/app/pages/relatorios/produtor/atestados-page.component.ts/atestados-page.component.scss */
-.atestados-container {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: flex-start !important;
-  justify-content: flex-start !important;
-  gap: 24px !important;
-  padding: 24px !important;
-  background-color: #f8fafc !important; // Cor cinza-claro idêntica ao protótipo
-  min-height: 100vh !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-.sidebar-glebas {
-  width: 320px !important;
-  min-width: 320px !important;
-  max-width: 320px !important;
-  flex-shrink: 0 !important;
-  background-color: #ffffff !important;
-  padding: 20px !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 16px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-}
-
-// ... Restante do código da busca e dos cards que já estavam alinhados ...
-.painel-detalhe {
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-
-// Variáveis de Escopo para Alinhamento Rígido
+// Variáveis de Estilo do Ecossistema
 $border-color: #e2e8f0;      // Slate-200
 $bg-dashboard: #f8fafc;       // Slate-50 (fundo cinza claro institucional)
 $white: #ffffff;
@@ -48,6 +13,43 @@ $text-muted: #64748b;       // Slate-500
   box-sizing: border-box !important;
 }
 
+.atestados-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 24px !important;
+  padding: 24px !important;
+  background-color: $bg-dashboard !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+
+  .vmg-voltar-painel-mobile {
+    display: none; // Escondido no desktop por padrão
+  }
+}
+
+.sidebar-glebas {
+  width: 320px !important;
+  min-width: 320px !important;
+  max-width: 320px !important;
+  flex-shrink: 0 !important;
+  background-color: $white !important;
+  padding: 20px !important;
+  border: 1px solid $border-color !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+
+  .sidebar-titulo {
+    font-size: 14px;
+    font-weight: 700;
+    color: $text-dark;
+    margin: 0 0 16px 0;
+  }
+}
 
 // Caixa que envelopa a lupa e o input de filtragem
 .busca-container {
@@ -73,7 +75,7 @@ $text-muted: #64748b;       // Slate-500
     border: 1px solid $border-color !important;
     border-radius: 8px !important;
     font-size: 12px !important;
-    background-color: #f8fafc !important;
+    background-color: $bg-dashboard !important;
     color: #334155 !important;
 
     &:focus {
@@ -94,7 +96,6 @@ $text-muted: #64748b;       // Slate-500
   padding-right: 4px !important;
   width: 100% !important;
 
-  // Customização estética da barra de rolagem (padrão W3C e Webkit)
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 #f1f5f9;
 
@@ -121,18 +122,17 @@ $text-muted: #64748b;       // Slate-500
     background-color: #f8fafc !important;
     border-color: #cbd5e1 !important;
   }
-}
 
-// Acionado dinamicamente via [class.card-gleba-ativo]
-.card-gleba-ativo {
-  border-color: #15803d !important;
-  background-color: rgba(21, 128, 61, 0.04) !important;
+  &.card-gleba-ativo {
+    border-color: #15803d !important;
+    background-color: rgba(21, 128, 61, 0.04) !important;
+  }
 }
 
 .card-gleba-conteudo {
   display: flex !important;
   gap: 12px !important;
-  min-width: 0 !important; // Proteção contra estouro de texto em resoluções menores
+  min-width: 0 !important;
 
   .avatar-glb {
     padding: 6px !important;
@@ -186,7 +186,7 @@ $text-muted: #64748b;       // Slate-500
 // ==========================================
 .painel-detalhe {
   flex: 1 !important;
-  min-width: 0 !important; // Garante expansão fluida adaptando-se à barra lateral
+  min-width: 0 !important;
 }
 
 // Componentes Auxiliares de Transição e Loading da Página Pai
@@ -240,10 +240,106 @@ $text-muted: #64748b;       // Slate-500
   font-size: 12px !important;
 }
 
-// Alinhamento nativo de fontes de ícones do Angular Material no modo SSR
 mat-icon {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   vertical-align: middle !important;
+}
+
+/* ==========================================================================
+   MEDIA QUERIES - CAMADA REATIVA RESPONSIVA COM RESET PROFUNDO DO FILHO
+   ========================================================================== */
+@media (max-width: 768px) {
+  .atestados-container {
+    display: block !important;
+    padding: 8px !important;
+    gap: 0 !important;
+
+    .sidebar-glebas {
+      display: flex !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .painel-detalhe {
+      display: none !important;
+      width: 100% !important;
+
+      .vmg-voltar-painel-mobile {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        margin-bottom: 24px !important;
+        color: $text-dark !important;
+        background-color: #e2e8f0 !important;
+        border: none !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        padding: 12px !important;
+        font-weight: 600 !important;
+      }
+    }
+
+    /* GATILHO CRÍTICO: ATIVA TELA CHEIA E RESETA OS GRIDS DO COMPONENTE FILHO */
+    &.detalhe-ativo {
+      .sidebar-glebas {
+        display: none !important;
+      }
+
+      .painel-detalhe {
+        display: block !important;
+
+        // 1. Corrige o topo de ações e empilha os botões longos
+        ::ng-deep .vmg-topo-acoes {
+          flex-direction: column !important;
+          align-items: stretch !important;
+          gap: 16px !important;
+
+          .vmg-buttons-group {
+            width: 100% !important;
+            button { flex: 1 !important; justify-content: center !important; }
+          }
+        }
+
+        // 2. Corrige a Seção 1 (Cards brancos que estão vazando para a direita)
+        ::ng-deep .vmg-grid-cabecalho {
+          grid-template-columns: 1fr !important; // Transforma 4 colunas em 1
+          gap: 12px !important;
+
+          .vmg-card-meta {
+            width: 100% !important;
+            .vmg-meta-txt .vmg-val { white-space: normal !important; overflow: visible !important; }
+          }
+        }
+
+        // 3. Corrige a Seção 2 (O embolamento de textos do "Resumo de Conformidade")
+        ::ng-deep .vmg-grid-conformidade {
+          grid-template-columns: 1fr !important; // Transforma 5 colunas em 1 por linha
+          gap: 16px !important;
+
+          .vmg-item-conf {
+            border-right: none !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding-right: 0 !important;
+            padding-bottom: 16px !important;
+            width: 100% !important;
+
+            &:last-child { border-bottom: none !important; padding-bottom: 0 !important; }
+            .vmg-conf-status { margin: 4px 0 !important; }
+          }
+        }
+
+        // 4. Corrige as Duas Colunas Inferiores (Informações e Mapa)
+        ::ng-deep .vmg-duas-colunas {
+          grid-template-columns: 1fr !important; // Passa de lado a lado para empilhado
+          gap: 16px !important;
+
+          .vmg-secao-box { height: auto !important; }
+        }
+      }
+    }
+  }
 }

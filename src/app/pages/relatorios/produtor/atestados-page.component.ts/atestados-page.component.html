@@ -1,5 +1,4 @@
-<!-- src/app/pages/relatorios/produtor/atestados-page.component.ts/atestados-page.component.html -->
-<div class="atestados-container">
+<div class="atestados-container" [class.detalhe-ativo]="laudoDetalhadoAtivo() !== null">
 
   <!-- BARRA LATERAL ESQUERDA: LISTAGEM DE GLEBAS -->
   <div class="sidebar-glebas">
@@ -55,6 +54,11 @@
         <span class="loading-texto-detalhe">Consultando chaves criptográficas na Blockchain de Auditoria...</span>
       </div>
     } @else if (laudoDetalhadoAtivo()) {
+
+      <!-- Botão Voltar Mobile integrado no topo do fluxo do painel pai -->
+      <button mat-button class="vmg-voltar-painel-mobile" (click)="glebaSelecionadaId.set(null); laudoDetalhadoAtivo.set(null)">
+        <mat-icon>arrow_back</mat-icon> Voltar para as Glebas
+      </button>
 
       <!-- Chamada do Novo Componente Separado enviando o Signal desempacotado -->
       <app-atestado-detalhado
