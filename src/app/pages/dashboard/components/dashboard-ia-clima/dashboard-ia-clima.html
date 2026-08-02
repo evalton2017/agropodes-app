@@ -1,6 +1,8 @@
 <div class="ia-card">
   @if (carregando()) {
-    <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
   }
 
   <h3 class="ia-card-title">Resumo Climático por Estado (Últimos 60 dias)</h3>
@@ -8,7 +10,6 @@
   <!-- CONTEINER PRINCIPAL DA ROLAGEM HORIZONTAL -->
   <div class="clima-scroller-container">
 
-    <!-- O laço varre o array de estados dinâmicos vindos da API Python -->
     @for (estado of dados(); track estado.uf) {
       <div class="estado-clima-wrapper">
         <div class="estado-badge-header">
@@ -17,65 +18,70 @@
         </div>
 
         <div class="clima-quad-grid">
-          <!-- Chuva -->
+          <!-- Chuva Acumulada -->
           <div class="clima-box">
             <mat-icon class="c-icon text-blue">water_drop</mat-icon>
             <div class="c-info">
               <span class="c-title">Chuva acumulada</span>
-              <span class="c-value">{{ estado.chuva_acumulada_mm | number:'1.0-0':'pt-BR' }} mm</span>
+              <span class="c-value">{{ estado.chuva_acumulada_mm | number:'1.0-1':'pt-BR' }} mm</span>
               <span class="c-trend" [ngClass]="estado.variacao_chuva_pct >= 0 ? 'txt-blue' : 'txt-rose'">
-                {{ estado.variacao_chuva_pct >= 0 ? '↑' : '↓' }} {{ estado.variacao_chuva_pct }}% hist.
+                {{ estado.variacao_chuva_pct >= 0 ? '↑' : '↓' }} {{ formatarSinal(estado.variacao_chuva_pct, '%') }} hist.
               </span>
             </div>
           </div>
 
-          <!-- Temperatura -->
+          <!-- Temperatura Média -->
           <div class="clima-box">
             <mat-icon class="c-icon text-orange">thermostat</mat-icon>
             <div class="c-info">
               <span class="c-title">Temp. média</span>
               <span class="c-value">{{ estado.temp_media_celsius | number:'1.1-1':'pt-BR' }} °C</span>
-              <span class="c-trend" [ngClass]="estado.variacao_temp_celsius >= 0 ? 'txt-blue' : 'txt-rose'">
-                {{ estado.variacao_temp_celsius >= 0 ? '↑ +' : '↓' }}{{ estado.variacao_temp_celsius }}°C hist.
+              <span class="c-trend" [ngClass]="estado.variacao_temp_celsius >= 0 ? 'txt-rose' : 'txt-blue'">
+                {{ estado.variacao_temp_celsius >= 0 ? '↑' : '↓' }} {{ formatarSinal(estado.variacao_temp_celsius, '°C') }} hist.
               </span>
             </div>
           </div>
 
-          <!-- Dias Sem Chuva -->
+          <!-- Dias Sem Chuva (Veranico) -->
           <div class="clima-box">
             <mat-icon class="c-icon text-amber">wb_sunny</mat-icon>
             <div class="c-info">
               <span class="c-title">Dias sem chuva</span>
               <span class="c-value">{{ estado.dias_sem_chuva }} dias</span>
-              <span class="c-trend" [ngClass]="estado.variacao_dias_sem_chuva >= 0 ? 'txt-rose' : 'txt-blue'">
-                ↑ +{{ estado.variacao_dias_sem_chuva }} dias
+              <span class="c-trend" [ngClass]="estado.variacao_dias_sem_chuva <= 0 ? 'txt-blue' : 'txt-rose'">
+                {{ estado.variacao_dias_sem_chuva >= 0 ? '↑' : '↓' }} {{ formatarSinal(estado.variacao_dias_sem_chuva, ' dias') }}
               </span>
             </div>
           </div>
 
-          <!-- Vento -->
+          <!-- Velocidade do Vento -->
           <div class="clima-box">
             <mat-icon class="c-icon text-teal">air</mat-icon>
             <div class="c-info">
               <span class="c-title">Vel. vento médio</span>
               <span class="c-value">{{ estado.vel_vento_kmh | number:'1.1-1':'pt-BR' }} km/h</span>
               <span class="c-trend txt-slate">
-                {{ estado.variacao_vel_vento >= 0 ? '↑ +' : '↓' }}{{ estado.variacao_vel_vento }} km/h
+                {{ estado.variacao_vel_vento >= 0 ? '↑' : '↓' }} {{ formatarSinal(estado.variacao_vel_vento, ' km/h') }}
               </span>
             </div>
           </div>
         </div>
       </div>
     } @empty {
-      <div class="clima-empty-state">
-        <mat-icon>cloud_off</mat-icon>
-        <p>Nenhuma gleba ativa monitorada para gerar o balanço meteorológico.</p>
-      </div>
+      @if (!carregando()) {
+        <div class="clima-empty-state">
+          <mat-icon>cloud_off</mat-icon>
+          <p>Nenhuma gleba ativa monitorada para gerar o balanço meteorológico do período.</p>
+        </div>
+      }
     }
 
   </div>
 
   <div class="ia-card-footer">
-    <button class="ia-footer-link">Ver painel climático completo</button>
+    <button class="ia-footer-link" (click)="abrirModalPainelCompleto()">
+      Ver painel climático completo
+    </button>
   </div>
+
 </div>

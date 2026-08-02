@@ -1,64 +1,101 @@
+.dashboard-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .header-link {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 .table-responsive {
-  flex: 1;
-  overflow-y: auto;
-  width: 100%;
-  &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  overflow-x: auto;
 }
 
 .dashboard-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.715rem;
+  font-size: 0.875rem;
 
-  thead tr {
+  th {
+    color: #64748b;
+    font-weight: 600;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  td {
+    padding: 0.75rem 0.5rem;
     border-bottom: 1px solid #f1f5f9;
-    th {
-      color: #94a3b8;
-      font-weight: 600;
-      padding: 0.5rem 0.375rem;
-      text-transform: uppercase;
-      font-size: 0.563rem;
-      letter-spacing: 0.05em;
-    }
+    color: #1e293b;
   }
 
-  tbody tr {
-    border-bottom: 1px solid #f8fafc;
-    &:hover { background: #f8fafc; }
-
-    td {
-      color: #334155;
-      padding: 0.55rem 0.375rem;
-      vertical-align: middle;
-    }
-  }
-}
-
-.badge {
-  font-size: 0.625rem;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  display: inline-block;
-
-  &.sucesso { background: #f0fdf4; color: #16a34a; }
-  &.alerta { background: #fffbeb; color: #d97706; }
-  &.critico { background: #fef2f2; color: #dc2626; }
-}
-
-.evento-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-
-  .evento-icon {
-    font-size: 0.95rem;
-    width: 0.95rem;
-    height: 0.95rem;
+  .evento-cell {
     display: flex;
     align-items: center;
-    color: #3b82f6;
+    gap: 0.5rem;
+
+    .evento-icon {
+      font-size: 1.25rem;
+      width: 1.25rem;
+      height: 1.25rem;
+      color: #2563eb;
+    }
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &.sucesso {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    &.alerta {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &.critico {
+      background: #ffe4e6;
+      color: #9f1239;
+    }
+  }
+
+  .empty-row {
+    text-align: center;
+    color: #94a3b8;
+    padding: 2rem;
   }
 }

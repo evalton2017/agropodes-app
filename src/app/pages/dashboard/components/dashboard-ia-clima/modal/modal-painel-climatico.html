@@ -1,0 +1,78 @@
+<div class="modal-header">
+<div class="modal-title-group">
+<mat-icon class="header-icon">cloud</mat-icon>
+<div>
+<h2 mat-dialog-title>Painel Climático Completo por Estado</h2>
+<p class="modal-subtitle">Balanço meteorológico consolidado dos últimos 60 dias</p>
+</div>
+</div>
+<button mat-icon-button (click)="fechar()">
+<mat-icon>close</mat-icon>
+</button>
+</div>
+
+<mat-dialog-content class="modal-body">
+<!-- Campo de Busca por UF -->
+<div class="search-bar">
+<mat-icon>search</mat-icon>
+<input
+type="text"
+[(ngModel)]="filtroTexto"
+placeholder="Pesquisar por Estado (ex: GO, SP, MT)..."
+/>
+</div>
+
+<!-- Tabela de Dados Completa -->
+<div class="table-container">
+<table class="clima-table">
+<thead>
+<tr>
+<th>UF</th>
+<th>Chuva Acumulada</th>
+<th>Var. Histórica</th>
+<th>Temp. Média</th>
+<th>Var. Temp.</th>
+<th>Dias sem Chuva</th>
+<th>Var. Dias Secos</th>
+<th>Vento Médio</th>
+</tr>
+</thead>
+<tbody>
+@for (estado of estadosFiltrados; track estado.uf) {
+                                                   <tr>
+                                                   <td>
+                                                   <span class="uf-badge">{{ estado.uf }}</span>
+</td>
+<td><strong>{{ estado.chuva_acumulada_mm | number:'1.0-1':'pt-BR' }} mm</strong></td>
+<td>
+<span class="trend-badge" [ngClass]="estado.variacao_chuva_pct >= 0 ? 'txt-blue' : 'txt-rose'">
+{{ estado.variacao_chuva_pct >= 0 ? '↑' : '↓' }} {{ formatarSinal(estado.variacao_chuva_pct, '%') }}
+</span>
+</td>
+<td><strong>{{ estado.temp_media_celsius | number:'1.1-1':'pt-BR' }} °C</strong></td>
+<td>
+<span class="trend-badge" [ngClass]="estado.variacao_temp_celsius >= 0 ? 'txt-rose' : 'txt-blue'">
+{{ estado.variacao_temp_celsius >= 0 ? '↑' : '↓' }} {{ formatarSinal(estado.variacao_temp_celsius, '°C') }}
+</span>
+</td>
+<td><strong>{{ estado.dias_sem_chuva }} dias</strong></td>
+<td>
+<span class="trend-badge" [ngClass]="estado.variacao_dias_sem_chuva <= 0 ? 'txt-blue' : 'txt-rose'">
+{{ estado.variacao_dias_sem_chuva >= 0 ? '↑' : '↓' }} {{ formatarSinal(estado.variacao_dias_sem_chuva, 'd') }}
+</span>
+</td>
+<td>{{ estado.vel_vento_kmh | number:'1.1-1':'pt-BR' }} km/h</td>
+</tr>
+} @empty {
+<tr>
+<td colspan="8" class="empty-table">Nenhum estado encontrado.</td>
+</tr>
+}
+</tbody>
+  </table>
+    </div>
+      </mat-dialog-content>
+
+        <mat-dialog-actions align="end" class="modal-footer">
+<button mat-button (click)="fechar()">Fechar</button>
+</mat-dialog-actions>

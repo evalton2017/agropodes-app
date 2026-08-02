@@ -6,6 +6,18 @@ import { finalize } from 'rxjs/operators';
 import { DashboardAnalistaService } from '../../service/dashboard-analista.service';
 import { DashboardFiltroService } from '../../service/dashboard-filtro.service';
 
+export interface TopCulturaItem {
+  nome: string;
+  percentual: number;
+}
+
+export interface RespostaIaClassificacaoDTO {
+  acuracia_media: number;
+  total_glebas_analisadas: number;
+  ultima_analise: string;
+  top_culturas: TopCulturaItem[];
+}
+
 @Component({
   selector: 'dashboard-ia-classificacao',
   standalone: true,
@@ -17,8 +29,10 @@ export class AppDashboardIaClassificacao {
   private readonly apiService = inject(DashboardAnalistaService);
   private readonly filtroService = inject(DashboardFiltroService);
 
-  public dados = signal<any>(null);
+  public dados = signal<RespostaIaClassificacaoDTO | null>(null);
   public carregando = signal<boolean>(false);
+
+  private readonly paletaCoresDot = ['b-green', 'b-amber', 'b-purple', 'b-blue', 'b-slate'];
 
   constructor() {
     effect(() => {
@@ -31,6 +45,14 @@ export class AppDashboardIaClassificacao {
     this.carregando.set(true);
     this.apiService.obterIaClassificacaoCulturas(filtros)
       .pipe(finalize(() => this.carregando.set(false)))
-      .subscribe(res => this.dados.set(res));
+      .subscribe({
+        next: (res) => this.dados.set(res),
+        error: (err) => console.error('Erro ao carregar classificação de culturas:', err)
+      });
+  }
+
+  // Define a cor da bolinha da legenda conforme o índice da cultura
+  public obterClasseDot(index: number): string {
+    return this.paletaCoresDot[index % this.paletaCoresDot.length];
   }
 }

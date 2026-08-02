@@ -71,7 +71,7 @@
     <div class="analise-body-card-white">
       <h3>Esteira de Validações</h3>
 
-      <!-- ESTEIRA HORIZONTAL -->
+      <!-- ESTEIRA HORIZONTAL (TOTALMENTE DINÂMICA) -->
       <div class="timeline-horizontal-vmg-row">
         <!-- Geometria -->
         <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.geometria)">
@@ -101,7 +101,7 @@
         <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.culturaIa)">
           <mat-icon class="icon-step">{{ obterIconeNo(dados.statusPassos.culturaIa) }}</mat-icon>
           <span class="step-name">Cultura IA</span>
-          <span class="step-status">Condizente</span>
+          <span class="step-status">{{ obterTextoNo(dados.statusPassos.culturaIa) }}</span>
         </div>
         <div class="line-connector" [ngClass]="obterClasseConector(dados.statusPassos.culturaIa, dados.statusPassos.zarc)"></div>
 
@@ -123,35 +123,39 @@
 
         <!-- Atestado VMG -->
         <div class="step-node" [ngClass]="obterClasseNo(dados.statusPassos.atestado)">
-          <mat-icon class="icon-step">{{ dados.statusPassos.atestado === 'CONCLUIDO' ? 'verified_user' : 'article' }}</mat-icon>
+          <mat-icon class="icon-step">{{ obterIconeNo(dados.statusPassos.atestado) }}</mat-icon>
           <span class="step-name">Atestado VMG</span>
-          <span class="step-status">{{ dados.statusPassos.atestado === 'CONCLUIDO' ? 'Emitido' : 'Pendente' }}</span>
+          <span class="step-status">{{ obterTextoNo(dados.statusPassos.atestado) }}</span>
         </div>
       </div>
 
-      <!-- SEÇÃO 3: BLOCO DE PENDÊNCIAS -->
-      @if (dados.statusPassos.zarc == "FORA_ZARC") {
+      <!-- SEÇÃO 3: BLOCO DE PENDÊNCIAS DINÂMICO -->
+      @if (dados.statusPassos.zarc === 'FORA_ZARC' || dados.status === 'Pendência') {
         <div class="vmg-alert-block-yellow">
           <div class="alert-icon-title-row">
             <mat-icon class="amber-ic">warning</mat-icon>
             <strong>Pendências Identificadas</strong>
           </div>
           <p class="alert-msg-txt">
-            Plantio fora da janela de risco do ZARC para a cultura {{ dados.culturaDeclarada }}.
-            Recomendação: Ajustar data estimada de plantio ou justificar tecnicamente junto à VMG.
+            {{ dados.pendencias.descricao }}
+            <br />
+            <strong>Recomendação:</strong> {{ dados.pendencias.recomendacao }}
           </p>
-          <button mat-stroked-button class="btn-ver-detalhes-alert">
-            <mat-icon>visibility</mat-icon>
-            <span>Ver detalhes</span>
-          </button>
 
-          <button mat-button class="btn-voltar-mobile" (click)="dispararVoltar()">
-            <mat-icon>arrow_back</mat-icon> Voltar para a lista
-          </button>
+          <div class="alert-actions-row">
+            <button mat-stroked-button class="btn-ver-detalhes-alert">
+              <mat-icon>visibility</mat-icon>
+              <span>Ver detalhes</span>
+            </button>
+
+            <button mat-button class="btn-voltar-mobile" (click)="dispararVoltar()">
+              <mat-icon>arrow_back</mat-icon> Voltar para a lista
+            </button>
+          </div>
         </div>
       }
 
-      <!-- SEÇÃO 4: TABELA INFORMAÇÕES DO ZARC -->
+      <!-- SEÇÃO 4: TABELA INFORMAÇÕES DO ZARC DINÂMICA -->
       <div class="vmg-zarc-table-box-wrapper">
         <h4>Informações do ZARC</h4>
         <div class="zarc-table-row-grid">
@@ -164,32 +168,37 @@
             <span class="z-val">{{ dados.informacoesZarc.grupoDeRisco }}</span>
           </div>
           <div class="zarc-cell">
-            <span class="z-lbl">Risco Admissivel</span>
+            <span class="z-lbl">Risco Admissível</span>
             <span class="z-val">{{ dados.informacoesZarc.riscoAdmissivel }}</span>
           </div>
           <div class="zarc-cell">
             <span class="z-lbl">Janela de Plantio</span>
             <span class="z-val">{{ dados.informacoesZarc.janelaDePlantio }}</span>
           </div>
-          <div class="zarc-cell red-focus-border">
-            <span class="z-lbl color-red">Sua Data Estimada</span>
-            <span class="z-val color-red font-bold">{{ dados.informacoesZarc.suaDataEstimada }}</span>
+          <div class="zarc-cell" [ngClass]="{'red-focus-border': dados.statusPassos.zarc === 'FORA_ZARC'}">
+            <span class="z-lbl" [ngClass]="{'color-red': dados.statusPassos.zarc === 'FORA_ZARC'}">Sua Data Estimada</span>
+            <span class="z-val font-bold" [ngClass]="{'color-red': dados.statusPassos.zarc === 'FORA_ZARC'}">
+              {{ dados.informacoesZarc.suaDataEstimada }}
+            </span>
           </div>
         </div>
       </div>
 
-      <!-- SEÇÃO 5: CARDS INFERIORES -->
+      <!-- SEÇÃO 5: CARDS INFERIORES DINÂMICOS -->
       <div class="vmg-resumo-analises-cards-grid">
         <h4>Resumo das Análises</h4>
         <div class="cards-sub-grid">
+
           <!-- Ambiental -->
           <div class="sub-card">
             <div class="card-header-status-flex">
               <mat-icon>eco</mat-icon>
               <span>Ambiental</span>
             </div>
-            <span class="status-lbl text-danger">Alerta</span>
-            <p class="desc-lbl">Sobreposição territorial identificada</p>
+            <span class="status-lbl" [ngClass]="obterClasseCorStatus(dados.resumoAnalises.ambientalStatus)">
+              {{ dados.resumoAnalises.ambientalStatus }}
+            </span>
+            <p class="desc-lbl">{{ dados.resumoAnalises.ambientalDesc }}</p>
           </div>
 
           <!-- Cultura IA -->
@@ -198,8 +207,10 @@
               <mat-icon>psychology</mat-icon>
               <span>Cultura IA</span>
             </div>
-            <span class="status-lbl text-warning">Divergente</span>
-            <p class="desc-lbl">Soja</p>
+            <span class="status-lbl" [ngClass]="obterClasseCorStatus(dados.resumoAnalises.culturaIaStatus)">
+              {{ dados.resumoAnalises.culturaIaStatus }}
+            </span>
+            <p class="desc-lbl">{{ dados.resumoAnalises.culturaIaDesc }}</p>
           </div>
 
           <!-- Produtividade IA -->
@@ -208,8 +219,10 @@
               <mat-icon>trending_up</mat-icon>
               <span>Produtividade IA</span>
             </div>
-            <span class="status-lbl text-muted">BLOQUEADO</span>
-            <p class="desc-lbl">0 sc/ha Estimativa</p>
+            <span class="status-lbl" [ngClass]="obterClasseCorStatus(dados.resumoAnalises.produtividadeStatus)">
+              {{ dados.resumoAnalises.produtividadeStatus }}
+            </span>
+            <p class="desc-lbl">{{ dados.resumoAnalises.produtividadeDesc }}</p>
           </div>
 
           <!-- Atestado VMG -->
@@ -218,9 +231,12 @@
               <mat-icon>verified</mat-icon>
               <span>Atestado VMG</span>
             </div>
-            <span class="status-lbl text-danger">REPROVADO</span>
-            <p class="desc-lbl">Aguardando análise técnica</p>
+            <span class="status-lbl" [ngClass]="obterClasseCorStatus(dados.resumoAnalises.atestadoStatus)">
+              {{ dados.resumoAnalises.atestadoStatus }}
+            </span>
+            <p class="desc-lbl">{{ dados.resumoAnalises.atestadoDesc }}</p>
           </div>
+
         </div>
       </div>
 

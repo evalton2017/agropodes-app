@@ -127,7 +127,7 @@
 
             <div class="form-grid-2-columns">
               <div class="grid-column">
-                <!-- 1. Cultura Principal: Ao mudar, aciona as janelas do banco -->
+                <!-- 1. Cultura Principal -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Cultura Principal *</mat-label>
                   <mat-select formControlName="cultura_declarada" (selectionChange)="carregarSugestoesZarc()">
@@ -138,6 +138,7 @@
                   </mat-select>
                 </mat-form-field>
 
+                <!-- Safra Vigente -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Safra Vigente *</mat-label>
                   <mat-select formControlName="safra" (selectionChange)="carregarSugestoesZarc()">
@@ -150,13 +151,15 @@
               </div>
 
               <div class="grid-column">
+                <!-- 💡 AJUSTE ZARC: Unidade de medida explícita (Sacas de 60kg) para conformidade com o Proagro/CPR -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Volume Declarado Comercializar *</mat-label>
-                  <input matInput type="number" formControlName="volume_declarado_comercializar">
+                  <mat-label>Volume Declarado a Comercializar (Sacas de 60kg) *</mat-label>
+                  <input matInput type="number" formControlName="volume_declarado_comercializar" placeholder="Ex: 50">
+                  <span matSuffix style="margin-right: 8px; color: #666; font-size: 0.85rem;">scs</span>
                 </mat-form-field>
               </div>
 
-              <!-- 2. Data de Plantio Obrigatória Guiada por Clique (Readonly total) -->
+              <!-- Data Estimada de Plantio (Readonly) -->
               <div class="grid-column">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Data Estimada de Plantio *</mat-label>
@@ -165,7 +168,7 @@
                 </mat-form-field>
               </div>
 
-              <!-- 3. Data de Colheita Automática -->
+              <!-- Data Estimada da Colheita -->
               <div class="grid-column">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Data Estimada da Colheita (Cálculo Automático) *</mat-label>

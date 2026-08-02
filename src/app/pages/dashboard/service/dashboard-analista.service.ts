@@ -11,6 +11,15 @@ import {
   KpisDashboard, ResumoClimatico,
   UltimoAtestado,
 } from '../model/dashboard-analista.model';
+import {AtestadoDTO} from '../components/dashboard-atestados/dashboard-atestados';
+
+export interface EventoClimaticoDTO {
+  evento: 'Veranico' | 'Excesso de chuva' | 'Granizo' | 'Geada' | 'Vento forte';
+  municipio: string;
+  data: string;
+  impacto: 'Alto' | 'Médio' | 'Baixo';
+  glebas_afetadas: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -71,20 +80,14 @@ export class DashboardAnalistaService {
     return this.http.get<ResumoClimatico[]>(`${this.baseUrl}/resumo-climatico`, { params });
   }
 
-  obterDashboardAtestados(): Observable<UltimoAtestado[]> {
-    return this.http.get<UltimoAtestado[]>(`${this.baseUrl}/atestados`);
+  public obterUltimosAtestados(filtros: FiltrosDashboard): Observable<AtestadoDTO[]> {
+    const params = this.obterParametrosFiltro(filtros);
+    return this.http.get<AtestadoDTO[]>(`${this.baseUrl}/ultimos-atestados`, { params });
   }
 
-  obterHeatmap(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/heatmap`);
-  }
-
-  getEventosClimaticos(): Observable<EventoClimatico[]> {
-    return this.http.get<EventoClimatico[]>(`${this.baseUrl}/eventos-climaticos`);
-  }
-
-  getUltimosAtestados(): Observable<UltimoAtestado[]> {
-    return this.http.get<UltimoAtestado[]>(`${this.baseUrl}/ultimos-atestados`);
+  public obterEventosClimaticosRecentes(filtros: FiltrosDashboard): Observable<EventoClimaticoDTO[]> {
+    const params = this.obterParametrosFiltro(filtros);
+    return this.http.get<EventoClimaticoDTO[]>(`${this.baseUrl}/eventos-climaticos`, { params });
   }
 
   obterTimelineGleba(idGleba: number): Observable<any[]> {

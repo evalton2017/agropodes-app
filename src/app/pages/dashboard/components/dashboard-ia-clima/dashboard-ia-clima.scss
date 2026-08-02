@@ -1,79 +1,122 @@
-.ia-card {
-  width: 100%;
-  position: relative;
+/* CONTAINER PRINCIPAL DA ROLAGEM HORIZONTAL */
+.clima-scroller-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1.25rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* 🟢 Aumentado o padding inferior para afastar a barra de scroll dos cards */
+  padding-bottom: 1.25rem;
+  margin-bottom: 0.5rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 8px; /* 🟢 Barra um pouco mais espessa e fácil de clicar */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #94a3b8;
+    }
+  }
+}
+
+/* CARD INDIVIDUAL DE CADA ESTADO */
+.estado-clima-wrapper {
+  flex: 0 0 350px;
+  width: 350px;
+  /* 🟢 Aumentada a altura mínima de 220px para 260px para acomodar todo o grid sem corte */
+  min-height: 260px;
+  height: auto;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .estado-badge-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #334155;
+    margin-bottom: 1rem;
+
+    .map-icon {
+      font-size: 1.15rem;
+      width: 1.15rem;
+      height: 1.15rem;
+      color: #10b981;
+    }
+  }
+}
+
+/* GRID DAS QUADRO MÉTRICAS */
+.clima-quad-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+/* CAIXAS DAS MÉTRICAS INDIVIDUAIS */
+.clima-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  /* 🟢 Aumentada a altura da caixinha interna para evitar quebra de texto */
+  min-height: 78px;
   box-sizing: border-box;
 
-  /* CONTÊINER DA ESTEIRA ROLANTE HORIZONTAL */
-  .clima-scroller-container {
-    display: flex;
-    flex-direction: row;
-    gap: 1.5rem;
-    width: 100%;
-    overflow-x: auto;          /* Ativa a rolagem da esquerda para a direita */
-    scroll-behavior: smooth;   /* Suaviza a transição da rolagem */
-    padding-bottom: 0.75rem;   /* Espaço para a barra de rolagem não cobrir o conteúdo */
-    box-sizing: border-box;
-
-    /* Estilização elegante para a barra de rolagem (Scrollbar) */
-    &::-webkit-scrollbar {
-      height: 6px;
-    }
-    &::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 4px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
-      &:hover { background: #94a3b8; }
-    }
+  .c-icon {
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 2px;
+    flex-shrink: 0;
   }
 
-  /* CARD INDIVIDUAL DE CADA ESTADO DENTRO DA ESTEIRA */
-  .estado-clima-wrapper {
-    flex: 0 0 calc(100% - 0.5rem); /* Ocupa um estado por vez na tela em dispositivos menores */
-    min-width: 480px;              /* Garante largura estável para não esmagar as 4 caixas */
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 1.25rem;
-    box-sizing: border-box;
-
-    .estado-badge-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-      color: #334155;
-
-      .map-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-        color: #16a34a;
-      }
-    }
-  }
-
-  /* REAPROVEITAMENTO DAS SUAS CLASSES DE CORES E TRENDS */
-  .clima-quad-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  .txt-blue { color: #2563eb !important; }
-  .txt-rose { color: #e11d48 !important; }
-  .txt-slate { color: #64748b !important; }
-
-  .clima-empty-state {
+  .c-info {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 2rem;
-    color: #64748b;
-    mat-icon { font-size: 36px; width: 36px; height: 36px; }
+    overflow: hidden;
+
+    .c-title {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .c-value {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.2;
+      margin: 2px 0;
+    }
+
+    .c-trend {
+      font-size: 0.65rem;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
   }
 }

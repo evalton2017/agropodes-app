@@ -84,7 +84,7 @@ export class DashboardProdutorComponent implements OnInit {
 
   constructor() {
     this.listaSafras = this.generarListaSafras();
-    this.filtroSafra = this.listaSafras[0] || '2025/2026';
+    this.filtroSafra = this.listaSafras[5] || '2025/2026';
 
     // O effect() monitora as mutações do Keycloak e dos Filtros Ativos de forma atômica
     effect(() => {
@@ -149,11 +149,13 @@ export class DashboardProdutorComponent implements OnInit {
   private generarListaSafras(): string[] {
     const anoAtual = new Date().getFullYear();
     const safras: string[] = [];
-    for (let i = -1; i <= 1; i++) {
+
+    for (let i = -5; i <= 0; i++) {
       const anoInicio = anoAtual + i;
       const anoFim = anoInicio + 1;
       safras.push(`${anoInicio}/${anoFim}`);
     }
+
     return safras;
   }
 

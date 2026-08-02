@@ -7,20 +7,39 @@
 
   <h3 class="ia-card-title">Análise Ambiental (Conformidade)</h3>
 
-  <div class="ia-card-body flex-row-center">
-    <!-- Donut Centralizado -->
-    <div class="ia-donut-wrapper">
-      <span class="ia-donut-value">{{ dados()?.percentual_conforme ?? 87 }}%</span>
-      <span class="ia-donut-label">Conforme</span>
-    </div>
+  @if (dados(); as d) {
+    <div class="ia-card-body flex-row-center">
 
-    <!-- Legenda Lateral -->
-    <div class="ia-legend-list">
-      <div class="legend-item"><span class="bullet bg-green"></span>Conforme <strong class="val">87%</strong></div>
-      <div class="legend-item"><span class="bullet bg-amber"></span>Atenção <strong class="val">8%</strong></div>
-      <div class="legend-item"><span class="bullet bg-rose"></span>Não Conf. <strong class="val">5%</strong></div>
+      <!-- Donut Chart Dinâmico via CSS Conic Gradient -->
+      <div class="ia-donut-wrapper" [ngStyle]="estiloDonutGradiente()">
+        <div class="donut-inner-circle">
+          <span class="ia-donut-value">{{ d.conforme_pct }}%</span>
+          <span class="ia-donut-label">Conforme</span>
+        </div>
+      </div>
+
+      <!-- Legenda Lateral Dinâmica -->
+      <div class="ia-legend-list">
+        <div class="legend-item">
+          <span class="bullet bg-green"></span>Conforme
+          <strong class="val">{{ d.conforme_pct }}%</strong>
+        </div>
+        <div class="legend-item">
+          <span class="bullet bg-amber"></span>Atenção
+          <strong class="val">{{ d.atencao_pct }}%</strong>
+        </div>
+        <div class="legend-item">
+          <span class="bullet bg-rose"></span>Não Conf.
+          <strong class="val">{{ d.nao_conforme_pct }}%</strong>
+        </div>
+      </div>
+
     </div>
-  </div>
+  } @else if (!carregando()) {
+    <div class="empty-state">
+      <span>Nenhum dado cadastrado para a safra informada.</span>
+    </div>
+  }
 
   <div class="ia-card-footer">
     <button class="ia-footer-link">Ver detalhes ambientais</button>

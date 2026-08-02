@@ -1,11 +1,13 @@
 <section class="dashboard-card">
   @if (carregando()) {
-    <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
   }
 
   <div class="card-header">
     <h3>Eventos Climáticos Recentes</h3>
-    <a class="header-link">Ver todos</a>
+    <button class="header-link">Ver todos</button>
   </div>
 
   <div class="table-responsive">
@@ -16,36 +18,35 @@
         <th>Município</th>
         <th>Data</th>
         <th>Impacto</th>
-        <th>Glebas</th>
+        <th class="text-right">Glebas</th>
       </tr>
       </thead>
       <tbody>
-        @for (evento of eventosClimaticos(); track evento) {
+        @for (item of eventosClimaticos(); track item.municipio + item.data + item.evento) {
           <tr>
             <td>
               <div class="evento-cell">
-                <mat-icon class="evento-icon" [attr.data-event]="evento.evento">
-                  {{ obterIconeEvento(evento.evento) }}
+                <mat-icon class="evento-icon" [attr.data-event]="item.evento">
+                  {{ obterIconeEvento(item.evento) }}
                 </mat-icon>
-                <span class="evento-text">{{ evento.evento }}</span>
+                <span class="evento-text">{{ item.evento }}</span>
               </div>
             </td>
-            <td>{{ evento.municipio }}</td>
-            <td class="whitespace-nowrap">{{ evento.data | date:'dd/MM/yyyy' }}</td>
+            <td>{{ item.municipio }}</td>
+            <td class="whitespace-nowrap">{{ item.data | date:'dd/MM/yyyy' }}</td>
             <td>
-              <span class="badge"
-                    [class.sucesso]="evento.impacto === 'Baixo'"
-                    [class.alerta]="evento.impacto === 'Médio'"
-                    [class.critico]="evento.impacto === 'Alto'">
-                {{ evento.impacto }}
+              <span class="badge" [ngClass]="obterClasseBadgeImpacto(item.impacto)">
+                {{ item.impacto }}
               </span>
             </td>
-            <td class="font-bold text-right">{{ evento.glebas_afetadas ?? evento.glebas }}</td>
+            <td class="font-bold text-right">{{ item.glebas_afetadas | number:'1.0-0':'pt-BR' }}</td>
           </tr>
         } @empty {
-          <tr>
-            <td colspan="5" class="empty-row">Nenhum evento climático recente.</td>
-          </tr>
+          @if (!carregando()) {
+            <tr>
+              <td colspan="5" class="empty-row">Nenhum evento climático recente registrado.</td>
+            </tr>
+          }
         }
       </tbody>
     </table>

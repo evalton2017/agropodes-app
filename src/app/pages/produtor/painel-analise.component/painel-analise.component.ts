@@ -45,7 +45,7 @@ export class PainelAnaliseComponent implements OnInit {
       if (idGleba) {
         this.buscarLaudoDetalhadoGleba(idGleba);
       } else {
-        this.laudoDetalhadoAtivo.set(null); // Limpa o estado quando id for nulo
+        this.laudoDetalhadoAtivo.set(null);
       }
     }, { allowSignalWrites: true });
   }
@@ -85,7 +85,6 @@ export class PainelAnaliseComponent implements OnInit {
     this.glebaSelecionadaId.set(idGleba);
   }
 
-  // Método reativo disparado pelo OUTPUT do componente filho (Botão Voltar)
   public limparSelecaoMobile(): void {
     this.glebaSelecionadaId.set(null);
   }

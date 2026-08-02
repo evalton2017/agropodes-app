@@ -9,14 +9,26 @@ import {
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import {CommonModule, isPlatformBrowser} from '@angular/common';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {finalize} from 'rxjs/operators';
-import {Chart, registerables} from 'chart.js';
-import {DashboardAnalistaService} from '../../service/dashboard-analista.service';
-import {DashboardFiltroService} from '../../service/dashboard-filtro.service';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { finalize } from 'rxjs/operators';
+import { Chart, registerables } from 'chart.js';
+import { DashboardAnalistaService } from '../../service/dashboard-analista.service';
+import { DashboardFiltroService } from '../../service/dashboard-filtro.service';
 
 Chart.register(...registerables);
+
+export interface EvolucaoItem {
+  mes: string;
+  valor: number;
+}
+
+export interface RespostaIaProdutividadeDTO {
+  media_geral_predita: number;
+  area_estimada_ha: number;
+  volume_comercializavel_sacas: number;
+  evolucao_produtividade: EvolucaoItem[];
+}
 
 @Component({
   selector: 'dashboard-ia-produtividade',
@@ -33,7 +45,7 @@ export class AppDashboardIaProdutividade implements OnDestroy {
 
   @ViewChild('miniGraficoLinha') miniGraficoLinha!: ElementRef<HTMLCanvasElement>;
 
-  public dados = signal<any>(null);
+  public dados = signal<RespostaIaProdutividadeDTO | null>(null);
   public carregando = signal<boolean>(false);
   private chartInstance: Chart | null = null;
 
@@ -50,7 +62,9 @@ export class AppDashboardIaProdutividade implements OnDestroy {
       .pipe(finalize(() => this.carregando.set(false)))
       .subscribe({
         next: (res) => {
-          this.dados.set(res);
+          // Trata estrutura envelopada ("dados") ou direta
+          const dadosTratados = res?.dados ?? res;
+          this.dados.set(dadosTratados);
 
           if (!isPlatformBrowser(this.platformId)) return;
 
@@ -67,37 +81,23 @@ export class AppDashboardIaProdutividade implements OnDestroy {
   }
 
   private renderizarMiniGrafico(): void {
-    // 🛑 TRAVA CRÍTICA: Bloqueia a execução do Chart.js e manipulação de Canvas Context no Servidor
     if (!isPlatformBrowser(this.platformId)) return;
-
     if (!this.miniGraficoLinha) return;
 
     this.destruirGraficoExistente();
 
     const historico = this.dados()?.evolucao_produtividade ?? [];
-    let labels: string[] = [];
-    let valores: number[] = [];
+    const labels: string[] = [];
+    const valores: number[] = [];
 
     if (historico && historico.length > 0) {
       historico.forEach((item: any) => {
-        const safraLabel = item.safra ?? item.ano ?? item.periodo ?? '';
-        labels.push(String(safraLabel));
+        const label = item.mes ?? item.safra ?? item.ano ?? item.periodo ?? '';
+        labels.push(String(label));
 
-        const valorBruto = item.valor ?? item.sacas ?? item.produtividade ?? item.quantidade ?? 0;
-
-        let numeroPuro = 0;
-        if (typeof valorBruto === 'string') {
-          const apenasNumeros = valorBruto.replace(/[^0-9.,-]/g, '').replace(',', '.');
-          numeroPuro = parseFloat(apenasNumeros);
-        } else {
-          numeroPuro = Number(valorBruto);
-        }
-
-        valores.push(isNaN(numeroPuro) || numeroPuro === 0 ? 59 : numeroPuro);
+        const val = item.valor ?? item.sacas ?? item.produtividade ?? 0;
+        valores.push(Number(val));
       });
-    } else {
-      labels = ['21/22', '22/23', '23/24', '24/25', '25/26'];
-      valores = [] ;
     }
 
     const ctx = this.miniGraficoLinha.nativeElement.getContext('2d');
@@ -114,14 +114,14 @@ export class AppDashboardIaProdutividade implements OnDestroy {
           borderWidth: 2,
           pointRadius: 0,
           pointHoverRadius: 4,
-          tension: 0.3,
+          tension: 0.35,
           fill: true,
           backgroundColor: (context) => {
             const chart = context.chart;
             const { ctx: chartCtx, chartArea } = chart;
             if (!chartArea) return 'transparent';
             const gradient = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-            gradient.addColorStop(0, 'rgba(37, 99, 235, 0.15)');
+            gradient.addColorStop(0, 'rgba(37, 99, 235, 0.20)');
             gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
             return gradient;
           }
@@ -147,10 +147,9 @@ export class AppDashboardIaProdutividade implements OnDestroy {
             ticks: { color: '#94a3b8', font: { size: 9, weight: 500 } }
           },
           y: {
-            min: 30,
-            max: 90,
             grid: { color: '#f1f5f9' },
-            ticks: { color: '#94a3b8', font: { size: 9 }, stepSize: 20 }
+            ticks: { color: '#94a3b8', font: { size: 9 } },
+            beginAtZero: false
           }
         }
       }

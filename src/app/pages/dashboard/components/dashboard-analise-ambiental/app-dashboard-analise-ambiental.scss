@@ -1,119 +1,36 @@
-.ia-card {
-  background: #ffffff;
-  border: 1px solid #f1f5f9;
-  border-radius: 12px;
-  padding: 1.25rem;
-  height: 280px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-  box-sizing: border-box;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.02);
-  overflow: hidden;
-}
-
-.ia-card-title {
-  font-size: 0.813rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 0.5rem 0;
-}
-
-.flex-row-center {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex: 1;
-}
-
 .ia-donut-wrapper {
   position: relative;
-  width: 110px;
-  height: 110px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 4px solid #10b981; // emerald-500
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
-  margin: 0 auto;
-
-  .ia-donut-value {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #0f172a;
-    line-height: 1;
-  }
-
-  .ia-donut-label {
-    font-size: 0.625rem;
-    color: #94a3b8;
-    font-weight: 500;
-    margin-top: 0.25rem;
-  }
-}
-
-.ia-legend-list {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-width: 120px;
-
-  .legend-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    color: #475569;
-
-    .bullet {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 0.375rem;
-
-      &.bg-green { background-color: #10b981; }
-      &.bg-amber { background-color: #f59e0b; }
-      &.bg-rose { background-color: #f43f5e; }
-    }
-
-    .val {
-      color: #1e293b;
-      font-weight: 700;
-    }
-  }
-}
-
-.ia-card-footer {
-  border-top: 1px solid #f8fafc;
-  padding-top: 0.5rem;
-  text-align: center;
-
-  .ia-footer-link {
-    font-size: 0.715rem;
-    color: #2563eb;
-    font-weight: 600;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    padding: 0;
-
-    &:hover { text-decoration: underline; }
-  }
-}
-
-.ia-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 5;
+  transition: background 0.4s ease-in-out;
+
+  /* Círculo Interno que simula o miolo da rosca */
+  .donut-inner-circle {
+    width: 92px;
+    height: 92px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+
+    .ia-donut-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1;
+    }
+
+    .ia-donut-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+  }
 }

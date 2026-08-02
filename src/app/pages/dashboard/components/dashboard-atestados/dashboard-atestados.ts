@@ -5,6 +5,14 @@ import { finalize } from 'rxjs/operators';
 import { DashboardAnalistaService } from '../../service/dashboard-analista.service';
 import { DashboardFiltroService } from '../../service/dashboard-filtro.service';
 
+export interface AtestadoDTO {
+  codigo_gleba: string;
+  produtor: string;
+  municipio: string;
+  data: string;
+  status: string;
+}
+
 @Component({
   selector: 'dashboard-atestados',
   standalone: true,
@@ -16,7 +24,7 @@ export class AppDashboardAtestadosComponent {
   private readonly apiService = inject(DashboardAnalistaService);
   private readonly filtroService = inject(DashboardFiltroService);
 
-  public ultimosAtestados = signal<any[]>([]);
+  public ultimosAtestados = signal<AtestadoDTO[]>([]);
   public carregando = signal<boolean>(false);
 
   constructor() {
@@ -28,11 +36,24 @@ export class AppDashboardAtestadosComponent {
 
   private buscarDados(filtros: any): void {
     this.carregando.set(true);
-    this.apiService.getUltimosAtestados()
+    this.apiService.obterUltimosAtestados(filtros)
       .pipe(finalize(() => this.carregando.set(false)))
       .subscribe({
-        next: (res) => this.ultimosAtestados.set(res || []),
-        error: () => this.ultimosAtestados.set([])
+        next: (res: any) => {
+          const lista = Array.isArray(res) ? res : (res?.dados || []);
+          this.ultimosAtestados.set(lista);
+        },
+        error: (err) => {
+          console.error('Erro ao buscar últimos atestados emitidos:', err);
+          this.ultimosAtestados.set([]);
+        }
       });
+  }
+
+  protected obterClasseStatus(status: string): string {
+    const st = (status || '').toLowerCase();
+    if (st.includes('emitido') || st.includes('válido') || st.includes('valido')) return 'sucesso';
+    if (st.includes('pendente') || st.includes('processando')) return 'alerta';
+    return 'critico';
   }
 }

@@ -155,7 +155,7 @@ export class CadastroGlebaComponent implements OnInit {
       safra: ['', [Validators.required]],
       volume_declarado_comercializar: new FormControl('', [Validators.required, Validators.min(1)]),
       data_estimada_plantio: new FormControl('', Validators.required),
-      data_estimada_colheita: new FormControl({ value: '', disabled: false }, Validators.required),
+      data_estimada_colheita: new FormControl({value: '', disabled: false}, Validators.required),
     });
 
     this.formWizard.get('data_estimada_plantio')?.valueChanges
@@ -168,7 +168,7 @@ export class CadastroGlebaComponent implements OnInit {
             const colheitaFormatada = formatDate(dataColheitaObjeto, 'dd/MM/yyyy', 'pt-BR');
 
             // O { emitEvent: false } evita loops infinitos de escuta no formulário
-            this.formWizard.get('data_estimada_colheita')?.setValue(colheitaFormatada, { emitEvent: false });
+            this.formWizard.get('data_estimada_colheita')?.setValue(colheitaFormatada, {emitEvent: false});
           }
         }
       });
@@ -294,6 +294,7 @@ export class CadastroGlebaComponent implements OnInit {
       });
     }
   }
+
   private executarSincronizacaoMapa(): void {
     setTimeout(() => {
       const index = this.stepper.selectedIndex;
@@ -324,12 +325,12 @@ export class CadastroGlebaComponent implements OnInit {
 
   readonly areaFormatadaRevisao = computed(() => {
     const dados = this.areaCalculadaMapa();
-    return dados ? `${dados.area_hectares.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} ha` : '0,00 ha';
+    return dados ? `${dados.area_hectares.toLocaleString('pt-BR', {minimumFractionDigits: 2})} ha` : '0,00 ha';
   });
 
   readonly perimetroFormatadoRevisao = computed(() => {
     const dados = this.areaCalculadaMapa();
-    return dados ? `${dados.perimetro_metros.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} m` : '0,00 m';
+    return dados ? `${dados.perimetro_metros.toLocaleString('pt-BR', {minimumFractionDigits: 2})} m` : '0,00 m';
   });
 
   public definirMetricasCalculadasPostGis(areaHa: number, perimetroM: number): void {
@@ -343,7 +344,7 @@ export class CadastroGlebaComponent implements OnInit {
   private gerarListaSafras(): string[] {
     const anoAtual = new Date().getFullYear();
     const safras: string[] = [];
-    for (let i = -1; i <= 1; i++) {
+    for (let i = -4; i <= 1; i++) {
       const anoInicio = anoAtual + i;
       const anoFim = anoInicio + 1;
       safras.push(`${anoInicio}/${anoFim}`);
@@ -391,9 +392,12 @@ export class CadastroGlebaComponent implements OnInit {
     const municipio = this.formWizard.get('codigo_municipio')?.value || 0;
     const safra = this.formWizard.get('safra')?.value;
 
-    console.log(municipio, safra, cultura);
+    // Reseta a seleção anterior se alterar a cultura ou safra
+    this.decendioSelecionado.set(null);
+    this.formWizard.get('data_estimada_plantio')?.setValue('');
+    this.formWizard.get('data_estimada_colheita')?.setValue('');
 
-    if (!cultura) return;
+    if (!cultura || !safra) return;
 
     this.carregandoSugestoes.set(true);
     this.glebaService.obtenerJanelaGeralZarc(cultura, Number(municipio), safra)
@@ -409,8 +413,23 @@ export class CadastroGlebaComponent implements OnInit {
       });
   }
 
+  /**
+   * 2. Calcula as datas dinamicamente com base no ANO DA SAFRA selecionada
+   */
   public selecionarJanelaObrigatoria(janela: any): void {
-    const anoVigente = 2026;
+    const safraSelecionada = this.formWizard.get('safra')?.value; // Ex: "2026/2027"
+
+    // 🟢 Extrai o ano base da safra selecionada no select
+    let anoVigente = new Date().getFullYear();
+    if (safraSelecionada) {
+      const numerosSafra = safraSelecionada.replace(/[^0-9/]/g, '');
+      const anoBaseStr = numerosSafra.split('/')[0];
+      if (anoBaseStr) {
+        anoVigente = parseInt(anoBaseStr, 10);
+      }
+    }
+
+    // Cálculo do mês e decêndio (1 a 36 decêndios do ano)
     const mesIdx = Math.floor((janela.decendio - 1) / 3);
     const subDecendio = (janela.decendio - 1) % 3;
 
@@ -418,18 +437,16 @@ export class CadastroGlebaComponent implements OnInit {
     if (subDecendio === 1) diaPlantio = 15;
     if (subDecendio === 2) diaPlantio = 25;
 
-    // Criamos as instâncias reais de objeto Date nativo
+    // Instancia os objetos de data com o ano correto da safra
     const dataPlantioObj = new Date(anoVigente, mesIdx, diaPlantio);
-    const dataColheitaObj = new Date(anoVigente, mesIdx + 4, diaPlantio); // +4 meses automático
+    const dataColheitaObj = new Date(anoVigente, mesIdx + 4, diaPlantio); // Ciclo estimado de 4 meses
 
-    // Formata visualmente em padrão BR (dd/MM/yyyy) para o input readonly da tela
+    // Formata em padrão BR (dd/MM/yyyy)
     const dataPlantioExibicao = formatDate(dataPlantioObj, 'dd/MM/yyyy', 'pt-BR');
     const dataColheitaExibicao = formatDate(dataColheitaObj, 'dd/MM/yyyy', 'pt-BR');
 
-    // Atualiza o Signal visual
+    // Atualiza o Signal e o Formulário
     this.decendioSelecionado.set(janela.decendio);
-
-    // Alimenta os campos do formulário Angular
     this.formWizard.get('data_estimada_plantio')?.setValue(dataPlantioExibicao);
     this.formWizard.get('data_estimada_colheita')?.setValue(dataColheitaExibicao);
 

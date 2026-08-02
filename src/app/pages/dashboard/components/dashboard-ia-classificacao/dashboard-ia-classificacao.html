@@ -1,36 +1,50 @@
 <div class="ia-card">
   @if (carregando()) {
-    <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
   }
 
   <h3 class="ia-card-title">IA - Classificação de Culturas</h3>
 
-  <div class="ia-grid-split">
-    <!-- Lado Esquerdo -->
-    <div class="ia-meta-column">
-      <span class="label-subtext">Acurácia média (60 meses)</span>
-      <div class="ia-value-badge-row">
-        <span class="ia-huge-value">{{ dados()?.acuracia_media ?? '98,7' }}%</span>
-        <span class="trend-badge">↑ 2,1%</span>
+  @if (dados(); as d) {
+    <div class="ia-grid-split">
+      <!-- Lado Esquerdo (Métricas Consolidadas) -->
+      <div class="ia-meta-column">
+        <span class="label-subtext">Acurácia média</span>
+        <div class="ia-value-badge-row">
+          <span class="ia-huge-value">{{ d.acuracia_media }}%</span>
+        </div>
+
+        <span class="label-subtext margin-top-md">Glebas analisadas</span>
+        <span class="ia-medium-value">{{ d.total_glebas_analisadas | number:'1.0-0':'pt-BR' }}</span>
+
+        <span class="label-subtext margin-top-md">Última análise</span>
+        <span class="date-text">{{ d.ultima_analise }}</span>
       </div>
 
-      <span class="label-subtext margin-top-md">Glebas analisadas</span>
-      <span class="ia-medium-value">{{ dados()?.total_glebas_analisadas ?? '5.981' }}</span>
+      <!-- Lado Direito (Top Culturas Dinâmico) -->
+      <div class="ia-cultures-column">
+        <span class="section-title">TOP CULTURAS</span>
 
-      <span class="label-subtext margin-top-md">Última análise</span>
-      <span class="date-text">{{ dados()?.data_ultima_analise ?? '13/06/2026 07:30' }}</span>
+        @for (item of d.top_culturas; track item.nome; let i = $index) {
+          <div class="culture-row">
+            <span class="lbl">
+              <span class="dot" [ngClass]="obterClasseDot(i)"></span>
+              {{ item.nome }}
+            </span>
+            <strong>{{ item.percentual }}%</strong>
+          </div>
+        } @empty {
+          <span class="empty-txt">Sem culturas identificadas na safra.</span>
+        }
+      </div>
     </div>
-
-    <!-- Lado Direito -->
-    <div class="ia-cultures-column">
-      <span class="section-title">Top culturas</span>
-      <div class="culture-row"><span class="lbl"><span class="dot b-green"></span>Soja</span><strong>65%</strong></div>
-      <div class="culture-row"><span class="lbl"><span class="dot b-amber"></span>Milho</span><strong>20%</strong></div>
-      <div class="culture-row"><span class="lbl"><span class="dot b-purple"></span>Algodão</span><strong>8%</strong></div>
-      <div class="culture-row"><span class="lbl"><span class="dot b-blue"></span>Sorgo</span><strong>4%</strong></div>
-      <div class="culture-row"><span class="lbl"><span class="dot b-slate"></span>Outras</span><strong>2%</strong></div>
+  } @else if (!carregando()) {
+    <div class="empty-state">
+      <span>Nenhuma análise de IA registrada para a safra informada.</span>
     </div>
-  </div>
+  }
 
   <div class="ia-card-footer">
     <button class="ia-footer-link">Ver análise de IA</button>

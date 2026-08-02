@@ -1,4 +1,4 @@
-import { Component, inject, signal, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core'; // Adicionado Output e EventEmitter
+import { Component, inject, signal, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +19,7 @@ export class GlebaAnaliseComponent implements OnChanges {
   private glebaService: GlebaService = inject(GlebaService);
 
   @Input({ required: true }) idGleba!: number;
-  @Output() aoVoltar = new EventEmitter<void>(); // Novo evento emissor para controle de fluxo mobile
+  @Output() aoVoltar = new EventEmitter<void>();
 
   public carregando = signal<boolean>(false);
   public gleba = signal<GlebaData | null>(null);
@@ -45,18 +45,46 @@ export class GlebaAnaliseComponent implements OnChanges {
       });
   }
 
-  // Método chamado pelo botão de voltar no mobile
   public dispararVoltar(): void {
     this.aoVoltar.emit();
   }
 
-  // OPERADORES MAPPER VISUAIS (Sincronizados com o CSS unificado)
+  // MAPPER DINÂMICO PARA AS CORES DOS CARDS INFERIORES
+  public obterClasseCorStatus(status: string | undefined): string {
+    if (!status) return 'text-muted';
+    const s = status.toUpperCase().trim();
+
+    switch (s) {
+      case 'CONFORME':
+      case 'APROVADO':
+      case 'CONDIZENTE':
+      case 'CONCLUIDO':
+        return 'text-success';
+
+      case 'DIVERGENTE':
+      case 'ALERTA':
+      case 'REVISAO_MANUAL':
+        return 'text-warning';
+
+      case 'REPROVADO':
+      case 'BLOQUEADO':
+      case 'FORA_ZARC':
+        return 'text-danger';
+
+      default:
+        return 'text-muted';
+    }
+  }
+
+  // OPERADORES MAPPER VISUAIS DA ESTEIRA (Sincronizados com o CSS)
   public obterClasseNo(status: string | undefined): string {
     if (!status) return 'todo';
     switch (status.toUpperCase()) {
       case 'CONCLUIDO': return 'done';
       case 'EM_ANDAMENTO': return 'working';
-      case 'FORA_ZARC': return 'alert-node';
+      case 'FORA_ZARC':
+      case 'DIVERGENTE':
+      case 'BLOQUEADO': return 'alert-node';
       default: return 'todo';
     }
   }
@@ -66,7 +94,9 @@ export class GlebaAnaliseComponent implements OnChanges {
     switch (status.toUpperCase()) {
       case 'CONCLUIDO': return 'check_circle';
       case 'EM_ANDAMENTO': return 'schedule';
-      case 'FORA_ZARC': return 'gpp_bad';
+      case 'FORA_ZARC':
+      case 'DIVERGENTE':
+      case 'BLOQUEADO': return 'gpp_bad';
       default: return 'radio_button_unchecked';
     }
   }
@@ -76,7 +106,10 @@ export class GlebaAnaliseComponent implements OnChanges {
     switch (status.toUpperCase()) {
       case 'CONCLUIDO': return 'Concluído';
       case 'EM_ANDAMENTO': return 'Em andamento';
+      case 'CONDIZENTE': return 'Condizente';
+      case 'DIVERGENTE': return 'Divergente';
       case 'FORA_ZARC': return 'Fora do ZARC';
+      case 'BLOQUEADO': return 'Bloqueado';
       default: return 'Pendente';
     }
   }
@@ -86,13 +119,17 @@ export class GlebaAnaliseComponent implements OnChanges {
     const atual = statusAtual.toUpperCase();
     const proximo = proximoStatus.toUpperCase();
 
-    if (atual === 'FORA_ZARC' || proximo === 'FORA_ZARC') return 'alert-line';
+    if (['FORA_ZARC', 'DIVERGENTE', 'BLOQUEADO'].includes(atual) || ['FORA_ZARC', 'DIVERGENTE', 'BLOQUEADO'].includes(proximo)) {
+      return 'alert-line';
+    }
     if (atual === 'CONCLUIDO' && proximo === 'CONCLUIDO') return 'done';
     if (atual === 'CONCLUIDO' && proximo === 'EM_ANDAMENTO') return 'in-progress';
     return 'todo';
   }
 
   public copiarTexto(texto: string): void {
-    navigator.clipboard.writeText(texto);
+    if (texto) {
+      navigator.clipboard.writeText(texto);
+    }
   }
 }

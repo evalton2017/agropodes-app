@@ -2,9 +2,10 @@ import { Component, inject, computed, signal, effect, DestroyRef } from '@angula
 import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {DashboardFiltroService} from '../../../service/dashboard-filtro.service';
-import {DashboardProdutorService} from '../../../service/dashboard-produtor.service';
-import {PessoaService} from '../../../../../service/pessoa.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DashboardFiltroService } from '../../../service/dashboard-filtro.service';
+import { DashboardProdutorService } from '../../../service/dashboard-produtor.service';
+import { PessoaService } from '../../../../../service/pessoa.service';
 import {
   GlebaGeometriaResponse,
   RespostaConformidadeAmbientalDTO,
@@ -20,14 +21,12 @@ import {
   DashboardProdutorMapaComponent
 } from '../dashboard-produtor-mapa.component/dashboard-produtor-mapa.component';
 
-
-;
-
 @Component({
   selector: 'app-dashboard-produtor-detalhes',
   standalone: true,
   imports: [
     CommonModule,
+    MatProgressSpinnerModule,
     DashboardProdutorMapaComponent,
     DashboardProdutorTabelaComponent,
     DashboardProdutorStatusAtividadesComponent
@@ -43,6 +42,9 @@ export class DashboardProdutorDetalhesComponent {
 
   produtor = computed(() => this.pessoaService.produtorAtual());
 
+  // 🟢 Controle de Estado de Carregamento
+  carregando = signal<boolean>(false);
+
   dadosMapa = signal<GlebaGeometriaResponse[]>([]);
   dadosTabela = signal<RespostaConformidadeAmbientalDTO | null>(null);
   dadosStatusAtividades = signal<RespostaStatusAtividades | null>(null);
@@ -54,6 +56,9 @@ export class DashboardProdutorDetalhesComponent {
 
       if (!user || !user.id) return;
 
+      // Inicia o estado de loading antes da requisição
+      this.carregando.set(true);
+
       forkJoin({
         mapa: this.produtorService.obterGlebasGeometria(user.id),
         tabela: this.produtorService.obterConformidadeAmbiental(user.id, filtros),
@@ -64,8 +69,12 @@ export class DashboardProdutorDetalhesComponent {
             this.dadosMapa.set(res.mapa);
             this.dadosTabela.set(res.tabela);
             this.dadosStatusAtividades.set(res.atividades);
+            this.carregando.set(false);
           },
-          error: (err) => console.error('Erro ao sincronizar widgets da segunda linha:', err)
+          error: (err) => {
+            console.error('Erro ao sincronizar widgets da segunda linha:', err);
+            this.carregando.set(false);
+          }
         });
     });
   }

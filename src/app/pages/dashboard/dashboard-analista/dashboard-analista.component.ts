@@ -110,7 +110,7 @@ export class DashboardAnalistaComponent implements OnInit {
     const safras: string[] = [];
 
     // Gera as safras de forma dinâmica (ex: 2024/2025, 2025/2026, 2026/2027)
-    for (let i = -1; i <= 1; i++) {
+    for (let i = -5; i <= 1; i++) {
       const anoInicio = anoAtual + i;
       const anoFim = anoInicio + 1;
       safras.push(`${anoInicio}/${anoFim}`);

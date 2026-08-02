@@ -107,6 +107,11 @@ export interface ResumoAnalises {
   atestadoDesc: string;
 }
 
+export interface BlocoPendencias {
+  descricao: string;
+  recomendacao: string;
+}
+
 export interface GlebaData {
   idGleba: number;
   idProdutor: number;
@@ -117,9 +122,10 @@ export interface GlebaData {
   culturaDeclarada: string;
   nomeGleba: string;
   municipio: string;
-  status: 'Conforme' | 'Inconforme' | 'Em Analise';
+  status: 'Conforme' | 'Inconforme' | 'Em Analise' | 'Pendência';
   ultimaAtualizacao: string;
   statusPassos: StatusPassos;
+  pendencias: BlocoPendencias;
   ultimasAtividades: Atividade[];
   informacoesZarc: InformacoesZarc;
   resumoAnalises: ResumoAnalises;

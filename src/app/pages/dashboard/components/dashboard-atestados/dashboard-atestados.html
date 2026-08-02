@@ -1,15 +1,15 @@
-<!-- src/app/pages/dashboard/components/dashboard-atestados/dashboard-atestados.component.html -->
 <section class="dashboard-card">
   @if (carregando()) {
-    <div class="ia-loading-overlay"><mat-spinner diameter="30"></mat-spinner></div>
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
   }
 
   <div class="card-header">
     <h3 class="card-title-custom">Últimos Atestados Emitidos</h3>
-    <a class="header-link">Ver todos</a>
+    <button class="header-link">Ver todos</button>
   </div>
 
-  <!-- Contêiner que isola a rolagem para a tabela não estourar o card -->
   <div class="table-responsive-wrapper">
     <table class="dashboard-table">
       <thead>
@@ -18,20 +18,28 @@
         <th class="col-produtor">Produtor</th>
         <th class="col-municipio">Município</th>
         <th class="col-data">Data</th>
+        <th class="col-status">Status</th>
       </tr>
       </thead>
       <tbody>
-        @for (atestado of ultimosAtestados(); track atestado) {
+        @for (atestado of ultimosAtestados(); track atestado.codigo_gleba + atestado.data) {
           <tr>
             <td class="td-codigo font-mono">{{ atestado.codigo_gleba }}</td>
             <td class="td-produtor" [title]="atestado.produtor">{{ atestado.produtor }}</td>
             <td class="td-municipio">{{ atestado.municipio }}</td>
             <td class="td-data">{{ atestado.data | date:'dd/MM/yyyy' }}</td>
+            <td class="td-status">
+              <span class="badge" [ngClass]="obterClasseStatus(atestado.status)">
+                {{ atestado.status }}
+              </span>
+            </td>
           </tr>
         } @empty {
-          <tr>
-            <td colspan="4" class="empty-row">Nenhum atestado emitido encontrado.</td>
-          </tr>
+          @if (!carregando()) {
+            <tr>
+              <td colspan="5" class="empty-row">Nenhum atestado emitido encontrado.</td>
+            </tr>
+          }
         }
       </tbody>
     </table>
