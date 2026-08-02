@@ -5,13 +5,13 @@ import {environment} from '../../../../environments/environment';
 import {
   AlertaCritico,
   CulturaData,
-  EventoClimatico,
   FiltrosDashboard,
   GraficoData,
-  KpisDashboard, ResumoClimatico,
-  UltimoAtestado,
+  KpisDashboard,
+  ResumoClimatico,
 } from '../model/dashboard-analista.model';
 import {AtestadoDTO} from '../components/dashboard-atestados/dashboard-atestados';
+import {GlebaDetalheDTO} from '../../analista/glebas-list/gleba-detalhe/gleba-detalhe';
 
 export interface EventoClimaticoDTO {
   evento: 'Veranico' | 'Excesso de chuva' | 'Granizo' | 'Geada' | 'Vento forte';
@@ -19,6 +19,25 @@ export interface EventoClimaticoDTO {
   data: string;
   impacto: 'Alto' | 'Médio' | 'Baixo';
   glebas_afetadas: number;
+}
+
+export interface FiltrosGlebaDTO {
+  uf?: string;
+  busca?: string;
+  pagina?: number;
+  limite?: number;
+}
+
+export interface GlebaItemDTO {
+  id_gleba: number;
+  codigo_gleba: string;
+  produtor: string;
+  cpf_cnpj: string;
+  car_codigo: string;
+  municipio: string;
+  uf: string;
+  area_ha: number;
+  status_conformidade: 'Conforme' | 'Pendente' | 'Com Conflito';
 }
 
 @Injectable({
@@ -92,6 +111,35 @@ export class DashboardAnalistaService {
 
   obterTimelineGleba(idGleba: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/timeline/${idGleba}`);
+  }
+
+  public obterGlebasListagem(filtros?: any): Observable<GlebaItemDTO[]> {
+    let params = new HttpParams();
+
+    if (filtros) {
+      if (filtros.uf && filtros.uf.toUpperCase() !== 'TODOS') {
+        params = params.set('uf', filtros.uf);
+      }
+      if (filtros.busca && filtros.busca.trim() !== '') {
+        params = params.set('busca', filtros.busca.trim());
+      }
+      if (filtros.pagina) {
+        params = params.set('pagina', filtros.pagina.toString());
+      }
+      if (filtros.limite) {
+        params = params.set('limite', filtros.limite.toString());
+      }
+    }
+
+    return this.http.get<GlebaItemDTO[]>(`${this.baseUrl}/glebas`, { params });
+  }
+
+  public obterDetalheGleba(idGleba: number): Observable<GlebaDetalheDTO> {
+    return this.http.get<GlebaDetalheDTO>(`${this.baseUrl}/glebas/${idGleba}`);
+  }
+
+  public emitirAtestadoConformidade(idGleba: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/glebas/${idGleba}/emitir-atestado`, {});
   }
 
 }

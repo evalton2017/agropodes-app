@@ -1,0 +1,138 @@
+.glebas-container {
+  position: relative;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .title-icon {
+      font-size: 2.25rem;
+      width: 2.25rem;
+      height: 2.25rem;
+      color: #15803d;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+  }
+}
+
+.filter-card {
+  display: flex;
+  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  .search-input-group {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+
+    mat-icon {
+      color: #64748b;
+    }
+
+    input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 0.875rem;
+      color: #0f172a;
+    }
+  }
+}
+
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+
+  th {
+    color: #475569;
+    font-weight: 600;
+    padding: 0.875rem 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+    background: #f8fafc;
+  }
+
+  td {
+    padding: 0.875rem 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+  }
+
+  .gleba-name-cell, .produtor-cell {
+    display: flex;
+    flex-direction: column;
+
+    .id-subtext, .cpf-subtext {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &.sucesso { background: #dcfce7; color: #166534; }
+    &.alerta { background: #fef3c7; color: #92400e; }
+    &.critico { background: #ffe4e6; color: #9f1239; }
+    &.padrao { background: #f1f5f9; color: #475569; }
+  }
+
+  .empty-row {
+    text-align: center;
+    color: #94a3b8;
+    padding: 3rem;
+
+    .empty-icon {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+}

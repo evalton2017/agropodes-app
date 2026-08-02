@@ -1,0 +1,93 @@
+<div class="glebas-container">
+  @if (carregando()) {
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  <!-- CABEÇALHO DA TELA -->
+  <div class="page-header">
+    <div class="header-title">
+      <mat-icon class="title-icon">map</mat-icon>
+      <div>
+        <h2>Gestão de Glebas Monitoradas</h2>
+        <p>Listagem e análise de conformidade de imóveis e glebas agrícolas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA DE FILTROS E PESQUISA -->
+  <div class="filter-card">
+    <div class="search-input-group">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        [(ngModel)]="filtroTexto"
+        (keyup.enter)="aplicarBuscaLocal()"
+        placeholder="Buscar por Nome da Gleba, Produtor, CPF/CNPJ ou CAR..."
+      />
+    </div>
+    <button mat-flat-button color="primary" (click)="aplicarBuscaLocal()">
+      Filtrar
+    </button>
+  </div>
+
+  <!-- TABELA DE GLEBAS -->
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="dashboard-table">
+        <thead>
+        <tr>
+          <th>Gleba</th>
+          <th>Produtor</th>
+          <th>Município / UF</th>
+          <th>Código CAR</th>
+          <th class="text-right">Área (ha)</th>
+          <th class="text-center">Status Auditoria</th>
+          <th class="text-center">Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (gleba of glebas(); track gleba.id_gleba) {
+            <tr>
+              <td>
+                <div class="gleba-name-cell">
+                  <span class="font-bold">{{ gleba.codigo_gleba }}</span>
+                  <span class="id-subtext">ID: {{ gleba.id_gleba }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="produtor-cell">
+                  <span>{{ gleba.produtor }}</span>
+                  <span class="cpf-subtext">{{ gleba.cpf_cnpj }}</span>
+                </div>
+              </td>
+              <td>{{ gleba.municipio }} / {{ gleba.uf }}</td>
+              <td class="font-mono text-xs">{{ gleba.car_codigo }}</td>
+              <td class="font-bold text-right">{{ gleba.area_ha | number:'1.2-2':'pt-BR' }} ha</td>
+              <td class="text-center">
+                <span class="badge" [ngClass]="obterClasseBadge(gleba.status_conformidade)">
+                  {{ gleba.status_conformidade }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button mat-icon-button color="primary" (click)="abrirDetalhesGleba(gleba.id_gleba)" title="Ver Detalhes e Auditoria">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            @if (!carregando()) {
+              <tr>
+                <td colspan="7" class="empty-row">
+                  <mat-icon class="empty-icon">find_in_page</mat-icon>
+                  <p>Nenhuma gleba encontrada para os filtros selecionados.</p>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

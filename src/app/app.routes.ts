@@ -91,6 +91,14 @@ export const routes: Routes = [
     data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] }
   },
   {
+    path: 'glebas',
+    loadComponent: () => import('./pages/analista/glebas-list/glebas-list').then(m => m.AppGlebasListComponent)
+  },
+  {
+    path: 'glebas/detalhe/:id',
+    loadComponent: () => import('./pages/analista/glebas-list/gleba-detalhe/gleba-detalhe').then(m => m.AppGlebaDetalheComponent)
+  },
+  {
     path: 'acesso-negado',
     component: AcessoNegadoComponent
   },

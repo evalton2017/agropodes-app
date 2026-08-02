@@ -1,0 +1,132 @@
+<div class="detalhe-container">
+  @if (carregando()) {
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  <!-- BARRA DE NAVEGAÇÃO E AÇÕES -->
+  <div class="top-bar">
+    <button mat-button (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+      Voltar para Lista
+    </button>
+    @if (detalhe()) {
+      <div class="actions">
+        <button mat-stroked-button color="warn" (click)="emitirAtestado()">Glosar Gleba</button>
+        <button mat-flat-button color="primary" (click)="emitirAtestado()">
+          <mat-icon>verified</mat-icon>
+          Emitir Atestado no Ledger
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (detalhe(); as g) {
+    <!-- CABEÇALHO DA GLEBA -->
+    <div class="header-card">
+      <div class="title-section">
+        <span class="badge" [ngClass]="obterClasseBadge(g.status_conformidade)">
+          {{ g.status_conformidade }}
+        </span>
+        <h2>{{ g.codigo_gleba }}</h2>
+        <p class="subtitle">
+          Produtor: <strong>{{ g.produtor }}</strong> ({{ g.cpf_cnpj }}) | CAR: <span
+          class="font-mono">{{ g.car_codigo }}</span>
+        </p>
+      </div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Município / UF</span>
+          <span class="value">{{ g.municipio }} / {{ g.uf }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Área Medida</span>
+          <span class="value font-bold">{{ g.area_ha | number:'1.2-2':'pt-BR' }} ha</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Cultura Declarada</span>
+          <span class="value">{{ g.cultura_declarada || 'Não informada' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAINEL DIVIDIDO: GIS E REGULATÓRIO -->
+    <div class="grid-layout">
+      <!-- PAINEL ESQUERDO: MAPA GIS DE SOBREPOSIÇÕES -->
+      <div class="card map-card">
+        <div class="card-header">
+          <mat-icon>map</mat-icon>
+          <h3>Análise Espacial de Perímetro</h3>
+        </div>
+        <div #mapaElement class="gis-map-container">
+          
+        </div>
+    </div>
+
+    <!-- PAINEL DIREITO: VETORES DE CONFLITO E SENSORIAMENTO -->
+    <div class="right-column">
+      <!-- CARD CONFLITOS AMBIENTAIS -->
+      <div class="card">
+        <div class="card-header">
+          <mat-icon>gavel</mat-icon>
+          <h3>Sobreposições e Restrições Sociobientais</h3>
+        </div>
+        <ul class="checklist">
+          <li [class.danger]="g.conflito_prodes">
+            <mat-icon>{{ g.conflito_prodes ? 'error' : 'check_circle' }}</mat-icon>
+            <span>Desmatamento PRODES: <strong>{{ g.conflito_prodes ? 'DETECTADO' : 'Sem registros' }}</strong></span>
+          </li>
+          <li [class.danger]="g.conflito_socioambiental">
+            <mat-icon>{{ g.conflito_socioambiental ? 'error' : 'check_circle' }}</mat-icon>
+            <span>Embargos IBAMA / ICMBio: <strong>{{ g.conflito_socioambiental ? 'EMBARGADO' : 'Regular' }}</strong></span>
+          </li>
+          <li [class.danger]="g.terra_indigena">
+            <mat-icon>{{ g.terra_indigena ? 'error' : 'check_circle' }}</mat-icon>
+            <span>Terras Indígenas (FUNAI): <strong>{{ g.terra_indigena ? 'SOBREPOSIÇÃO' : 'Livre' }}</strong></span>
+          </li>
+          <li [class.danger]="g.unidade_conservacao">
+            <mat-icon>{{ g.unidade_conservacao ? 'error' : 'check_circle' }}</mat-icon>
+            <span>Unidades de Conservação: <strong>{{ g.unidade_conservacao ? 'SOBREPOSIÇÃO' : 'Livre' }}</strong></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- CARD SENSORIAMENTO REMOTO & IA -->
+      <div class="card">
+        <div class="card-header">
+          <mat-icon>psychology</mat-icon>
+          <h3>Métricas Agrometeorológicas & IA</h3>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <span class="m-label">NDVI Médio (30d)</span>
+            <span class="m-value">{{ g.ndvi_medio | number:'1.2-2' }}</span>
+          </div>
+          <div class="metric-box">
+            <span class="m-label">EVI Médio</span>
+            <span class="m-value">{{ g.evi_medio | number:'1.2-2' }}</span>
+          </div>
+          <div class="metric-box" [class.warn]="g.veranico_dias > 10">
+            <span class="m-label">Estiagem / Veranico</span>
+            <span class="m-value">{{ g.veranico_dias }} dias</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD AUDITORIA LEDGER -->
+      <div class="card ledger-card">
+        <div class="card-header">
+          <mat-icon>lock</mat-icon>
+          <h3>Rastreabilidade no Ledger</h3>
+        </div>
+        <div class="ledger-info">
+          <p><strong>Última Auditoria:</strong> {{ g.data_ultima_auditoria | date:'dd/MM/yyyy HH:mm' }}</p>
+          <p class="hash-text"><strong>Hash SHA-256:</strong>
+            <code>{{ g.ultimo_hash_ledger || 'Pendente de validação' }}</code></p>
+        </div>
+      </div>
+    </div>
+    </div>
+  }
+</div>
