@@ -110,11 +110,12 @@ export class MapaGrid3dComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngAfterViewInit(): Promise<void> {
     if (isPlatformBrowser(this.platformId)) {
-      this.L = await import('leaflet');
+      const leafletModule = await import('leaflet');
+      this.L = leafletModule.default || leafletModule;
+
       this.inicializarMapa();
     }
   }
-
   ngOnDestroy(): void {
     if (this.map) {
       this.map.remove();
@@ -122,8 +123,7 @@ export class MapaGrid3dComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private inicializarMapa(): void {
-    if (!this.mapaElement?.nativeElement || !this.L) return;
-
+    if (!this.mapaElement?.nativeElement || !this.L?.map) return;
     this.map = this.L.map(this.mapaElement.nativeElement, {
       center: [-14.235, -51.925],
       zoom: 4,

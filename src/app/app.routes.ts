@@ -100,7 +100,7 @@ export const routes: Routes = [
   },
   {
     path:'caderno-campo',
-    loadComponent: () => import('./pages/caderno-campo-page.component/caderno-campo-page.component').then(m => m.CadernoCampoPageComponent)
+    loadComponent: () => import('./pages/caderno-campo/caderno-campo-page.component').then(m => m.CadernoCampoPageComponent)
   },
   {
     path: 'acesso-negado',
