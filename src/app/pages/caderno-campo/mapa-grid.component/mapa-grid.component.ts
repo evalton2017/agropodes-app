@@ -2,224 +2,248 @@ import {
   Component,
   Input,
   OnInit,
+  OnChanges,
+  SimpleChanges,
   AfterViewInit,
-  OnDestroy,
-  inject,
-  signal,
-  effect,
   ElementRef,
   ViewChild,
-  PLATFORM_ID
+  inject,
+  signal,
+  DestroyRef
 } from '@angular/core';
-import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import * as maplibregl from 'maplibre-gl';
 import {MonitoramentoService} from '../../../service/monitoramento.service';
+
 
 @Component({
   selector: 'app-mapa-grid-3d',
-  standalone: true, // 🟢 GARANTE QUE É STANDALONE (Resolve o NG2012)
+  standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    MatIconModule,
+    MatButtonModule,
     MatButtonToggleModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatIconModule
   ],
-  // 🟢 USAR 'template' EM VEZ DE 'templateUrl' (Resolve o NG2008)
-  template: `
-    <div class="mapa-grid-card">
-      <div class="mapa-header">
-        <div>
-          <h3 class="mapa-titulo">Mapa Interativo 3D - Propriedades do Solo</h3>
-          <span class="mapa-sub">CRS EPSG:4326 | Portaria MAPA 3.7</span>
-        </div>
-
-        <mat-button-toggle-group
-          [ngModel]="camadaAtiva()"
-          (ngModelChange)="camadaAtiva.set($event)"
-          aria-label="Camada do Solo"
-        >
-          <mat-button-toggle value="saude_plantas">Saúde (NDVI)</mat-button-toggle>
-          <mat-button-toggle value="nitrogenio">Nitrogênio (N)</mat-button-toggle>
-          <mat-button-toggle value="materia_organica">M.O.</mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
-
-      <div class="canvas-3d-container">
-        @if (carregando()) {
-          <div class="loading-grid">
-            <mat-spinner diameter="32"></mat-spinner>
-            <span>Carregando malha espacial EPSG:4326...</span>
-          </div>
-        }
-
-        <div #mapaElement class="mapa-leaflet-viewport" [class.hidden]="carregando()"></div>
-
-        <div class="overlay-info">
-          <mat-icon>layers</mat-icon>
-          <span>Pontos Renderizados: <strong>{{ dadosGrid()?.total_pontos_grid || 0 }}</strong></span>
-          <span class="divider">|</span>
-          <span>Camada: <strong class="uppercase">{{ camadaAtiva() }}</strong></span>
-        </div>
-
-        <div class="legenda-hex">
-          <span class="legenda-item"><i class="cor-verde"></i> Alto</span>
-          <span class="legenda-item"><i class="cor-amarelo"></i> Médio</span>
-          <span class="legenda-item"><i class="cor-vermelho"></i> Baixo</span>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './mapa-grid.component.html',
   styleUrls: ['./mapa-grid.component.scss']
 })
-export class MapaGrid3dComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input({ required: true }) idContrato!: number;
-  @ViewChild('mapaElement') mapaElement!: ElementRef<HTMLDivElement>;
+export class MapaGrid3dComponent implements OnInit, OnChanges, AfterViewInit {
+  @Input() idContrato!: number;
+  @Input() set glebaId(val: number) { if (val) this.idContrato = val; }
+  @Input() set idGleba(val: number) { if (val) this.idContrato = val; }
+
+  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef<HTMLDivElement>;
 
   private readonly monitoramentoService = inject(MonitoramentoService);
-  private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
 
-  public dadosGrid = signal<any | null>(null);
+  private map!: maplibregl.Map;
   public camadaAtiva = signal<'saude_plantas' | 'nitrogenio' | 'materia_organica'>('saude_plantas');
-  public carregando = signal<boolean>(false);
+  public carregandoGrid = signal<boolean>(false);
+  public pontosRenderizados = signal<number>(0);
+  public dadosGrid3D = signal<any | null>(null);
 
-  private map?: any;
-  private gridLayerGroup?: any;
-  private geojsonLayer?: any;
-  private L?: any;
+  ngOnInit(): void {}
 
-  constructor() {
-    effect(() => {
-      const dados = this.dadosGrid();
-      const camada = this.camadaAtiva();
-      if (dados && this.map && this.L) {
-        this.renderizarMalhaEspacial(dados, camada);
+  ngAfterViewInit(): void {
+    this.inicializarMapa3D();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ((changes['idContrato'] || changes['glebaId'] || changes['idGleba']) && this.idContrato) {
+      if (this.map && this.map.isStyleLoaded()) {
+        this.carregarDadosGrid();
+      }
+    }
+  }
+
+  private inicializarMapa3D(): void {
+    if (!this.mapContainer) return;
+
+    this.map = new maplibregl.Map({
+      container: this.mapContainer.nativeElement,
+      style: {
+        version: 8,
+        sources: {
+          'esri-imagery': {
+            type: 'raster',
+            tiles: [
+              'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: '&copy; Esri'
+          }
+        },
+        layers: [
+          {
+            id: 'esri-imagery-layer',
+            type: 'raster',
+            source: 'esri-imagery',
+            minzoom: 0,
+            maxzoom: 20
+          }
+        ]
+      },
+      center: [-47.033962, -14.225032],
+      zoom: 15.5,
+      pitch: 55, // 🟢 Inclinação 3D da Câmera
+      bearing: -25, // 🟢 Rotação de Perspectiva 3D
+      maxPitch: 85
+    });
+
+    this.map.addControl(new maplibregl.NavigationControl({
+      showCompass: true,
+      visualizePitch: true
+    }), 'top-right');
+
+    this.map.on('load', () => {
+      if (this.idContrato) {
+        this.carregarDadosGrid();
       }
     });
   }
 
-  ngOnInit(): void {
-    if (this.idContrato) {
-      this.carregarGrid(this.idContrato);
-    }
-  }
+  public carregarDadosGrid(): void {
+    if (!this.idContrato) return;
 
-  async ngAfterViewInit(): Promise<void> {
-    if (isPlatformBrowser(this.platformId)) {
-      const leafletModule = await import('leaflet');
-      this.L = leafletModule.default || leafletModule;
+    this.carregandoGrid.set(true);
 
-      this.inicializarMapa();
-    }
-  }
-  ngOnDestroy(): void {
-    if (this.map) {
-      this.map.remove();
-    }
-  }
-
-  private inicializarMapa(): void {
-    if (!this.mapaElement?.nativeElement || !this.L?.map) return;
-    this.map = this.L.map(this.mapaElement.nativeElement, {
-      center: [-14.235, -51.925],
-      zoom: 4,
-      zoomControl: true
-    });
-
-    this.L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      {
-        attribution: 'Tiles &copy; Esri',
-        maxZoom: 19
-      }
-    ).addTo(this.map);
-
-    this.gridLayerGroup = this.L.layerGroup().addTo(this.map);
-
-    if (this.dadosGrid()) {
-      this.renderizarMalhaEspacial(this.dadosGrid()!, this.camadaAtiva());
-    }
-  }
-
-  private carregarGrid(id: number): void {
-    this.carregando.set(true);
-    this.monitoramentoService.obterGrid3D(id)
+    this.monitoramentoService.obterGrid3D(this.idContrato)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
-          this.dadosGrid.set(res);
-          this.carregando.set(false);
-          setTimeout(() => {
-            if (this.map && this.L) {
-              this.map.invalidateSize();
-              this.renderizarMalhaEspacial(res, this.camadaAtiva());
-            }
-          }, 100);
+          this.dadosGrid3D.set(res);
+          this.renderizarCamadaGrid3D();
+          this.carregandoGrid.set(false);
         },
         error: (err) => {
-          console.error('Erro ao buscar Grid 3D:', err);
-          this.carregando.set(false);
+          console.error('Erro ao buscar Grid 3D na API:', err);
+          this.carregandoGrid.set(false);
         }
       });
   }
 
-  private renderizarMalhaEspacial(dados: any, camada: 'saude_plantas' | 'nitrogenio' | 'materia_organica'): void {
-    if (!this.map || !this.L || !this.gridLayerGroup) return;
+  public alterarCamada(camada: 'saude_plantas' | 'nitrogenio' | 'materia_organica'): void {
+    this.camadaAtiva.set(camada);
+    if (this.dadosGrid3D()) {
+      this.renderizarCamadaGrid3D();
+    }
+  }
 
-    // Limpa camadas anteriores
-    this.gridLayerGroup.clearLayers();
-    if (this.geojsonLayer) {
-      this.map.removeLayer(this.geojsonLayer);
+  private extrairGeoJSONValido(dados: any): any {
+    if (!dados) return null;
+
+    // Captura o array exato fornecido pelo backend
+    const listaElementos = dados.grid_propriedades || dados.pontos_grid || dados.grid;
+
+    if (!Array.isArray(listaElementos) || listaElementos.length === 0) {
+      console.warn('Array grid_propriedades não localizado na resposta:', dados);
+      return null;
     }
 
-    // 1. Renderiza o Polígono do Talhão com fundo transparente
-    if (dados.geometria_delimitada) {
-      this.geojsonLayer = this.L.geoJSON(dados.geometria_delimitada, {
-        style: {
-          color: '#38bdf8',
-          weight: 3,
-          fillColor: 'transparent',
-          fillOpacity: 0
+    // Mapeia cada ponto extraindo coordenadas e as cores HEX aninhadas
+    const features = listaElementos.map((item: any) => {
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [Number(item.lng), Number(item.lat)]
+        },
+        properties: {
+          // Extrai as cores HEX aninhadas conforme a camada ativa
+          saude_plantas_hex: item.saude_plantas?.hex || '#10b981',
+          nitrogenio_hex: item.nitrogenio?.hex || '#abdda4',
+          materia_organica_hex: item.materia_organica?.hex || '#d8b365',
+
+          // Preserva valores numéricos para possíveis tooltips no mapa
+          valor_ndvi: item.saude_plantas?.valor_ndvi,
+          valor_n: item.nitrogenio?.valor_kg_ha,
+          valor_mo: item.materia_organica?.valor_porcentagem
         }
-      }).addTo(this.map);
+      };
+    });
 
-      const bounds = this.geojsonLayer.getBounds();
-      if (bounds.isValid()) {
-        this.map.fitBounds(bounds, { padding: [20, 20] });
-      }
+    return {
+      type: 'FeatureCollection',
+      features: features
+    };
+  }
+
+  /**
+   * Renderiza os 4.038 pontos no MapLibre 3D aplicando a cor aninhada correspondente
+   */
+  private renderizarCamadaGrid3D(): void {
+    const dados = this.dadosGrid3D();
+    if (!dados || !this.map) return;
+
+    // Converte os dados estruturados do backend para GeoJSON FeatureCollection
+    const geojson = this.extrairGeoJSONValido(dados);
+
+    if (!geojson || !geojson.features || geojson.features.length === 0) {
+      this.pontosRenderizados.set(0);
+      return;
     }
 
-    // 2. Renderiza os Pontos da Malha Espacial (HEX)
-    const pontos = dados.grid_propriedades || [];
-    pontos.forEach((ponto: any) => {
-      const prop = ponto[camada];
-      if (!ponto.lat || !ponto.lng || !prop) return;
+    // Atualiza o contador no badge
+    this.pontosRenderizados.set(geojson.features.length);
 
-      const corHex = prop.hex || '#1a9850';
+    // Ajusta o foco da câmera do mapa para o centroide da área
+    const primeiraFeature = geojson.features[0];
+    if (primeiraFeature?.geometry?.coordinates) {
+      const coords = primeiraFeature.geometry.coordinates;
+      this.map.flyTo({
+        center: [coords[0], coords[1]],
+        zoom: 15.8,
+        pitch: 55, // 🟢 Inclinação Tridimensional
+        bearing: -20, // 🟢 Perspectiva da Câmera
+        duration: 1200
+      });
+    }
 
-      // 🟢 AJUSTE DE VISIBILIDADE: Raio de 5px e sem linha de borda
-      const circle = this.L.circleMarker([ponto.lat, ponto.lng], {
-        radius: 5,               // Raio visível para zoom de talhão
-        fillColor: corHex,
-        color: corHex,
-        weight: 0,               // Remove a borda preta/transparente
-        opacity: 1,
-        fillOpacity: 0.9,        // Opacidade alta para destacar sobre o satélite
-        pane: 'markerPane'       // Força ficar no topo da camada de imagem
+    const aplicarRenderizacao = () => {
+      // Limpa camadas pré-existentes
+      if (this.map.getLayer('grid-3d-circles')) this.map.removeLayer('grid-3d-circles');
+      if (this.map.getSource('grid-3d-source')) this.map.removeSource('grid-3d-source');
+
+      this.map.addSource('grid-3d-source', {
+        type: 'geojson',
+        data: geojson
       });
 
-      circle.bindTooltip(
-        `<strong>Lat/Lng:</strong> ${ponto.lat.toFixed(5)}, ${ponto.lng.toFixed(5)}<br/>
-       <strong>Atributo:</strong> ${camada.replace('_', ' ').toUpperCase()}<br/>
-       <strong>Valor:</strong> ${prop.valor_ndvi ?? prop.valor_kg_ha ?? prop.valor_porcentagem}<br/>
-       <strong>HEX:</strong> ${corHex}`,
-        { direction: 'top' }
-      );
+      const camadaAtiva = this.camadaAtiva(); // 'saude_plantas', 'nitrogenio' ou 'materia_organica'
+      const chaveHex = `${camadaAtiva}_hex`;
 
-      this.gridLayerGroup.addLayer(circle);
-    });
+      // Aplica a camada de círculos coloridos dinâmicos no mapa 3D
+      this.map.addLayer({
+        id: 'grid-3d-circles',
+        type: 'circle',
+        source: 'grid-3d-source',
+        paint: {
+          'circle-radius': 4.5,
+          'circle-color': ['get', chaveHex], // 🟢 Busca diretamente a chave mapeada
+          'circle-opacity': 0.85,
+          'circle-stroke-width': 0.3,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+    };
+
+    if (this.map.isStyleLoaded()) {
+      aplicarRenderizacao();
+    } else {
+      this.map.once('styledata', () => aplicarRenderizacao());
+    }
+  }
+
+  public resetarVisao3D(): void {
+    if (!this.map) return;
+    this.map.easeTo({ pitch: 55, bearing: -25, duration: 800 });
   }
 }

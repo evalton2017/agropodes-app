@@ -1,0 +1,73 @@
+<div class="mapa-card-container">
+  <!-- CABEÇALHO DO MAPA -->
+  <div class="mapa-header">
+    <div class="mapa-titulo">
+      <h3>Mapa Interativo 3D - Propriedades do Solo</h3>
+      <span class="subtext">CRS EPSG:4326 | Portaria MAPA 3.7</span>
+    </div>
+
+    <div class="controles-camadas">
+      <mat-button-toggle-group
+        [value]="camadaAtiva()"
+        (change)="alterarCamada($event.value)"
+        aria-label="Propriedades do Solo"
+      >
+        <mat-button-toggle value="saude_plantas">
+          <mat-icon class="icon-emerald">eco</mat-icon> Saúde (NDVI)
+        </mat-button-toggle>
+        <mat-button-toggle value="nitrogenio">
+          Nitrogênio (N)
+        </mat-button-toggle>
+        <mat-button-toggle value="materia_organica">
+          M.O.
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+
+  <!-- CANVAS DO MAPA 3D E OVERLAYS -->
+  <div class="mapa-viewport-wrapper">
+    <div #mapContainer class="mapa-canvas"></div>
+
+    <!-- BADGES DE STATUS -->
+    <div class="mapa-overlay-info">
+      <span class="badge-info">
+        <mat-icon>layers</mat-icon> Pontos Renderizados: <strong>{{ pontosRenderizados() }}</strong>
+      </span>
+      <span class="badge-info">
+        Camada: <strong>{{ camadaAtiva() }}</strong>
+      </span>
+    </div>
+
+    <!-- LEGENDA DINÂMICA FLUTUANTE -->
+    <div class="legenda-mapa-box">
+      <span class="legenda-item">
+        <span class="cor-indicador bg-alto"></span> Alto
+      </span>
+      <span class="legenda-item">
+        <span class="cor-indicador bg-medio"></span> Médio
+      </span>
+      <span class="legenda-item">
+        <span class="cor-indicador bg-baixo"></span> Baixo
+      </span>
+    </div>
+
+    <!-- BOTÃO FLUTUANTE PARA RESET DA CÂMERA 3D -->
+    <button
+      mat-mini-fab
+      color="primary"
+      class="btn-reset-3d"
+      (click)="resetarVisao3D()"
+      title="Resetar Câmera 3D"
+    >
+      <mat-icon>3d_rotation</mat-icon>
+    </button>
+
+    @if (carregandoGrid()) {
+      <div class="loading-overlay">
+        <mat-spinner diameter="36"></mat-spinner>
+        <span>Renderizando malha 3D em EPSG:4326...</span>
+      </div>
+    }
+  </div>
+</div>
