@@ -1,0 +1,115 @@
+<div class="caderno-detalhado-wrapper">
+  <!-- CABEÇALHO DE METADADOS -->
+  <div class="header-caderno">
+    <div class="titulo-bloco">
+      <h2>Caderno de Campo de Safra</h2>
+      <p>Acompanhamento de sensoriamento remoto e parâmetros climáticos (Portaria MAPA 3.7 & 3.8)</p>
+    </div>
+    <div class="badges-status">
+      <span class="badge-safra">Safra: {{ caderno?.safra_ano }}</span>
+      <span class="badge-homologado">
+        <mat-icon>verified</mat-icon> AUDITADO VMG
+      </span>
+    </div>
+  </div>
+
+  <!-- CARDS DE MÉTRICAS RÁPIDAS DA SAFRA -->
+  <div class="cards-resumo-grid">
+    <div class="card-metric">
+      <mat-icon class="icon-emerald">eco</mat-icon>
+      <div class="metric-info">
+        <span class="metric-label">Cultura IA</span>
+        <span class="metric-valor">{{ caderno?.analise_vegetativa_ia?.cultura_identificada }}</span>
+        <span class="metric-sub">
+          Confiança: {{ ((caderno?.analise_vegetativa_ia?.assertividade_score || 0) * 100).toFixed(0) }}%
+        </span>
+      </div>
+    </div>
+
+    <!-- 🟢 CORREÇÃO DA CHAVE: total_dias_sem_chuva -->
+    <div class="card-metric">
+      <mat-icon class="icon-amber">wb_sunny</mat-icon>
+      <div class="metric-info">
+        <span class="metric-label">Dias sem Chuva</span>
+        <span class="metric-valor">
+          {{ caderno?.diagnostico_climatico?.total_dias_sem_chuva || 0 }} dias
+        </span>
+        <span class="metric-sub">Estresse Hídrico</span>
+      </div>
+    </div>
+
+    <!-- 🟢 CORREÇÃO DA CHAVE: dias_com_chuvas_excessivas -->
+    <div class="card-metric">
+      <mat-icon class="icon-blue">water_drop</mat-icon>
+      <div class="metric-info">
+        <span class="metric-label">Chuvas Excessivas</span>
+        <span class="metric-valor">
+          {{ caderno?.diagnostico_climatico?.dias_com_chuvas_excessivas || 0 }} dias
+        </span>
+        <span class="metric-sub">> 45mm/dia</span>
+      </div>
+    </div>
+
+    <div class="card-metric">
+      <mat-icon class="icon-purple">analytics</mat-icon>
+      <div class="metric-info">
+        <span class="metric-label">Produtividade Estimada</span>
+        <span class="metric-valor">
+          {{ caderno?.validacao_comercial?.produtividade_estimada_sc_ha || 0 }} sc/ha
+        </span>
+        <span class="metric-sub">
+          Total: {{ caderno?.validacao_comercial?.volume_total_estimado_sacas || 0 }} sacas
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBCOMPONENTE 1: MAPA GRID 3D (Portaria 3.7) -->
+  <div class="secao-componente">
+    <app-mapa-grid-3d [idContrato]="glebaId"></app-mapa-grid-3d>
+  </div>
+
+  <!-- SUBCOMPONENTE 2: ANÁLISE CLIMÁTICA E RELATÓRIO DE SAFRA (Portaria 3.8) -->
+  <div class="secao-componente relatorio-clima-card">
+    <div class="card-header-sub">
+      <mat-icon>cloud_queue</mat-icon>
+      <h3>Diagnóstico Meteorológico e Interpolação INMET (60 Meses)</h3>
+    </div>
+
+    @if (carregandoClima()) {
+      <div class="loading-sub">
+        <mat-spinner diameter="30"></mat-spinner>
+        <span>Triangulando estações do INMET via RBF...</span>
+      </div>
+    } @else if (dadosClima()) {
+      <div class="clima-conteudo">
+        <div class="info-interpolacao">
+          <p>
+            <strong>Período Analisado:</strong>
+            {{ dadosClima()?.metadados_solicitacao?.periodo_analisado }}
+          </p>
+          <p>
+            <strong>Janela:</strong>
+            {{ dadosClima()?.metadados_solicitacao?.janela_meses }} Meses
+          </p>
+        </div>
+
+        <!-- 🟢 CORREÇÃO DO ERRO DE CONSOLA: Navegação Segura e Validação de Objeto -->
+        @if (caderno?.alertas_ambientais_emitidos?.length > 0) {
+          <div class="box-alertas">
+            <div class="alerta-titulo">
+              <mat-icon>warning</mat-icon> Alertas de Eventos Climáticos Extremos
+            </div>
+            @for (alerta of caderno?.alertas_ambientais_emitidos; track $index) {
+              @if (alerta) {
+                <div class="alerta-item">
+                  • <strong>{{ alerta?.evento }}:</strong> {{ alerta?.descricao }}
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -5,8 +5,6 @@ import {ImovelAmbiental} from '../dto/response/car';
 import {limparParams} from '../shared/service/request-util';
 import {ProdesResponse} from '../dto/response/prodes-response';
 import {environment} from '../../environments/environment';
-import {ElegibilidadeRequest} from '../dto/request/elegibilidade-request';
-import {ElegibilidadeResponse} from '../dto/response/elegibilidade';
 
 @Injectable({
   providedIn: 'root',

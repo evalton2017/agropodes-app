@@ -1,0 +1,79 @@
+<div class="atestados-container" [class.detalhe-ativo]="cadernoAtivo() !== null">
+
+  <!-- BARRA LATERAL ESQUERDA: LISTAGEM DE GLEBAS -->
+  <div class="sidebar-glebas">
+    <h3 class="sidebar-titulo">Glebas do Produtor</h3>
+
+    <!-- Busca -->
+    <div class="busca-container">
+      <mat-icon class="icone-busca">search</mat-icon>
+      <input
+        type="text"
+        [ngModel]="buscaTexto()"
+        (ngModelChange)="buscaTexto.set($event)"
+        placeholder="Buscar por nome do talhão..."
+        class="input-busca"
+      />
+    </div>
+
+    <!-- Lista de Cards -->
+    <div class="lista-cards">
+      @if (carregandoLista()) {
+        <div class="loading-container-sidebar">
+          <mat-spinner diameter="24"></mat-spinner>
+          <span class="loading-texto-sidebar">Sincronizando talhões...</span>
+        </div>
+      } @else {
+        @for (glebaItem of glebasFiltradas(); track glebaItem.idGleba) {
+          <div
+            (click)="selecionarGleba(glebaItem.idGleba)"
+            [class.card-gleba-ativo]="glebaSelecionadaId() === glebaItem.idGleba"
+            class="card-gleba-item"
+          >
+            <div class="card-gleba-conteudo">
+              <div class="avatar-glb">GLB</div>
+              <div class="info-glb">
+                <span class="nome-glb">{{ glebaItem.codigoCar }}</span>
+                <span class="id-glb">Código ID: {{ glebaItem.idGleba }}</span>
+              </div>
+            </div>
+            <div class="badge-talhao">TALHÃO</div>
+          </div>
+        } @empty {
+          <div class="lista-vazia">Nenhum talhão localizado.</div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- PAINEL DIREITO: EXIBIÇÃO DO CADERNO DE CAMPO DETALHADO -->
+  <div class="painel-detalhe">
+    @if (carregandoDetalhe()) {
+      <div class="loading-container-detalhe">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span class="loading-texto-detalhe">Consolidando séries temporais e mapas 3D da Portaria MAPA...</span>
+      </div>
+    } @else if (cadernoAtivo()) {
+
+      <!-- Botão Voltar Mobile -->
+      <button mat-button class="vmg-voltar-painel-mobile" (click)="glebaSelecionadaId.set(null); cadernoAtivo.set(null)">
+        <mat-icon>arrow_back</mat-icon> Voltar para as Glebas
+      </button>
+
+      <!-- Componente Detalhado do Caderno com Subcomponentes 3D e Clima -->
+      <app-caderno-campo-detalhado
+        [glebaId]="glebaSelecionadaId()!"
+        [caderno]="cadernoAtivo()!">
+      </app-caderno-campo-detalhado>
+
+    } @else {
+      <!-- Fallback -->
+      <div class="painel-vazio-container">
+        <span class="painel-vazio-emoji">📖</span>
+        <h3 class="painel-vazio-titulo">Nenhum Caderno de Campo Selecionado</h3>
+        <p class="painel-vazio-texto">Selecione um talhão na barra lateral para visualizar o mapa 3D e a análise climática.</p>
+      </div>
+    }
+  </div>
+
+</div>

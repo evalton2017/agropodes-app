@@ -1,0 +1,198 @@
+// ==============================================================================
+// DETALHES DO CADERNO DE CAMPO
+// ==============================================================================
+.caderno-detalhado-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  /* Header do Caderno */
+  .header-caderno {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+
+    .titulo-bloco {
+      h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+      }
+      p {
+        margin: 0.25rem 0 0 0;
+        font-size: 0.8125rem;
+        color: #64748b;
+      }
+    }
+
+    .badges-status {
+      display: flex;
+      gap: 0.5rem;
+
+      .badge-safra {
+        background: #f1f5f9;
+        color: #334155;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+
+      .badge-homologado {
+        background: #ecfdf5;
+        color: #047857;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+
+  /* Grid de Cards de Métricas */
+  .cards-resumo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+
+    .card-metric {
+      background: #ffffff;
+      padding: 1.25rem;
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+        padding: 10px;
+        border-radius: 0.75rem;
+
+        &.icon-emerald { background: #ecfdf5; color: #059669; }
+        &.icon-amber { background: #fffbeb; color: #d97706; }
+        &.icon-blue { background: #eff6ff; color: #2563eb; }
+        &.icon-purple { background: #faf5ff; color: #7c3aed; }
+      }
+
+      .metric-info {
+        display: flex;
+        flex-direction: column;
+
+        .metric-label {
+          font-size: 0.6875rem;
+          font-weight: 700;
+          color: #94a3b8;
+          text-transform: uppercase;
+        }
+
+        .metric-valor {
+          font-size: 1.125rem;
+          font-weight: 800;
+          color: #0f172a;
+          margin: 2px 0;
+        }
+
+        .metric-sub {
+          font-size: 0.6875rem;
+          color: #64748b;
+        }
+      }
+    }
+  }
+
+  /* Seções dos Subcomponentes */
+  .secao-componente {
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+
+    &.relatorio-clima-card {
+      padding: 1.25rem 1.5rem;
+
+      .card-header-sub {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        color: #0f172a;
+
+        mat-icon {
+          color: #0284c7;
+        }
+
+        h3 {
+          margin: 0;
+          font-size: 1rem;
+          font-weight: 700;
+        }
+      }
+
+      .loading-sub {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.5rem 0;
+        color: #64748b;
+        font-size: 0.8125rem;
+      }
+
+      .clima-conteudo {
+        .info-interpolacao {
+          display: flex;
+          gap: 1.5rem;
+          font-size: 0.8125rem;
+          color: #334155;
+          margin-bottom: 1rem;
+        }
+
+        .box-alertas {
+          background: #fffbeb;
+          border: 1px solid #fef3c7;
+          border-radius: 0.75rem;
+          padding: 1rem;
+
+          .alerta-titulo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: #b45309;
+            margin-bottom: 0.5rem;
+
+            mat-icon {
+              font-size: 18px;
+              width: 18px;
+              height: 18px;
+              color: #d97706;
+            }
+          }
+
+          .alerta-item {
+            font-size: 0.75rem;
+            color: #92400e;
+            margin-left: 1.6rem;
+          }
+        }
+      }
+    }
+  }
+}

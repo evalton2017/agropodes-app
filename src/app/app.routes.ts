@@ -99,6 +99,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/analista/glebas-list/gleba-detalhe/gleba-detalhe').then(m => m.AppGlebaDetalheComponent)
   },
   {
+    path:'caderno-campo',
+    loadComponent: () => import('./pages/caderno-campo-page.component/caderno-campo-page.component').then(m => m.CadernoCampoPageComponent)
+  },
+  {
     path: 'acesso-negado',
     component: AcessoNegadoComponent
   },

@@ -43,7 +43,7 @@ export const MENU_ITEMS: MenuItem[] = [
     roles: ['USER_PRODUTOR'],
     children: [
       { route: '/relatorio-atestados', label: 'Atestados', icon: 'verified', roles: ['USER_PRODUTOR'] },
-      { route: '/relatorio-caderno-campo', label: 'Caderno de Campo', icon: 'menu_book', roles: ['USER_PRODUTOR'] }
+      { route: '/caderno-campo', label: 'Caderno de Campo', icon: 'menu_book', roles: ['USER_PRODUTOR'] }
     ]
   },
 
