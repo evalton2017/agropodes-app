@@ -5,16 +5,24 @@
     </div>
   }
 
-  <!-- CABEÇALHO DA TELA -->
-  <div class="page-header">
-    <div class="header-title">
-      <mat-icon class="title-icon">map</mat-icon>
-      <div>
-        <h2>Gestão de Glebas Monitoradas</h2>
-        <p>Listagem e análise de conformidade de imóveis e glebas agrícolas</p>
+  <!-- CABEÇALHO DA TELA (Renderiza apenas se exibirHeader for true) -->
+  @if (exibirHeader) {
+    <div class="page-header">
+      <div class="header-title">
+        <mat-icon class="title-icon">map</mat-icon>
+        <div>
+          <h2>
+            @switch (modoExibicao) {
+              @case ('CLIMA') { Análise Climática de Glebas }
+              @case ('IA_CULTURAS') { Classificação por IA }
+              @default { Gestão de Glebas Monitoradas }
+            }
+          </h2>
+          <p>Listagem e análise de conformidade de imóveis e glebas agrícolas</p>
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   <!-- BARRA DE FILTROS E PESQUISA -->
   <div class="filter-card">
@@ -71,7 +79,12 @@
                 </span>
               </td>
               <td class="text-center">
-                <button mat-icon-button color="primary" (click)="abrirDetalhesGleba(gleba.id_gleba)" title="Ver Detalhes e Auditoria">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="selecionarGleba(gleba)"
+                  title="Ver Detalhes e Auditoria"
+                >
                   <mat-icon>visibility</mat-icon>
                 </button>
               </td>

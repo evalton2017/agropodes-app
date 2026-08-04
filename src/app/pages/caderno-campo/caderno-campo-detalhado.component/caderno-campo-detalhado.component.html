@@ -1,115 +1,212 @@
 <div class="caderno-detalhado-wrapper">
-  <!-- CABEÇALHO DE METADADOS -->
-  <div class="header-caderno">
-    <div class="titulo-bloco">
-      <h2>Caderno de Campo de Safra</h2>
-      <p>Acompanhamento de sensoriamento remoto e parâmetros climáticos (Portaria MAPA 3.7 & 3.8)</p>
+  @if (carregandoCaderno()) {
+    <div class="loading-state-full">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Carregando dados consolidados do Caderno de Campo...</span>
     </div>
-    <div class="badges-status">
-      <span class="badge-safra">Safra: {{ caderno?.safra_ano }}</span>
-      <span class="badge-homologado">
-        <mat-icon>verified</mat-icon> AUDITADO VMG
-      </span>
-    </div>
-  </div>
+  } @else {
+    <!-- 1. CABEÇALHO -->
+    <header class="header-caderno">
+      <div class="titulo-bloco">
+        <h2>
+          @if (focoAbaInicial === 'CLIMA') {
+            Diagnóstico Climático e Sensoriamento Remoto
+          } @else {
+            Caderno de Campo de Safra
+          }
+        </h2>
+        <p>Acompanhamento de sensoriamento remoto e parâmetros climáticos (Portaria MAPA 3.7 & 3.8)</p>
+      </div>
 
-  <!-- CARDS DE MÉTRICAS RÁPIDAS DA SAFRA -->
-  <div class="cards-resumo-grid">
-    <div class="card-metric">
-      <mat-icon class="icon-emerald">eco</mat-icon>
-      <div class="metric-info">
-        <span class="metric-label">Cultura IA</span>
-        <span class="metric-valor">{{ caderno?.analise_vegetativa_ia?.cultura_identificada }}</span>
-        <span class="metric-sub">
-          Confiança: {{ ((caderno?.analise_vegetativa_ia?.assertividade_score || 0) * 100).toFixed(0) }}%
+      <div class="badges-status">
+        <span class="badge-safra">Safra: {{ obterCadernoAtual()?.safra_ano || '2023/2024' }}</span>
+        <span class="badge-homologado">
+          <mat-icon>verified</mat-icon> AUDITADO VMG
         </span>
       </div>
-    </div>
+    </header>
 
-    <!-- 🟢 CORREÇÃO DA CHAVE: total_dias_sem_chuva -->
-    <div class="card-metric">
-      <mat-icon class="icon-amber">wb_sunny</mat-icon>
-      <div class="metric-info">
-        <span class="metric-label">Dias sem Chuva</span>
-        <span class="metric-valor">
-          {{ caderno?.diagnostico_climatico?.total_dias_sem_chuva || 0 }} dias
-        </span>
-        <span class="metric-sub">Estresse Hídrico</span>
-      </div>
-    </div>
-
-    <!-- 🟢 CORREÇÃO DA CHAVE: dias_com_chuvas_excessivas -->
-    <div class="card-metric">
-      <mat-icon class="icon-blue">water_drop</mat-icon>
-      <div class="metric-info">
-        <span class="metric-label">Chuvas Excessivas</span>
-        <span class="metric-valor">
-          {{ caderno?.diagnostico_climatico?.dias_com_chuvas_excessivas || 0 }} dias
-        </span>
-        <span class="metric-sub">> 45mm/dia</span>
-      </div>
-    </div>
-
-    <div class="card-metric">
-      <mat-icon class="icon-purple">analytics</mat-icon>
-      <div class="metric-info">
-        <span class="metric-label">Produtividade Estimada</span>
-        <span class="metric-valor">
-          {{ caderno?.validacao_comercial?.produtividade_estimada_sc_ha || 0 }} sc/ha
-        </span>
-        <span class="metric-sub">
-          Total: {{ caderno?.validacao_comercial?.volume_total_estimado_sacas || 0 }} sacas
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <!-- SUBCOMPONENTE 1: MAPA GRID 3D (Portaria 3.7) -->
-  <div class="secao-componente">
-    <app-mapa-grid-3d [idContrato]="glebaId"></app-mapa-grid-3d>
-  </div>
-
-  <!-- SUBCOMPONENTE 2: ANÁLISE CLIMÁTICA E RELATÓRIO DE SAFRA (Portaria 3.8) -->
-  <div class="secao-componente relatorio-clima-card">
-    <div class="card-header-sub">
-      <mat-icon>cloud_queue</mat-icon>
-      <h3>Diagnóstico Meteorológico e Interpolação INMET (60 Meses)</h3>
-    </div>
-
-    @if (carregandoClima()) {
-      <div class="loading-sub">
-        <mat-spinner diameter="30"></mat-spinner>
-        <span>Triangulando estações do INMET via RBF...</span>
-      </div>
-    } @else if (dadosClima()) {
-      <div class="clima-conteudo">
-        <div class="info-interpolacao">
-          <p>
-            <strong>Período Analisado:</strong>
-            {{ dadosClima()?.metadados_solicitacao?.periodo_analisado }}
-          </p>
-          <p>
-            <strong>Janela:</strong>
-            {{ dadosClima()?.metadados_solicitacao?.janela_meses }} Meses
-          </p>
+    <!-- 2. CARDS DE MÉTRICAS -->
+    <section class="cards-resumo-grid">
+      <div class="card-metric">
+        <div class="metric-icon-wrapper icon-emerald">
+          <mat-icon>eco</mat-icon>
         </div>
+        <div class="metric-info">
+          <span class="metric-label">Cultura IA</span>
+          <span class="metric-valor">
+            {{ obterCadernoAtual()?.analise_vegetativa_ia?.cultura_identificada || 'N/I' }}
+          </span>
+          <span class="metric-sub">
+            Confiança: {{ ((obterCadernoAtual()?.analise_vegetativa_ia?.assertividade_score || 0.88) * 100).toFixed(0) }}%
+          </span>
+        </div>
+      </div>
 
-        <!-- 🟢 CORREÇÃO DO ERRO DE CONSOLA: Navegação Segura e Validação de Objeto -->
-        @if (caderno?.alertas_ambientais_emitidos?.length > 0) {
-          <div class="box-alertas">
-            <div class="alerta-titulo">
-              <mat-icon>warning</mat-icon> Alertas de Eventos Climáticos Extremos
+      <div class="card-metric">
+        <div class="metric-icon-wrapper icon-amber">
+          <mat-icon>wb_sunny</mat-icon>
+        </div>
+        <div class="metric-info">
+          <span class="metric-label">Dias sem Chuva</span>
+          <span class="metric-valor">{{ obterDiasSemChuva() }} dias</span>
+          <span class="metric-sub">Estresse Hídrico</span>
+        </div>
+      </div>
+
+      <div class="card-metric">
+        <div class="metric-icon-wrapper icon-blue">
+          <mat-icon>water_drop</mat-icon>
+        </div>
+        <div class="metric-info">
+          <span class="metric-label">Chuvas Excessivas</span>
+          <span class="metric-valor">{{ obterDiasChuvasExcessivas() }} dias</span>
+          <span class="metric-sub">> 45mm/dia</span>
+        </div>
+      </div>
+
+      <div class="card-metric">
+        <div class="metric-icon-wrapper icon-purple">
+          <mat-icon>analytics</mat-icon>
+        </div>
+        <div class="metric-info">
+          <span class="metric-label">Produtividade Estimada</span>
+          <span class="metric-valor">
+            {{ obterCadernoAtual()?.validacao_comercial?.produtividade_estimada_sc_ha || 0 }} sc/ha
+          </span>
+          <span class="metric-sub">
+            Total: {{ obterCadernoAtual()?.validacao_comercial?.volume_total_estimado_sacas || 0 }} sacas
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MAPA GRID 3D -->
+    <section class="secao-componente mapa-container-card">
+      <app-mapa-grid-3d [idContrato]="glebaId"></app-mapa-grid-3d>
+    </section>
+
+    <!-- 4. RELATÓRIO METEOROLÓGICO EXPANDIDO (INMET 60 MESES) -->
+    <section class="secao-componente relatorio-clima-card">
+      <div class="card-header-sub">
+        <mat-icon>cloud_queue</mat-icon>
+        <h3>Diagnóstico Meteorológico e Interpolação INMET (60 Meses)</h3>
+      </div>
+
+      @if (carregandoClima()) {
+        <div class="loading-state-sub">
+          <mat-spinner diameter="28"></mat-spinner>
+          <span>Triangulando estações do INMET via RBF/IDW para a gleba {{ glebaId }}...</span>
+        </div>
+      } @else if (dadosClima()) {
+        <div class="clima-conteudo">
+          <!-- BARRA DE METADADOS DA INTERPOLAÇÃO -->
+          <div class="info-interpolacao">
+            <div class="item-info">
+              <span class="label">Período Analisado:</span>
+              <span class="valor">
+                {{ dadosClima()?.metadados_solicitacao?.data_inicio | date:'dd/MM/yyyy' }} até {{ dadosClima()?.metadados_solicitacao?.data_fim | date:'dd/MM/yyyy' }}
+              </span>
             </div>
-            @for (alerta of caderno?.alertas_ambientais_emitidos; track $index) {
-              @if (alerta) {
+
+            <div class="item-info">
+              <span class="label">Janela:</span>
+              <span class="valor">
+                {{ dadosClima()?.metadados_solicitacao?.janela_meses || 60 }} Meses
+              </span>
+            </div>
+
+            <div class="item-info">
+              <span class="label">Algoritmo:</span>
+              <span class="badge-tech">{{ dadosClima()?.metadados_solicitacao?.metodo || 'Interpolação RBF/IDW' }}</span>
+            </div>
+          </div>
+
+          <!-- 🟢 NOVO: TOTAIS ACUMULADOS DOS 60 MESES -->
+          @if (dadosClima()?.totais_periodo) {
+            <div class="metricas-clima-grid">
+              <div class="box-metrica">
+                <span class="sublabel">Precipitação Acumulada</span>
+                <span class="val-destaque text-blue">
+                  {{ dadosClima()?.totais_periodo?.precipitacao_acumulada_mm | number:'1.0-0':'pt-BR' }} mm
+                </span>
+              </div>
+
+              <div class="box-metrica">
+                <span class="sublabel">Temperatura Média</span>
+                <span class="val-destaque text-amber">
+                  {{ dadosClima()?.totais_periodo?.temperatura_media_c | number:'1.1-1':'pt-BR' }} °C
+                </span>
+              </div>
+
+              <div class="box-metrica">
+                <span class="sublabel">Velocidade Média do Vento</span>
+                <span class="val-destaque text-cyan">
+                  {{ dadosClima()?.totais_periodo?.velocidade_vento_media_ms | number:'1.1-1':'pt-BR' }} m/s
+                </span>
+              </div>
+
+              <div class="box-metrica">
+                <span class="sublabel">Rede de Triangulação</span>
+                <span class="val-destaque text-slate">
+                  {{ dadosClima()?.estacoes_proximas?.length || 3 }} Estações INMET
+                </span>
+              </div>
+            </div>
+          }
+
+          <!-- 🟢 NOVO: TABELA DE ACUMULADO ANUAL (PORTARIA ITEM 3.8.a) -->
+          @if ((dadosClima()?.historico_acumulado_anual?.length || 0) > 0) {
+            <div class="secao-historico-anual">
+              <h4 class="subtitulo-tabela">Evolução Histórica por Safra / Ano</h4>
+              <div class="table-responsive">
+                <table class="tabela-clima-anual">
+                  <thead>
+                  <tr>
+                    <th>Ano / Safra</th>
+                    <th class="text-right">Precipitação Total (mm)</th>
+                    <th class="text-right">Temp. Média (°C)</th>
+                    <th class="text-right">Vento Médio (m/s)</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of dadosClima()?.historico_acumulado_anual; track item.ano) {
+                      <tr>
+                        <td class="font-bold">{{ item.ano }}</td>
+                        <td class="text-right text-blue font-bold">{{ item.chuva_mm | number:'1.1-1':'pt-BR' }} mm</td>
+                        <td class="text-right text-amber">{{ item.temp_c | number:'1.1-1':'pt-BR' }} °C</td>
+                        <td class="text-right text-slate">{{ item.vento_ms | number:'1.1-1':'pt-BR' }} m/s</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+
+          <!-- ALERTAS CLIMÁTICOS -->
+          @if ((dadosClima()?.alertas_emitidos?.length || 0) > 0 || (obterCadernoAtual()?.alertas_ambientais_emitidos?.length || 0) > 0) {
+            <div class="box-alertas">
+              <div class="alerta-titulo">
+                <mat-icon>warning</mat-icon>
+                <span>Alertas de Eventos Climáticos Extremos Mapeados</span>
+              </div>
+
+              @for (alerta of dadosClima()?.alertas_emitidos; track $index) {
                 <div class="alerta-item">
                   • <strong>{{ alerta?.evento }}:</strong> {{ alerta?.descricao }}
                 </div>
               }
-            }
-          </div>
-        }
-      </div>
-    }
-  </div>
+
+              @for (alertaCaderno of obterCadernoAtual()?.alertas_ambientais_emitidos; track $index) {
+                <div class="alerta-item">
+                  • <strong>{{ alertaCaderno?.evento }}:</strong> {{ alertaCaderno?.descricao }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </section>
+  }
 </div>

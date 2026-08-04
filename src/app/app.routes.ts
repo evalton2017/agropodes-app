@@ -3,20 +3,17 @@ import {HomeComponent} from './pages/home/home.component';
 import {ConsultaCarComponent} from './pages/consulta-car/consulta-car.component';
 import {ConsultaProdesComponent} from './pages/descontinuados/consulta-prodes/consulta-prodes.component';
 import {CadastraTerritorioComponent} from './pages/descontinuados/cadastrar-territorio.ts/cadastra-territorio.ts';
-import {
-  ConsultaTerritorioComponent
-} from './pages/descontinuados/consulta-territorio.component/consulta-territorio.component';
 import {authGuard} from './auth/auth.guard';
 import {ConsultaAnaliseComponent} from './pages/descontinuados/anlista/consulta-analise.component';
 import {AcessoNegadoComponent} from './pages/acesso-negado/acesso-negado.component';
 import {CadastroComponent} from './pages/cadastro/cadastro.component';
 import {RelatorioDetalheCarComponent} from './pages/relatorios/produtor/detalhe-car/relatorio-detalhe-car.component';
 import {RelatorioAnalistaComponent} from './pages/relatorios/analista/relatorio-analista.component';
-import {ConsultaAnaliseProdutorComponent} from './pages/descontinuados/produtor/consulta-analise-produtor.component';
 import {CadastroGlebaComponent} from './pages/produtor/cadastro-gleba/cadastro-gleba.component';
 import {ConsultaGlebaComponent} from './pages/produtor/consulta-gleba/consulta-gleba';
 import {PainelAnaliseComponent} from './pages/produtor/painel-analise.component/painel-analise.component';
 import {AtestadosPageComponent} from './pages/relatorios/produtor/atestados-page.component.ts/atestados-page.component';
+import {ClimaPageComponent} from './pages/analista/monitoramento/clima/clima-page.component';
 
 
 export const routes: Routes = [
@@ -89,6 +86,12 @@ export const routes: Routes = [
     component: RelatorioAnalistaComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] }
+  },
+  {
+    path: 'monitoramento-clima',
+    component: ClimaPageComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_ANALISTA'] }
   },
   {
     path: 'glebas',

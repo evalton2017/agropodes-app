@@ -1,4 +1,4 @@
-import { Component, inject, effect, signal } from '@angular/core';
+import { Component, inject, effect, signal, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,9 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs/operators';
-import {DashboardAnalistaService} from '../../dashboard/service/dashboard-analista.service';
-import {DashboardFiltroService} from '../../dashboard/service/dashboard-filtro.service';
 
+import { DashboardAnalistaService } from '../../dashboard/service/dashboard-analista.service';
+import { DashboardFiltroService } from '../../dashboard/service/dashboard-filtro.service';
 
 export interface GlebaItemDTO {
   id_gleba: number;
@@ -40,6 +40,14 @@ export class AppGlebasListComponent {
   private readonly filtroGlobalService = inject(DashboardFiltroService);
   private readonly router = inject(Router);
 
+  // 🟢 ENTRADAS PARA DIVERSIFICAR O USO DO COMPONENTE REUTILIZÁVEL
+  @Input() modoExibicao: 'GERAL' | 'CLIMA' | 'IA_CULTURAS' | 'ZARC' = 'GERAL';
+  @Input() modoSelecao: 'ROTA' | 'EMIT' = 'ROTA';
+  @Input() exibirHeader: boolean = true;
+
+  // 🟢 SAÍDA DISPARADA AO CLICAR NO ÍCONE DE AÇÃO (QUANDO EM MODO 'EMIT')
+  @Output() onSelecionarGleba = new EventEmitter<GlebaItemDTO>();
+
   public glebas = signal<GlebaItemDTO[]>([]);
   public carregando = signal<boolean>(false);
   public filtroTexto: string = '';
@@ -54,8 +62,11 @@ export class AppGlebasListComponent {
   private carregarGlebas(filtros: any): void {
     this.carregando.set(true);
 
-    // Chamada unificada enviando os filtros do header + texto de busca local
-    this.apiService.obterGlebasListagem({ ...filtros, busca: this.filtroTexto })
+    this.apiService.obterGlebasListagem({
+      ...filtros,
+      busca: this.filtroTexto,
+      contexto: this.modoExibicao
+    })
       .pipe(finalize(() => this.carregando.set(false)))
       .subscribe({
         next: (res: any) => {
@@ -74,8 +85,15 @@ export class AppGlebasListComponent {
     this.carregarGlebas(filtrosGlobal);
   }
 
-  public abrirDetalhesGleba(idGleba: number): void {
-    this.router.navigate(['/glebas/detalhe', idGleba]);
+  /**
+   * Trata a seleção da gleba conforme o modo configurado no pai
+   */
+  public selecionarGleba(gleba: GlebaItemDTO): void {
+    if (this.modoSelecao === 'EMIT') {
+      this.onSelecionarGleba.emit(gleba);
+    } else {
+      this.router.navigate(['/glebas/detalhe', gleba.id_gleba]);
+    }
   }
 
   protected obterClasseBadge(status: string): string {

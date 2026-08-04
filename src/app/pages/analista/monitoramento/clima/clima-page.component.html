@@ -1,0 +1,31 @@
+<div class="clima-container">
+  @if (!glebaSelecionada()) {
+    <!-- FASE 1: Listagem no padrão Gestão de Glebas Monitoradas -->
+    <header class="header-secao">
+      <h2 class="header-titulo">Análise e Diagnóstico Climático</h2>
+      <p class="header-subtitulo">
+        Selecione uma gleba para visualizar a interpolação de dados do INMET e o mapa interativo
+      </p>
+    </header>
+
+    <app-glebas-list
+      [modoExibicao]="'CLIMA'"
+      [modoSelecao]="'EMIT'"
+      [exibirHeader]="false"
+      (onSelecionarGleba)="abrirDetalhamento($event)"
+    ></app-glebas-list>
+  } @else {
+    <!-- FASE 2: Visão de Detalhamento com foco em Parâmetros Climáticos -->
+    <div class="voltar-bar">
+      <button class="btn-voltar" type="button" (click)="voltarParaListagem()">
+        <span class="icone-seta">←</span> Voltar para Listagem de Glebas
+      </button>
+    </div>
+
+    <app-caderno-campo-detalhado
+      [glebaId]="glebaSelecionada()!.id_gleba"
+      [caderno]="glebaSelecionada()"
+      [focoAbaInicial]="'CLIMA'"
+    ></app-caderno-campo-detalhado>
+  }
+</div>

@@ -1,58 +1,82 @@
 // ==============================================================================
-// DETALHES DO CADERNO DE CAMPO
+// CADERNO DE CAMPO DETALHADO (PERFIL ANALISTA / CLIMA)
 // ==============================================================================
+
 .caderno-detalhado-wrapper {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 
-  /* Header do Caderno */
+  // States de Carregamento
+  .loading-state-full,
+  .loading-state-sub {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .loading-state-full {
+    padding: 3rem;
+    background: #ffffff;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    justify-content: center;
+  }
+
+  // ----------------------------------------------------------------------------
+  // 1. CABEÇALHO DA TELA
+  // ----------------------------------------------------------------------------
   .header-caderno {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    background: #ffffff;
-    padding: 1.25rem 1.5rem;
-    border-radius: 1rem;
-    border: 1px solid #e2e8f0;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
 
     .titulo-bloco {
       h2 {
-        margin: 0;
         font-size: 1.25rem;
-        font-weight: 800;
+        font-weight: 700;
         color: #0f172a;
+        margin: 0;
       }
+
       p {
-        margin: 0.25rem 0 0 0;
-        font-size: 0.8125rem;
+        font-size: 0.85rem;
         color: #64748b;
+        margin: 0.25rem 0 0 0;
       }
     }
 
     .badges-status {
       display: flex;
+      align-items: center;
       gap: 0.5rem;
 
       .badge-safra {
-        background: #f1f5f9;
+        background-color: #f1f5f9;
         color: #334155;
+        font-weight: 600;
+        padding: 0.35rem 0.85rem;
+        border-radius: 1rem;
         font-size: 0.75rem;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 999px;
+        border: 1px solid #cbd5e1;
       }
 
       .badge-homologado {
-        background: #ecfdf5;
-        color: #047857;
-        font-size: 0.75rem;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 999px;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 0.3rem;
+        background-color: #dcfce7;
+        color: #15803d;
+        font-weight: 700;
+        padding: 0.35rem 0.85rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        border: 1px solid #bbf7d0;
 
         mat-icon {
           font-size: 16px;
@@ -63,7 +87,9 @@
     }
   }
 
-  /* Grid de Cards de Métricas */
+  // ----------------------------------------------------------------------------
+  // 2. GRID DE CARDS DE MÉTRICAS
+  // ----------------------------------------------------------------------------
   .cards-resumo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -71,24 +97,53 @@
 
     .card-metric {
       background: #ffffff;
-      padding: 1.25rem;
-      border-radius: 1rem;
       border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1.25rem;
       display: flex;
       align-items: center;
       gap: 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-      mat-icon {
-        font-size: 28px;
-        width: 28px;
-        height: 28px;
-        padding: 10px;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+
+      .metric-icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
         border-radius: 0.75rem;
 
-        &.icon-emerald { background: #ecfdf5; color: #059669; }
-        &.icon-amber { background: #fffbeb; color: #d97706; }
-        &.icon-blue { background: #eff6ff; color: #2563eb; }
-        &.icon-purple { background: #faf5ff; color: #7c3aed; }
+        mat-icon {
+          font-size: 26px;
+          width: 26px;
+          height: 26px;
+        }
+
+        &.icon-emerald {
+          background-color: #ecfdf5;
+          color: #10b981;
+        }
+
+        &.icon-amber {
+          background-color: #fffbeb;
+          color: #f59e0b;
+        }
+
+        &.icon-blue {
+          background-color: #eff6ff;
+          color: #3b82f6;
+        }
+
+        &.icon-purple {
+          background-color: #faf5ff;
+          color: #8b5cf6;
+        }
       }
 
       .metric-info {
@@ -96,100 +151,133 @@
         flex-direction: column;
 
         .metric-label {
-          font-size: 0.6875rem;
-          font-weight: 700;
-          color: #94a3b8;
+          font-size: 0.75rem;
+          color: #64748b;
+          font-weight: 600;
           text-transform: uppercase;
+          letter-spacing: 0.02em;
         }
 
         .metric-valor {
-          font-size: 1.125rem;
+          font-size: 1.25rem;
           font-weight: 800;
           color: #0f172a;
-          margin: 2px 0;
+          margin-top: 0.1rem;
         }
 
         .metric-sub {
-          font-size: 0.6875rem;
-          color: #64748b;
+          font-size: 0.725rem;
+          color: #94a3b8;
+          margin-top: 0.15rem;
         }
       }
     }
   }
 
-  /* Seções dos Subcomponentes */
-  .secao-componente {
-    background: #ffffff;
-    border-radius: 1rem;
-    border: 1px solid #e2e8f0;
-    overflow: hidden;
+  // ----------------------------------------------------------------------------
+  // 3. CARD DE RELATÓRIO E DIAGNÓSTICO METEOROLÓGICO
+  // ----------------------------------------------------------------------------
+  .relatorio-clima-card {
+    .clima-conteudo {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
 
-    &.relatorio-clima-card {
-      padding: 1.25rem 1.5rem;
+      .metricas-clima-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
 
-      .card-header-sub {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-        color: #0f172a;
-
-        mat-icon {
-          color: #0284c7;
-        }
-
-        h3 {
-          margin: 0;
-          font-size: 1rem;
-          font-weight: 700;
-        }
-      }
-
-      .loading-sub {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1.5rem 0;
-        color: #64748b;
-        font-size: 0.8125rem;
-      }
-
-      .clima-conteudo {
-        .info-interpolacao {
-          display: flex;
-          gap: 1.5rem;
-          font-size: 0.8125rem;
-          color: #334155;
-          margin-bottom: 1rem;
-        }
-
-        .box-alertas {
-          background: #fffbeb;
-          border: 1px solid #fef3c7;
-          border-radius: 0.75rem;
+        .box-metrica {
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 0.5rem;
           padding: 1rem;
+          display: flex;
+          flex-direction: column;
 
-          .alerta-titulo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8125rem;
-            font-weight: 700;
-            color: #b45309;
-            margin-bottom: 0.5rem;
-
-            mat-icon {
-              font-size: 18px;
-              width: 18px;
-              height: 18px;
-              color: #d97706;
-            }
+          .sublabel {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
           }
 
-          .alerta-item {
-            font-size: 0.75rem;
-            color: #92400e;
-            margin-left: 1.6rem;
+          .val-destaque {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-top: 0.25rem;
+
+            &.text-blue {
+              color: #0284c7;
+            }
+
+            &.text-amber {
+              color: #d97706;
+            }
+
+            &.text-cyan {
+              color: #0891b2;
+            }
+
+            &.text-slate {
+              color: #475569;
+            }
+          }
+        }
+      }
+
+      .secao-historico-anual {
+        .subtitulo-tabela {
+          font-size: 0.875rem;
+          font-weight: 700;
+          color: #334155;
+          margin: 0 0 0.75rem 0;
+        }
+
+        .table-responsive {
+          overflow-x: auto;
+        }
+
+        .tabela-clima-anual {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.85rem;
+
+          th, td {
+            padding: 0.65rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+          }
+
+          th {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            text-align: left;
+          }
+
+          tbody tr:hover {
+            background-color: #f8fafc;
+          }
+
+          .text-right {
+            text-align: right;
+          }
+
+          .font-bold {
+            font-weight: 700;
+          }
+
+          .text-blue {
+            color: #0284c7;
+          }
+
+          .text-amber {
+            color: #d97706;
+          }
+
+          .text-slate {
+            color: #64748b;
           }
         }
       }
