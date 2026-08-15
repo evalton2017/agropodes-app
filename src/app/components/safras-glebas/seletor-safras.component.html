@@ -1,0 +1,27 @@
+<div class="seletor-safras-container">
+  <span class="seletor-titulo">HISTÓRICO DE 60 MESES – SELECIONE A SAFRA</span>
+
+  @if (!carregando) {
+    <div class="safras-grid animate-fade-in">
+      @for (s of safrasMapeadas; track s.id_safra) {
+        <button
+          type="button"
+          class="btn-safra"
+          [class.selected]="safraAtiva?.id_safra === s.id_safra"
+          (click)="selecionarSafra(s)"
+        >
+          <span class="diamond-icon">◆</span>
+          <span class="safra-label">{{ s.label }}</span>
+          <span class="status-tag">{{ s.status }}</span>
+        </button>
+      } @empty {
+        <div class="empty-safras">Nenhuma safra disponível para esta gleba.</div>
+      }
+    </div>
+  } @else {
+    <div class="safras-loading">
+      <span class="pulse-dot"></span>
+      <span>Carregando histórico de safras...</span>
+    </div>
+  }
+</div>

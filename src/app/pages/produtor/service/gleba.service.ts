@@ -1,17 +1,22 @@
-import {inject, Injectable, signal} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
 import {GlebeApiResponse} from '../../../dto/response/gleba.response';
 import {environment} from '../../../../environments/environment';
 import {CadastroGlebaResponse} from '../../../dto/response/cadastro-gleba.response';
-import {AnaliseClimatica} from '../../../dto/response/analise-climatica';
 import {
   CalculoAreaResponse,
-  CarFeicoesAmbientaisResponse, DominioCultura, GlebaData, GlebaPainel, JanelaGeralZarcResponse,
-  MunicipioResponse, RespostaConsultaGlebasPainel, ValidarZarcRequest, ValidarZarcSimplificadoResponse
+  CarFeicoesAmbientaisResponse,
+  DominioCultura,
+  GlebaData,
+  JanelaGeralZarcResponse,
+  MunicipioResponse,
+  RespostaConsultaGlebasPainel, SafrasGlebaAPIResponse,
+  ValidarZarcRequest,
+  ValidarZarcSimplificadoResponse
 } from '../model/gleba.model';
 import {GlebaItem} from '../../dashboard/model/dashboard-produtor.model';
-
+import {RasterMetadadosResponse} from '../model/raster.model';
 
 
 @Injectable({
@@ -19,6 +24,27 @@ import {GlebaItem} from '../../dashboard/model/dashboard-produtor.model';
 })
 export class GlebaService {
   private readonly http = inject(HttpClient);
+
+  buscarSafra(idGleba: number): Observable<SafrasGlebaAPIResponse> {
+    return this.http.get<SafrasGlebaAPIResponse>(
+      `${environment.urlProc}/gleba/${idGleba}/safras`
+    );
+  }
+
+  obterMetadadosRaster(idRaster: number | string): Observable<RasterMetadadosResponse> {
+    return this.http.get<RasterMetadadosResponse>(
+      `${environment.urlProc}/gleba/raster/${idRaster}/metadados`
+    );
+  }
+
+
+  downloadRasterArrayBuffer(idRaster: number | string): Observable<ArrayBuffer> {
+    return this.http.get(
+      `${environment.urlProc}/gleba/analise-ambiental/raster/${idRaster}/download`,
+      { responseType: 'arraybuffer' }
+    );
+  }
+
 
   buscarDetalhesCar(numeroCar: string): Observable<CarFeicoesAmbientaisResponse> {
     return this.http.get<CarFeicoesAmbientaisResponse>(
@@ -64,10 +90,9 @@ export class GlebaService {
     return this.http.get<JanelaGeralZarcResponse>(`${environment.urlProc}/produtor/janela-geral`, { params });
   }
 
-  obterPainelGerencialGlebas(idProdutor: number, safra: string): Observable<RespostaConsultaGlebasPainel> {
+  obterPainelGerencialGlebas(idProdutor: number): Observable<RespostaConsultaGlebasPainel> {
     const params = new HttpParams()
       .set('id_produtor', idProdutor.toString())
-      .set('safra', safra.trim());
 
     return this.http.get<RespostaConsultaGlebasPainel>(`${environment.urlProc}/produtor/${idProdutor}/consulta-glebas`, { params });
   }
@@ -78,14 +103,6 @@ export class GlebaService {
     return this.http.get<GlebaItem[]>(`${environment.urlProc}/produtor/${idProdutor}/glebas`, { params });
   }
 
-  getGlebaById(idGleba: number): Observable<GlebeApiResponse & { coordenadas: [number, number][] }> {
-    return this.http.get<GlebeApiResponse>(`${environment.urlProc}/produtor/gleba/${idGleba}`).pipe(
-      map(response => ({
-        ...response,
-        coordenadas: this.parseWktPolygon(response.geometria)
-      }))
-    );
-  }
 
   getGlebasByProdutorId(idProdutor: number): Observable<(GlebeApiResponse & { coordenadas: [number, number][] })[]> {
     return this.http.get<GlebeApiResponse[]>(`${environment.urlProc}/produtor/${idProdutor}/glebas`).pipe(
@@ -93,21 +110,6 @@ export class GlebaService {
         return response.map(gleba => ({
           ...gleba,
           coordenadas: this.parseGeometriaHexOuWkt(gleba.geometria)
-        }));
-      })
-    );
-  }
-
-  getGlebasByProdutorIdPanel(idProdutor: number): Observable<GlebaPainel[]> {
-    return this.http.get<GlebeApiResponse[]>(`${environment.urlProc}/produtor/${idProdutor}/glebas`).pipe(
-      map((response: GlebeApiResponse[]): GlebaPainel[] => {
-        const lista = Array.isArray(response) ? response : [response];
-
-        return lista.map(gleba => ({
-          ...gleba,
-          coordenadas: this.parseGeometriaHexOuWkt(gleba.geometria),
-          indicadores: signal<AnaliseClimatica | null>(null),
-          carregandoIndicadores: signal<boolean>(false)
         }));
       })
     );

@@ -65,26 +65,12 @@
     </div>
 
     <!-- 3. BARRA DE BOTÕES DE SAFRA (Exibida após selecionar uma gleba) -->
-    @if (glebaSelecionada()) {
+    @if (glebaSelecionada(); as gleba) {
       <div class="vmg-safra-buttons-container">
-        <span class="vmg-filter-label">HISTÓRICO DE 60 MESES — SELECIONE A SAFRA</span>
-
-        <div class="vmg-safra-buttons-row">
-          @for (safra of listaSafras(); track safra; let isFirst = $first) {
-            <button
-              type="button"
-              class="vmg-btn-safra"
-              [class.active]="safraSelecionada() === safra"
-              (click)="selecionarSafra(safra)">
-
-              <span class="vmg-diamond">◆</span>
-              <span class="vmg-safra-text">{{ safra }}</span>
-              <span class="vmg-safra-status">
-                {{ isFirst ? 'Vigente' : 'Concluída' }}
-              </span>
-            </button>
-          }
-        </div>
+        <app-seletor-safras
+          [idGleba]="gleba.idGleba"
+          (safraSelecionada)="onSafraSelecionadaDoComponente($event)">
+        </app-seletor-safras>
       </div>
     }
 

@@ -55,7 +55,6 @@ export class DashboardProdutorDetalhesComponent {
 
       if (!user || !user.id) return;
 
-      // Inicia o estado de loading antes da requisição
       this.carregando.set(true);
 
       forkJoin({
@@ -77,4 +76,6 @@ export class DashboardProdutorDetalhesComponent {
         });
     });
   }
+
+
 }

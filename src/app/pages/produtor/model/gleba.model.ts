@@ -166,3 +166,17 @@ export interface DominioCultura {
   permite_zarc: boolean;
   data_cadastro: string; // ISO 8601 Timestamp string
 }
+
+
+export interface SafrasGlebaAPIResponse {
+  safra_principal: string;
+  safras: string[];
+}
+
+export interface SafraItem {
+  id_safra: string;
+  label: string;
+  status: string;
+  vigente: boolean;
+}
+

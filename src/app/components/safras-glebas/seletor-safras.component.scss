@@ -1,0 +1,122 @@
+/* =========================================================================
+   SELETOR REUTILIZÁVEL DE SAFRAS (PADRÃO GREEN CARBON)
+   ========================================================================= */
+.seletor-safras-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  width: 100%;
+
+  .seletor-titulo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--lima, #a3e635); /* Verde Lima */
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* GRID DOS BOTÕES DE SAFRA */
+  .safras-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  /* BOTÃO INDIVIDUAL DE SAFRA */
+  .btn-safra {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12));
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    color: var(--white-80, rgba(255, 255, 255, 0.8));
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+
+    .diamond-icon {
+      font-size: 0.6rem;
+      color: var(--white-40, rgba(255, 255, 255, 0.4));
+      transition: color 0.2s ease;
+    }
+
+    .safra-label {
+      font-weight: 600;
+    }
+
+    .status-tag {
+      font-size: 0.75rem;
+      color: var(--white-60, rgba(255, 255, 255, 0.6));
+      font-weight: 400;
+    }
+
+    &:hover {
+      border-color: var(--lima, #a3e635);
+      background: rgba(163, 230, 53, 0.08);
+      color: var(--white, #ffffff);
+
+      .diamond-icon {
+        color: var(--lima, #a3e635);
+      }
+    }
+
+    /* ESTADO SELECIONADO / ATIVO */
+    &.selected {
+      background: var(--lima, #a3e635) !important;
+      color: var(--night, #06120e) !important;
+      border-color: var(--lima, #a3e635) !important;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(163, 230, 53, 0.25);
+
+      .diamond-icon,
+      .status-tag {
+        color: var(--night, #06120e) !important;
+        font-weight: 600;
+      }
+    }
+  }
+
+  /* FEEDBACK DE CARREGAMENTO */
+  .safras-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--white-60, rgba(255, 255, 255, 0.6));
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--lima, #a3e635);
+      animation: pulse 1.5s infinite;
+    }
+  }
+
+  .empty-safras {
+    font-size: 0.8rem;
+    color: var(--white-60, rgba(255, 255, 255, 0.6));
+    font-style: italic;
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}

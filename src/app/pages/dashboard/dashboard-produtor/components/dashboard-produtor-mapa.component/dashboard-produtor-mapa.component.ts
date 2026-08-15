@@ -11,9 +11,12 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { lastValueFrom } from 'rxjs';
+
 import { GlebaGeometriaResponse } from '../../../model/dashboard-produtor.model';
 import * as wktParser from 'terraformer-wkt-parser';
+import {GlebaService} from '../../../../produtor/service/gleba.service';
+import {RasterMetadadosResponse} from '../../../../produtor/model/raster.model';
 
 @Component({
   selector: 'app-dashboard-produtor-mapa',
@@ -29,7 +32,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   public modoVisualizacao: 'NDVI' | 'RGB' = 'NDVI';
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly http = inject(HttpClient);
+  private readonly glebaService = inject(GlebaService);
 
   private map: any;
   private geoJsonLayer: any;
@@ -37,9 +40,10 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   private legendaControl: any;
   private LeafletCore: any;
 
-  // Referências para libs geográficas
   private parseGeorasterFn: any;
   private GeoRasterLayerClass: any;
+
+  private metadadosRasterAtivo?: RasterMetadadosResponse;
 
   private readonly latPadrao = -13.975810;
   private readonly lonPadrao = -59.757567;
@@ -62,7 +66,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   private async inicializarMapaVisualizacao(): Promise<void> {
     try {
       const leafletModule = await import('leaflet');
-      this.LeafletCore = (leafletModule.default || leafletModule) as any;
+      this.LeafletCore = leafletModule.default || leafletModule;
 
       const georasterModule = await import('georaster');
       this.parseGeorasterFn = georasterModule.default || georasterModule;
@@ -77,7 +81,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         zoomControl: true
       });
 
-      // Mosaico Base de Satélite (Esri World Imagery)
       this.LeafletCore.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         {
@@ -87,7 +90,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         }
       ).addTo(this.map);
 
-      // Camada de Polígonos das Glebas
       this.geoJsonLayer = this.LeafletCore.geoJSON(null, {
         style: (feature: any) => this.obterEstiloPoligono(feature),
         onEachFeature: (feature: any, layer: any) => this.vincularPopupInformativo(feature, layer),
@@ -109,42 +111,48 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   private async carregarRasterSateliteSafra(): Promise<void> {
     if (!this.map || !this.glebas || this.glebas.length === 0 || !this.parseGeorasterFn) return;
 
-    let urlRasterGeoTiff = '';
+    let idRasterTarget: number | string | null = null;
+
+    // Extrai o ID do raster associado às glebas
     for (const g of this.glebas) {
       const rp = g.rasterPeriodo || (g as any).raster_periodo;
-      if (rp && (rp.rasterUrl || rp.raster_url)) {
-        urlRasterGeoTiff = rp.rasterUrl || rp.raster_url;
+      if (rp && (rp.idRaster || rp.id_raster)) {
+        idRasterTarget = rp.idRaster || rp.id_raster;
         break;
       }
     }
 
-    if (!urlRasterGeoTiff) {
+    // Limpeza da camada raster anterior
+    if (this.rasterLayer) {
+      if (this.map.hasLayer(this.rasterLayer)) {
+        this.map.removeLayer(this.rasterLayer);
+      }
+      this.rasterLayer = null;
+    }
+
+    if (!idRasterTarget) {
+      this.metadadosRasterAtivo = undefined;
       this.atualizarHTMLLegenda();
+      this.cdr.detectChanges();
       return;
     }
 
     try {
-      if (this.rasterLayer) {
-        this.map.removeLayer(this.rasterLayer);
-        this.rasterLayer = null;
-      }
+      // 🟢 PASSO 1 VIA SERVICE: Obter Metadados puros + Hash SHA-256
+      this.metadadosRasterAtivo = await lastValueFrom(
+        this.glebaService.obterMetadadosRaster(idRasterTarget)
+      );
 
-      // 1. Download do GeoTIFF
-      const timestamp = new Date().getTime();
-      const urlComCacheBust = urlRasterGeoTiff.includes('?')
-        ? `${urlRasterGeoTiff}&_t=${timestamp}`
-        : `${urlRasterGeoTiff}?_t=${timestamp}`;
-
-      const arrayBuffer = await this.http
-        .get(urlComCacheBust, { responseType: 'arraybuffer' })
-        .toPromise();
+      // 🟢 PASSO 2 VIA SERVICE: Download do ArrayBuffer do GeoTIFF
+      const arrayBuffer = await lastValueFrom(
+        this.glebaService.downloadRasterArrayBuffer(idRasterTarget)
+      );
 
       if (!arrayBuffer || arrayBuffer.byteLength === 0) return;
 
-      // 2. Parse do GeoTIFF
+      // 🟢 PASSO 3: Parse e Renderização do Raster no Leaflet
       const georasterParsed = await this.parseGeorasterFn(arrayBuffer);
 
-      // 3. OBRIGATÓRIO: Garante transparência na camada de contorno GeoJSON
       if (this.geoJsonLayer) {
         this.geoJsonLayer.setStyle({
           fill: false,
@@ -155,7 +163,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         });
       }
 
-      // 4. Mapeamento dinâmico do Raster no Leaflet
       this.rasterLayer = new this.GeoRasterLayerClass({
         georaster: georasterParsed,
         opacity: 0.88,
@@ -163,44 +170,28 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         pixelValuesToColorFn: (values: any) => {
           if (!values || !Array.isArray(values)) return null;
 
-          // --- CASO 1: GeoTIFF de 3 Bandas (RGB de 0 a 255) ---
-          if (values.length >= 3) {
-            let r = typeof values[0] === 'number' ? values[0] : values[0]?.[0] || 0;
-            let g = typeof values[1] === 'number' ? values[1] : values[1]?.[0] || 0;
-            let b = typeof values[2] === 'number' ? values[2] : values[2]?.[0] || 0;
-
-            r = Math.round(r);
-            g = Math.round(g);
-            b = Math.round(b);
-
-            // Pixels de fundo / NoData (0,0,0) ficam transparentes
-            if ((r === 0 && g === 0 && b === 0) || isNaN(r)) {
-              return null;
-            }
-
-            return `rgba(${r}, ${g}, ${b}, 0.88)`;
-          }
-
-          // --- CASO 2: GeoTIFF de 1 Banda (Valores brutos de NDVI ou Float) ---
           let val = typeof values[0] === 'number' ? values[0] : values[0]?.[0];
 
-          if (val === undefined || val === null || isNaN(val) || val === 0) {
-            return null; // Sem dados / Fora do recorte
-          }
+          // Trata pixels sem dados/transparentes
+          if (val === undefined || val === null || isNaN(val) || val === 0) return null;
 
-          // Normalização caso os valores venham em escala 0..255 ou -1.0..+1.0
+          // 🟢 Normaliza se o valor do GeoTIFF vier em Digital Numbers (0..10000) ou Byte (0..255)
           let ndvi = val;
-          if (val > 2.0) {
-            ndvi = (val - 128) / 128.0; // Mapeia byte para faixa -1 a +1
+          if (val > 2.0 && val <= 255) {
+            ndvi = (val - 128) / 128.0;
+          } else if (val > 255) {
+            ndvi = val / 10000.0;
           }
 
-          // RENDERIZAÇÃO DA PALETA NDVI CONFORME A LEGENDA
-          if (ndvi < 0.20) {
-            return 'rgba(185, 28, 28, 0.88)';  // Solo Exposto (Vermelho)
-          } else if (ndvi >= 0.20 && ndvi < 0.50) {
-            return 'rgba(234, 179, 8, 0.88)';  // Vegetação Rala / Inicial (Amarelo)
+          // 🟢 Com o NDVI correto de 0.4314, o pixel cairá na faixa de Vegetação Moderada / Em Desenvolvimento
+          if (ndvi < 0.15) {
+            return '#d73027'; // Solo Exposto (Vermelho)
+          } else if (ndvi >= 0.15 && ndvi < 0.35) {
+            return '#fee08b'; // Vegetação Rala / Baixa (Amarelo)
+          } else if (ndvi >= 0.35 && ndvi < 0.45) {
+            return '#a6d96a'; // Vegetação Moderada (Verde Claro) -> FAIXA CORRETA PARA 0.4314
           } else {
-            return 'rgba(22, 163, 74, 0.88)';   // Vegetação Densa / Lavoura (Verde)
+            return '#1a9850'; // Lavoura Densa (Verde Escuro)
           }
         }
       });
@@ -215,19 +206,21 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       this.cdr.detectChanges();
 
     } catch (err) {
-      console.error('Erro ao renderizar GeoTIFF no Leaflet:', err);
+      console.error('Erro ao buscar metadados/raster via GlebaService:', err);
+      this.metadadosRasterAtivo = undefined;
       this.atualizarHTMLLegenda();
+      this.cdr.detectChanges();
     }
   }
 
   private obterEstiloPoligono(feature: any): any {
     const statusVmg = feature?.properties?.status;
-    let corBorda = '#16a34a'; // Verde
+    let corBorda = '#16a34a';
 
     if (statusVmg === 'NAO_CONFORME') {
-      corBorda = '#dc2626'; // Vermelho
+      corBorda = '#dc2626';
     } else if (statusVmg === 'ATENCAO') {
-      corBorda = '#ea580c'; // Laranja
+      corBorda = '#ea580c';
     }
 
     return {
@@ -258,11 +251,14 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     const totalAtencao = this.glebas.filter(g => g.statusVmg === 'ATENCAO').length;
     const totalNaoConforme = this.glebas.filter(g => g.statusVmg === 'NAO_CONFORME').length;
 
-    const glebaComRaster = this.glebas.find(g => g.rasterPeriodo?.dataCaptura);
-    const dataCaptura = glebaComRaster?.rasterPeriodo?.dataCaptura;
+    // Exibe a data de captura e nuvens vindas da API de metadados
+    const dataCaptura = this.metadadosRasterAtivo?.data_captura;
+    const cloudCover = this.metadadosRasterAtivo?.cloud_cover !== undefined
+      ? (this.metadadosRasterAtivo.cloud_cover * 100).toFixed(2)
+      : null;
 
     const headerRasterHtml = dataCaptura
-      ? `<div class="legend-header-title">📸 Sentinel-2: ${dataCaptura}</div>`
+      ? `<div class="legend-header-title">📸 Sentinel-2: ${dataCaptura} ${cloudCover !== null ? `(${cloudCover}% nuvens)` : ''}</div>`
       : '';
 
     container.innerHTML = `
@@ -315,8 +311,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       } as any);
 
       this.geoJsonLayer.setStyle((feature: any) => this.obterEstiloPoligono(feature));
-
-      // 🟢 ATUALIZA A LEGENDA LOGO APÓS DESENHAR OS POLÍGONOS
       this.atualizarHTMLLegenda();
 
       const limites = this.geoJsonLayer.getBounds();

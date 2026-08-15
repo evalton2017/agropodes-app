@@ -1,39 +1,5 @@
 <div class="consulta-glebas-main-container">
 
-  <!-- BARRA DE FILTROS SUPERIOR PADRONIZADA -->
-  <div class="vmg-filter-bar-container">
-    <div class="filter-actions-row">
-
-      <mat-form-field appearance="outline" class="vmg-mat-field">
-        <mat-label>Safra</mat-label>
-        <mat-select [(value)]="filtroSafra">
-          @for (safra of listaSafras; track safra) {
-            <mat-option [value]="safra">{{ safra }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="vmg-mat-field">
-        <mat-label>Período</mat-label>
-        <mat-date-range-input [formGroup]="rangeData" [rangePicker]="picker">
-          <input matStartDate formControlName="inicio" placeholder="Início">
-          <input matEndDate formControlName="fim" placeholder="Fim">
-        </mat-date-range-input>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
-
-      <button mat-flat-button color="primary" class="vmg-btn-filter" (click)="aplicarFiltros()">
-        <mat-icon>filter_list</mat-icon> Filtrar
-      </button>
-
-      <button mat-stroked-button class="vmg-btn-clear" (click)="limparFiltros()">
-        Limpar filtros
-      </button>
-
-    </div>
-  </div>
-
   <!-- SEÇÃO DE CARREGAMENTO ASSÍNCRONO -->
   @if (carregando()) {
     <div class="vmg-loading-overlay-box">
@@ -43,76 +9,7 @@
   }
 
   @if (dadosPainel(); as painel) {
-    <!-- SEÇÃO SUPERIOR: CARDS DE KPIS QUANTITATIVOS -->
-    <div class="vmg-kpi-dashboard-grid">
 
-      <!-- Total Cadastradas -->
-      <div class="kpi-card-item border-green">
-        <div class="kpi-icon-wrapper bg-light-green">
-          <mat-icon class="txt-green">eco</mat-icon>
-        </div>
-        <div class="kpi-content-info">
-          <span class="kpi-title-label">Glebas Cadastradas</span>
-          <span class="kpi-number-value">{{ painel.kpis.totalCadastradas }}</span>
-          <span class="kpi-subtext text-muted">100% do total</span>
-        </div>
-      </div>
-
-      <!-- Conformes -->
-      <div class="kpi-card-item border-blue">
-        <div class="kpi-icon-wrapper bg-light-blue">
-          <mat-icon class="txt-blue">verified</mat-icon>
-        </div>
-        <div class="kpi-content-info">
-          <span class="kpi-title-label">Conformes</span>
-          <span class="kpi-number-value">{{ painel.kpis.totalConformes }}</span>
-          <span class="kpi-subtext text-green">
-            {{ obterPorcentagem(painel.kpis.totalConformes, painel.kpis.totalCadastradas) }}% do total
-          </span>
-        </div>
-      </div>
-
-      <!-- Em Análise -->
-      <div class="kpi-card-item border-orange">
-        <div class="kpi-icon-wrapper bg-light-orange">
-          <mat-icon class="txt-orange">schedule</mat-icon>
-        </div>
-        <div class="kpi-content-info">
-          <span class="kpi-title-label">Em Análise</span>
-          <span class="kpi-number-value">{{ painel.kpis.totalEmAnalise }}</span>
-          <span class="kpi-subtext text-orange">
-            {{ obterPorcentagem(painel.kpis.totalEmAnalise, painel.kpis.totalCadastradas) }}% do total
-          </span>
-        </div>
-      </div>
-
-      <!-- Alertas -->
-      <div class="kpi-card-item border-red">
-        <div class="kpi-icon-wrapper bg-light-red">
-          <mat-icon class="txt-red">warning</mat-icon>
-        </div>
-        <div class="kpi-content-info">
-          <span class="kpi-title-label">Alertas</span>
-          <span class="kpi-number-value">{{ painel.kpis.totalAlertas }}</span>
-          <span class="kpi-subtext text-red">
-            {{ obterPorcentagem(painel.kpis.totalAlertas, painel.kpis.totalCadastradas) }}% do total
-          </span>
-        </div>
-      </div>
-
-      <!-- Próxima Validação -->
-      <div class="kpi-card-item border-purple">
-        <div class="kpi-icon-wrapper bg-light-purple">
-          <mat-icon class="txt-purple">calendar_month</mat-icon>
-        </div>
-        <div class="kpi-content-info">
-          <span class="kpi-title-label">Próxima Validação</span>
-          <span class="kpi-number-value long-date">{{ painel.kpis.proximaValidacao }}</span>
-          <span class="kpi-subtext text-muted">Próxima análise agendada</span>
-        </div>
-      </div>
-
-    </div>
 
     <!-- SEÇÃO INFERIOR: TABELA DE RESULTADOS GERENCIAIS -->
     <div class="vmg-table-card-wrapper">

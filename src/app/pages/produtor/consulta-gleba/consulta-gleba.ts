@@ -1,7 +1,6 @@
-// app/dashboard-produtor/components/consulta-gleba/consulta-gleba.component.ts
 import {Component, computed, DestroyRef, effect, inject, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {ReactiveFormsModule} from '@angular/forms';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -12,7 +11,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {GlebaService} from '../service/gleba.service';
 import {PessoaService} from '../../../service/pessoa.service';
-import {GlebaData, ItemTabelaGleba, RespostaConsultaGlebasPainel} from '../model/gleba.model';
+import {GlebaData, RespostaConsultaGlebasPainel} from '../model/gleba.model';
 import {GlebaDetalheComponent} from '../gleba-detalhe/gleba-detalhe';
 
 
@@ -38,26 +37,18 @@ export class ConsultaGlebaComponent implements OnInit {
   private readonly pessoaService = inject(PessoaService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public rangeData = new FormGroup({
-    inicio: new FormControl<Date | null>(new Date('2026-06-01')),
-    fim: new FormControl<Date | null>(new Date('2026-06-30')),
-  });
-
-  public filtroSafra = '2026/2027';
-  public listaSafras: string[] = ['2025/2026', '2026/2027', '2027/2028'];
-
   public carregando = signal<boolean>(false);
   public dadosPainel = signal<RespostaConsultaGlebasPainel | null>(null);
   produtorLogado = computed(() => this.pessoaService.produtorAtual());
   public glebaSelecionada = signal<GlebaData | null>(null);
 
-  // NOVOS ESTADOS REATIVOS PARA CONTROLE DE BUSCA E PAGINAÇÃO
+
   public termoBusca = signal<string>('');
   public paginaAtual = signal<number>(1);
   public itensPorPagina = signal<number>(5);
   public opcoesItensPorPagina: number[] = [];
 
-  // FILTRO INTELIGENTE: Filtra os registros conforme digitação na barra de busca
+
   glebasFiltradas = computed(() => {
     const painel = this.dadosPainel();
     if (!painel) return [];
@@ -107,29 +98,15 @@ export class ConsultaGlebaComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public aplicarFiltros(): void {
-    const produtor = this.produtorLogado();
-    if (produtor && produtor.id) {
-      this.carregarDadosPainel(produtor.id);
-    }
-  }
-
-  public limparFiltros(): void {
-    this.filtroSafra = '2026/2027';
-    this.rangeData.setValue({ inicio: new Date('2026-06-01'), fim: new Date('2026-06-30') });
-    this.termoBusca.set('');
-    this.paginaAtual.set(1);
-    this.aplicarFiltros();
-  }
 
   private carregarDadosPainel(idProdutor: number): void {
     this.carregando.set(true);
-    this.produtorService.obterPainelGerencialGlebas(idProdutor, this.filtroSafra)
+    this.produtorService.obterPainelGerencialGlebas(idProdutor)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resposta) => {
           this.dadosPainel.set(resposta);
-          this.paginaAtual.set(1); // Reseta para a primeira página ao recarregar a safra
+          this.paginaAtual.set(1);
           this.carregando.set(false);
         },
         error: (err) => {
@@ -139,11 +116,10 @@ export class ConsultaGlebaComponent implements OnInit {
       });
   }
 
-  // EVENTOS DE MANIPULAÇÃO DA PAGINAÇÃO
   public atualizarTermoBusca(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.termoBusca.set(input.value);
-    this.paginaAtual.set(1); // Reseta a paginação ao digitar
+    this.paginaAtual.set(1); 
   }
 
   public alterarPagina(novaPagina: number): void {
@@ -154,10 +130,9 @@ export class ConsultaGlebaComponent implements OnInit {
 
   public alterarItensPorPagina(event: any): void {
     this.itensPorPagina.set(event.value);
-    this.paginaAtual.set(1); // Reseta para a página 1 ao alterar a amostragem
+    this.paginaAtual.set(1);
   }
 
-  // OPERADORES DE AÇÕES DA TABELA (PRESERVADOS)
   public visualizarGleba(idGleba: number): void {
     this.produtorService.obterDetalheLaudoGleba(idGleba).subscribe({
       next: (res) => {
@@ -168,10 +143,6 @@ export class ConsultaGlebaComponent implements OnInit {
   public editarGleba(idGleba: number): void { console.log(`Abrir formulário de reajuste agronômico: ${idGleba}`); }
   public baixarAtestado(idGleba: number): void { console.log(`Disparar download do PDF/A do Ledger: ${idGleba}`); }
 
-  public obterPorcentagem(valor: number | undefined, total: number | undefined): number {
-    if (!valor || !total) return 0;
-    return Math.round((valor / total) * 100);
-  }
 
   protected readonly Math = Math;
 }

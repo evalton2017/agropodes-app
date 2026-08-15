@@ -29,6 +29,8 @@ import { DashboardProdutorResumoComponent } from './components/dashboard-produto
 import { DashboardProdutorDetalhesComponent } from './components/dashboard-produtor-detalhes.component/dashboard-produtor-detalhes.component';
 import { DashboardProdutividadeComponent } from './components/dashboard-produtividade/dashboard-produtividade';
 import { DashboardClimaComponent } from './components/dashboard-clima.component/dashboard-clima.component';
+import {SeletorSafrasComponent} from '../../../components/safras-glebas/seletor-safras.component';
+import {SafraItem} from '../../produtor/model/gleba.model';
 
 @Component({
   selector: 'app-dashboard-produtor',
@@ -41,7 +43,8 @@ import { DashboardClimaComponent } from './components/dashboard-clima.component/
     DashboardProdutorResumoComponent,
     DashboardProdutorDetalhesComponent,
     DashboardProdutividadeComponent,
-    DashboardClimaComponent
+    DashboardClimaComponent,
+    SeletorSafrasComponent
   ],
   templateUrl: './dashboard-produtor.html',
   styleUrls: ['./dashboard-produtor.scss']
@@ -82,7 +85,7 @@ export class DashboardProdutorComponent implements OnInit {
         // 1. Carrega as glebas do produtor
         this.carregarGlebasProdutor(id);
 
-        // 2. Carrega as safras
+        // 2. Carrega as safras-glebas
         this.carregarSafrasEInicializar(id);
       }
     });
@@ -121,7 +124,7 @@ export class DashboardProdutorComponent implements OnInit {
   }
 
   /**
-   * Busca as safras disponíveis do produtor na API
+   * Busca as safras-glebas disponíveis do produtor na API
    */
   private carregarSafrasEInicializar(idProdutor: number): void {
     this.produtorService.obterSafrasDisponiveis(idProdutor)
@@ -135,7 +138,7 @@ export class DashboardProdutorComponent implements OnInit {
           // Carrega o resumo geral consolidado (sem filtro de glebas)
           this.carregarResumoGeral(idProdutor, safraInicial);
         },
-        error: (err) => console.error('Erro ao buscar safras dinâmicas:', err)
+        error: (err) => console.error('Erro ao buscar safras-glebas dinâmicas:', err)
       });
   }
 
@@ -188,6 +191,23 @@ export class DashboardProdutorComponent implements OnInit {
         },
         error: (err) => console.error('Erro ao processar resumo do produtor:', err)
       });
+  }
+
+
+  public onSafraSelecionadaDoComponente(safraItem: SafraItem): void {
+    const idProdutor = this.produtor()?.id;
+    if (!idProdutor) return;
+
+    this.safraSelecionada.set(safraItem.id_safra);
+    const glebaId = this.glebaSelecionada()?.idGleba;
+
+    // Atualiza o resumo geral do produtor
+    this.carregarResumoGeral(idProdutor, safraItem.id_safra);
+
+    // Recarrega o dashboard específico da gleba selecionada
+    if (glebaId) {
+      this.publicarFiltrosEBuscarDados(idProdutor, safraItem.id_safra, glebaId);
+    }
   }
 
   /**

@@ -36,7 +36,7 @@ export class SaidaPlataformaComponent {
       title: 'Classificação de culturas',
       badge: 'CLASSIFICAÇÃO POR IA',
       detailTitle: 'Qual cultura foi efetivamente plantada',
-      detailText: 'A cultura declarada é confrontada com a cultura observada na série multiespectral do talhão. A verificação alcança a safra vigente e as cinco safras anteriores, sem vistoria presencial.',
+      detailText: 'A cultura declarada é confrontada com a cultura observada na série multiespectral do talhão. A verificação alcança a safra vigente e as cinco safras-glebas anteriores, sem vistoria presencial.',
       footnote: 'Talhões classificados por cultura - exemplo de saída do módulo. Valores exibidos como exemplo de estrutura de saída, não referentes a uma área real.',
       items: [
         { label: 'Soja', value: '31.668', percent: 90, colorClass: 'bar-lima' },
@@ -53,12 +53,12 @@ export class SaidaPlataformaComponent {
       badge: 'PRODUTIVIDADE POR TALHÃO',
       detailTitle: 'Produtividade do talhão em sacas por hectare',
       detailText: 'A quantificação é individualizada por talhão, não por média regional, e serve para conferir se o volume que o produtor deseja comercializar é compatível com o que a área efetivamente produziu.',
-      footnote: 'Faixa das cinco safras anteriores contra o ciclo vigente. Valores exibidos como exemplo de estrutura de saída, não referentes a uma área real.',
+      footnote: 'Faixa das cinco safras-glebas anteriores contra o ciclo vigente. Valores exibidos como exemplo de estrutura de saída, não referentes a uma área real.',
       items: [
         { label: 'Soja · safra vigente', value: '62,4 sc/ha', percent: 88, colorClass: 'bar-lima' },
-        { label: 'Soja · média 5 safras', value: '58,1 sc/ha', percent: 80, colorClass: 'bar-safra' },
+        { label: 'Soja · média 5 safras-glebas', value: '58,1 sc/ha', percent: 80, colorClass: 'bar-safra' },
         { label: 'Milho · safra vigente', value: '118,7 sc/ha', percent: 72, colorClass: 'bar-ambar' },
-        { label: 'Milho · média 5 safras', value: '111,2 sc/ha', percent: 66, colorClass: 'bar-safra' }
+        { label: 'Milho · média 5 safras-glebas', value: '111,2 sc/ha', percent: 66, colorClass: 'bar-safra' }
       ]
     },
     clima: {

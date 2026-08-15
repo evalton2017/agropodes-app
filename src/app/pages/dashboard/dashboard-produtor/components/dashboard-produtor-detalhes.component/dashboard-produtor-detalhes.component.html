@@ -1,15 +1,17 @@
 <div class="vmg-dashboard-row-two">
 
   <!-- Componente 1: Mapa da Situação Ambiental -->
-  <div class="vmg-widget-col col-mapa">
+  <div class="vmg-widget-col col-mapa relative">
     @if (carregando()) {
-      <div class="vmg-loading-card">
+      <div class="vmg-loading-overlay">
         <mat-spinner diameter="36"></mat-spinner>
-        <span>Carregando dados geosspeciais...</span>
+        <span>Carregando dados geoespaciais...</span>
       </div>
-    } @else {
-      <app-dashboard-produtor-mapa [glebas]="dadosMapa()"></app-dashboard-produtor-mapa>
     }
+
+    <app-dashboard-produtor-mapa
+      [glebas]="dadosMapa()">
+    </app-dashboard-produtor-mapa>
   </div>
 
   <!-- Componente 2: Tabela de Resumo de Conformidade -->
