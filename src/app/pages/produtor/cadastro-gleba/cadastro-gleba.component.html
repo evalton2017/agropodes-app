@@ -30,13 +30,16 @@
                   <mat-label>Nome da Gleba *</mat-label>
                   <input matInput formControlName="nome_gleba">
                 </mat-form-field>
+
+                <!-- Campo do Nome da Propriedade vindo do CAR -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Nome da Propriedade (CAR)</mat-label>
+                  <input matInput formControlName="nome_propriedade" readonly>
+                </mat-form-field>
+
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Código Interno</mat-label>
                   <input matInput formControlName="codigo_interno">
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Matrícula / Transcrição</mat-label>
-                  <input matInput formControlName="matricula_transcricao">
                 </mat-form-field>
               </div>
               <div class="grid-column">
@@ -264,8 +267,10 @@
           </mat-card>
 
           <div class="legal-notice-box">
-            <mat-checkbox checked="true" disabled="true">
+            <mat-checkbox checked="true" color="primary">
+            <span class="legal-text">
               Declaro consentimento regulatório nos termos da LGPD para este dispositivo assinar criptograficamente esta transação distribuída, anexando-a imutavelmente ao livro-razão (Ledger Audit).
+            </span>
             </mat-checkbox>
           </div>
 

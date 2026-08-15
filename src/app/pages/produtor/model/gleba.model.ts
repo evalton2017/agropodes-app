@@ -13,7 +13,10 @@ export interface DetalhamentoAmbiental {
 
 export interface CarFeicoesAmbientaisResponse {
   status: string;
+  descricao_status: string;
+  ultima_atualizacao: Date;
   cod_imovel: string;
+  nom_imovel: string;
   area_total_declarada_ha: number;
   geometria: string;
   detalhamento_ambiental: DetalhamentoAmbiental;

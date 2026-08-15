@@ -70,7 +70,7 @@ export const routes: Routes = [
     data: { roles: ['USER_PRODUTOR'] }
   },
   {
-    path: 'relatorio-atestados',
+    path: 'atestados-produtor',
     component: AtestadosPageComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_PRODUTOR'] }

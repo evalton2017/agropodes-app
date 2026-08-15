@@ -1,38 +1,263 @@
-/* app/dashboard-produtor/components/dashboard-produtor.scss */
-
 .dashboard-produtor-main {
   width: 100%;
   min-height: 100vh;
-  background-color: #f8fafc;
-  padding: 1.5rem;
+  background-color: var(--night, #030a07);
+  padding: 1.5rem 2rem;
   box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-display, 'Space Grotesk', 'Inter', sans-serif);
+  color: #ffffff;
 
-  .vmg-filter-bar-container {
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  .vmg-dashboard-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
 
-    .filter-actions-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-
-      .vmg-mat-field {
-        margin-bottom: -1.25rem; // Neutraliza o espaçamento inferior nativo do material form-field
-        min-width: 180px;
+    .vmg-title-group {
+      .vmg-page-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0 0 0.4rem 0;
+        letter-spacing: -0.5px;
       }
 
-      .vmg-btn-filter {
-        background-color: #16a34a !important; // Cor padrão Agro Brasil
-        height: 48px;
-        border-radius: 8px;
-        font-weight: 600;
+      .vmg-page-subtitle {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+
+    /* SEÇÃO DE SELEÇÃO DE GLEBAS */
+    .vmg-glebas-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 0.5rem;
+
+      .vmg-section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+        letter-spacing: -0.3px;
+      }
+
+      .vmg-section-subtitle {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin: -0.5rem 0 0.5rem 0;
+      }
+
+      .vmg-glebas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+        width: 100%;
+
+        .vmg-card-gleba {
+          background-color: rgba(18, 26, 22, 0.7);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 12px;
+          padding: 1.25rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          cursor: pointer;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          backdrop-filter: blur(8px);
+
+          &:hover {
+            border-color: rgba(163, 230, 53, 0.5);
+            background-color: rgba(18, 26, 22, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+          }
+
+          /* CARD SELECIONADO */
+          &.selected {
+            border-color: #a3e635;
+            background-color: rgba(163, 230, 53, 0.05);
+            box-shadow: 0 0 16px rgba(163, 230, 53, 0.15);
+
+            .vmg-card-gleba-footer {
+              .vmg-btn-select {
+                background-color: #a3e635;
+                color: #06120e;
+                font-weight: 700;
+              }
+            }
+          }
+
+          .vmg-card-gleba-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0.75rem;
+
+            .vmg-gleba-id {
+              font-family: var(--font-mono, 'JetBrains Mono', monospace);
+              font-weight: 700;
+              font-size: 0.95rem;
+              color: #ffffff;
+            }
+
+            .vmg-badge-status {
+              font-family: var(--font-mono, 'JetBrains Mono', monospace);
+              font-size: 0.68rem;
+              font-weight: 700;
+              padding: 3px 8px;
+              border-radius: 4px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              background-color: rgba(239, 68, 68, 0.15);
+              color: #ef4444;
+              border: 1px solid rgba(239, 68, 68, 0.3);
+
+              &.conforme {
+                background-color: rgba(18, 183, 106, 0.15);
+                color: #12b76a;
+                border: 1px solid rgba(18, 183, 106, 0.3);
+              }
+            }
+          }
+
+          .vmg-card-gleba-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+
+            p {
+              margin: 0;
+              font-size: 0.8rem;
+              color: rgba(255, 255, 255, 0.7);
+              font-family: var(--font-mono, 'JetBrains Mono', monospace);
+
+              strong {
+                color: rgba(255, 255, 255, 0.4);
+                font-weight: 500;
+              }
+            }
+          }
+
+          .vmg-card-gleba-footer {
+            margin-top: auto;
+            padding-top: 0.5rem;
+
+            .vmg-btn-select {
+              width: 100%;
+              padding: 8px 12px;
+              border-radius: 6px;
+              border: 1px solid rgba(255, 255, 255, 0.15);
+              background-color: rgba(255, 255, 255, 0.05);
+              color: rgba(255, 255, 255, 0.8);
+              font-family: var(--font-mono, 'JetBrains Mono', monospace);
+              font-size: 0.75rem;
+              cursor: pointer;
+              transition: all 0.2s ease;
+
+              &:hover {
+                border-color: rgba(163, 230, 53, 0.5);
+                color: #ffffff;
+              }
+            }
+          }
+        }
+      }
+
+      .vmg-empty-box {
+        padding: 3rem 2rem;
+        text-align: center;
+        background: rgba(18, 26, 22, 0.4);
+        border: 1px dashed rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+
+        p {
+          margin: 0;
+          color: rgba(255, 255, 255, 0.5);
+          font-family: var(--font-mono, 'JetBrains Mono', monospace);
+          font-size: 0.85rem;
+        }
+      }
+    }
+
+    /* BARRA DE BOTÕES DE SAFRA (ESTILO MOCKUP TERMINAL VMG) */
+    .vmg-safra-buttons-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+
+      .vmg-filter-label {
+        font-family: var(--font-mono, 'JetBrains Mono', monospace);
+        font-size: 0.72rem;
+        color: #12b76a;
+        letter-spacing: 1.2px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .vmg-safra-buttons-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+
+        .vmg-btn-safra {
+          background-color: rgba(18, 26, 22, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 6px;
+          padding: 8px 16px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          color: rgba(255, 255, 255, 0.6);
+          font-family: var(--font-mono, 'JetBrains Mono', monospace);
+          font-size: 0.82rem;
+
+          .vmg-diamond {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.3);
+          }
+
+          .vmg-safra-text {
+            font-weight: 700;
+          }
+
+          .vmg-safra-status {
+            font-size: 0.72rem;
+            opacity: 0.8;
+          }
+
+          &:hover {
+            border-color: rgba(163, 230, 53, 0.5);
+            color: #ffffff;
+            background-color: rgba(163, 230, 53, 0.05);
+          }
+
+          /* BOTÃO ATIVO (SELECIONADO) */
+          &.active {
+            background-color: #a3e635 !important;
+            border-color: #a3e635 !important;
+            color: #06120e !important;
+            font-weight: 700;
+            box-shadow: 0 0 12px rgba(163, 230, 53, 0.3);
+
+            .vmg-diamond {
+              color: #06120e !important;
+            }
+
+            .vmg-safra-status {
+              color: #06120e !important;
+              font-weight: 600;
+            }
+          }
+        }
       }
     }
   }
@@ -43,18 +268,16 @@
     flex-direction: column;
     gap: 1.5rem;
 
-    /* Grid Layout para empenhar os componentes de Produtividade e ClimaPageComponent lado a lado */
     .vmg-analytics-row {
       display: flex;
       flex-direction: row;
       gap: 1.5rem;
       width: 100%;
-      box-sizing: border-box;
 
       app-dashboard-produtividade,
       app-dashboard-clima {
         flex: 1 1 calc(50% - 0.75rem);
-        min-width: 0; // Previne o estouro de largura na renderização do ChartJS
+        min-width: 0;
       }
     }
 
@@ -64,20 +287,24 @@
       align-items: center;
       justify-content: center;
       padding: 6rem 2rem;
+      background: rgba(18, 26, 22, 0.6);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
 
       p {
-        margin-top: 1rem;
-        color: #64748b;
-        font-weight: 500;
+        margin-top: 1.25rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-family: var(--font-mono, 'JetBrains Mono', monospace);
+        font-size: 0.85rem;
       }
 
       .vmg-spinner {
-        width: 36px;
-        height: 36px;
-        border: 4px solid #e2e8f0;
-        border-top-color: #16a34a;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #a3e635;
         border-radius: 50%;
-        animation: spin 0.9s linear infinite;
+        animation: spin 0.8s linear infinite;
       }
     }
   }
@@ -85,16 +312,4 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-
-/* Breakpoint para Tablets e Smartphones: colapsa o grid analítico em coluna única */
-@media (max-width: 1024px) {
-  .dashboard-produtor-main .dashboard-content-body .vmg-analytics-row {
-    flex-direction: column;
-
-    app-dashboard-produtividade,
-    app-dashboard-clima {
-      flex: 1 1 100%;
-    }
-  }
 }

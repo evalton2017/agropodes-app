@@ -1,0 +1,150 @@
+<mat-toolbar class="mat-header header">
+  <!-- Logo e Marca -->
+  <div class="logo-wrapper">
+    <img [src]="resolveImageUrl('images/logo.png')" alt="Logo AgroProdes" class="logo-img">
+    <span class="logo-text">AgroProdes</span>
+  </div>
+
+  <!-- Menu de Navegação Central (Desktop) -->
+  <nav class="nav-menu desktop-only">
+    <a href="#" class="nav-link">A Plataforma</a>
+
+    <!-- Dropdown Soluções -->
+    <a class="nav-link active" [matMenuTriggerFor]="menuSolucoes">
+      Soluções <mat-icon class="arrow-icon">keyboard_arrow_down</mat-icon>
+    </a>
+    <mat-menu #menuSolucoes="matMenu" panelClass="custom-dropdown-panel" xPosition="after">
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Verificação Agrícola</span>
+        <span class="dropdown-desc">Gleba, centroide e classificação de cultura</span>
+      </button>
+
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Monitoramento de Safra</span>
+        <span class="dropdown-desc">Contratos, GeoTIFF e caderno de campo</span>
+      </button>
+
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Assessoramento Digital</span>
+        <span class="dropdown-desc">Janela de plantio e manejo de solo</span>
+      </button>
+
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Atestados VMG</span>
+        <span class="dropdown-desc">Identificador Único e imutabilidade</span>
+      </button>
+    </mat-menu>
+
+    <a href="#" class="nav-link">Tecnologia</a>
+
+    <!-- Dropdown Conformidade -->
+    <a class="nav-link" [matMenuTriggerFor]="menuConformidade">
+      Conformidade <mat-icon class="arrow-icon">keyboard_arrow_down</mat-icon>
+    </a>
+    <mat-menu #menuConformidade="matMenu" panelClass="custom-dropdown-panel" xPosition="after">
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Portaria 739/2025</span>
+        <span class="dropdown-desc">Matriz de conformidade requisito por requisito</span>
+      </button>
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Camadas Oficiais</span>
+        <span class="dropdown-desc">As quinze bases de restrição e proteção</span>
+      </button>
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Segurança e Auditoria</span>
+        <span class="dropdown-desc">Normas, criptografia e disponibilidade</span>
+      </button>
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Transparência</span>
+        <span class="dropdown-desc">Acurácia, SLA e calendário de manutenções</span>
+      </button>
+    </mat-menu>
+
+    <!-- Dropdown Para Quem -->
+    <a class="nav-link" [matMenuTriggerFor]="menuParaQuem">
+      Para Quem <mat-icon class="arrow-icon">keyboard_arrow_down</mat-icon>
+    </a>
+    <mat-menu #menuParaQuem="matMenu" panelClass="custom-dropdown-panel" xPosition="after">
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Produtor Rural</span>
+        <span class="dropdown-desc">Atestado, crédito e caderno de campo</span>
+      </button>
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Instituições Financeiras</span>
+        <span class="dropdown-desc">Análise de crédito rural e conformidade de carteira</span>
+      </button>
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">MAPA e Reguladores</span>
+        <span class="dropdown-desc">Monitoramento fim a fim e exportação de metadados</span>
+      </button>
+      <button mat-menu-item class="dropdown-item">
+        <span class="dropdown-title">Tradings e Cooperativas</span>
+        <span class="dropdown-desc">Cadeia de custódia e agregação por IU</span>
+      </button>
+    </mat-menu>
+
+    <a href="#" class="nav-link">Empresa</a>
+  </nav>
+
+  <!-- Botões de Ação Direita (Desktop) -->
+  <div class="actions-wrapper desktop-only">
+    <button mat-stroked-button class="btn-consultar" (click)="fazerLogin()">
+      <mat-icon class="icon-shield">verified_user</mat-icon>
+      <span>Consultar atestado</span>
+    </button>
+
+    <button mat-flat-button class="btn-especialista" (click)="abrirModalContato()">
+      <span>Falar com especialista</span>
+    </button>
+
+    <button mat-stroked-button class="btn-cadastrar" (click)="cadastrarUsuario()">
+      <mat-icon>person_add</mat-icon>
+      <span>Cadastrar</span>
+    </button>
+
+    <button mat-flat-button class="btn-entrar" (click)="fazerLogin()">
+      <mat-icon>login</mat-icon>
+      <span>Entrar</span>
+    </button>
+  </div>
+
+  <!-- Botão Hambúrguer (Mobile Only) -->
+  <button class="mobile-menu-btn mobile-only" (click)="menuMobileAberto = !menuMobileAberto" aria-label="Abrir Menu">
+    <mat-icon>{{ menuMobileAberto ? 'close' : 'menu' }}</mat-icon>
+  </button>
+</mat-toolbar>
+
+<!-- Overlay / Drawer do Menu Mobile -->
+<div class="mobile-drawer" [class.open]="menuMobileAberto">
+  <nav class="mobile-nav">
+    <a href="#" class="mobile-link" (click)="menuMobileAberto = false">A Plataforma</a>
+    <a href="#" class="mobile-link" (click)="menuMobileAberto = false">Soluções</a>
+    <a href="#" class="mobile-link" (click)="menuMobileAberto = false">Tecnologia</a>
+    <a href="#" class="mobile-link" (click)="menuMobileAberto = false">Conformidade</a>
+    <a href="#" class="mobile-link" (click)="menuMobileAberto = false">Para Quem</a>
+    <a href="#" class="mobile-link" (click)="menuMobileAberto = false">Empresa</a>
+  </nav>
+
+  <div class="mobile-actions">
+    <button mat-flat-button class="btn-entrar w-full" (click)="fazerLogin(); menuMobileAberto = false">
+      <mat-icon>login</mat-icon>
+      <span>Entrar</span>
+    </button>
+    <button mat-flat-button class="btn-especialista w-full" (click)="abrirModalContato(); menuMobileAberto = false">
+      <span>Falar com especialista</span>
+    </button>
+    <button mat-stroked-button class="btn-consultar w-full" (click)="fazerLogin(); menuMobileAberto = false">
+      <mat-icon>verified_user</mat-icon>
+      <span>Consultar atestado</span>
+    </button>
+    <button mat-stroked-button class="btn-cadastrar w-full" (click)="cadastrarUsuario(); menuMobileAberto = false">
+      <mat-icon>person_add</mat-icon>
+      <span>Cadastrar</span>
+    </button>
+  </div>
+</div>
+
+<!-- Conteúdo Principal -->
+<main class="content">
+  <app-conteudo-home></app-conteudo-home>
+</main>

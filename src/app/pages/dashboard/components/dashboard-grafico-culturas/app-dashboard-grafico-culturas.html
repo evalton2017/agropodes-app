@@ -1,36 +1,35 @@
-<div class="dashboard-chart-card relative min-h-[300px]">
+<div class="dashboard-chart-card relative min-h-[320px]">
 
   @if (carregando()) {
-    <div class="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+    <div class="absolute inset-0 bg-[#0b1a10]/80 flex items-center justify-center z-10 rounded-xl">
       <mat-spinner diameter="40"></mat-spinner>
     </div>
   }
 
   @if (erro()) {
-    <div class="p-6 text-center text-red-500">Não foi possível carregar as culturas.</div>
+    <div class="p-6 text-center text-red-400 font-medium">Não foi possível carregar as culturas.</div>
   } @else {
     <h4 class="card-title-custom">Contratos por Cultura</h4>
+
     <div class="donut-chart-container">
 
-      <!-- Lado Esquerdo: Rosca Centralizada -->
+      <!-- Lado Esquerdo: Rosca Centralizada com tamanho travado -->
       <div class="canvas-donut-wrapper">
         <canvas #canvasCultura></canvas>
         <div class="donut-inner-labels">
           <p class="donut-total-value">{{ totalContratosCultura() }}</p>
-          <p class="donut-total-text">Total</p>
+          <p class="donut-total-text">TOTAL</p>
         </div>
       </div>
 
-      <!-- Lado Direito: Legendas -->
+      <!-- Lado Direito: Legenda -->
       <div class="donut-legend-column">
         @for (item of dadosCulturasComPercentual(); track item.cultura; let i = $index) {
           <div class="legend-row">
             <div class="legend-label-group">
-              <!-- Pega a cor correspondente mapeada no array do Chart.js -->
-              <span class="dot-cor-cultura" [style.background-color]="['#16a34a', '#eab308', '#a855f7', '#f97316', '#2563eb', '#94a3b8'][i]"></span>
-              <span class="legend-bulle">{{ item.cultura }}</span>
+              <span class="dot-cor-cultura" [style.background-color]="['#10b981', '#eab308', '#a855f7', '#f97316', '#3b82f6', '#94a3b8'][i]"></span>
+              <span class="legend-bullet-text">{{ item.cultura }}</span>
             </div>
-            <!-- Exibe o percentual calculado com o símbolo '%' -->
             <span class="legend-percentage">{{ item.percentual }}%</span>
           </div>
         }

@@ -10,12 +10,12 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: 'dashboard',
     roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
   },
-  {
+ /* {
     route: '/consulta-car',
     label: 'Consulta CAR',
     icon: 'grain',
     roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
-  },
+  },*/
 
   // ==========================================
   // MENUS EXCLUSIVOS: PRODUTOR
@@ -30,22 +30,47 @@ export const MENU_ITEMS: MenuItem[] = [
     ]
   },
   {
-    label: 'Análises',
-    icon: 'rate_review',
+    label: 'Verificação Agrícola',
+    icon: 'thunderstorm',
     roles: ['USER_PRODUTOR'],
-    children: [
-      { route: '/consulta-analise-produtor', label: 'Situação', icon: 'info', roles: ['USER_PRODUTOR'] }
-    ]
+    route: '/verificacao-agricola'
   },
   {
-    label: 'Relatórios',
-    icon: 'description',
+    label: 'Monitoramento',
+    icon: 'trending_up',
     roles: ['USER_PRODUTOR'],
-    children: [
-      { route: '/relatorio-atestados', label: 'Atestados', icon: 'verified', roles: ['USER_PRODUTOR'] },
-      { route: '/caderno-campo', label: 'Caderno de Campo', icon: 'menu_book', roles: ['USER_PRODUTOR'] }
-    ]
+    route: '/monitoramento',
   },
+  {
+    label: 'Meus Atestados',
+    icon: 'assignment',
+    roles: ['USER_PRODUTOR'],
+    route: '/atestados-produtor'
+  },
+  {
+    label: 'Caderno de Campo',
+    icon: 'book',
+    roles: ['USER_PRODUTOR'],
+    route: '/caderno-campo'
+  },
+  {
+    label: 'Conformidade',
+    icon: 'rate_review',
+    roles: ['USER_PRODUTOR'],
+    route: '/consulta-analise-produtor'
+  },
+  {
+    label: 'Contestação',
+    icon: 'persons',
+    roles: ['USER_PRODUTOR'],
+    route: '/contestacao-analise-produtor'
+  },{
+    label: 'Configuração',
+    icon: 'settings',
+    roles: ['USER_PRODUTOR'],
+    route: '/configuracao-produtor'
+  },
+
 
   // ==========================================
   // MENUS EXCLUSIVOS: ANALISTA / ADMIN
@@ -62,14 +87,14 @@ export const MENU_ITEMS: MenuItem[] = [
     roles: ['USER_ADMIN', 'USER_ANALISTA'],
     children: [
       { route: '/monitoramento-ambiental', label: 'Ambiental', icon: 'eco', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
-      { route: '/monitoramento-ia-culturas', label: 'IA Culturas', icon: 'psychology', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+      { route: '/monitoramento-ia-culturas', label: 'Culturas', icon: 'psychology', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
       { route: '/monitoramento-clima', label: 'Clima', icon: 'cloud', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
       { route: '/monitoramento-produtividade', label: 'Produtividade', icon: 'trending_up', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
       { route: '/monitoramento-zarc', label: 'ZARC', icon: 'calendar_today', roles: ['USER_ADMIN', 'USER_ANALISTA'] }
     ]
   },
   {
-    label: 'Relatórios',
+    label: 'Atestados',
     icon: 'analytics',
     roles: ['USER_ADMIN', 'USER_ANALISTA'],
     children: [

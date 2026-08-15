@@ -1,300 +1,218 @@
 /* ==========================================================================
-   🏛️ SELETORES GERAIS E ESTRUTURA REATIVO DE RE-RESET (PORTARIA 739/2025)
+   🏛️ DASHBOARD ANALISTA - TEMA VERDE MEDIO/MUTED (~15% A 20% MAIS ESCURO)
    ========================================================================== */
 
-.dashboard-main-wrapper,
-.dashboard-container {
+.dashboard-main-wrapper.dashboard-light-theme,
+.dashboard-light-theme,
+.dashboard-dark-theme {
   width: 100% !important;
   max-width: 100vw !important;
   overflow-x: hidden !important;
-  padding: 16px !important;
+  padding: 32px 28px !important; // 🟢 Aumentado de 24px para mais respiro nas bordas externas
   box-sizing: border-box !important;
-  background-color: #f8fafc; // Tom uniforme cinza-claro de fundo
+  background-color: #dbe4dd !important;
 }
 
-/* Enforce de modelo de caixa geral para travar o alinhamento horizontal */
-.dashboard-container *,
-.dashboard-main-wrapper * {
+.dashboard-light-theme * {
   box-sizing: border-box !important;
 }
-
-/* Cores de impacto para alertas das tabelas */
-.impacto-alto { background-color: #fee2e2; color: #b91c1c; }
-.impacto-medio { background-color: #fef3c7; color: #b45309; }
-.impacto-baixo { background-color: #f1f5f9; color: #475569; }
 
 /* ==========================================================================
-   🏷️ CABEÇALHO E FILTROS DO TOPO (PERFEITAMENTE ALINHADOS VMG)
+   🏷️ CABEÇALHO E BARRA DE SAFRAS
    ========================================================================== */
 
 .header-dashboard-row {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  justify-content: flex-start !important;
-  width: 100% !important;
-  gap: 16px !important;
-  margin-bottom: 16px !important;
+  margin-bottom: 24px !important; // 🟢 Aumentado de 16px para descolar do topo
 
-  @media (min-width: 960px) {
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    margin-bottom: 24px !important;
-  }
-}
+  .header-title-block {
+    h1 {
+      font-size: 22px !important;
+      font-weight: 800 !important;
+      color: #0d1a12 !important;
+      margin: 0 !important;
+      letter-spacing: -0.02em !important;
+    }
 
-.header-title-block {
-  width: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-
-  h1.text-2xl, .dashboard-main-title {
-    font-size: 20px !important;
-    font-weight: 800 !important;
-    line-height: 1.3 !important;
-    white-space: normal !important;
-    word-wrap: break-word !important;
-    color: #0f172a !important;
-    margin: 0 !important;
-    letter-spacing: -0.02em !important;
-  }
-
-  span, .dashboard-main-subtitle {
-    font-size: 13px !important;
-    color: #64748b !important;
-    margin-top: 6px !important;
-    font-weight: 500 !important;
-  }
-
-  @media (min-width: 960px) {
-    h1.text-2xl, .dashboard-main-title { font-size: 24px !important; }
-  }
-}
-
-/* Bloco que envolve os inputs e o botão */
-.filters-action-block {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
-  width: 100% !important;
-  gap: 12px !important;
-
-  @media (min-width: 640px) {
-    flex-direction: row !important;
-    align-items: flex-start !important; /* Alterado de center para flex-start para controlar via margem superior */
-    width: auto !important;
-  }
-
-  /* Força o fundo branco e remove distorções de padding */
-  :deep(.mat-mdc-text-field-wrapper) {
-    background-color: #ffffff !important;
-    border-radius: 8px !important;
-    height: 46px !important;
-    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05) !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-
-  /* Zera o subscript fantasma de erro para não empurrar elementos vizinhos */
-  :deep(.mat-mdc-form-field-subscript-wrapper) {
-    display: none !important;
-  }
-
-  :deep(.mat-mdc-form-field-infix) {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    min-height: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-
-  :deep(.mat-mdc-form-field) {
-    width: 100% !important;
-    min-width: 100% !important;
-    margin-bottom: 0 !important;
-
-    @media (min-width: 640px) {
-      width: auto !important;
-      min-width: unset !important;
+    span {
+      font-size: 13px !important;
+      color: #43584a !important;
+      margin-top: 6px !important;
     }
   }
 }
 
-/* 🟢 BOTÃO ATUALIZAR CUSTOMIZADO (VERDE INSTITUCIONAL ALINHADO) */
-.btn-atualizar-custom,
-.btn-refresh-dashboard {
-  background-color: #21610d !important;
-  border: 1px solid #5fca86 !important;
-  border-radius: 8px !important;
-  height: 50px !important;
-  padding: 0 1.5rem !important;
-  box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05) !important;
-  transition: background-color 0.2s, border-color 0.2s !important;
+.safra-pills-container {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  width: 100% !important;
+  margin-top: 20px !important;   // 🟢 Aumentado de 14px
+  margin-bottom: 32px !important; // 🟢 Aumentado de 24px para afastar dos KPIs
+}
+
+.safra-btn-pill {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 100% !important;
-
-  // 🔬 O SEGREDO DO ALINHAMENTO:
-  margin: 0 !important;
-
-  @media (min-width: 640px) {
-    width: auto !important;
-    margin-top: 4px !important; // Micro-ajuste para compensar a borda flutuante do label (Safra/Período) do Material
-  }
-
-  span {
-    color: #ffffff !important;
-    font-weight: 600 !important;
-    font-size: 13px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 6px !important;
-    line-height: 1 !important;
-  }
-
-  mat-icon {
-    color: #ffffff !important;
-    font-size: 1.125rem !important;
-    width: 1.125rem !important;
-    height: 1.125rem !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
+  gap: 8px !important;
+  height: 40px !important;
+  padding: 0 16px !important;
+  background-color: #c8d6cb !important;
+  border: 1px solid #a8baa8 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  outline: none !important;
+  user-select: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  transition: all 0.15s ease-in-out !important;
 
   &:hover {
-    background-color: #3a9c5f !important;
-    border-color: #76b38f !important;
+    background-color: #b7c9bb !important;
+    border-color: #8c9e8d !important;
+  }
+
+  /* CASO SELECIONADO: SAFRA VIGENTE */
+  &.active-vigente {
+    background-color: #14532d !important;
+    border-color: #14532d !important;
+    box-shadow: 0 4px 10px rgba(20, 83, 45, 0.3) !important;
+
+    .safra-texto-vigente {
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      font-size: 13.5px !important;
+      font-family: monospace, monospace !important;
+    }
+
+    .badge-status-vigente {
+      color: #bbf7d0 !important;
+      font-size: 11px !important;
+      font-weight: 600 !important;
+    }
+  }
+
+  /* CASO INATIVO: SAFRAS CONCLUÍDAS */
+  .icone-diamond {
+    font-size: 10px !important;
+    line-height: 1 !important;
+
+    &.diamond-verde { color: #15803d !important; }
+    &.diamond-laranja { color: #c2410c !important; }
+  }
+
+  .safra-texto-concluida {
+    color: #0f4c5c !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+    font-family: monospace, monospace !important;
+  }
+
+  .badge-status-concluida {
+    color: #4a5d4e !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
   }
 }
 
 /* ==========================================================================
-   📊 ESTRUTURAS DE GRIDS E CARDS (MÁXIMA VISIBILIDADE)
+   📊 CARDS E SEÇÕES DO DASHBOARD (MARGENS E ESPAÇAMENTOS AMPLIADOS)
    ========================================================================== */
 
-/* Títulos de todos os Cards com o contraste do novo modelo */
-.card-title-custom,
-.ia-card-title,
-.card-header h3 {
-  font-size: 14px !important;
-  font-weight: 700 !important;
-  color: #0f172a !important;
-  margin: 0 0 16px 0 !important;
-  letter-spacing: -0.01em !important;
+/* Seção de KPIs Superior */
+.kpis-section-wrapper {
+  width: 100% !important;
+  margin-top: 16px !important;
+  margin-bottom: 32px !important; // 🟢 Aumentado de 24px para afastar da 1ª fileira de gráficos
+  display: block !important;
+
+  app-dashboard-kpis {
+    display: block !important;
+    width: 100% !important;
+  }
+}
+
+.dashboard-light-theme,
+.dashboard-dark-theme {
+  .dashboard-chart-card,
+  .dashboard-card,
+  .ia-card,
+  .card-mapa {
+    background-color: #112217 !important;
+    border: 1px solid #1e3827 !important;
+    border-radius: 12px !important;
+    padding: 20px !important; // 🟢 Aumentado de 16px para dar mais respiro interno nos conteúdos
+    color: #f8fafc !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    min-height: 320px !important;
+  }
+
+  .card-title-custom,
+  .ia-card-title,
+  .card-header h3 {
+    color: #f1f5f9 !important;
+    font-weight: 800 !important;
+  }
+
+  dashboard-grafico-estados {
+    display: block !important;
+    width: 100% !important;
+    min-height: 320px !important;
+  }
+
+  .map-container,
+  #map,
+  .leaflet-container {
+    width: 100% !important;
+    height: 250px !important;
+    min-height: 250px !important;
+    border-radius: 8px !important;
+    margin-top: 12px !important;
+    background: #08120b !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+}
+
+/* 🟢 GRIDS DAS FILEIRAS DE COMPONENTES - GAP E MARGENS AUMENTADOS */
+.grid-container-graficos,
+.ia-grid-container,
+.grid-container-tabelas {
+  display: grid !important;
+  gap: 24px !important;          // 🟢 Aumentado de 16px para afastar os cards lateralmente
+  width: 100% !important;
+  margin-top: 28px !important;    // 🟢 Aumentado de 20px
+  margin-bottom: 28px !important; // 🟢 Descola verticalmente da próxima fileira
 }
 
 .grid-container-graficos {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.5rem;
-  width: 100%;
-  margin-top: 1.5rem;
-
-  @media (min-width: 1280px) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-.dashboard-chart-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  height: auto;
-  min-height: 340px;
-
-  @media (min-width: 1280px) {
-    height: 380px;
-  }
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  @media (min-width: 1280px) { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
 }
 
 .ia-grid-container {
-  display: grid !important;
   grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-  gap: 1.25rem !important;
-  width: 100% !important;
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-
   @media (min-width: 1024px) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   @media (min-width: 1400px) { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 }
 
-.ia-climna {
-  display: grid !important;
-  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-  gap: 1.25rem !important;
+.ia-clima {
+  display: block !important;
   width: 100% !important;
-  margin-top: 2px;
+  margin-top: 28px !important;
+  margin-bottom: 28px !important;
 
-  @media (min-width: 1024px) { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
-}
-
-
-
-.dashboard-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 12px !important;
-  padding: 20px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  position: relative !important;
-  overflow: hidden !important;
-  height: auto !important;
-  min-height: 300px !important;
-
-  @media (min-width: 1024px) {
-    height: 340px !important;
+  dashboard-ia-clima {
+    display: block !important;
+    width: 100% !important;
   }
 }
 
 .grid-container-tabelas {
-  display: grid !important;
   grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-  gap: 1.25rem !important;
-  width: 100% !important;
-  margin-top: 1.5rem !important;
-
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-/* ==========================================================================
-   🧬 LABELS E PERCENTUAIS DO GRÁFICO DE CULTURAS
-   ========================================================================== */
-
-.legenda-item-linha {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  width: 100% !important;
-  font-size: 14px !important;
-  margin-bottom: 6px !important;
-}
-
-.nome-cultura {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-
-.valor-percentual-cultura {
-  color: #0f172a !important;
-  font-weight: 800 !important;
-}
-
-/* Alinhamento global para fontes e ícones do Material Design no SSR */
-mat-icon {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  vertical-align: middle !important;
+  @media (min-width: 1024px) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }

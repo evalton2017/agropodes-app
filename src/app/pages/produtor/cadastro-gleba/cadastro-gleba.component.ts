@@ -37,6 +37,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {ImovelAmbiental} from '../../../dto/response/car';
+import {ModalConfirmacaoCarComponent} from '../modal/modal-confirmacao-car.component';
 
 export interface ZarcSuccessResponse {
   status_validacao: string;
@@ -59,6 +62,7 @@ export interface ZarcSuccessResponse {
     MatIconModule,
     MatAutocompleteModule,
     MatCheckboxModule,
+    MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
@@ -84,10 +88,12 @@ export class CadastroGlebaComponent implements OnInit {
   private readonly pessoaService = inject(PessoaService);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
 
   passoAtual = signal<number>(1);
   carregando = signal<boolean>(false);
   erroMensagem = signal<string | null>(null);
+
 
   produtor = computed(() => this.pessoaService.produtorAtual());
   readonly latitudeCentroide = signal<string>('-13.975810');
@@ -137,7 +143,8 @@ export class CadastroGlebaComponent implements OnInit {
     const produtorAtual = this.produtor();
 
     this.formWizard = this.fb.group({
-      nome_gleba: ['Fazenda Boa Vista', [Validators.required, Validators.maxLength(150)]],
+      nome_gleba: ['Plantação Soja 2026', [Validators.required, Validators.maxLength(150)]],
+      nome_propriedade: [{value: '', disabled: true}],
       codigo_interno: ['FBV-01'],
       matricula_transcricao: ['12.345'],
       numero_car: ['', [Validators.required]],
@@ -212,17 +219,48 @@ export class CadastroGlebaComponent implements OnInit {
     this.erroMensagem.set(null);
 
     this.glebaService.buscarDetalhesCar(numeroCar).subscribe({
-      next: (res) => {
-        this.dadosCar.set(res);
+      next: (res: CarFeicoesAmbientaisResponse) => {
         this.carregando.set(false);
-        this.avancarPasso();
+
+        // Preenche o nome da propriedade atualizado no formulário
+        if (res.nom_imovel) {
+          this.formWizard.get('nome_propriedade')?.setValue(res.nom_imovel);
+        }
+
+        // Verifica se o status do CAR é Ativo (Pode ser 'AT', 'ATIVO', 'PENDENTE' dependendo do órgão)
+        const statusUpper = (res.status || '').toUpperCase();
+        const statusValidos = ['AT', 'ATIVO', 'PENDENTE'];
+        const podeAvancar = statusValidos.includes(statusUpper);
+
+        // Abre o Modal de Confirmação antes de prosseguir
+        const dialogRef = this.dialog.open(ModalConfirmacaoCarComponent, {
+          width: '600px',
+          disableClose: true,
+          data: {
+            dadosCar: res,
+            podeAvancar: podeAvancar
+          }
+        });
+
+        dialogRef.afterClosed().subscribe((confirmado: boolean) => {
+          if (confirmado && podeAvancar) {
+            // Seta o objeto de retorno no signal e avança
+            this.dadosCar.set(res as any);
+            this.avancarPasso();
+          } else if (!podeAvancar) {
+            this.erroMensagem.set(
+              `Atenção: O CAR ${res.cod_imovel} está com status "${res.status}". Regularize os dados junto ao órgão ambiental para prosseguir.`
+            );
+          }
+        });
       },
       error: (err) => {
         this.carregando.set(false);
-        this.erroMensagem.set(err.error?.detail || 'Erro ao validar CAR.');
+        this.erroMensagem.set(err.error?.detail || 'Erro ao validar e consultar CAR nas bases oficiais.');
       }
     });
   }
+
 
   calcularGeometriaPostGis(): void {
     const wkt = this.formWizard.get('geometria')?.value;

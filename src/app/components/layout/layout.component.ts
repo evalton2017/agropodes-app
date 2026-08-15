@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, PLATFORM_ID, signal, computed } from '@angular/core'; // Adicionado computed
+import { Component, inject, OnInit, PLATFORM_ID, signal, computed } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';

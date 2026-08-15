@@ -1,58 +1,110 @@
 <div class="dashboard-produtor-main">
 
-  <!-- Barra de Filtros Superior Padronizada do Projeto -->
-  <div class="vmg-filter-bar-container">
-    <div class="filter-actions-row">
-
-      <!-- Seletor Angular Material para Safra -->
-      <mat-form-field appearance="outline" class="vmg-mat-field">
-        <mat-label>Safra</mat-label>
-        <mat-select [(value)]="filtroSafra">
-          @for (safra of listaSafras; track safra) {
-            <mat-option [value]="safra">{{ safra }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <!-- Seletor de Período Data Range -->
-      <mat-form-field appearance="outline" class="vmg-mat-field">
-        <mat-label>Período de Análise</mat-label>
-        <mat-date-range-input [formGroup]="rangeData" [rangePicker]="picker">
-          <input matStartDate formControlName="inicio" placeholder="Início">
-          <input matEndDate formControlName="fim" placeholder="Fim">
-        </mat-date-range-input>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
-
-      <!-- Botão de Ação -->
-      <button mat-flat-button color="primary" class="vmg-btn-filter" (click)="aplicarFiltros()">
-        <mat-icon>filter_list</mat-icon> Filtrar
-      </button>
-
+  <!-- CABEÇALHO DA PÁGINA -->
+  <div class="vmg-dashboard-header">
+    <div class="vmg-title-group">
+      <h1 class="vmg-page-title">Verificação Agrícola</h1>
+      <p class="vmg-page-subtitle">
+        Delimitação de gleba, classificação por inteligência artificial e histórico retroativo de 60 meses — safra
+        vigente e cinco safras anteriores.
+      </p>
     </div>
-  </div>
 
-  <div class="dashboard-content-body">
-    @if (dadosProdutor() && total_glebas > 0) {
-      <app-dashboard-produtor-resumo [dados]="dadosProdutor()!"></app-dashboard-produtor-resumo>
-
-      <app-dashboard-produtor-detalhes></app-dashboard-produtor-detalhes>
-
-      <div class="vmg-analytics-row">
-        @if (dadosProdutividade()) {
-          <app-dashboard-produtividade [dados]="dadosProdutividade()!"></app-dashboard-produtividade>
-        }
-        @if (dadosClima()) {
-          <app-dashboard-clima [dados]="dadosClima()!"></app-dashboard-clima>
-        }
-      </div>
-    } @else {
-      <div class="vmg-loading-box">
-        <div class="vmg-spinner"></div>
-        <p>Sincronizando blocos imutáveis e análises de IA...</p>
+    <!-- 1. RESUMO GERAL DO PRODUTOR (Aparece no topo para consolidar todas as glebas) -->
+    @if (dadosProdutor()) {
+      <div class="vmg-resumo-geral-container">
+        <app-dashboard-produtor-resumo [dados]="dadosProdutor()!"></app-dashboard-produtor-resumo>
       </div>
     }
-  </div>
 
+    <!-- 2. LISTA DE GLEBAS DO PROPRIETÁRIO -->
+    <div class="vmg-glebas-section">
+      <h2 class="vmg-section-title">Minhas Glebas</h2>
+      <p class="vmg-section-subtitle">Selecione uma gleba abaixo para visualizar o dashboard e histórico detalhado.</p>
+
+      @if (carregandoGlebas()) {
+        <div class="vmg-loading-box">
+          <div class="vmg-spinner"></div>
+          <p>Carregando glebas do produtor...</p>
+        </div>
+      } @else if (listaGlebas().length > 0) {
+        <div class="vmg-glebas-grid">
+          @for (gleba of listaGlebas(); track gleba.idGleba) {
+            <div
+              class="vmg-card-gleba"
+              [class.selected]="glebaSelecionada()?.idGleba === gleba.idGleba"
+              (click)="selecionarGleba(gleba)">
+
+              <div class="vmg-card-gleba-header">
+                <span class="vmg-gleba-id">Gleba #{{ gleba.idGleba }}</span>
+                <span class="vmg-badge-status" [class.conforme]="gleba.statusVmg === 'CONFORME'">
+                  {{ gleba.statusVmg }}
+                </span>
+              </div>
+
+              <div class="vmg-card-gleba-body">
+                <p><strong>CAR:</strong> {{ gleba.codigoCar }}</p>
+                <p><strong>Cultura:</strong> {{ gleba.culturaDeclarada }}</p>
+                <p><strong>Área:</strong> {{ gleba.areaHectares }} ha</p>
+                <p><strong>Conformidade:</strong> {{ gleba.conformidadePct }}%</p>
+              </div>
+
+              <div class="vmg-card-gleba-footer">
+                <button type="button" class="vmg-btn-select">
+                  {{ glebaSelecionada()?.idGleba === gleba.idGleba ? 'Selecionada' : 'Selecionar Gleba' }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="vmg-empty-box">
+          <p>Nenhuma gleba encontrada para este produtor.</p>
+        </div>
+      }
+    </div>
+
+    <!-- 3. BARRA DE BOTÕES DE SAFRA (Exibida após selecionar uma gleba) -->
+    @if (glebaSelecionada()) {
+      <div class="vmg-safra-buttons-container">
+        <span class="vmg-filter-label">HISTÓRICO DE 60 MESES — SELECIONE A SAFRA</span>
+
+        <div class="vmg-safra-buttons-row">
+          @for (safra of listaSafras(); track safra; let isFirst = $first) {
+            <button
+              type="button"
+              class="vmg-btn-safra"
+              [class.active]="safraSelecionada() === safra"
+              (click)="selecionarSafra(safra)">
+
+              <span class="vmg-diamond">◆</span>
+              <span class="vmg-safra-text">{{ safra }}</span>
+              <span class="vmg-safra-status">
+                {{ isFirst ? 'Vigente' : 'Concluída' }}
+              </span>
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- 4. DETALHES E ANÁLISES DA GLEBA SELECIONADA -->
+    @if (glebaSelecionada()) {
+      <div class="dashboard-content-body">
+
+        <app-dashboard-produtor-detalhes></app-dashboard-produtor-detalhes>
+
+        <div class="vmg-analytics-row">
+          @if (dadosProdutividade()) {
+            <app-dashboard-produtividade [dados]="dadosProdutividade()!"></app-dashboard-produtividade>
+          }
+          @if (dadosClima()) {
+            <app-dashboard-clima [dados]="dadosClima()!"></app-dashboard-clima>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
 </div>

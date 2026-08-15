@@ -3,74 +3,69 @@
    ========================================================================= */
 .wizard-container {
   max-width: 1024px;
-  margin: 2rem auto;
+  margin: 1rem auto;
   padding: 0 1.5rem 3rem 1.5rem;
   box-sizing: border-box;
   overflow: visible !important;
 }
 
 .font-material {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: var(--font-body, 'Inter', sans-serif);
 }
 
 .alert-error-box {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: rgba(211, 47, 47, 0.15);
+  color: #ff8a80;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border-left: 5px solid #e53935;
+  border-left: 5px solid #d32f2f;
   font-size: 0.95rem;
   display: flex;
   align-items: center;
 }
 
 /* =========================================================================
-   CABEÇALHO DA SESSÃO DO PRODUTOR (KEYCLOAK)
+   CABEÇALHO DA SESSÃO DO PRODUTOR
    ========================================================================= */
 .produtor-header-card {
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-  border: 1px solid #dcdfe6;
+  margin-bottom: 1.5rem;
+  background-color: var(--carbon-1, #06120e) !important;
+  border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
+  border-radius: 12px;
+  padding: 1rem;
 
   p {
     margin: 0 0 0.5rem 0;
-    color: #606266;
+    color: var(--white-60, rgba(255, 255, 255, 0.6));
     font-size: 0.9rem;
+
+    strong {
+      color: var(--white, #ffffff);
+    }
   }
 
   h1 {
     margin: 0;
-    color: #2c3e50;
-    font-size: 1.6rem;
-    font-weight: 500;
+    color: var(--white, #ffffff);
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-display, 'Space Grotesk', sans-serif);
   }
 }
 
 /* =========================================================================
-   ESTRUTURA DAS ETAPAS DO STEPPER E MATERIAL OVERRIDES
+   ESTRUTURA DAS ETAPAS E FORMULÁRIO EM 2 COLUNAS
    ========================================================================= */
-::ng-deep .mat-horizontal-stepper-content,
-::ng-deep .mat-horizontal-content-container {
-  overflow: visible !important;
-  padding: 0 !important;
-}
-
 .step-content {
   padding: 1.5rem 0.5rem;
 
   h3 {
     margin: 0 0 1.5rem 0;
-    color: #303133;
+    color: var(--white, #ffffff) !important;
     font-size: 1.25rem;
-    font-weight: 500;
+    font-weight: 600;
   }
-}
-
-.instruction-text {
-  color: #606266;
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
 }
 
 .full-width {
@@ -78,14 +73,42 @@
   margin-bottom: 1rem;
 }
 
+/* CORREÇÃO DAS 2 COLUNAS DO FORMULÁRIO */
 .form-grid-2-columns {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 1.5rem !important;
 
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .grid-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+.tip-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(163, 230, 53, 0.05);
+  border: 1px solid rgba(163, 230, 53, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 1rem;
+
+  .info-icon {
+    color: var(--lima, #a3e635);
+  }
+
+  p {
+    margin: 0;
+    color: var(--white-80, rgba(255, 255, 255, 0.8));
+    font-size: 0.875rem;
   }
 }
 
@@ -95,40 +118,42 @@
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--white-12, rgba(255, 255, 255, 0.12));
   width: 100%;
-}
 
-button[color="success"] {
-  background-color: #2e7d32 !important;
-  color: #ffffff !important;
+  button[mat-raised-button][color="primary"] {
+    background-color: var(--lima, #a3e635) !important;
+    color: var(--night, #06120e) !important;
+    font-weight: 700;
 
-  &:disabled {
-    background-color: #e0e0e0 !important;
-    color: #a6a6a6 !important;
+    &:disabled {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+      color: rgba(255, 255, 255, 0.3) !important;
+    }
   }
 }
 
 /* =========================================================================
-   ESTRUTURA INTEGRADA DO ZONEAMENTO SELECIONÁVEL (ZARC)
+   SEÇÃO ZARC E LISTA DE PERÍODOS (CARD E GRID)
    ========================================================================= */
 .zarc-secao-obrigatoria {
-  background: #fbfbfb;
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12));
   border-radius: 8px;
   padding: 16px;
+  margin-top: 1.5rem;
 
   .zarc-titulo-secao {
     font-size: 15px;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--white, #ffffff);
     margin: 0;
   }
 
   .zarc-subtitulo-secao {
     font-size: 12px;
-    color: #64748b;
-    margin: 2px 0 12px 0;
+    color: var(--white-60, rgba(255, 255, 255, 0.6));
+    margin: 4px 0 16px 0;
   }
 }
 
@@ -137,14 +162,14 @@ button[color="success"] {
   align-items: center;
   gap: 12px;
   padding: 1rem;
-  color: #64748b;
+  color: var(--white-70, rgba(255, 255, 255, 0.7));
   font-size: 13px;
 }
 
 .info-alert-zarc {
-  background-color: #f0fdf4;
-  border: 1px dashed #bbf7d0;
-  color: #166534;
+  background-color: rgba(163, 230, 53, 0.05);
+  border: 1px dashed rgba(163, 230, 53, 0.3);
+  color: var(--lima, #a3e635);
   padding: 12px;
   border-radius: 6px;
   font-size: 13px;
@@ -154,13 +179,13 @@ button[color="success"] {
 .grid-sugestoes-zarc {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .card-sugestao-clicavel {
-  background-color: #ffffff;
-  border: 1px solid #ebeeeb;
-  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12));
+  border-radius: 8px;
   padding: 12px 16px;
   display: flex;
   justify-content: space-between;
@@ -169,40 +194,38 @@ button[color="success"] {
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    border-color: #a5d6a7;
-    background-color: #f1f8e9;
+    border-color: var(--lima, #a3e635);
+    background-color: rgba(163, 230, 53, 0.05);
     transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.04);
   }
 
-  /* Estado ativo/selecionado injetado no clique */
   &.selected {
-    background-color: #f0fdf4 !important;
-    border-color: #22c55e !important;
-    box-shadow: 0 0 0 1px #22c55e;
+    background-color: rgba(163, 230, 53, 0.1) !important;
+    border: 1px solid var(--lima, #a3e635) !important;
+    box-shadow: 0 0 10px rgba(163, 230, 53, 0.15);
 
     .periodo-badge-calendar {
-      color: #15803d !important;
+      color: var(--lima, #a3e635) !important;
     }
     .arrow-forward {
-      color: #22c55e !important;
+      color: var(--lima, #a3e635) !important;
     }
   }
 
   .card-left-info {
     display: flex;
     flex-direction: column;
+    gap: 4px;
 
     .periodo-badge-calendar {
       font-size: 14px;
       font-weight: 600;
-      color: #333;
+      color: var(--white, #ffffff);
     }
 
     .decendio-sub {
-      font-size: 11px;
-      color: #888;
-      margin-top: 2px;
+      font-size: 12px;
+      color: var(--white-60, rgba(255, 255, 255, 0.6));
     }
   }
 
@@ -218,46 +241,40 @@ button[color="success"] {
       font-weight: 700;
 
       &.risco-baixo {
-        background-color: #e8f5e9;
-        color: #2e7d32;
+        background-color: rgba(46, 125, 50, 0.25);
+        color: #81c784;
+        border: 1px solid rgba(129, 199, 132, 0.3);
       }
     }
 
     .arrow-forward {
-      color: #bbb;
-      transition: transform 0.2s;
+      color: var(--white-40, rgba(255, 255, 255, 0.4));
+      transition: transform 0.2s ease;
     }
   }
 
   &:hover .arrow-forward {
-    color: #2e7d32;
-    transform: translateX(2px);
+    color: var(--lima, #a3e635);
+    transform: translateX(3px);
   }
 }
 
-.empty-zarc-state {
-  text-align: center;
-  font-size: 13px;
-  color: #999;
-  padding: 16px;
-}
-
-/* Painel de Feedback da Validação Final */
 .zarc-feedback-panel {
   padding: 12px 16px;
   border-radius: 6px;
   font-size: 14px;
+  margin-top: 1rem;
 
   &.success {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    border-left: 4px solid #2e7d32;
+    background-color: rgba(46, 125, 50, 0.2);
+    color: #81c784;
+    border-left: 4px solid #81c784;
   }
 
   &.error {
-    background-color: #ffebee;
-    color: #c62828;
-    border-left: 4px solid #c62828;
+    background-color: rgba(211, 47, 47, 0.2);
+    color: #ff8a80;
+    border-left: 4px solid #d32f2f;
   }
 
   .zarc-header-row {
@@ -274,66 +291,111 @@ button[color="success"] {
   }
 }
 
-/* =========================================================================
-   REVISÃO EXTRA E RESPONSIVIDADE
-   ========================================================================= */
+.legal-notice-box {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid var(--lima, #a3e635) !important;
+  margin-bottom: 1.5rem;
+}
+
 .summary-card {
-  background-color: #fafafa;
-  border: 1px dashed #bcc0c4;
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
   margin-bottom: 1.5rem;
 
   p {
     margin: 0.5rem 0;
-    font-size: 1rem;
-    color: #303133;
+    color: var(--white-80, rgba(255, 255, 255, 0.8));
   }
   strong {
-    color: #1a1a1a;
+    color: var(--white, #ffffff);
   }
 }
 
-.legal-notice-box {
-  background-color: #f4f4f5;
-  padding: 1rem;
-  border-radius: 6px;
-  border-left: 4px solid #909399;
-  margin-bottom: 1.5rem;
-}
-
-.legal-notice-box ::ng-deep .mdc-form-field {
-  white-space: normal !important;
-  font-size: 0.88rem;
-  color: #606266;
-  line-height: 1.4;
-}
-
-.loading-session-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 300px;
-  text-align: center;
-
-  p {
-    margin-top: 1.5rem;
-    color: #909399;
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .wizard-container {
-    margin: 1rem auto;
-    padding: 0 0.75rem 2rem 0.75rem;
+/* =========================================================================
+   OVERWRITES ISOLADOS DO STEPPER E MATERIAL DESIGN
+   ========================================================================= */
+:host ::ng-deep {
+  .mat-stepper-horizontal,
+  .mat-stepper-vertical {
+    background-color: var(--carbon-1, #06120e) !important;
+    border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
+    border-radius: 12px;
+    padding: 1rem;
   }
 
-  .actions-row {
-    flex-direction: column-reverse;
-    gap: 0.75rem;
+  .mat-horizontal-stepper-content,
+  .mat-horizontal-content-container {
+    overflow: visible !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+  }
 
-    button {
-      width: 100%;
+  .mat-step-header {
+    .mat-step-label {
+      color: var(--white-60, rgba(255, 255, 255, 0.6)) !important;
     }
+
+    .mat-step-label-active {
+      color: var(--white, #ffffff) !important;
+      font-weight: 700;
+    }
+
+    .mat-step-icon {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+      color: var(--white-70, rgba(255, 255, 255, 0.7)) !important;
+    }
+
+    .mat-step-icon-selected,
+    .mat-step-icon-state-edit {
+      background-color: var(--lima, #a3e635) !important;
+      color: var(--night, #06120e) !important;
+      font-weight: 700;
+    }
+  }
+
+  .mat-stepper-horizontal-line {
+    border-top-color: var(--white-12, rgba(255, 255, 255, 0.12)) !important;
+  }
+
+  .mat-mdc-form-field {
+    .mdc-text-field--outlined {
+      background-color: rgba(255, 255, 255, 0.02) !important;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--white-15, rgba(255, 255, 255, 0.15)) !important;
+    }
+
+    &:hover .mdc-notched-outline__leading,
+    &:hover .mdc-notched-outline__notch,
+    &:hover .mdc-notched-outline__trailing {
+      border-color: var(--lima, #a3e635) !important;
+    }
+
+    &.mdc-text-field--focused .mdc-notched-outline__leading,
+    &.mdc-text-field--focused .mdc-notched-outline__notch,
+    &.mdc-text-field--focused .mdc-notched-outline__trailing {
+      border-color: var(--lima, #a3e635) !important;
+      border-width: 2px !important;
+    }
+
+    .mat-mdc-floating-label,
+    .mat-mdc-select-value,
+    input.mat-mdc-input-element {
+      color: var(--white, #ffffff) !important;
+    }
+
+    .mat-mdc-floating-label-style {
+      color: var(--white-60, rgba(255, 255, 255, 0.6)) !important;
+    }
+  }
+
+  .legal-notice-box .mdc-form-field,
+  .legal-notice-box .mdc-label {
+    color: var(--white-80, rgba(255, 255, 255, 0.8)) !important;
   }
 }

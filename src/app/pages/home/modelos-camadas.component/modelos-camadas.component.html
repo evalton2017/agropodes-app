@@ -1,0 +1,212 @@
+<!-- BLOCO ESCURO: METODOLOGIA PROPRIETÁRIA (Módulo 04) -->
+<div class="modelos-wrapper">
+  <div class="bg-glow top-right"></div>
+  <div class="bg-glow bottom-left"></div>
+
+  <section class="section-container">
+    <div class="badge-row">
+      <span class="step-num">04</span>
+      <span class="line-divider"></span>
+      <div class="badge-tag">METODOLOGIA PROPRIETÁRIA</div>
+      <span class="line-divider flex-1"></span>
+    </div>
+
+    <div class="header-split">
+      <h2 class="section-title">Modelos próprios, submetidos à prova de conceito</h2>
+      <p class="section-desc">
+        A metodologia de classificação é de propriedade do AgroProdes. Cada modelo responde a uma pergunta específica da verificação e é validado de forma independente, com resultados acima do padrão de 90% de acurácia aplicável ao setor.
+      </p>
+    </div>
+
+    <div class="modelos-grid">
+      <div class="modelo-card">
+        <div class="card-head">
+          <span class="card-num">01</span>
+          <span class="card-tag">PRODES-Cultura</span>
+        </div>
+        <h4>Prodes-Cultura</h4>
+        <p>Classifica a cultura efetivamente plantada em cada talhão. Rede neural convolucional temporal treinada sobre séries multiespectrais.</p>
+        <span class="card-sub-tag">ACIMA DO PADRÃO EXIGIDO DE 90%</span>
+      </div>
+
+      <div class="modelo-card">
+        <div class="card-head">
+          <span class="card-num">02</span>
+          <span class="card-tag">PRODES-Rendimento</span>
+        </div>
+        <h4>Prodes-Rendimento</h4>
+        <p>Quantifica a produtividade do talhão em sacas por hectare. Modelo de redes espaço-temporal calibrado com dados de campo.</p>
+        <span class="card-sub-tag">SAÍDA EM SACAS POR TALHÃO</span>
+      </div>
+
+      <div class="modelo-card">
+        <div class="card-head">
+          <span class="card-num">03</span>
+          <span class="card-tag">PRODES-Fenologia</span>
+        </div>
+        <h4>Prodes-Fenologia</h4>
+        <p>Identifica as janelas de plantio e de colheita. Detecção de pontos de inflexão na curva fenológica para estimar mês, dia e ano.</p>
+        <span class="card-sub-tag">PRECISÃO EM DIA/MÊS/ANO</span>
+      </div>
+
+      <div class="modelo-card">
+        <div class="card-head">
+          <span class="card-num">04</span>
+          <span class="card-tag">PRODES-Clima</span>
+        </div>
+        <h4>Prodes-Clima</h4>
+        <p>Interpola o clima observado sobre a área delimitada. Triangulação de no mínimo três estações INMET operantes por IA.</p>
+        <span class="card-sub-tag">SÉRIES HISTÓRICAS DE 60 MESES</span>
+      </div>
+
+      <div class="modelo-card">
+        <div class="card-head">
+          <span class="card-num">05</span>
+          <span class="card-tag">PRODES-Solo</span>
+        </div>
+        <h4>Prodes-Solo</h4>
+        <p>Mapeia matéria orgânica, nitrogênio e saúde das plantas. Grid hexagonal preenchido com valores HEX por ponto de latitude e longitude.</p>
+        <span class="card-sub-tag">CRS EPSG:4326</span>
+      </div>
+
+      <div class="modelo-card">
+        <div class="card-head">
+          <span class="card-num">06</span>
+          <span class="card-tag">PRODES-Guarda</span>
+        </div>
+        <h4>Prodes-Guarda</h4>
+        <p>Verifica conformidade socioambiental da gleba. Sobreposição de geometria declarada com as quinze bases oficiais de restrição.</p>
+        <span class="card-sub-tag">15 BASES OFICIAIS</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- BLOCO CLARO: BASES OFICIAIS (Módulo 05 - Fundo Claro e Cards Brancos) -->
+<div class="bases-section-wrapper">
+  <section class="section-container">
+    <div class="badge-row light-theme">
+      <span class="step-num">05</span>
+      <span class="line-divider"></span>
+      <div class="badge-tag">BASES OFICIAIS</div>
+      <span class="line-divider flex-1"></span>
+    </div>
+
+    <div class="header-split light-theme">
+      <h2 class="section-title">Quinze bases oficiais cruzadas em cada consulta</h2>
+      <p class="section-desc">
+        A validação acontece sobre a área delimitada e sobre o raio calculado a partir do centroide, sempre na versão mais recente de cada base. A reconsulta é executada a cada atualização de relatório.
+      </p>
+    </div>
+
+    <div class="bases-grid">
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Área de Preservação Permanente</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Faixas marginais de corpos hídricos, encostas e topos de morro protegidas por lei, onde o cultivo é vedado.</p>
+        <span class="source-tag">SICAR / CÓDIGO FLORESTAL</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Reserva Legal</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Percentual do imóvel rural com cobertura de vegetação nativa de manutenção obrigatória, variável por bioma.</p>
+        <span class="source-tag">SICAR</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Vegetação Nativa</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Remanescentes de vegetação natural identificados por classificação de uso e cobertura do solo.</p>
+        <span class="source-tag">MAPBIOMAS / PRODES</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Desmatamento PRODES</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Incrementos anuais de supressão de vegetação nativa mapeados pelo programa oficial de monitoramento por satélite.</p>
+        <span class="source-tag">INPE</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Banhado</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Áreas úmidas de várzea com solo saturado, sujeitas a restrição de uso agrícola.</p>
+        <span class="source-tag">BASES OFICIAIS DE ÁREAS ÚMIDAS</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Manguezal</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Ecossistema costeiro de transição entre ambientes terrestre e marinho, com proteção integral.</p>
+        <span class="source-tag">BASES OFICIAIS COSTEIRAS</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Uso Restrito</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Áreas de pantanais, planícies pantaneiras e declividade entre 25 e 45 graus, com uso condicionado.</p>
+        <span class="source-tag">SICAR</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Unidades de Conservação</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Unidades de proteção integral e uso sustentável, incluindo as respectivas zonas de amortecimento.</p>
+        <span class="source-tag">CNUC / MMA</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Embargo IBAMA</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Áreas embargadas por infração ambiental, com vedação de atividade econômica até regularização.</p>
+        <span class="source-tag">IBAMA</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Embargo ICMBio</h5>
+          <span class="cat-tag green">AMBIENTAL</span>
+        </div>
+        <p>Áreas embargadas em unidades de conservação federais e respectivo entorno.</p>
+        <span class="source-tag">ICMBIO</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Área Indígena</h5>
+          <span class="cat-tag blue">TERRITORIAL</span>
+        </div>
+        <p>Terras indígenas demarcadas, homologadas ou em processo de identificação.</p>
+        <span class="source-tag">FUNAI</span>
+      </div>
+
+      <div class="base-card-light">
+        <div class="base-top">
+          <h5>Territórios Quilombolas</h5>
+          <span class="cat-tag blue">TERRITORIAL</span>
+        </div>
+        <p>Territórios de comunidades remanescentes de quilombo reconhecidos e titulados.</p>
+        <span class="source-tag">INCRA / FUNDAÇÃO PALMARES</span>
+      </div>
+    </div>
+  </section>
+</div>

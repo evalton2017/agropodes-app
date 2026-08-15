@@ -1,0 +1,148 @@
+<section class="section-container">
+  <!-- Módulo 02: Saída do Sistema -->
+  <div class="badge-row">
+    <span class="step-num">02</span>
+    <span class="line-divider"></span>
+    <div class="badge-tag">SAÍDAS DO SISTEMA</div>
+    <span class="line-divider flex-1"></span>
+  </div>
+
+  <div class="header-split">
+    <h2 class="section-title">O que a plataforma devolve sobre a sua gleba</h2>
+    <p class="section-desc">
+      Cada resposta é uma medição rastreável, vinculada à geometria declarada, à data da consulta e à base de dados oficial consultada.
+    </p>
+  </div>
+
+  <div class="saidas-grid">
+    <!-- Coluna Esquerda: Abas Selecionáveis -->
+    <div class="tabs-column">
+      <button
+        class="tab-item"
+        [class.active]="abaAtivaId === 'classificacao'"
+        (click)="selecionarAba('classificacao')">
+        <span>Classificação de culturas</span>
+        @if (abaAtivaId === 'classificacao') {
+          <mat-icon>arrow_forward</mat-icon>
+        }
+      </button>
+
+      <button
+        class="tab-item"
+        [class.active]="abaAtivaId === 'produtividade'"
+        (click)="selecionarAba('produtividade')">
+        <span>Estimativa de produtividade</span>
+        @if (abaAtivaId === 'produtividade') {
+          <mat-icon>arrow_forward</mat-icon>
+        }
+      </button>
+
+      <button
+        class="tab-item"
+        [class.active]="abaAtivaId === 'clima'"
+        (click)="selecionarAba('clima')">
+        <span>Inteligência climática</span>
+        @if (abaAtivaId === 'clima') {
+          <mat-icon>arrow_forward</mat-icon>
+        }
+      </button>
+
+      <button
+        class="tab-item"
+        [class.active]="abaAtivaId === 'solo'"
+        (click)="selecionarAba('solo')">
+        <span>Propriedades do solo</span>
+        @if (abaAtivaId === 'solo') {
+          <mat-icon>arrow_forward</mat-icon>
+        }
+      </button>
+
+      <!-- Card de Detalhe Dinâmico -->
+      <div class="tab-detail-card animated-fade">
+        <span class="detail-tag">{{ abaAtual.badge }}</span>
+        <h4 class="detail-title">{{ abaAtual.detailTitle }}</h4>
+        <p class="detail-text">{{ abaAtual.detailText }}</p>
+      </div>
+    </div>
+
+    <!-- Coluna Direita: Painel com Transição de Dados -->
+    <div class="data-panel">
+      <div class="panel-header">
+        <div class="header-left">
+          <span class="panel-brand">AGROPRODES</span>
+          <span class="panel-sep">•</span>
+          <span class="panel-sub">SAÍDA DO MÓDULO</span>
+        </div>
+        <span class="panel-badge"><strong class="status-dot">•</strong> EM OPERAÇÃO</span>
+      </div>
+
+      <!-- Lista Reativa das Barras de Progresso com @for -->
+      <div class="ranking-list animated-fade">
+        @for (item of abaAtual.items; track item.label) {
+          <div class="ranking-item">
+            <div class="rank-info">
+              <span class="crop-name">{{ item.label }}</span>
+              <span class="crop-val">{{ item.value }}</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill {{ item.colorClass }}" [style.width.%]="item.percent"></div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <p class="panel-footnote">
+        {{ abaAtual.footnote }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Módulo 03: Mapa Tridimensional -->
+  Aqui estão as alterações no HTML e no SCSS do componente saida-plataforma para incluir a imagem images/mapa_talhao.webp no card do Mapa Tridimensional, garantindo o visual moderno, tecnológico e responsivo:
+
+  1. Atualização do HTML (saida-plataforma.component.html)
+  Substitua o bloco da seção 03 MAPA TRIDIMENSIONAL pelo código abaixo. O mockup antigo com ícone foi substituído pela tag <img> com overlay e badge sobrepostos:
+
+  HTML
+  <div class="badge-row mt-80">
+    <span class="step-num">03</span>
+    <span class="line-divider"></span>
+    <div class="badge-tag">MAPA TRIDIMENSIONAL</div>
+    <span class="line-divider flex-1"></span>
+  </div>
+
+  <div class="mapa-hex-grid">
+    <div class="mapa-info">
+      <h2 class="section-title">Mapa interativo em três dimensões, no grid HEX exigido</h2>
+      <p class="section-desc">
+        A geometria delimitada pelo produtor é reproduzida em CRS EPSG:4326, com exibição baseada em grid preenchido com valores HEX. Cada ponto dentro do polígono carrega os níveis de matéria orgânica, saúde das plantas e nitrogênio por latitude e longitude.
+      </p>
+
+      <div class="mapa-indicators">
+        <div class="indicator-item"><span class="dot green"></span> Matéria orgânica</div>
+        <div class="indicator-item"><span class="dot green-light"></span> Saúde das plantas</div>
+        <div class="indicator-item"><span class="dot cyan"></span> Nitrogênio</div>
+      </div>
+
+      <a class="action-link" (click)="verModuloVerificacao()">
+        <span>Ver o módulo de verificação</span>
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+
+    <div class="mapa-preview-card">
+      <div class="mapa-img-wrapper">
+      <span class="hex-badge">
+        <span class="badge-dot"></span>
+        CRS EPSG:4326
+      </span>
+        <img
+          src="images/mapa_talhao.webp"
+          alt="Visualização do Mapa 3D do Talhão em Grid HEX"
+          class="mapa-img"
+        />
+        <div class="img-gradient-overlay"></div>
+      </div>
+    </div>
+  </div>
+</section>

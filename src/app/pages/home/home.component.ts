@@ -5,9 +5,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 import Keycloak from 'keycloak-js';
-import {HomePublicoComponent} from './logado/home-publico.component/home-publico.component';
 import {DashboardAnalistaComponent} from '../dashboard/dashboard-analista/dashboard-analista.component';
 import {DashboardProdutorComponent} from '../dashboard/dashboard-produtor/dashboard-produtor';
+import {HomePublicoComponent} from './home-publico.component/home-publico.component';
 
 @Component({
   selector: 'app-home',

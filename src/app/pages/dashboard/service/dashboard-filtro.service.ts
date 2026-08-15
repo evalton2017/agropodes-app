@@ -5,6 +5,7 @@ export interface FiltrosDashboard {
   estado?: string;
   inicio?: string;
   fim?: string;
+  idGleba?: number;
 }
 
 @Injectable({

@@ -1,0 +1,271 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   BLOCO 04: ESCURO (MODELOS PROPRIETÁRIOS)
+   -------------------------------------------------------------------------- */
+.modelos-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--night);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  padding: 80px 24px;
+
+  @media (max-width: 1024px) {
+    padding: 40px 16px;
+  }
+}
+
+.bg-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(120px);
+  opacity: 0.12;
+
+  &.top-right {
+    top: -100px;
+    right: -100px;
+    background: radial-gradient(circle, var(--lima) 0%, transparent 70%);
+  }
+
+  &.bottom-left {
+    bottom: -100px;
+    left: -100px;
+    background: radial-gradient(circle, var(--satelite-light) 0%, transparent 70%);
+  }
+}
+
+.section-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Badge Header Dark */
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--safra-light);
+    font-weight: 700;
+  }
+
+  .line-divider {
+    height: 1px;
+    background: var(--white-12);
+    width: 24px;
+    &.flex-1 { flex: 1; }
+  }
+
+  .badge-tag {
+    border: 1px solid rgba(163, 230, 53, 0.35);
+    background: rgba(163, 230, 53, 0.08);
+    color: var(--lima);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    letter-spacing: 1.5px;
+    font-weight: 700;
+  }
+}
+
+/* Header Split Dark */
+.header-split {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  margin-bottom: 40px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+
+    @media (max-width: 1024px) { font-size: 1.6rem; }
+  }
+
+  .section-desc {
+    font-size: 0.95rem;
+    color: var(--white-60);
+    line-height: 1.6;
+    align-self: center;
+  }
+}
+
+/* Grid de Modelos */
+.modelos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+
+  @media (max-width: 1024px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 640px) { grid-template-columns: 1fr; }
+}
+
+.modelo-card {
+  background: var(--carbon-2);
+  border: 1px solid var(--white-12);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+
+  .card-head { display: flex; justify-content: space-between; margin-bottom: 16px; }
+  .card-num { font-family: var(--font-mono); color: var(--safra-light); font-size: 0.75rem; }
+  .card-tag { font-family: var(--font-mono); color: var(--white-40); font-size: 0.65rem; }
+  h4 { font-family: var(--font-display); color: var(--white); font-size: 1.2rem; margin-bottom: 8px; }
+  p { font-size: 0.85rem; color: var(--white-60); line-height: 1.5; margin-bottom: 16px; }
+  .card-sub-tag { margin-top: auto; font-family: var(--font-mono); font-size: 0.65rem; color: var(--lima); }
+}
+
+
+/* --------------------------------------------------------------------------
+   BLOCO 05: CLARO (BASES OFICIAIS - Conforme protótipo)
+   -------------------------------------------------------------------------- */
+.bases-section-wrapper {
+  width: 100%;
+  /* Fundo claro esverdeado com padrão de grade cibernética clara */
+  background-color: #f4f8f5;
+  background-image:
+    linear-gradient(rgba(18, 183, 106, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 183, 106, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  padding: 80px 24px;
+  border-top: 1px solid rgba(18, 183, 106, 0.15);
+
+  @media (max-width: 1024px) {
+    padding: 40px 16px;
+  }
+}
+
+/* Ajustes do Badge em Tema Claro */
+.badge-row.light-theme {
+  .step-num {
+    color: #12b76a;
+  }
+
+  .line-divider {
+    background: rgba(18, 183, 106, 0.2);
+  }
+
+  .badge-tag {
+    border: 1px solid rgba(18, 183, 106, 0.3);
+    background: rgba(18, 183, 106, 0.1);
+    color: #0f766e;
+  }
+}
+
+/* Ajustes dos Títulos em Tema Claro */
+.header-split.light-theme {
+  .section-title {
+    color: #06120e; // Texto preto/escuro para contraste no fundo claro
+  }
+
+  .section-desc {
+    color: #4b5563; // Texto cinza escuro
+  }
+}
+
+/* Grid de Cards Brancos */
+.bases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); // 3 colunas como na imagem do protótipo
+  gap: 20px;
+
+  @media (max-width: 1024px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 640px) { grid-template-columns: 1fr; }
+}
+
+/* Card Claro (Fundo Branco Sólido) */
+.base-card-light {
+  background: #ffffff;
+  border: 1px solid rgba(18, 183, 106, 0.15);
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(6, 18, 14, 0.03);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(6, 18, 14, 0.08);
+    border-color: rgba(18, 183, 106, 0.35);
+  }
+
+  .base-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    h5 {
+      font-family: var(--font-display);
+      color: #06120e;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .cat-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+
+      &.green {
+        background: #e6f4ea;
+        color: #137333;
+        border: 1px solid rgba(19, 115, 51, 0.2);
+      }
+
+      &.blue {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid rgba(3, 105, 161, 0.2);
+      }
+    }
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: #52525b;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .source-tag {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: #9ca3af;
+    letter-spacing: 0.5px;
+  }
+}

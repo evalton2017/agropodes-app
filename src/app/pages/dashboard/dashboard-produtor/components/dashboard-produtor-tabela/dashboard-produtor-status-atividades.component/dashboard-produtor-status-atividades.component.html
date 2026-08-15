@@ -1,64 +1,68 @@
-<!-- Bloco de Status com Gráfico de Rosca -->
-<div class="vmg-sub-widget border-bottom">
-  <div class="vmg-widget-status-header">
-    <div class="header-left">
-      <h3>Status das Glebas</h3>
-      <p>Consolidado operacional da safra</p>
-    </div>
-  </div>
+<div class="vmg-sub-widget-container">
 
-  <div class="pizza-content-row">
-    <!-- Simulação CSS do Donut Chart com o total interno do protótipo -->
-    <div class="donut-chart-mock">
-      <div class="center-hole">
-        <span class="total-num">{{ dados.status_glebas.total }}</span>
-        <span class="total-lbl">Total</span>
+  <!-- Sub-widget 1 -->
+  <div class="vmg-sub-widget border-bottom">
+    <div class="vmg-widget-status-header">
+      <div class="header-left">
+        <h3>Status das Glebas</h3>
+        <p>Consolidado operacional da safra</p>
       </div>
     </div>
 
-    <div class="pizza-legend-col">
-      @for (item of dados.status_glebas.detalhes; track item.status) {
-        <div class="legend-line">
-          <span class="dot" [ngClass]="{
-            'bg-green': item.status === 'Conforme',
-            'bg-yellow': item.status === 'Atenção',
-            'bg-red': item.status === 'Não conforme'
-          }">●</span>
-          <span class="lbl">{{ item.status }}</span>
-          <span class="qty">{{ item.quantidade }} ({{ item.percentual }}%)</span>
+    <div class="pizza-content-row">
+      <!-- 🟢 Bind com [style.background] -->
+      <div class="donut-chart-mock" [style.background]="obterDonutGradient()">
+        <div class="center-hole">
+          <span class="total-num">{{ dados?.status_glebas?.total || 0 }}</span>
+          <span class="total-lbl">TOTAL</span>
+        </div>
+      </div>
+
+      <div class="pizza-legend-col">
+        @for (item of dados?.status_glebas?.detalhes; track item.status) {
+          <div class="legend-line">
+            <span class="dot" [ngClass]="{
+              'bg-green': item.status?.toLowerCase()?.includes('conforme') && !item.status?.toLowerCase()?.includes('não') && !item.status?.toLowerCase()?.includes('nao'),
+              'bg-yellow': item.status?.toLowerCase()?.includes('atenção') || item.status?.toLowerCase()?.includes('atencao'),
+              'bg-red': item.status?.toLowerCase()?.includes('não conforme') || item.status?.toLowerCase()?.includes('nao conforme')
+            }">●</span>
+            <span class="lbl">{{ item.status }}</span>
+            <span class="qty">{{ item.quantidade }} ({{ item.percentual }}%)</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <button type="button" class="vmg-btn-link">Ver minhas glebas</button>
+  </div>
+
+  <!-- Sub-widget 2 -->
+  <div class="vmg-sub-widget pt-3">
+    <div class="vmg-widget-status-header">
+      <div class="header-left">
+        <h3>Próximas Atividades</h3>
+        <p>Cronograma preditivo de monitoramento contínuo</p>
+      </div>
+    </div>
+
+    <div class="activities-list">
+      @for (act of dados?.proximas_atividades; track act.tipo_atividade) {
+        <div class="activity-item">
+          <div class="activity-icon-box">
+            <mat-icon class="text-blue">calendar_today</mat-icon>
+          </div>
+          <div class="activity-text">
+            <h4>{{ act.tipo_atividade }}</h4>
+            <p>{{ act.descricao }}</p>
+          </div>
+          <div class="activity-date">
+            {{ act.data_prevista }}
+          </div>
         </div>
       }
     </div>
+
+    <button type="button" class="vmg-btn-link">Ver todas atividades</button>
   </div>
 
-  <button class="vmg-btn-link">Ver minhas glebas</button>
-</div>
-
-<!-- Bloco de Próximas Atividades -->
-<div class="vmg-sub-widget pt-3">
-  <div class="vmg-widget-status-header">
-    <div class="header-left">
-      <h3>Próximas Atividades</h3>
-      <p>Cronograma preditivo de monitoramento contínuo</p>
-    </div>
-  </div>
-
-  <div class="activities-list">
-    @for (act of dados.proximas_atividades; track act.tipo_atividade) {
-      <div class="activity-item">
-        <div class="activity-icon-box">
-          <mat-icon class="text-blue">calendar_today</mat-icon>
-        </div>
-        <div class="activity-text">
-          <h4>{{ act.tipo_atividade }}</h4>
-          <p>{{ act.descricao }}</p>
-        </div>
-        <div class="activity-date">
-          {{ act.data_prevista }}
-        </div>
-      </div>
-    }
-  </div>
-
-  <button class="vmg-btn-link mt-auto">Ver todas atividades</button>
 </div>

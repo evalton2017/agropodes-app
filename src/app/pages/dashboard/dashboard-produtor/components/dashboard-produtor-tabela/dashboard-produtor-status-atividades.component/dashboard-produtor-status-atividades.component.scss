@@ -1,37 +1,106 @@
-// Estilos das Subviews da Direita
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.vmg-sub-widget-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 1.25rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-sizing: border-box;
+  justify-content: space-between; /* 🟢 Garante distribuição do topo ao rodapé */
+}
+
 .vmg-sub-widget {
   display: flex;
   flex-direction: column;
-  height: 50%;
-  &.border-bottom { border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem; }
+  flex: 1; /* 🟢 Faz cada sub-widget ocupar exatamente 50% da altura */
+  min-height: 0;
+  width: 100%;
+
+  &.border-bottom {
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &.pt-3 {
+    padding-top: 0.5rem;
+  }
+}
+
+.vmg-widget-status-header {
+  margin-bottom: 0.75rem;
+
+  .header-left {
+    h3 {
+      margin: 0;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #475569;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    p {
+      margin: 2px 0 0 0;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+  }
 }
 
 .pizza-content-row {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  padding: 0.5rem 0;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
 
+  /* 🟢 Rosca com conic-gradient habilitado */
   .donut-chart-mock {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    background: conic-gradient(#16a34a 0% 66.7%, #ea580c 66.7% 83.4%, #dc2626 83.4% 100%);
-    display: flex;
+    width: 90px !important;
+    height: 90px !important;
+    min-width: 90px !important;
+    min-height: 90px !important;
+    border-radius: 50% !important;
+    display: flex !important;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    /* Fundo padrão caso o inline falhe */
+    background: conic-gradient(#ea580c 0% 100%);
 
     .center-hole {
-      width: 80px;
-      height: 80px;
+      width: 64px !important;
+      height: 64px !important;
       background: #ffffff;
-      border-radius: 50%;
+      border-radius: 50% !important;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      .total-num { font-size: 1.5rem; font-weight: 800; color: #0f172a; line-height: 1; }
-      .total-lbl { font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-top: 2px; }
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+      .total-num {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1;
+      }
+      .total-lbl {
+        font-size: 0.6rem;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-top: 2px;
+        font-weight: 700;
+      }
     }
   }
 }
@@ -39,42 +108,111 @@
 .pizza-legend-col {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
   font-size: 0.8rem;
-  .legend-line { display: flex; align-items: center; gap: 0.5rem; width: 100%; }
-  .lbl { color: #475569; font-weight: 500; min-width: 90px; }
-  .qty { font-weight: 600; color: #0f172a; }
+  flex-grow: 1;
+
+  .legend-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .dot {
+    font-size: 0.85rem;
+    line-height: 1;
+  }
+
+  .lbl {
+    color: #475569;
+    font-weight: 500;
+  }
+
+  .qty {
+    font-weight: 700;
+    color: #0f172a;
+    margin-left: auto;
+  }
+
   .bg-green { color: #16a34a; }
   .bg-yellow { color: #ea580c; }
   .bg-red { color: #dc2626; }
 }
 
-.activity-item {
+.activities-list {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  font-size: 0.8rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-grow: 1;
 
-  .activity-icon-box {
-    background: #eff6ff;
-    padding: 0.4rem;
-    border-radius: 6px;
+  .activity-item {
     display: flex;
-    mat-icon { font-size: 16px; width: 16px; height: 16px; }
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    font-size: 0.8rem;
+
+    .activity-icon-box {
+      background: #eff6ff;
+      padding: 0.4rem;
+      border-radius: 6px;
+      display: flex;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        color: #2563eb;
+      }
+    }
+
+    .activity-text {
+      display: flex;
+      flex-direction: column;
+
+      h4 {
+        margin: 0;
+        font-size: 0.8rem;
+        color: #0f172a;
+        font-weight: 600;
+      }
+      p {
+        margin: 0;
+        font-size: 0.7rem;
+        color: #94a3b8;
+      }
+    }
+
+    .activity-date {
+      margin-left: auto;
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.75rem;
+    }
   }
-  .activity-text {
-    display: flex;
-    flex-direction: column;
-    h4 { margin: 0; font-size: 0.8rem; color: #0f172a; font-weight: 600; }
-    p { margin: 0; font-size: 0.7rem; color: #94a3b8; }
-  }
-  .activity-date { margin-left: auto; font-weight: 600; color: #334155; }
 }
 
 .vmg-btn-link {
-  background: transparent; border: 1px solid #e2e8f0; border-radius: 6px;
-  color: #15803d; font-weight: 600; font-size: 0.8rem; padding: 0.5rem;
-  width: 100%; text-align: center; cursor: pointer; margin-top: 0.5rem;
-  &:hover { background: #f8fafc; }
+  display: block;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #16a34a;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.55rem 1rem;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin-top: auto; /* 🟢 Empurra o botão para o rodapé do seu próprio quadrante */
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #15803d;
+  }
 }

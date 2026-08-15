@@ -1,4 +1,4 @@
-import {Component, signal, inject, effect, OnInit} from '@angular/core'; // Adicionado effect
+import {Component, signal, inject, effect} from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
@@ -7,9 +7,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {Router} from '@angular/router';
 import Keycloak from 'keycloak-js';
 import {MatDialog} from '@angular/material/dialog';
-import {MatMenu, MatMenuTrigger} from '@angular/material/menu';
-import {ContatoModalComponent} from '../../../../components/modal/email/contato-modal.component';
-import {DashboardAnalistaComponent} from '../../../dashboard/dashboard-analista/dashboard-analista.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {ConteudoHomeComponent} from '../conteudo-home.component/conteudo-home.component';
+import {ContatoModalComponent} from '../../../components/modal/email/contato-modal.component';
 
 interface CarouselItem {
   url: string;
@@ -19,15 +19,25 @@ interface CarouselItem {
 @Component({
   selector: 'home-publico',
   standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatCardModule, MatIconModule, MatMenu, MatMenuTrigger, DashboardAnalistaComponent],
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    MatMenuModule,
+    ConteudoHomeComponent
+  ],
   templateUrl: './home-publico.component.html',
   styleUrls: ['./home-publico.component.scss']
 })
-export class HomePublicoComponent  {
+export class HomePublicoComponent {
   private readonly location = inject(Location);
   private readonly router = inject(Router);
   private readonly keycloak = inject(Keycloak);
   private dialog = inject(MatDialog);
+  
+  menuMobileAberto = false;
 
   carouselImages = signal<CarouselItem[]>([
     { url: 'images/consulta-prode.jpg', alt: 'Conslulta por satélite' },
@@ -45,13 +55,11 @@ export class HomePublicoComponent  {
   currentIndex = signal<number>(0);
 
   constructor() {
-    // Cria um efeito que roda quando o componente inicia e limpa o timer quando o componente é destruído
     effect((onCleanup) => {
       const timer = setInterval(() => {
         this.nextSlide();
-      }, 4000); // Muda a foto a cada 4 segundos (4000ms)
+      }, 4000);
 
-      // Evita vazamento de memória (memory leak) limpando o intervalo se o usuário sair da página
       onCleanup(() => clearInterval(timer));
     });
   }
@@ -80,12 +88,8 @@ export class HomePublicoComponent  {
     this.router.navigate(['cadastrar-usuario']);
   }
 
-
   isAutenticado(): boolean {
-    if(this.keycloak.authenticated) {
-      return true;
-    }
-    return false;
+    return !!this.keycloak.authenticated;
   }
 
   abrirModalContato() {
@@ -94,5 +98,4 @@ export class HomePublicoComponent  {
       disableClose: true
     });
   }
-
 }

@@ -1,7 +1,7 @@
 <div class="home-container">
 
   @if (!isAutenticado()) {
-    <home-publico />
+    <home-publico></home-publico>
   }
   @else if (possuiRole('USER_PRODUTOR')) {
     <main class="content">

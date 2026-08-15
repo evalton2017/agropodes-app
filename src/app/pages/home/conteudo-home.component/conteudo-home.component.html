@@ -1,0 +1,203 @@
+<div class="hero-wrapper">
+  <section class="hero-section">
+    <div class="hero-container">
+
+      <div class="hero-text-block">
+        <span class="side-tag">EPSG : 4326</span>
+
+        <div class="badge-tag">
+          <span class="badge-dot"></span>
+          INFRAESTRUTURA VMG • PORTARIA SDI/MAPA 739/2025
+        </div>
+
+        <h1 class="hero-title">
+          Cada talhão, verificado.
+          <span class="highlight">Cada safra, comprovada.</span>
+        </h1>
+
+        <p class="hero-description">
+          O AgroProdes cruza a gleba declarada pelo produtor com quinze bases oficiais, classifica a cultura efetivamente plantada por inteligência artificial e emite atestados imutáveis com Identificador Único — dentro do padrão nacional de verificação agrícola, monitoramento e conformidade de grãos.
+        </p>
+
+        <div class="hero-cta-group">
+          <button mat-flat-button class="btn-cta-primary" (click)="consultarAtestado()">
+            <span>Consultar um atestado</span>
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+          <button mat-stroked-button class="btn-cta-secondary" (click)="conhecerPlataforma()">
+            Conhecer a plataforma
+          </button>
+        </div>
+      </div>
+
+      <div class="metrics-card">
+        <h3 class="metrics-header">PARÂMETROS NORMATIVOS</h3>
+
+        <div class="metric-item">
+          <div class="metric-info">
+            <p class="metric-label">Padrão mínimo de acurácia atendido</p>
+            <span class="metric-sub">Acurácia dos modelos</span>
+          </div>
+          <div class="metric-value">90%</div>
+        </div>
+
+        <div class="metric-item">
+          <div class="metric-info">
+            <p class="metric-label">Disponibilidade mínima dos sistemas</p>
+            <span class="metric-sub">Disponibilidade</span>
+          </div>
+          <div class="metric-value">99%</div>
+        </div>
+
+        <div class="metric-item">
+          <div class="metric-info">
+            <p class="metric-label">Prazo máximo de emissão do atestado</p>
+            <span class="metric-sub">Prazo de emissão</span>
+          </div>
+          <div class="metric-value">45 min</div>
+        </div>
+
+        <div class="metric-item">
+          <div class="metric-info">
+            <p class="metric-label">Histórico retroativo de classificação</p>
+            <span class="metric-sub">Série histórica</span>
+          </div>
+          <div class="metric-value font-small">60 meses</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<section class="modules-section">
+  <div class="modules-container">
+
+    <div class="section-badge-row">
+      <span class="step-num">01</span>
+      <span class="line-divider"></span>
+      <div class="badge-tag green">
+        ARQUITETURA MODULAR
+      </div>
+      <span class="line-divider flex-1"></span>
+    </div>
+
+    <div class="modules-header-grid">
+      <h2 class="modules-title">
+        Quatro módulos que cobrem o ciclo inteiro da conformidade
+      </h2>
+      <p class="modules-intro">
+        A portaria admite implementação em módulos e em etapas. Cada bloco do AgroProdes é independente e interoperável, e endereço um conjunto específico de requisitos do normativo.
+      </p>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="module-card">
+        <div class="card-top-bar">
+          <div class="icon-box">
+            <mat-icon>crop_free</mat-icon>
+          </div>
+          <span class="module-tag">CONTROLE SISTÊMICO DE PRODUÇÃO</span>
+        </div>
+
+        <h3 class="card-title">Verificação Agrícola</h3>
+        <p class="card-desc">
+          Cruzamento da gleba declarada com 15 bases oficiais e classificação de cultura por inteligência artificial.
+        </p>
+
+        <ul class="card-features">
+          <li><span class="bullet">◆</span> Validação por área delimitada (gleba) e por raio baseado no centroide</li>
+          <li><span class="bullet">◆</span> Classificação de culturas em safra vigente e nas cinco safras anteriores</li>
+          <li><span class="bullet">◆</span> Confronto entre cultura declarada e cultura observada por satélite</li>
+        </ul>
+
+        <a class="module-link" (click)="verModulo('verificacao')">
+          <span>Ver o módulo</span>
+          <mat-icon class="link-arrow">call_made</mat-icon>
+        </a>
+      </div>
+
+      <div class="module-card">
+        <div class="card-top-bar">
+          <div class="icon-box">
+            <mat-icon>sensors</mat-icon>
+          </div>
+          <span class="module-tag">RASTREABILIDADE DE CONTRATOS</span>
+        </div>
+
+        <h3 class="card-title">Monitoramento de Safra</h3>
+        <p class="card-desc">
+          Acompanhamento fim a fim de contratos subsidiados, com metadados GeoTIFF e caderno de campo individualizado.
+        </p>
+
+        <ul class="card-features">
+          <li><span class="bullet">◆</span> Monitoramento de contratos de Plano Safra, Subvenção Rural e Proagro</li>
+          <li><span class="bullet">◆</span> Download de metadados em GeoTIFF por contrato individualizado</li>
+          <li><span class="bullet">◆</span> Bandas espectrais: Vermelho, NIR, SWIR 1, Red Edge 1, Verde e Azul</li>
+        </ul>
+
+        <a class="module-link" (click)="verModulo('monitoramento')">
+          <span>Ver o módulo</span>
+          <mat-icon class="link-arrow">call_made</mat-icon>
+        </a>
+      </div>
+
+      <div class="module-card">
+        <div class="card-top-bar">
+          <div class="icon-box">
+            <mat-icon>eco</mat-icon>
+          </div>
+          <span class="module-tag">CAPACITAÇÃO E MANEJO</span>
+        </div>
+
+        <h3 class="card-title">Assessoramento Digital</h3>
+        <p class="card-desc">
+          Capacitação digital com aconselhamento de janela de plantio, absorção de chuvas e manejo de solo.
+        </p>
+
+        <ul class="card-features">
+          <li><span class="bullet">◆</span> Melhor janela de plantio para a cultura identificada</li>
+          <li><span class="bullet">◆</span> Melhor janela para absorção das chuvas conforme a cultura</li>
+          <li><span class="bullet">◆</span> Matéria orgânica: áreas deficientes e áreas em nível adequado</li>
+        </ul>
+
+        <a class="module-link" (click)="verModulo('assessoramento')">
+          <span>Ver o módulo</span>
+          <mat-icon class="link-arrow">call_made</mat-icon>
+        </a>
+      </div>
+
+      <div class="module-card">
+        <div class="card-top-bar">
+          <div class="icon-box">
+            <mat-icon>verified</mat-icon>
+          </div>
+          <span class="module-tag">EMISSÃO DE ATESTADOS</span>
+        </div>
+
+        <h3 class="card-title">Atestados VMG</h3>
+        <p class="card-desc">
+          Certificados seguros, transparentes e imutáveis com Identificador Único e cadeia de custódia.
+        </p>
+
+        <ul class="card-features">
+          <li><span class="bullet">◆</span> Identificador Único (IU) por atestado emitido</li>
+          <li><span class="bullet">◆</span> Registro imutável com trilha de auditoria completa</li>
+          <li><span class="bullet">◆</span> Agregação de produtores e rastreabilidade por cadeia de custódia</li>
+        </ul>
+
+        <a class="module-link" (click)="verModulo('atestados')">
+          <span>Ver o módulo</span>
+          <mat-icon class="link-arrow">call_made</mat-icon>
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <app-saida-plataforma></app-saida-plataforma>
+  <app-modelos-camadas></app-modelos-camadas>
+  <app-evidencias-faq></app-evidencias-faq>
+</section>

@@ -10,6 +10,7 @@ import {
   CarFeicoesAmbientaisResponse, DominioCultura, GlebaData, GlebaPainel, JanelaGeralZarcResponse,
   MunicipioResponse, RespostaConsultaGlebasPainel, ValidarZarcRequest, ValidarZarcSimplificadoResponse
 } from '../model/gleba.model';
+import {GlebaItem} from '../../dashboard/model/dashboard-produtor.model';
 
 
 
@@ -69,6 +70,12 @@ export class GlebaService {
       .set('safra', safra.trim());
 
     return this.http.get<RespostaConsultaGlebasPainel>(`${environment.urlProc}/produtor/${idProdutor}/consulta-glebas`, { params });
+  }
+
+  consultarGlebaProdutor(idProdutor: number): Observable<GlebaItem[]> {
+    const params = new HttpParams();
+    params.set('id_produtor', idProdutor.toString())
+    return this.http.get<GlebaItem[]>(`${environment.urlProc}/produtor/${idProdutor}/glebas`, { params });
   }
 
   getGlebaById(idGleba: number): Observable<GlebeApiResponse & { coordenadas: [number, number][] }> {

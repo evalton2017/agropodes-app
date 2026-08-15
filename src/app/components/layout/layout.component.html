@@ -1,4 +1,3 @@
-<!-- layout.component.html -->
 @if (menuItems().length > 0) {
   <mat-sidenav-container class="app-container" [hasBackdrop]="isMobile()">
 
@@ -12,23 +11,36 @@
       (mouseenter)="expandMenu()"
       (mouseleave)="collapseMenu()">
 
+      <!-- BRANDING / LOGO -->
       <div class="sidenav-logo-container">
         <img src="favicon.ico" alt="AgroProdes" class="app-logo" loading="lazy">
         <span class="brand-name menu-text">AgroProdes</span>
       </div>
       <hr class="divider">
 
-      <mat-nav-list>
+      <!-- PERFIL DO USUÁRIO NO MENU (CONFORME MOCKUP) -->
+      <div class="user-profile-card">
+        <div class="avatar-circle">
+          <mat-icon>eco</mat-icon>
+        </div>
+        <div class="user-details menu-text">
+          <span class="user-fullname">{{ username() }}</span>
+          <span class="user-role">Produtor Rural</span>
+        </div>
+      </div>
+      <hr class="divider">
+
+      <!-- LISTA DE NAVEGAÇÃO -->
+      <mat-nav-list class="main-nav-list">
         @for (item of menuItems(); track item.label) {
 
-          <!-- CASO 1: Item com Submenu -->
+          <!-- Item com Submenu -->
           @if (item.children && item.children.length > 0) {
             <mat-expansion-panel
               class="menu-expansion-panel"
               [disabled]="!isExpanded() && !isMobile()">
 
-              <mat-expansion-panel-header class="menu-expansion-header" [matTooltip]="item.label"
-                                          matTooltipPosition="right">
+              <mat-expansion-panel-header class="menu-expansion-header" [matTooltip]="item.label" matTooltipPosition="right">
                 <mat-panel-title>
                   <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
                   <span class="menu-text">{{ item.label }}</span>
@@ -50,7 +62,7 @@
               </mat-nav-list>
             </mat-expansion-panel>
           } @else {
-            <!-- CASO 2: Item sem Submenu -->
+            <!-- Item sem Submenu -->
             <a mat-list-item
                [routerLink]="item.route"
                routerLinkActive="active-link"
@@ -64,13 +76,24 @@
 
         }
       </mat-nav-list>
+
+      <!-- BOTÃO SAIR NO RODAPÉ DO MENU -->
+      <div class="sidenav-footer">
+        <a mat-list-item (click)="logout()" class="logout-btn" matTooltip="Sair" matTooltipPosition="right">
+          <mat-icon matListItemIcon>logout</mat-icon>
+          <span matListItemTitle class="menu-text">Sair</span>
+        </a>
+      </div>
+
     </mat-sidenav>
 
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
     <mat-sidenav-content
       class="app-content-wrapper"
       [class.content-collapsed]="!isMobile() && !isExpanded()"
       [class.content-expanded]="!isMobile() && isExpanded()">
 
+      <!-- HEADER TOP BAR -->
       <mat-toolbar
         class="app-header"
         [class.header-collapsed]="!isMobile() && !isExpanded()"
@@ -85,7 +108,6 @@
         <span class="header-title">AMBIENTE DE TESTE</span>
         <span class="spacer"></span>
 
-        <!-- Componente de Notificação -->
         <app-notification-button></app-notification-button>
 
         <div class="header-user-section">
@@ -93,12 +115,11 @@
             <span class="user-name">{{ username() }}</span>
           }
 
-          <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Perfil do Usuário"
-                  class="header-profile-btn">
+          <button mat-icon-button [matMenuTriggerFor]="profileMenu" aria-label="Perfil do Usuário" class="header-profile-btn">
             <mat-icon>account_circle</mat-icon>
           </button>
 
-          <mat-menu #profileMenu="matMenu" xPosition="before">
+          <mat-menu #profileMenu="matMenu" xPosition="before" class="dark-profile-menu">
             @if (isMobile()) {
               <div class="menu-user-info">
                 <span>{{ username() }}</span>
@@ -117,19 +138,20 @@
 
       <div class="page-body">
         <main class="main-content">
-          <router-outlet></router-outlet>
+          <div class="content-container">
+            <router-outlet></router-outlet>
+          </div>
         </main>
         <app-footer></app-footer>
       </div>
+
     </mat-sidenav-content>
 
   </mat-sidenav-container>
 } @else {
-  <!-- Tela limpa caso não existam itens de menu -->
   <div class="page-body">
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>
-    <app-footer></app-footer>
   </div>
 }

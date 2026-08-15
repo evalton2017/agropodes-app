@@ -1,125 +1,144 @@
+/* ==========================================================================
+   📊 GRID DE 4 COLUNAS IGUAIS (TRAVAMENTO DE LARGURA)
+   ========================================================================== */
+
+.grid-container-graficos {
+  display: grid !important;
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin-top: 16px !important;
+
+  /* Força todas as 4 colunas a possuírem EXATAMENTE a mesma largura (25% cada) */
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+.dashboard-dark-theme {
+  /* Isola e fixa o tamanho de cada card do grid */
+  dashboard-grafico-estados,
+  dashboard-contratos-estado,
+  dashboard-grafico-culturas,
+  app-dashboard-alertas {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important; // Previne que o Leaflet expanda a coluna
+  }
+
+  .dashboard-chart-card,
+  .dashboard-card,
+  .ia-card {
+    background-color: #0b1a10 !important;
+    border: 1px solid #183321 !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    color: #f8fafc !important;
+    position: relative !important;
+    overflow: hidden !important;
+    height: 320px !important; // Altura unificada para todos os cards da fileira
+  }
+
+  .card-title-custom {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 14px !important;
+    margin: 0 0 12px 0 !important;
+  }
+}
+
+/* ==========================================================================
+   🍩 DONUT CHART - FIX DE RENDERIZAÇÃO DO CANVAS
+   ========================================================================== */
+
 .donut-chart-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  height: calc(100% - 30px);
-  gap: 1rem;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: calc(100% - 32px) !important;
+  gap: 12px !important;
 }
 
 .canvas-donut-wrapper {
-  position: relative;
-  width: 160px;
-  height: 160px;
+  position: relative !important;
+  width: 135px !important;
+  height: 135px !important;
+  min-width: 135px !important;
+  min-height: 135px !important;
+  flex-shrink: 0 !important;
 
   canvas {
-    width: 100% !important;
-    height: 100% !important;
+    display: block !important;
+    width: 135px !important;
+    height: 135px !important;
   }
 }
 
-// Texto absoluto centralizado dentro da rosca
 .donut-inner-labels {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  pointer-events: none;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  text-align: center !important;
+  pointer-events: none !important;
 
   .donut-total-value {
-    font-size: 1.25rem; /* 20px */
-    font-weight: 800;
-    color: #111827;
-    margin: 0;
-    line-height: 1.2;
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    line-height: 1 !important;
   }
 
   .donut-total-text {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin: 0;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    color: #94a3b8 !important;
+    margin-top: 3px !important;
+    letter-spacing: 0.5px !important;
   }
 }
 
 .donut-legend-column {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex: 1;
-  max-width: 140px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 
   .legend-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    color: #374151;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
   }
 
   .legend-label-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 500;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
   }
 
-  .legend-bullet {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    display: inline-block;
+  .dot-cor-cultura {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+  }
 
-    // Cores específicas mapeadas por cultura baseadas na imagem
-    &[data-culture="Soja"]    { background-color: #16a34a; }
-    &[data-culture="Milho"]   { background-color: #eab308; }
-    &[data-culture="Algodão"] { background-color: #a855f7; }
-    &[data-culture="Sorgo"]   { background-color: #ef4444; }
-    &[data-culture="Feijão"]  { background-color: #3b82f6; }
-    &[data-culture="Outras"]  { background-color: #9ca3af; }
+  .legend-bullet-text {
+    color: #ffffff !important; // Texto do nome da cultura em branco puro
+    font-weight: 700 !important;
+    font-size: 12px !important;
   }
 
   .legend-percentage {
-    font-weight: 600;
-    color: #111827;
+    font-weight: 800 !important;
+    color: #38bdf8 !important; // Percentual neón em ciano
+    font-size: 12px !important;
+    font-family: monospace, monospace !important;
   }
-}
-
-.legenda-culturas-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 140px;
-}
-
-.legenda-item-linha {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; // Joga o nome para a esquerda e o % para a direita
-  width: 100%;
-  font-size: 13px;
-}
-
-.legenda-label-bloco {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.dot-cor-cultura {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.nome-cultura {
-  color: #475569; // slate-600
-  font-weight: 500;
-}
-
-.valor-percentual-cultura {
-  color: #0f172a; // slate-900
-  font-weight: 700; // Negrito destacado conforme imagem
 }

@@ -22,7 +22,7 @@ export interface GlebaGeometriaResponse {
   culturaDeclarada: string;
   dataCriacao: string;
   dataEstimadaPlantio: string;
-
+  rasterPeriodo?: RasterPeriodoResponse;
   // PROPRIEDADES ANALÍTICAS INCORPORADAS DA API PYTHON:
   statusVmg: 'CONFORME' | 'ATENCAO' | 'NAO_CONFORME';
   conformidadePct: number;
@@ -85,3 +85,24 @@ export interface ProdutividadeEstimadaResponse {
   grafico_linha: SerieProdutividadeMensal[];
 }
 
+export interface RasterPeriodoResponse {
+  idRaster: number;
+  dataCaptura: string;
+  rasterUrl: string;
+  cloudCover: number;
+  ndviMean?: number;
+  bbox?: [number, number, number, number];
+}
+
+export interface GlebaItem {
+  idGleba: number;
+  idProdutor: number;
+  codigoCar: string;
+  geometria: string;
+  areaHectares: number;
+  culturaDeclarada: string;
+  statusVmg: string;
+  conformidadePct: number;
+  dataCriacao: string;
+  dataEstimadaPlantio: string;
+}

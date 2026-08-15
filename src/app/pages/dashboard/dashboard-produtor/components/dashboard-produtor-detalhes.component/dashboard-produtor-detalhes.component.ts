@@ -42,7 +42,6 @@ export class DashboardProdutorDetalhesComponent {
 
   produtor = computed(() => this.pessoaService.produtorAtual());
 
-  // 🟢 Controle de Estado de Carregamento
   carregando = signal<boolean>(false);
 
   dadosMapa = signal<GlebaGeometriaResponse[]>([]);
@@ -60,7 +59,7 @@ export class DashboardProdutorDetalhesComponent {
       this.carregando.set(true);
 
       forkJoin({
-        mapa: this.produtorService.obterGlebasGeometria(user.id),
+        mapa: this.produtorService.obterGlebasGeometria(user.id, filtros),
         tabela: this.produtorService.obterConformidadeAmbiental(user.id, filtros),
         atividades: this.produtorService.obterStatusEAtividades(user.id, filtros)
       }).pipe(takeUntilDestroyed(this.destroyRef))

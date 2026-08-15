@@ -1,67 +1,36 @@
 :host {
-  --green-bg-light: #e8f5e9;
-  --green-text-dark: #2e7d32;
-  --green-active-bg: #c8e6c9;
-  --green-active-text: #1b5e20;
-
-  --sidenav-collapsed-width: 76px;
-  --sidenav-expanded-width: 260px;
-  --anim-speed: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --sidenav-width: 260px;
+  display: block;
+  min-height: 100vh;
 }
 
 /* ==========================================================================
-   ESTRUTURA GLOBAL
+   CONTAINER BASE (ELIMINA A BARRA DUPLA)
    ========================================================================== */
 .app-container {
-  height: 100vh;
-  background-color: #f8faf8;
-}
-
-.header-offset {
-  height: 64px;
-}
-
-.page-body {
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 64px);
-  box-sizing: border-box;
-}
-
-.main-content {
-  padding: 24px;
-  box-sizing: border-box;
-  flex: 1;
+  min-height: 100vh;
+  background-color: var(--night) !important;
+  overflow: hidden !important; /* Desativa scroll no container externo */
 }
 
 /* ==========================================================================
-   DESIGN DO CABEÇALHO
+   CABEÇALHO SUPERIOR (HEADER)
    ========================================================================== */
-.app-header {
-  background-color: var(--green-bg-light) !important;
-  color: var(--green-text-dark);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 64px;
-  z-index: 99;
-}
 
 .header-profile-btn, .mobile-menu-btn {
-  color: var(--green-text-dark);
+  color: var(--white-70);
 }
 
 .header-title {
+  font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--lima);
+  letter-spacing: 1px;
 }
 
-.spacer {
-  flex: 1 1 auto;
-}
+.spacer { flex: 1 1 auto; }
 
-/* Estilos da Seção do Usuário */
 .header-user-section {
   display: flex;
   align-items: center;
@@ -69,30 +38,31 @@
 }
 
 .user-name {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  color: var(--green-text-dark);
+  color: var(--white-70);
 }
 
-.menu-user-info {
-  padding: 12px 16px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  color: var(--green-text-dark);
+.header-offset {
+  height: 64px;
 }
 
 /* ==========================================================================
-   ESTILIZAÇÃO GERAL DA BARRA LATERAL
+   BARRA LATERAL (SIDENAV / MENU)
    ========================================================================== */
 .app-sidenav {
-  background-color: var(--green-bg-light) !important;
-  border-right: 1px solid rgba(46, 125, 50, 0.12) !important;
-  border-radius: 0px !important; /* Adicione esta linha para tirar o arredondamento do topo */
-}
-
-::v-deep .mat-drawer-inner-container {
-  overflow-x: hidden !important;
+  background-color: var(--carbon-1) !important;
+  border-right: 1px solid var(--white-12) !important;
+  border-radius: 0px !important;
+  display: flex;
+  flex-direction: column;
+  width: var(--sidenav-width) !important;
+  height: 100vh;
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
 }
 
 .sidenav-logo-container {
@@ -112,164 +82,224 @@
 }
 
 .brand-name {
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.2rem;
-  color: var(--green-text-dark);
+  color: var(--white);
   white-space: nowrap;
 }
 
 .divider {
   border: 0;
-  border-top: 1px solid rgba(46, 125, 50, 0.12);
+  border-top: 1px solid var(--white-12);
   margin: 0;
 }
 
-/* ==========================================================================
-   LINKS, SUBMENUS E INTERAÇÕES (CANTOS RETOS GARANTIDOS)
-   ========================================================================== */
-.app-sidenav mat-nav-list a {
-  color: #556255;
-  margin: 2px 0 !important;        /* Margem lateral zerada para preencher a largura */
-  border-radius: 0px !important;    /* Força cantos retos na tag base */
+/* USER PROFILE CARD */
+.user-profile-card {
   display: flex;
   align-items: center;
-}
+  gap: 12px;
+  padding: 16px;
 
-.app-sidenav mat-icon {
-  color: var(--green-text-dark);
-  margin-right: 0;
-  transition: margin var(--anim-speed);
-}
-
-/* Estado Ativo/Selecionado */
-.active-link {
-  background-color: var(--green-active-bg) !important;
-  color: var(--green-active-text) !important;
-  font-weight: 600;
-  border-radius: 0px !important;
-}
-
-.active-link mat-icon {
-  color: var(--green-active-text) !important;
-}
-
-/* SO BREESCRITA PROFUNDA DAS REGRAS E ANIMAÇÕES INTERNAS DO ANGULAR MATERIAL (MDC) */
-::v-deep .app-sidenav {
-  // Zera as variáveis de forma do Material 3 que moldam o botão e estados de hover/foco
-  --mdc-list-active-indicator-shape: 0px !important;
-  --mdc-shape-small: 0px !important;
-  --mdc-shape-medium: 0px !important;
-  --mat-legacy-list-active-indicator-shape: 0px !important;
-
-  // Alvos de classe específicos que geram o background arredondado
-  .mat-mdc-list-item,
-  .mat-mdc-list-item-interactive,
-  .mat-mdc-list-item-interactive::before,
-  .mdc-list-item__focusable-ring, /* O anel interno que causa o formato pílula */
-  .mat-expansion-panel,
-  .mat-expansion-panel-header,
-  .mat-expansion-panel-header::before,
-  .mat-expansion-panel-header::after,
-  .mat-content,
-  .mat-ripple {
-    border-radius: 0px !important;
-  }
-}
-
-/* ==========================================================================
-   AJUSTES DO MATEXPANSIONPANEL DENTRO DA BARRA LATERAL
-   ========================================================================== */
-.menu-expansion-panel {
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0px !important;
-
-  &.mat-expanded {
-    margin: 0 !important;
-  }
-
-  ::v-deep .mat-expansion-panel-body {
-    padding: 0 !important;
-  }
-}
-
-.menu-expansion-header {
-  padding: 0 16px !important;
-  height: 48px !important;
-  border-radius: 0px !important;
-
-  mat-panel-title {
+  .avatar-circle {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    background: rgba(18, 183, 106, 0.1);
+    border: 1px solid var(--safra-light);
     display: flex;
     align-items: center;
-    color: #556255;
+    justify-content: center;
 
     mat-icon {
-      margin-right: 0;
+      color: var(--safra-light);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .user-fullname {
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .user-role {
+      color: var(--white-40);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      white-space: nowrap;
     }
   }
 }
 
-/* Recuo estrutural dos subitens */
-.submenu-list {
-  padding-top: 0 !important;
-  a {
-    padding-left: 32px !important;
-    margin: 2px 0 !important;
-    border-radius: 0px !important;
+/* LISTA DE NAVEGAÇÃO */
+.main-nav-list {
+  padding-top: 8px !important;
+}
+
+.app-sidenav mat-nav-list a,
+.app-sidenav .menu-expansion-header {
+  color: var(--white-70);
+  margin: 2px 0 !important;
+  border-radius: 0px !important;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    color: var(--white);
   }
+}
+
+.app-sidenav mat-icon {
+  color: var(--white-70);
+  margin-right: 16px !important;
+}
+
+.active-link {
+  background-color: var(--safra-active-bg) !important;
+  color: var(--white) !important;
+  font-weight: 700;
+  border-left: 4px solid var(--lima) !important;
+
+  mat-icon {
+    color: var(--lima) !important;
+  }
+}
+
+/* RESET DEFINITIVO DO MINHAS GLEBAS (MAT-EXPANSION-PANEL) */
+::ng-deep .app-sidenav {
+  mat-expansion-panel,
+  .mat-expansion-panel,
+  .mat-expansion-panel-header,
+  .mat-expansion-panel-content,
+  .mat-expansion-panel-body,
+  .mat-expansion-panel.mat-expanded {
+    background-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0px !important;
+    margin: 0 !important;
+  }
+
+  .mat-expansion-panel-header {
+    padding: 0 16px !important;
+    height: 48px !important;
+
+    &:hover, &.mat-expanded {
+      background-color: rgba(255, 255, 255, 0.04) !important;
+    }
+
+    .mat-expansion-panel-header-title,
+    mat-panel-title {
+      display: flex !important;
+      align-items: center !important;
+      color: var(--white-70) !important;
+      font-size: 1rem !important;
+      font-weight: normal !important;
+    }
+
+    .mat-expansion-indicator::after {
+      color: var(--white-70) !important;
+    }
+  }
+
+  .submenu-list {
+    background: transparent !important;
+    a { padding-left: 32px !important; }
+  }
+}
+
+.sidenav-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--white-12);
+  padding: 8px 0;
+
+  .logout-btn {
+    color: var(--white-70);
+    cursor: pointer;
+    &:hover {
+      color: var(--lima);
+      mat-icon { color: var(--lima); }
+    }
+  }
+}
+
+.menu-text {
+  opacity: 1 !important;
+  white-space: nowrap;
 }
 
 /* ==========================================================================
-   ESTADOS DE LAYOUT CONTROLADOS VIA CLASSES DO ANGULAR (DESKTOP)
+   CONTEÚDO PRINCIPAL (ÁREA DA TELA QUE ROLA)
    ========================================================================== */
+.page-body {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 64px);
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--night);
+}
 
-/* 1. Comportamento do Menu Lateral */
-.app-sidenav.desktop-collapsed {
-  width: var(--sidenav-collapsed-width) !important;
-  transition: width var(--anim-speed) !important;
+.main-content {
+  padding: 24px;
+  box-sizing: border-box;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+}
 
-  /* Força sumir o conteúdo interno e a seta do Expansion quando colapsado */
-  ::v-deep .mat-expansion-panel-content,
-  ::v-deep .mat-expansion-indicator {
-    display: none !important;
-    height: 0 !important;
+.content-container {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   REGRAS RESPONSIVAS (TRAVAMENTO RIGOROSO DE BORDAS)
+   ========================================================================== */
+@media (min-width: 960px) {
+  .app-header {
+    left: var(--sidenav-width, 260px) !important;
+    right: 0 !important;
+    width: auto !important;
+  }
+
+  .app-content-wrapper,
+  .mat-sidenav-content {
+    margin-left: var(--sidenav-width, 260px) !important;
+    width: calc(100% - var(--sidenav-width, 260px)) !important;
+    max-width: calc(100% - var(--sidenav-width, 260px)) !important;
+    box-sizing: border-box !important;
   }
 }
 
-.app-sidenav.desktop-expanded {
-  width: var(--sidenav-expanded-width) !important;
-  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.06) !important;
-  transition: width var(--anim-speed) !important;
-}
+@media (max-width: 959px) {
+  .app-header,
+  .app-content-wrapper,
+  .mat-sidenav-content {
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 
-/* 2. Comportamento do Texto do Menu */
-.desktop-collapsed .menu-text { opacity: 0; white-space: nowrap; transition: opacity 0.1s ease; }
-.desktop-expanded .menu-text { opacity: 1; white-space: nowrap; transition: opacity 0.15s ease 0.05s; }
-.desktop-expanded mat-icon { margin-right: 16px !important; }
-.desktop-expanded .menu-expansion-header mat-panel-title mat-icon { margin-right: 16px !important; }
-
-/* 3. Comportamento da Área de Conteúdo da Página */
-.app-content-wrapper.content-collapsed {
-  margin-left: var(--sidenav-collapsed-width) !important;
-  transition: margin-left var(--anim-speed) !important;
-}
-
-.app-content-wrapper.content-expanded {
-  margin-left: var(--sidenav-expanded-width) !important;
-  transition: margin-left var(--anim-speed) !important;
-}
-
-/* 4. Comportamento do Header Superior */
-.app-header.header-collapsed {
-  left: var(--sidenav-collapsed-width) !important;
-  width: calc(100% - var(--sidenav-collapsed-width)) !important;
-  padding-left: 24px !important;
-  transition: left var(--anim-speed), width var(--anim-speed), padding var(--anim-speed) !important;
-}
-
-.app-header.header-expanded {
-  left: var(--sidenav-expanded-width) !important;
-  width: calc(100% - var(--sidenav-expanded-width)) !important;
-  padding-left: 24px !important;
-  transition: left var(--anim-speed), width var(--anim-speed), padding var(--anim-speed) !important;
+  .main-content {
+    padding: 12px;
+  }
 }
