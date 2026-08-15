@@ -1,10 +1,15 @@
+/* =========================================================================
+   RODAPÉ DA APLICAÇÃO (PADRÃO GREEN CARBON)
+   ========================================================================= */
 .app-footer {
-  background-color: #e8f5e9; /* Mesmo verde claro do Header e Menu */
-  color: #2e7d32; /* Verde escuro para contraste */
-  border-top: 1px solid rgba(46, 125, 50, 0.12);
+  background-color: var(--carbon-1, #06120e) !important; /* Mesmo tom do Menu/Header */
+  color: var(--white-70, rgba(255, 255, 255, 0.7));
+  border-top: 1px solid var(--white-12, rgba(255, 255, 255, 0.12));
   padding: 16px 24px;
   font-size: 0.85rem;
-  margin-top: auto; /* Empurra o footer para o final da página */
+  margin-top: auto; /* Mantém o footer sempre no final da página */
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .footer-content {
@@ -13,23 +18,28 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
+
+  strong {
+    color: var(--lima, #a3e635); /* Destaque para a marca AgroProdes */
+    font-weight: 700;
+  }
 }
 
 .footer-links {
   display: flex;
   gap: 16px;
-}
 
-.footer-links a {
-  color: #2e7d32;
-  text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.2s ease;
-}
+  a {
+    color: var(--white-80, rgba(255, 255, 255, 0.8));
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
 
-.footer-links a:hover {
-  opacity: 0.8;
-  text-decoration: underline;
+    &:hover {
+      color: var(--lima, #a3e635); /* Destaque ao passar o mouse */
+      text-decoration: underline;
+    }
+  }
 }
 
 /* Ajuste para telas pequenas */

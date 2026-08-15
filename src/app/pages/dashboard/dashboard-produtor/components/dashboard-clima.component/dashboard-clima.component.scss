@@ -1,40 +1,61 @@
-/* dashboard-clima.component.scss */
+/* =========================================================================
+   CARD ANALÍTICO DE CLIMA (PADRÃO GREEN CARBON: #122B24)
+   ========================================================================= */
 .vmg-card-analitico {
-  background: #ffffff;
+  background: #122B24 !important; /* Verde 15% mais claro que o menu */
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  color: #ffffff !important;
 
-  .card-clima-header h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0 0 1rem 0;
+  /* CABEÇALHO DO CARD */
+  .card-clima-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffffff !important;
+      margin: 0;
+    }
   }
 
-  /* Organiza os 4 subcards em 2 colunas e 2 linhas estáveis */
+  /* GRID DOS 4 SUBCARDS CLIMÁTICOS */
   .card-clima-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     flex: 1;
 
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+
     .clima-subcard {
       display: flex;
       align-items: center;
       gap: 1rem;
-      background: #f8fafc;
-      border: 1px solid #f1f5f9;
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
       border-radius: 8px;
       padding: 1rem;
       box-sizing: border-box;
+      transition: all 0.2s ease;
 
+      &:hover {
+        border-color: rgba(163, 230, 53, 0.3) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+      }
+
+      /* CAIXA DE ÍCONES TEMÁTICOS */
       .clima-icon-box {
         display: flex;
         align-items: center;
@@ -49,12 +70,29 @@
           height: 24px;
         }
 
-        &.blue-theme { background: #eff6ff; color: #2563eb; fill: #2563eb; }
-        &.orange-theme { background: #fff7ed; color: #ea580c; fill: #ea580c; }
-        &.red-theme { background: #fef2f2; color: #dc2626; fill: #dc2626; }
-        &.green-theme { background: #f0fdf4; color: #16a34a; fill: #16a34a; }
+        &.blue-theme {
+          background: rgba(37, 99, 235, 0.15) !important;
+          color: #60a5fa !important;
+          fill: #60a5fa !important;
+        }
+        &.orange-theme {
+          background: rgba(234, 88, 12, 0.15) !important;
+          color: #fb923c !important;
+          fill: #fb923c !important;
+        }
+        &.red-theme {
+          background: rgba(220, 38, 38, 0.15) !important;
+          color: #f87171 !important;
+          fill: #f87171 !important;
+        }
+        &.green-theme {
+          background: rgba(163, 230, 53, 0.15) !important;
+          color: #A3E635 !important;
+          fill: #A3E635 !important;
+        }
       }
 
+      /* INFORMAÇÕES NUMÉRICAS */
       .clima-info {
         display: flex;
         flex-direction: column;
@@ -62,19 +100,21 @@
 
         .clima-title {
           font-size: 0.75rem;
-          color: #64748b;
+          color: rgba(255, 255, 255, 0.6) !important;
           font-weight: 500;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
+
         .clima-value {
-          font-size: 1.1rem;
+          font-size: 1.15rem;
           font-weight: 700;
-          color: #334155;
+          color: #ffffff !important;
           margin: 2px 0;
         }
 
+        /* DELTA E VARIAÇÕES DE MÉDIA */
         .clima-delta {
           display: flex;
           align-items: center;
@@ -87,29 +127,41 @@
             height: 0.85rem;
             margin-right: 2px;
           }
-          &.up { color: #16a34a; }
-          &.down { color: #dc2626; }
-          &.danger-up { color: #dc2626; }
+
+          &.up { color: #A3E635 !important; }        /* Verde Lima para aumentos positivos */
+          &.down { color: #f87171 !important; }      /* Vermelho para quedas */
+          &.danger-up { color: #f87171 !important; } /* Vermelho para aumento de dias sem chuva */
         }
 
         .clima-status-txt {
           font-size: 0.75rem;
-          color: #16a34a;
+          color: #A3E635 !important;
           font-weight: 600;
         }
       }
     }
   }
 
+  /* AÇÃO DO RODAPÉ */
   .card-footer-actions {
     margin-top: 1rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
     padding-top: 0.75rem;
 
-    .vmg-btn-detalhes {
+    .vmg-btn-detalhes,
+    button[mat-stroked-button] {
       width: 100%;
-      border-color: #cbd5e1;
-      color: #475569;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      color: #A3E635 !important; /* Verde Lima */
+      background: transparent !important;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.15s ease-in-out;
+
+      &:hover {
+        background: rgba(163, 230, 53, 0.08) !important;
+        border-color: #A3E635 !important;
+      }
     }
   }
 }

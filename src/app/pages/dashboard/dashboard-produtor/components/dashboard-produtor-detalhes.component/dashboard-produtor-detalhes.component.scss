@@ -1,49 +1,127 @@
+/* =========================================================================
+   CONTAINERS DAS 3 COLUNAS (VERDE 15% MAIS CLARO QUE O MENU: #122B24)
+   ========================================================================= */
 .vmg-dashboard-row-two {
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr;
   gap: 1.5rem;
   width: 100%;
   margin-top: 1.5rem;
-  align-items: stretch; // Garante que todos terminem na mesma altura no rodapé
+  align-items: stretch;
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
   }
 
   .vmg-widget-col {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    /* Tom de verde 15% mais claro (#122B24) para criar destaque sob o fundo geral */
+    background: #122B24 !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: 12px;
     padding: 1.25rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.01);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
-    min-height: 520px; // Aumentado levemente para acomodar confortavelmente o subtítulo da tabela
+    min-height: 520px;
+    color: #ffffff !important;
 
-    // Força o alinhamento cirúrgico de todas as tags h3 e p de cabeçalho dos widgets filhos
+    /* Sobrescrita profunda para todos os componentes filhos */
     ::ng-deep {
+      /* Garante fundo transparente nos wrappers internos dos 3 componentes */
+      app-dashboard-produtor-mapa,
+      app-dashboard-produtor-tabela,
+      app-dashboard-produtor-status-atividades,
+      .vmg-card,
+      .status-container,
+      .atividades-container,
+      .widget-wrapper {
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+      }
+
+      /* Cabeçalhos dos 3 Widgets */
       .vmg-widget-table-header,
-      .vmg-widget-status-header {
+      .vmg-widget-status-header,
+      .vmg-widget-map-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 1.25rem; // Espaçamento fixo entre o título e o conteúdo (tabela/gráfico)
-        font-family: 'Inter', sans-serif;
+        margin-bottom: 1.25rem;
 
         .header-left {
           h3 {
             margin: 0;
             font-size: 0.85rem;
             text-transform: uppercase;
-            color: #64748b;
-            font-weight: 600;
+            color: #ffffff !important;
+            font-weight: 700;
             letter-spacing: 0.05em;
           }
           p {
             margin: 2px 0 0 0;
             font-size: 0.75rem;
-            color: #94a3b8;
+            color: rgba(255, 255, 255, 0.6) !important;
           }
+        }
+      }
+
+      /* Tabela do 2º Componente (Resumo de Conformidade) */
+      table, .mat-mdc-table {
+        background: transparent !important;
+        color: #ffffff !important;
+
+        th, .mat-mdc-header-cell {
+          color: rgba(255, 255, 255, 0.6) !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+          background: transparent !important;
+        }
+
+        td, .mat-mdc-cell {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+          color: rgba(255, 255, 255, 0.85) !important;
+          background: transparent !important;
+        }
+      }
+
+      /* 3º Componente (Status das Glebas e Atividades) */
+      .status-gleba-content,
+      .chart-info,
+      .atividade-item,
+      .proxima-atividade-card {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 8px;
+        color: #ffffff !important;
+
+        h4, span, p, label, strong {
+          color: #ffffff !important;
+        }
+
+        .subtext, small {
+          color: rgba(255, 255, 255, 0.6) !important;
+        }
+      }
+
+      /* Centro do Gráfico Rosca/Donut no 3º Componente */
+      .chart-center-text, .donut-inner {
+        color: #ffffff !important;
+        background: transparent !important;
+      }
+
+      /* Botões Inferiores ("Ver minhas glebas" / "Ver todas atividades") */
+      .btn-outline,
+      a.link-acao,
+      button[mat-button],
+      .action-button {
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        color: #A3E635 !important; /* Verde Lima */
+        background: transparent !important;
+        border-radius: 8px;
+        width: 100%;
+
+        &:hover {
+          background-color: rgba(163, 230, 53, 0.1) !important;
         }
       }
     }

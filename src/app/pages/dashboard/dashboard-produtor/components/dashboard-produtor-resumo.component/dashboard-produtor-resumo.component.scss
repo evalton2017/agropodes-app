@@ -1,40 +1,55 @@
+/* =========================================================================
+   TEXTO DE BOAS-VINDAS E LEGIBILIDADE
+   ========================================================================= */
 .vmg-welcome-banner {
   margin-bottom: 2rem;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body, 'Inter', sans-serif);
 
   h2 {
     margin: 0 0 0.25rem 0;
     font-size: 1.6rem;
-    color: #1e293b;
+    color: var(--white, #ffffff) !important; /* Cor clara para leitura imediata */
     font-weight: 700;
+
+    .highlight-user {
+      color: var(--lima, #a3e635); /* Verde Lima para destacar o nome */
+    }
   }
 
   p {
     margin: 0;
-    color: #64748b;
+    color: var(--white-70, rgba(255, 255, 255, 0.7)) !important; /* Legibilidade alta no fundo escuro */
     font-size: 0.95rem;
   }
 }
 
+/* =========================================================================
+   CONTAINER E CARDS DE KPI (PADRÃO GLEBA SELECIONADA)
+   ========================================================================= */
 .vmg-kpi-container {
   display: grid;
-  // Organiza os 6 cards horizontalmente com quebra responsiva automática
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   width: 100%;
 
   .vmg-card {
-    background: #ffffff;
-    border: 1px solid #f1f5f9;
+    /* Fundo escuro verde-carbono igual ao card de gleba */
+    background: var(--carbon-1, #06120e) !important;
+    border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
     border-radius: 12px;
     padding: 1.25rem;
     display: flex;
-    align-items: center; // Alinha o ícone e o texto horizontalmente
+    align-items: center;
     gap: 1rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01), 0 2px 4px -2px rgba(0, 0, 0, 0.01);
-    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease-in-out;
 
+    &:hover {
+      border-color: var(--lima, #a3e635) !important;
+      transform: translateY(-2px);
+    }
 
+    /* ÍCONES COM FUNDO EM TRANSLÚCIDO E BORDA SUTIL */
     .card-icon {
       display: flex;
       align-items: center;
@@ -44,71 +59,68 @@
       border-radius: 50%;
       flex-shrink: 0;
 
-      // Força a renderização correta da fonte de glifos do Google
       mat-icon {
         font-family: 'Material Icons' !important;
-        font-style: normal;
         font-size: 24px;
         width: 24px;
         height: 24px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        text-transform: none;
-        letter-spacing: normal;
-        word-wrap: normal;
-        white-space: nowrap;
-        direction: ltr;
       }
 
-      // Definições de paletas de cores do protótipo (Fundo vs Ícone)
-      &.icon-green { background-color: #f0fdf4; color: #16a34a; }
-      &.icon-blue { background-color: #eff6ff; color: #2563eb; }
-      &.icon-purple { background-color: #faf5ff; color: #7c3aed; }
-      &.icon-orange { background-color: #fff7ed; color: #ea580c; }
-      &.icon-blue-dark { background-color: #e0f2fe; color: #0284c7; }
+      /* Cores translúcidas adaptadas ao tema Dark */
+      &.icon-green { background-color: rgba(163, 230, 53, 0.1); color: #a3e635; }
+      &.icon-blue { background-color: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+      &.icon-purple { background-color: rgba(124, 58, 237, 0.15); color: #c084fc; }
+      &.icon-orange { background-color: rgba(234, 88, 12, 0.15); color: #fb923c; }
+      &.icon-blue-dark { background-color: rgba(2, 132, 199, 0.15); color: #38bdf8; }
     }
 
+    /* CONTEÚDO E TEXTOS INTERNOS DOS CARDS */
     .card-content {
       display: flex;
       flex-direction: column;
 
       h3 {
         margin: 0 0 0.25rem 0;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         font-weight: 600;
         letter-spacing: 0.02em;
+        text-transform: uppercase;
       }
 
       .value {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--white, #ffffff) !important; /* Branco legível */
         line-height: 1.2;
 
         &.date-style {
-          font-size: 1.25rem;
+          font-size: 1.2rem;
         }
       }
 
       .card-subtext {
         margin: 0.25rem 0 0 0;
         font-size: 0.75rem;
-        color: #94a3b8;
+        color: var(--white-60, rgba(255, 255, 255, 0.6)) !important;
         font-weight: 500;
       }
     }
 
-    // Cores específicas dos títulos dos cards
-    .text-green { color: #15803d; }
-    .text-blue { color: #1d4ed8; }
-    .text-purple { color: #6d28d9; }
-    .text-orange { color: #c2410c; }
-    .text-blue-dark { color: #0369a1; }
-    .text-red { color: #b91c1c !important; }
+    /* CORES DOS TÍTULOS ADAPTADAS AO TEMA ESCURO */
+    .text-green { color: #a3e635 !important; }
+    .text-blue { color: #60a5fa !important; }
+    .text-purple { color: #c084fc !important; }
+    .text-orange { color: #fb923c !important; }
+    .text-blue-dark { color: #38bdf8 !important; }
+    .text-red { color: #f87171 !important; }
 
+    /* CARD DE ALERTA ATIVO */
     &.vmg-card-alert {
-      border-color: #fed7aa; // Borda sutil laranja para o card de alertas ativos
+      border-color: rgba(234, 88, 12, 0.5) !important;
+      background-color: rgba(234, 88, 12, 0.05) !important;
     }
   }
 }

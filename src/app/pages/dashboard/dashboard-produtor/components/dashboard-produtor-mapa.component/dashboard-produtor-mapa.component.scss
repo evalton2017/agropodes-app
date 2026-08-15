@@ -5,46 +5,52 @@
   height: 100%;
 }
 
+/* =========================================================================
+   HEADER DO CONTAINER DO MAPA (SITUAÇÃO AMBIENTAL)
+   ========================================================================= */
 .vmg-widget-map-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1rem;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body, 'Inter', sans-serif);
 
   .header-left {
     h3 {
       margin: 0;
       font-size: 0.9rem;
       text-transform: uppercase;
-      color: #64748b;
-      font-weight: 600;
+      color: var(--white, #ffffff) !important; /* Título claro e legível */
+      font-weight: 700;
       letter-spacing: 0.05em;
     }
     p {
       margin: 2px 0 0 0;
       font-size: 0.75rem;
-      color: #94a3b8;
+      color: var(--white-60, rgba(255, 255, 255, 0.6)) !important;
     }
   }
 
   .map-badge-total {
-    background-color: #f1f5f9;
-    color: #475569;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--lima, #a3e635) !important;
     font-size: 0.75rem;
     font-weight: 600;
-    padding: 0.25rem 0.6rem;
+    padding: 0.25rem 0.75rem;
     border-radius: 20px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
   }
 }
 
+/* =========================================================================
+   VIEWPORT DO MAPA
+   ========================================================================= */
 .vmg-map-viewport-wrapper {
   width: 100%;
   flex-grow: 1;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
   position: relative;
   min-height: 380px;
 
@@ -61,9 +67,10 @@
   }
 }
 
-// Customizações de elementos injetados pelo Leaflet
+/* =========================================================================
+   ELEMENTOS LEAFLET E OVERLAYS
+   ========================================================================= */
 ::ng-deep {
-  /* 🟢 OBRIGATÓRIO: Força transparência total em TODOS os caminhos de SVG do Leaflet */
   svg.leaflet-zoom-animated path,
   path.leaflet-interactive {
     fill: none !important;
@@ -72,55 +79,62 @@
     stroke-width: 3px !important;
   }
 
-  /* Garante visibilidade da camada de raster Canvas */
   .leaflet-raster-layer,
   canvas.leaflet-tile {
     pointer-events: none;
     z-index: 2 !important;
   }
 
+  /* Botões Zoom (+ / -) */
   .leaflet-bar {
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
     border-radius: 6px !important;
     overflow: hidden;
 
     a {
-      background-color: #ffffff !important;
-      color: #334155 !important;
-      border-bottom: 1px solid #f1f5f9 !important;
+      background-color: var(--carbon-1, #06120e) !important;
+      color: var(--white, #ffffff) !important;
+      border-bottom: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
       font-weight: 700 !important;
 
       &:hover {
-        background-color: #f8fafc !important;
-        color: #16a34a !important;
+        background-color: rgba(163, 230, 53, 0.1) !important;
+        color: var(--lima, #a3e635) !important;
       }
     }
   }
 
+  /* Popup ao Clicar na Gleba */
   .leaflet-popup-content-wrapper {
+    background: var(--carbon-1, #06120e) !important;
     border-radius: 8px !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+    color: var(--white, #ffffff) !important;
   }
 
-  /* Legenda do Mapa */
+  .leaflet-popup-tip {
+    background: var(--carbon-1, #06120e) !important;
+  }
+
+  /* Legenda do Mapa no Canto Inferior */
   .vmg-map-legend {
-    background: rgba(15, 23, 42, 0.92) !important;
+    background: rgba(6, 18, 14, 0.92) !important; /* #06120E com opacidade */
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
     border-radius: 8px !important;
     padding: 10px 12px !important;
-    color: #f8fafc !important;
-    font-family: 'Inter', sans-serif;
+    color: var(--white, #ffffff) !important;
+    font-family: var(--font-body, 'Inter', sans-serif);
     font-size: 11px !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
     min-width: 175px;
     margin-left: 10px !important;
     margin-bottom: 10px !important;
 
     .legend-header-title {
-      color: #38bdf8;
+      color: var(--lima, #a3e635);
       font-weight: 700;
       margin-bottom: 8px;
       font-size: 11px;
@@ -133,7 +147,7 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #94a3b8;
+      color: var(--white-60, rgba(255, 255, 255, 0.6));
       font-weight: 700;
       margin-top: 4px;
       margin-bottom: 6px;
@@ -141,7 +155,7 @@
 
     .legend-divider {
       height: 1px;
-      background: rgba(255, 255, 255, 0.1);
+      background: var(--white-12, rgba(255, 255, 255, 0.12));
       margin: 8px 0;
     }
 
@@ -150,7 +164,7 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 5px;
-      color: #e2e8f0;
+      color: var(--white-80, rgba(255, 255, 255, 0.8));
       font-weight: 500;
 
       &:last-child {
