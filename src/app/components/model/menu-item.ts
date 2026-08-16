@@ -54,17 +54,18 @@ export const MENU_ITEMS: MenuItem[] = [
     route: '/caderno-campo'
   },
   {
-    label: 'Conformidade',
+    label: 'Contestação',
+    icon: 'persons',
+    roles: ['USER_PRODUTOR'],
+    route: '/contestacao-analise-produtor'
+  },
+  {
+    label: 'Analises',
     icon: 'rate_review',
     roles: ['USER_PRODUTOR'],
     route: '/consulta-analise-produtor'
   },
   {
-    label: 'Contestação',
-    icon: 'persons',
-    roles: ['USER_PRODUTOR'],
-    route: '/contestacao-analise-produtor'
-  },{
     label: 'Configuração',
     icon: 'settings',
     roles: ['USER_PRODUTOR'],

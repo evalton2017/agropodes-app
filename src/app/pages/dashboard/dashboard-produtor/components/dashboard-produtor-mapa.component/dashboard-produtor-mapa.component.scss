@@ -20,7 +20,7 @@
       margin: 0;
       font-size: 0.9rem;
       text-transform: uppercase;
-      color: var(--white, #ffffff) !important; /* Título claro e legível */
+      color: var(--white, #ffffff) !important;
       font-weight: 700;
       letter-spacing: 0.05em;
     }
@@ -71,21 +71,20 @@
    ELEMENTOS LEAFLET E OVERLAYS
    ========================================================================= */
 ::ng-deep {
-  svg.leaflet-zoom-animated path,
-  path.leaflet-interactive {
-    fill: none !important;
-    fill-opacity: 0 !important;
-    stroke: #16a34a !important;
-    stroke-width: 3px !important;
+  /* 🟢 CORREÇÃO CRÍTICA: Aplica traço apenas aos Polígonos das Glebas (GeoJSON) */
+  .leaflet-overlay-pane path.leaflet-interactive:not(.leaflet-raster-layer path) {
+    fill: none;
+    fill-opacity: 0;
+    stroke-width: 3px;
   }
 
-  .leaflet-raster-layer,
-  canvas.leaflet-tile {
-    pointer-events: none;
-    z-index: 2 !important;
+  /* Garante a preservação do preenchimento e opacidade dos retângulos do NDVI */
+  .leaflet-overlay-pane path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
-  /* Botões Zoom (+ / -) */
+  /* Botões de Zoom (+ / -) */
   .leaflet-bar {
     border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
@@ -120,7 +119,7 @@
 
   /* Legenda do Mapa no Canto Inferior */
   .vmg-map-legend {
-    background: rgba(6, 18, 14, 0.92) !important; /* #06120E com opacidade */
+    background: rgba(6, 18, 14, 0.92) !important;
     backdrop-filter: blur(8px);
     border: 1px solid var(--white-12, rgba(255, 255, 255, 0.12)) !important;
     border-radius: 8px !important;
@@ -178,13 +177,15 @@
         display: inline-block;
         flex-shrink: 0;
 
+        /* Status das Glebas */
         &.conforme { background-color: #16a34a; }
         &.atencao { background-color: #ea580c; }
         &.nao-conforme { background-color: #dc2626; }
 
-        &.ndvi-densa { background-color: #16a34a; }
-        &.ndvi-rala { background-color: #eab308; }
-        &.ndvi-solo { background-color: #b91c1c; }
+        /* 🟢 CORES OFICIAIS DE NDVI (ALINHADAS COM O REPROCESSAMENTO) */
+        &.ndvi-densa { background-color: #1a9850; } /* Verde Densa (> 0.55) */
+        &.ndvi-rala { background-color: #fee08b; }  /* Amarelo Rala (0.30 - 0.55) */
+        &.ndvi-solo { background-color: #d73027; }  /* Vermelho Solo Exposto (< 0.30) */
       }
     }
   }

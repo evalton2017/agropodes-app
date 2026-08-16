@@ -12,4 +12,5 @@ export interface RasterMetadadosResponse {
   evi_std: number;
   savi_mean: number;
   savi_std: number;
+  grid_hex: any;
 }

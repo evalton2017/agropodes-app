@@ -35,7 +35,7 @@ import {
   styleUrls: ['./dashboard-produtor-detalhes.component.scss']
 })
 export class DashboardProdutorDetalhesComponent {
-  private readonly filtroService = inject(DashboardFiltroService);
+  protected readonly filtroService = inject(DashboardFiltroService);
   private readonly produtorService = inject(DashboardProdutorService);
   private readonly pessoaService = inject(PessoaService);
   private readonly destroyRef = inject(DestroyRef);
@@ -64,7 +64,7 @@ export class DashboardProdutorDetalhesComponent {
       }).pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (res) => {
-            this.dadosMapa.set(res.mapa);
+            this.dadosMapa.set([...res.mapa]);
             this.dadosTabela.set(res.tabela);
             this.dadosStatusAtividades.set(res.atividades);
             this.carregando.set(false);

@@ -19,6 +19,8 @@ import { DashboardProdutorService } from '../service/dashboard-produtor.service'
 import { PessoaService } from '../../../service/pessoa.service';
 import { GlebaService } from '../../produtor/service/gleba.service';
 
+import { timeout, catchError, of } from 'rxjs';
+
 import {
   RespostaDashboardProdutor,
   ProdutividadeEstimadaResponse,
@@ -31,6 +33,7 @@ import { DashboardProdutividadeComponent } from './components/dashboard-produtiv
 import { DashboardClimaComponent } from './components/dashboard-clima.component/dashboard-clima.component';
 import {SeletorSafrasComponent} from '../../../components/safras-glebas/seletor-safras.component';
 import {SafraItem} from '../../produtor/model/gleba.model';
+
 
 @Component({
   selector: 'app-dashboard-produtor',
@@ -81,14 +84,10 @@ export class DashboardProdutorComponent implements OnInit {
 
       if (produtorLogado && produtorLogado.id) {
         const id = produtorLogado.id;
-
-        // 1. Carrega as glebas do produtor
         this.carregarGlebasProdutor(id);
-
-        // 2. Carrega as safras-glebas
         this.carregarSafrasEInicializar(id);
       }
-    });
+    }, { allowSignalWrites: true });
   }
 
   ngOnInit(): void {}
@@ -98,15 +97,19 @@ export class DashboardProdutorComponent implements OnInit {
    */
   private carregarGlebasProdutor(idProdutor: number): void {
     this.carregandoGlebas.set(true);
+
     this.glebaService.consultarGlebaProdutor(idProdutor)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        timeout(8000),
+        catchError((err) => {
+          console.error('Timeout ou erro ao buscar glebas do produtor:', err);
+          return of([]); // Retorna array vazio em caso de erro para destravar a tela
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: (glebas) => {
           this.listaGlebas.set(glebas || []);
-          this.carregandoGlebas.set(false);
-        },
-        error: (err) => {
-          console.error('Erro ao buscar glebas do produtor:', err);
           this.carregandoGlebas.set(false);
         }
       });
@@ -128,17 +131,23 @@ export class DashboardProdutorComponent implements OnInit {
    */
   private carregarSafrasEInicializar(idProdutor: number): void {
     this.produtorService.obterSafrasDisponiveis(idProdutor)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        timeout(8000),
+        catchError((err) => {
+          console.error('Timeout ou erro ao buscar safras:', err);
+          return of({ safras: [], safra_principal: '' });
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: (res) => {
-          this.listaSafras.set(res.safras);
-          const safraInicial = res.safra_principal || res.safras[0];
-          this.safraSelecionada.set(safraInicial);
-
-          // Carrega o resumo geral consolidado (sem filtro de glebas)
-          this.carregarResumoGeral(idProdutor, safraInicial);
-        },
-        error: (err) => console.error('Erro ao buscar safras-glebas dinâmicas:', err)
+          if (res?.safras?.length) {
+            this.listaSafras.set(res.safras);
+            const safraInicial = res.safra_principal || res.safras[0];
+            this.safraSelecionada.set(safraInicial);
+            this.carregarResumoGeral(idProdutor, safraInicial);
+          }
+        }
       });
   }
 
