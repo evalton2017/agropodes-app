@@ -6,10 +6,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import {CadernoCampoDetalhadoComponent} from './caderno-campo-detalhado.component/caderno-campo-detalhado.component';
-import {GlebaService} from '../produtor/service/gleba.service';
 import {PessoaService} from '../../service/pessoa.service';
 import {GlebeApiResponse} from '../../dto/response/gleba.response';
 import {MonitoramentoService} from '../../service/monitoramento.service';
+import {GlebaService} from '../../service/gleba.service';
 
 
 @Component({

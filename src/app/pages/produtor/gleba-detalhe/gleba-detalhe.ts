@@ -14,8 +14,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import * as L from 'leaflet';
 import wellknown from 'wellknown';
-import {GlebaData} from '../model/gleba.model';
 import * as wktParser from 'terraformer-wkt-parser';
+import {GlebaData} from '../../model/gleba.model';
 
 
 @Component({

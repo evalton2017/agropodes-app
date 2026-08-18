@@ -4,7 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
-import {CarFeicoesAmbientaisResponse} from '../model/gleba.model';
+import {CarFeicoesAmbientaisResponse} from '../../model/gleba.model';
 
 export interface ModalCarData {
   dadosCar: CarFeicoesAmbientaisResponse;

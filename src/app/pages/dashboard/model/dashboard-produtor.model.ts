@@ -17,6 +17,8 @@ export interface GlebaGeometriaResponse {
   idGleba: number;
   idProdutor: number;
   codigoCar: string;
+  nomeGleba: string;
+  nomeMunicipio:string;
   geometria: string;
   areaHectares: number;
   culturaDeclarada: string;

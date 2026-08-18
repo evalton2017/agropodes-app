@@ -2,19 +2,19 @@ import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DashboardFiltroService } from '../service/dashboard-filtro.service';
+import {DashboardKpisComponent} from './components/dashboard-kpis.component/dashboard-kpis.component';
+import {AppDashboardGraficoCulturas} from './components/dashboard-grafico-culturas/app-dashboard-grafico-culturas';
+import {AppDashboardGraficoEstados} from './components/dashboard-grafico-estados/app-dashboard-grafico-estados';
+import {AppDashboardAlertas} from './components/dashboard-alertas.ts/app-dashboard-alertas';
+import {AppDashboardContratosEstado} from './components/dashboard-contratos-estado/app-dashboard-contratos-estado';
+import {AppDashboardIaClassificacao} from './components/dashboard-ia-classificacao/dashboard-ia-classificacao';
+import {AppDashboardIaProdutividade} from './components/dashboard-ia-produtividade/dashboard-ia-produtividade';
+import {AppDashboardIaClima} from './components/dashboard-ia-clima/dashboard-ia-clima';
+import {DashboardEventosComponent} from './components/dashboard-eventos/dashboard-eventos';
+import {AppDashboardAtestadosComponent} from './components/dashboard-atestados/dashboard-atestados';
+import {AppDashboardAnaliseAmbiental} from './components/dashboard-analise-ambiental/app-dashboard-analise-ambiental';
 
-// Importação dos Widgets Autônomos
-import { DashboardKpisComponent } from '../components/dashboard-kpis.component/dashboard-kpis.component';
-import { AppDashboardGraficoCulturas } from '../components/dashboard-grafico-culturas/app-dashboard-grafico-culturas';
-import { AppDashboardGraficoEstados } from '../components/dashboard-grafico-estados/app-dashboard-grafico-estados';
-import { AppDashboardAlertas } from '../components/dashboard-alertas.ts/app-dashboard-alertas';
-import { AppDashboardContratosEstado } from '../components/dashboard-contratos-estado/app-dashboard-contratos-estado';
-import { AppDashboardAnaliseAmbiental } from '../components/dashboard-analise-ambiental/app-dashboard-analise-ambiental';
-import { AppDashboardIaClassificacao } from '../components/dashboard-ia-classificacao/dashboard-ia-classificacao';
-import { AppDashboardIaProdutividade } from '../components/dashboard-ia-produtividade/dashboard-ia-produtividade';
-import { AppDashboardIaClima } from '../components/dashboard-ia-clima/dashboard-ia-clima';
-import { DashboardEventosComponent } from '../components/dashboard-eventos/dashboard-eventos';
-import { AppDashboardAtestadosComponent } from '../components/dashboard-atestados/dashboard-atestados';
+
 
 @Component({
   selector: 'app-dashboard-analista',

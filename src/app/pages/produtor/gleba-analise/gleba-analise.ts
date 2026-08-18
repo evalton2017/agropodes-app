@@ -4,8 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { GlebaData } from '../model/gleba.model';
-import { GlebaService } from '../service/gleba.service';
+import {GlebaService} from '../../../service/gleba.service';
+import {GlebaData} from '../../model/gleba.model';
+
 
 @Component({
   selector: 'app-gleba-analise',

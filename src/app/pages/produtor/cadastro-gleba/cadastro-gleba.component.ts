@@ -22,14 +22,13 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {GlebaService} from '../service/gleba.service';
 import {PessoaService} from '../../../service/pessoa.service';
 import {
-  CarFeicoesAmbientaisResponse, DominioCultura,
+  CarFeicoesAmbientaisResponse,
+  DominioCultura,
   JanelaGeralZarcResponse,
-  MunicipioResponse,
-  ValidarZarcSimplificadoResponse
-} from '../model/gleba.model';
+  MunicipioResponse, ValidarZarcSimplificadoResponse,
+} from '../../model/gleba.model';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MapaLocalizacaoComponent} from '../../../components/mapa-localizacao.component/mapa-localizacao.component';
 import {MapaDelimitacaoComponent} from '../../../components/mapa-delimitacao.component/mapa-delimitacao.component';
@@ -38,8 +37,8 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {ImovelAmbiental} from '../../../dto/response/car';
 import {ModalConfirmacaoCarComponent} from '../modal/modal-confirmacao-car.component';
+import {GlebaService} from '../../../service/gleba.service';
 
 export interface ZarcSuccessResponse {
   status_validacao: string;

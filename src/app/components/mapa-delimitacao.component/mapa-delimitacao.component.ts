@@ -13,7 +13,7 @@ import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
-import {GlebaService} from '../../pages/produtor/service/gleba.service';
+import {GlebaService} from '../../service/gleba.service';
 
 
 @Component({

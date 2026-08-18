@@ -17,7 +17,7 @@ import { MatCardModule } from '@angular/material/card';
 import { DashboardFiltroService, FiltrosDashboard } from '../service/dashboard-filtro.service';
 import { DashboardProdutorService } from '../service/dashboard-produtor.service';
 import { PessoaService } from '../../../service/pessoa.service';
-import { GlebaService } from '../../produtor/service/gleba.service';
+
 
 import { timeout, catchError, of } from 'rxjs';
 
@@ -32,7 +32,9 @@ import { DashboardProdutorDetalhesComponent } from './components/dashboard-produ
 import { DashboardProdutividadeComponent } from './components/dashboard-produtividade/dashboard-produtividade';
 import { DashboardClimaComponent } from './components/dashboard-clima.component/dashboard-clima.component';
 import {SeletorSafrasComponent} from '../../../components/safras-glebas/seletor-safras.component';
-import {SafraItem} from '../../produtor/model/gleba.model';
+import {GlebaService} from '../../../service/gleba.service';
+import {SafraItem} from '../../model/gleba.model';
+
 
 
 @Component({

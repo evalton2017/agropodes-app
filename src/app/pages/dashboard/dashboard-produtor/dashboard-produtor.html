@@ -75,10 +75,13 @@
     }
 
     <!-- 4. DETALHES E ANÁLISES DA GLEBA SELECIONADA -->
-    @if (glebaSelecionada()) {
+    @if (glebaSelecionada(); as gleba) {
       <div class="dashboard-content-body">
 
-        <app-dashboard-produtor-detalhes></app-dashboard-produtor-detalhes>
+        <app-dashboard-produtor-detalhes
+          [idGleba]="gleba.idGleba"
+          [safra]="safraSelecionada()">
+        </app-dashboard-produtor-detalhes>
 
         <div class="vmg-analytics-row">
           @if (dadosProdutividade()) {

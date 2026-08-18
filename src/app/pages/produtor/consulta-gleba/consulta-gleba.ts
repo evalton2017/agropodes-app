@@ -9,10 +9,10 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {GlebaService} from '../service/gleba.service';
 import {PessoaService} from '../../../service/pessoa.service';
-import {GlebaData, RespostaConsultaGlebasPainel} from '../model/gleba.model';
 import {GlebaDetalheComponent} from '../gleba-detalhe/gleba-detalhe';
+import {GlebaService} from '../../../service/gleba.service';
+import {GlebaData, RespostaConsultaGlebasPainel} from '../../model/gleba.model';
 
 
 @Component({
@@ -119,7 +119,7 @@ export class ConsultaGlebaComponent implements OnInit {
   public atualizarTermoBusca(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.termoBusca.set(input.value);
-    this.paginaAtual.set(1); 
+    this.paginaAtual.set(1);
   }
 
   public alterarPagina(novaPagina: number): void {

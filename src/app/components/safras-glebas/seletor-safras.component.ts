@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {GlebaService} from '../../pages/produtor/service/gleba.service';
-import {SafrasGlebaAPIResponse} from '../../pages/produtor/model/gleba.model';
+import {GlebaService} from '../../service/gleba.service';
+import {SafrasGlebaAPIResponse} from '../../pages/model/gleba.model';
 
 export interface SafraItem {
   id_safra: string;

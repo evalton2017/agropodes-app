@@ -18,9 +18,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {parse} from 'wellknown';
-import {MunicipioResponse} from '../../pages/produtor/model/gleba.model';
-import {GlebaService} from '../../pages/produtor/service/gleba.service';
 import {EstadoBrasileiro, ESTADOS_BRASILEIROS} from '../../shared/model/estados.constants';
+import {MunicipioResponse} from '../../pages/model/gleba.model';
+import {GlebaService} from '../../service/gleba.service';
 
 @Component({
   selector: 'app-mapa-localizacao',

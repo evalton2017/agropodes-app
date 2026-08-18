@@ -10,8 +10,8 @@
     }
 
     <app-dashboard-produtor-mapa
-      [glebas]="dadosMapa()"
-      [idGlebaSelecionada]="filtroService.filtrosAtivos().idGleba">
+      [idGleba]="idGleba"
+      [safra]="safra || filtroService.filtrosAtivos().safra">
     </app-dashboard-produtor-mapa>
   </div>
 

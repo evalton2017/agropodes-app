@@ -1,0 +1,94 @@
+<div class="verificacao-container">
+
+  <!-- 1. Card Reutilizável de Seleção de Gleba do Produtor -->
+  <div class="section-card-glebas">
+    <app-dashboard-produtor-gleba-card
+      (glebaSelecionadaChange)="onGlebaSelecionada($event)">
+    </app-dashboard-produtor-gleba-card>
+  </div>
+
+  @if (glebaSelecionadaId(); as idGleba) {
+    <!-- 2. Seletor de Safras com ID da Gleba e evento correto (safraSelecionada) -->
+    <div class="section-safras">
+      <app-seletor-safras
+        [idGleba]="idGleba"
+        (safraSelecionada)="onSafraSelecionada($event)">
+      </app-seletor-safras>
+    </div>
+
+    @if (carregando()) {
+      <div class="loading-panel">Carregando série temporal e dados agrícolas...</div>
+    } @else {
+      <!-- 3. Grid Principal: Mapa com Animação + Card Lateral de Métricas -->
+      <div class="main-grid">
+
+        <!-- Coluna da Esquerda: Mapa com Animação da Cultura -->
+        <div class="map-column">
+          <app-acompanhamento-agricola-map
+            [geometria]="dadosVerificacao()?.geometria"
+            [rasters]="dadosVerificacao()?.serieTemporalRasters || []">
+          </app-acompanhamento-agricola-map>
+        </div>
+
+        <!-- Coluna da Direita: Card Agrícola e Métricas Climáticas -->
+        <div class="info-column">
+          @if (dadosVerificacao(); as d) {
+
+            <!-- Bloco do Header -->
+            <div class="card-header-agricola">
+              <div class="badge-safra">SAFRA {{ d.header.safra }} · {{ d.header.statusSafra }}</div>
+              <h2 class="title-cultura">◆ {{ d.header.cultura }}</h2>
+              <p class="subtitle-loc">{{ d.header.areaHa }} ha · {{ d.header.municipioUf }}</p>
+              <div class="badge-iu">IU: {{ d.header.iuIdentificadorUnico }}</div>
+            </div>
+
+            <!-- Grid de Métricas 2x4 -->
+            <div class="metrics-grid">
+              <div class="metric-box">
+                <span class="label">📈 PRODUTIVIDADE</span>
+                <span class="value">{{ d.metricas.produtividadeScHa }} sc/ha</span>
+              </div>
+              <div class="metric-box">
+                <span class="label">📅 PLANTIO</span>
+                <span class="value">{{ d.metricas.dataPlantio }}</span>
+              </div>
+              <div class="metric-box">
+                <span class="label">📅 COLHEITA</span>
+                <span class="value">{{ d.metricas.dataColheita }}</span>
+              </div>
+              <div class="metric-box">
+                <span class="label">🛡️ ZARC</span>
+                <span class="value">{{ d.metricas.zarcStatus }}</span>
+              </div>
+              <div class="metric-box">
+                <span class="label">🌱 NDVI MÉDIO</span>
+                <span class="value">{{ d.metricas.ndviMedio }}</span>
+              </div>
+              <div class="metric-box">
+                <span class="label">🌧️ CHUVA</span>
+                <span class="value">{{ d.metricas.chuvaAcumuladaMm }} mm</span>
+              </div>
+              <div class="metric-box">
+                <span class="label">🌡️ TEMP. MÉDIA</span>
+                <span class="value">{{ d.metricas.temperaturaMediaC }} °C</span>
+              </div>
+              <div class="metric-box">
+                <span class="label">▦ MATÉRIA ORGÂNICA</span>
+                <span class="value">{{ d.metricas.materiaOrganicaPct }}% MO</span>
+              </div>
+            </div>
+
+            <!-- Rodapé de Conformidade -->
+            <div class="footer-conformidade">
+              <span class="icon">🛡️</span>
+              <div class="text-group">
+                <span class="label">CONFORMIDADE SOCIOAMBIENTAL</span>
+                <span class="status">{{ d.metricas.conformidadeSocioambiental }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

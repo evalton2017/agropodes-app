@@ -6,10 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { GlebaAnaliseComponent } from '../gleba-analise/gleba-analise';
-import { GlebaService } from '../service/gleba.service';
-import { GlebaData } from '../model/gleba.model';
 import { PessoaService } from '../../../service/pessoa.service';
 import { GlebeApiResponse } from '../../../dto/response/gleba.response';
+import {GlebaService} from '../../../service/gleba.service';
+import {GlebaData} from '../../model/gleba.model';
 
 @Component({
   selector: 'app-painel-analise',

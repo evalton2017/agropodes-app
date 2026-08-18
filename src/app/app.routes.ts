@@ -1,19 +1,25 @@
 import {Routes} from '@angular/router';
 import {HomeComponent} from './pages/home/home.component';
-import {ConsultaCarComponent} from './pages/consulta-car/consulta-car.component';
-import {ConsultaProdesComponent} from './pages/descontinuados/consulta-prodes/consulta-prodes.component';
-import {CadastraTerritorioComponent} from './pages/descontinuados/cadastrar-territorio.ts/cadastra-territorio.ts';
 import {authGuard} from './auth/auth.guard';
-import {ConsultaAnaliseComponent} from './pages/descontinuados/anlista/consulta-analise.component';
-import {AcessoNegadoComponent} from './pages/acesso-negado/acesso-negado.component';
-import {CadastroComponent} from './pages/cadastro/cadastro.component';
 import {RelatorioDetalheCarComponent} from './pages/relatorios/produtor/detalhe-car/relatorio-detalhe-car.component';
 import {RelatorioAnalistaComponent} from './pages/relatorios/analista/relatorio-analista.component';
 import {CadastroGlebaComponent} from './pages/produtor/cadastro-gleba/cadastro-gleba.component';
 import {ConsultaGlebaComponent} from './pages/produtor/consulta-gleba/consulta-gleba';
 import {PainelAnaliseComponent} from './pages/produtor/painel-analise.component/painel-analise.component';
 import {AtestadosPageComponent} from './pages/relatorios/produtor/atestados-page.component.ts/atestados-page.component';
-import {ClimaPageComponent} from './pages/analista/monitoramento/clima/clima-page.component';
+import {CadastroComponent} from './dto/cadastro/cadastro.component';
+import {ConsultaCarComponent} from './components/consulta-car/consulta-car.component';
+import {ClimaPageComponent} from './pages/monitoramento/analista/clima/clima-page.component';
+import {AcessoNegadoComponent} from './components/acesso-negado/acesso-negado.component';
+import {AppGlebasListComponent} from './pages/monitoramento/analista/components/glebas-list/glebas-list';
+import {
+  AppGlebaDetalheComponent
+} from './pages/monitoramento/analista/components/glebas-list/gleba-detalhe/gleba-detalhe';
+import {CadernoCampoPageComponent} from './pages/caderno-campo/caderno-campo-page.component';
+import {
+  VerificacaoAgricolaComponent
+} from './pages/verificacao-agricola/verificacao-agricola.component/verificacao-agricola.component';
+
 
 
 export const routes: Routes = [
@@ -26,12 +32,6 @@ export const routes: Routes = [
   {
     path: 'cadastrar-usuario',
     component: CadastroComponent
-  },
-  {
-    path: 'cadastro-gleba-territorio',
-    component: CadastraTerritorioComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
   },
   {
     path: 'cadastro-gleba',
@@ -50,18 +50,6 @@ export const routes: Routes = [
     component: ConsultaCarComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
-  },
-  {
-    path: 'consulta-prodes',
-    component: ConsultaProdesComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
-  },
-  {
-    path: 'consulta-analise',
-    component: ConsultaAnaliseComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] }
   },
   {
     path: 'consulta-analise-produtor',
@@ -95,15 +83,23 @@ export const routes: Routes = [
   },
   {
     path: 'glebas',
-    loadComponent: () => import('./pages/analista/glebas-list/glebas-list').then(m => m.AppGlebasListComponent)
+    component: AppGlebasListComponent,
+    data: { roles: ['USER_PRODUTOR', 'USER_ANALISTA'] }
   },
   {
     path: 'glebas/detalhe/:id',
-    loadComponent: () => import('./pages/analista/glebas-list/gleba-detalhe/gleba-detalhe').then(m => m.AppGlebaDetalheComponent)
+    component: AppGlebaDetalheComponent,
+    data: { roles: ['USER_PRODUTOR', 'USER_ANALISTA'] }
   },
   {
     path:'caderno-campo',
-    loadComponent: () => import('./pages/caderno-campo/caderno-campo-page.component').then(m => m.CadernoCampoPageComponent)
+    component: CadernoCampoPageComponent,
+    data: { roles: ['USER_PRODUTOR', 'USER_ANALISTA'] }
+  },
+  {
+    path: 'verificacao-agricola',
+    component: VerificacaoAgricolaComponent,
+    data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] }
   },
   {
     path: 'acesso-negado',

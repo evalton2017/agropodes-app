@@ -10,8 +10,9 @@ import {
   KpisDashboard,
   ResumoClimatico,
 } from '../model/dashboard-analista.model';
-import {AtestadoDTO} from '../components/dashboard-atestados/dashboard-atestados';
-import {GlebaDetalheDTO} from '../../analista/glebas-list/gleba-detalhe/gleba-detalhe';
+import {AtestadoDTO} from '../dashboard-analista/components/dashboard-atestados/dashboard-atestados';
+import {GlebaDetalheDTO} from '../../monitoramento/analista/components/glebas-list/gleba-detalhe/gleba-detalhe';
+
 
 export interface EventoClimaticoDTO {
   evento: 'Veranico' | 'Excesso de chuva' | 'Granizo' | 'Geada' | 'Vento forte';

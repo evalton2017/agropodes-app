@@ -7,11 +7,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import {AtestadoDetalhadoComponent} from '../atestado-detalhado.component/atestado-detalhado.component';
-import {GlebaService} from '../../../produtor/service/gleba.service';
 import {PessoaService} from '../../../../service/pessoa.service';
 import {RelatorioService} from '../../relatorio.service';
 import {GlebeApiResponse} from '../../../../dto/response/gleba.response';
 import {AtestadoDetalhadoResponse} from '../relatorio-produtor.model';
+import {GlebaService} from '../../../../service/gleba.service';
 
 @Component({
   selector: 'app-atestados-page',
