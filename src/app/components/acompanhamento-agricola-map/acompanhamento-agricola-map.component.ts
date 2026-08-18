@@ -78,10 +78,10 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, OnDestroy 
   rasterAtivo = signal<ItemSerieTemporalRaster | null>(null);
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    // 🟢 Executa o Leaflet somente no ambiente do navegador (Client-side)
     if (isPlatformBrowser(this.platformId)) {
       if (!this.L) {
-        this.L = await import('leaflet');
+        const leafletModule = await import('leaflet');
+        this.L = leafletModule.default || leafletModule;
       }
 
       if (changes['geometria'] && this.geometria) {
