@@ -1,0 +1,52 @@
+<div class="map-wrapper">
+  <!-- Container do MapLibre 3D -->
+  <div #mapContainer class="map-container"></div>
+
+  <!-- Badge Superior Esquerdo: Informações do Grid 3D -->
+  <div class="badge-overlay-top" *ngIf="pontosRenderizados() > 0">
+    <span class="badge-item">
+      <i class="icon">🧊</i> Pontos 3D: <strong>{{ pontosRenderizados() }}</strong>
+    </span>
+    <span class="badge-item active">Camada: Saúde (NDVI)</span>
+  </div>
+
+  <!-- Botão de Reset da Perspectiva 3D (Canto Inferior Direito) -->
+  <button class="btn-reset-3d" (click)="resetarVisao3D()" title="Resetar Câmera 3D">
+    <span class="icon">🔄 3D</span>
+  </button>
+
+  <!-- Legenda Dinâmica de Saúde Vegetal / NDVI -->
+  <div class="legend-card">
+    <div class="legend-title">🌱 VIGOR VEGETATIVO (NDVI)</div>
+    <div class="legend-items">
+      <div class="legend-row" *ngFor="let item of legendaNdvi">
+        <span class="color-box" [style.background-color]="item.corHex"></span>
+        <span class="label-text">{{ item.rotulo }}</span>
+        <span class="range-text">({{ item.intervalo }})</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controles Inferiores da Animação do Time-Lapse -->
+  <div class="timeline-controls" *ngIf="rasters && rasters.length > 0">
+    <button class="btn-play" (click)="togglePlay()">
+      {{ isPlaying() ? '⏸ Pausar' : '▶ Play Animação' }}
+    </button>
+    <div class="timeline-info">
+      <span class="date-badge" *ngIf="rasterAtivo()">
+        📅 {{ rasterAtivo()?.dataCaptura }}
+      </span>
+      <span class="ndvi-badge" *ngIf="rasterAtivo()">
+        🌱 NDVI: {{ rasterAtivo()?.ndviMean | number:'1.2-2' }}
+      </span>
+    </div>
+    <input
+      type="range"
+      [min]="0"
+      [max]="rasters.length - 1"
+      [value]="currentIndex()"
+      (input)="onSliderChange($event)"
+      class="timeline-slider"
+    />
+  </div>
+</div>
