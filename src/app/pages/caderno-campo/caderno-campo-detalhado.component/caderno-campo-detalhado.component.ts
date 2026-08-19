@@ -36,6 +36,7 @@ import { MapaGrid3dComponent } from '../mapa-grid.component/mapa-grid.component'
 })
 export class CadernoCampoDetalhadoComponent implements OnInit, OnChanges {
   @Input() glebaId!: number;
+  @Input() safra?: string; // 🟢 Novo Input para receber a safra selecionada
   @Input() caderno!: any;
   @Input() perfilAnalista: boolean = true;
   @Input() focoAbaInicial: 'GERAL' | 'CLIMA' | 'IA_CULTURAS' | 'PRODUTIVIDADE' = 'GERAL';
@@ -49,50 +50,61 @@ export class CadernoCampoDetalhadoComponent implements OnInit, OnChanges {
   public carregandoClima = signal<boolean>(false);
 
   ngOnInit(): void {
+    console.log('🔍 [DETALHADO] ngOnInit executado | glebaId:', this.glebaId, '| safra:', this.safra, '| caderno:', this.caderno);
     this.processarEBuscarDados();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['glebaId'] || changes['caderno']) {
+    console.log('🔄 [DETALHADO] ngOnChanges detectou mudanças:', changes);
+    if (changes['glebaId'] || changes['caderno'] || changes['safra']) {
       this.processarEBuscarDados();
     }
   }
 
   private processarEBuscarDados(): void {
     const idFinal = this.glebaId || this.caderno?.id_gleba || this.caderno?.id;
+    console.log('⚙️ [DETALHADO] processarEBuscarDados | idFinal:', idFinal, '| safra atual:', this.safra);
 
     if (!idFinal) {
-      console.warn('ID da gleba não informado.');
+      console.warn('⚠️ [DETALHADO] ID da gleba não informado.');
       return;
     }
 
     this.glebaId = idFinal;
 
-    if (this.caderno && Object.keys(this.caderno).length > 5 && this.caderno.analise_vegetativa_ia) {
+    if (this.safra && this.perfilAnalista) {
+      console.log('🚀 [DETALHADO] Forçando carregamento via Safra informada:', this.safra);
+      this.carregarCadernoAnalista(idFinal);
+    } else if (this.caderno && Object.keys(this.caderno).length > 5 && this.caderno.analise_vegetativa_ia) {
+      console.log('📦 [DETALHADO] Usando objeto de caderno passado via Input.');
       this.cadernoDados.set(this.caderno);
       this.carregarAnaliseClimatica(idFinal);
     } else if (this.perfilAnalista) {
+      console.log('📡 [DETALHADO] Caderno ausente. Buscando via API do analista...');
       this.carregarCadernoAnalista(idFinal);
     }
   }
 
   private carregarCadernoAnalista(idGleba: number): void {
     this.carregandoCaderno.set(true);
+    console.log(`🌐 [API] Requisitando Caderno de Campo para Gleba ${idGleba}, Safra: ${this.safra || 'N/D'}`);
 
-    this.monitoramentoService.obterCadernoCampo(idGleba)
+    this.monitoramentoService.obterCadernoCampo(idGleba, this.safra)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
+          console.log('✅ [API] Caderno de Campo retornado com sucesso:', res);
           this.cadernoDados.set(res);
           this.carregandoCaderno.set(false);
           this.carregarAnaliseClimatica(idGleba);
         },
         error: (err) => {
-          console.error('Erro ao carregar o Caderno de Campo:', err);
+          console.error('❌ [API] Erro ao carregar o Caderno de Campo:', err);
           this.carregandoCaderno.set(false);
         }
       });
   }
+
 
   private carregarAnaliseClimatica(idGleba: number): void {
     this.carregandoClima.set(true);
@@ -101,7 +113,8 @@ export class CadernoCampoDetalhadoComponent implements OnInit, OnChanges {
       || this.caderno?.analise_vegetativa_ia?.cultura_identificada
       || 'SOJA';
 
-    this.monitoramentoService.obterAnaliseClima(idGleba, cultura)
+    // 🟢 Garante o envio da safra para a consulta climática
+    this.monitoramentoService.obterAnaliseClima(idGleba, cultura, this.safra)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {

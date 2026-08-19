@@ -39,6 +39,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {ModalConfirmacaoCarComponent} from '../modal/modal-confirmacao-car.component';
 import {GlebaService} from '../../../service/gleba.service';
+import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 export interface ZarcSuccessResponse {
   status_validacao: string;
@@ -66,7 +67,8 @@ export interface ZarcSuccessResponse {
     MatNativeDateModule,
     MatProgressSpinnerModule,
     MapaLocalizacaoComponent,
-    MapaDelimitacaoComponent
+    MapaDelimitacaoComponent,
+    NgxMatSelectSearchModule
   ],
   templateUrl: './cadastro-gleba.component.html',
   styleUrls: ['./cadastro-gleba.component.scss']
@@ -76,8 +78,11 @@ export class CadastroGlebaComponent implements OnInit {
   @ViewChild(MapaLocalizacaoComponent) mapaFilho!: MapaLocalizacaoComponent;
   @ViewChild(MapaDelimitacaoComponent) mapaDesenhoFilho!: MapaDelimitacaoComponent;
 
+  public filtroCulturaCtrl = new FormControl('');
+  public culturaFiltroTexto = signal<string>('');
+
   public statusZarc = signal<ValidarZarcSimplificadoResponse | null>(null);
-  private destroyRef = inject(DestroyRef);
+  private readonly destroyRef = inject(DestroyRef);
   public decendioSelecionado = signal<number | null>(null);
   public sugestoesZarcDisponiveis = signal<JanelaGeralZarcResponse | null>(null);
   public carregandoSugestoes = signal<boolean>(false);
@@ -106,6 +111,16 @@ export class CadastroGlebaComponent implements OnInit {
 
   formWizard!: FormGroup;
 
+  public culturasFiltradas = computed(() => {
+    const termo = this.culturaFiltroTexto().toLowerCase().trim();
+    const listaOriginal = this.filtrosAgricolas() || [];
+
+    if (!termo) {
+      return listaOriginal;
+    }
+
+    return listaOriginal.filter(c => c.nome.toLowerCase().includes(termo));
+  });
 
   constructor() {
     effect(() => {
@@ -133,6 +148,12 @@ export class CadastroGlebaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filtroCulturaCtrl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(valor => {
+        this.culturaFiltroTexto.set(valor || '');
+      });
+
     this.inicializarFormularioBase();
     this.carregarDadosIniciais();
   }
@@ -159,7 +180,7 @@ export class CadastroGlebaComponent implements OnInit {
       geometria: ['', [Validators.required]],
       cultura_declarada: ['', [Validators.required]],
       safra: ['', [Validators.required]],
-      volume_declarado_comercializar: new FormControl('', [Validators.required, Validators.min(1)]),
+      volume_declarado_comercializar: new FormControl(0, [Validators.required, Validators.min(0)]),
       data_estimada_plantio: new FormControl('', Validators.required),
       data_estimada_colheita: new FormControl({value: '', disabled: false}, Validators.required),
     });
@@ -194,8 +215,20 @@ export class CadastroGlebaComponent implements OnInit {
   }
 
   get isPasso4Valido(): boolean {
-    const fields = ['cultura_declarada', 'safra', 'data_estimada_plantio'];
-    return fields.every(field => this.formWizard.get(field)?.valid);
+    if (!this.formWizard) return false;
+
+    const cultura = this.formWizard.get('cultura_declarada')?.value;
+    const safra = this.formWizard.get('safra')?.value;
+    const plantio = this.formWizard.get('data_estimada_plantio')?.value;
+    const colheita = this.formWizard.get('data_estimada_colheita')?.value;
+
+    // Se for cultura isenta de ZARC (Reflorestamento/Silvicultura), valida apenas a presença dos dados principais
+    if (this.verificarCulturaIsentaZarc(cultura)) {
+      return !!(cultura && safra && plantio && colheita);
+    }
+
+    // Para outras culturas, exige também a escolha da janela/decêndio ZARC
+    return !!(cultura && safra && plantio && colheita && this.decendioSelecionado());
   }
 
   private carregarDadosIniciais(): void {
@@ -429,6 +462,29 @@ export class CadastroGlebaComponent implements OnInit {
     const municipio = this.formWizard.get('codigo_municipio')?.value || 0;
     const safra = this.formWizard.get('safra')?.value;
 
+    if (!cultura) return;
+
+    if (this.verificarCulturaIsentaZarc(cultura)) {
+      this.sugestoesZarcDisponiveis.set(null);
+      this.carregandoSugestoes.set(false);
+
+      // Ajusta o volume automaticamente para 0 caso esteja em branco
+      if (!this.formWizard.get('volume_declarado_comercializar')?.value) {
+        this.formWizard.get('volume_declarado_comercializar')?.setValue(0);
+      }
+
+      const anoAtual = new Date().getFullYear();
+      this.formWizard.get('data_estimada_plantio')?.setValue(`01/10/${anoAtual}`);
+      this.formWizard.get('data_estimada_colheita')?.setValue(`01/10/${anoAtual + 5}`);
+
+      // Força a revalidação do formulário para liberar o botão imediatamente
+      this.formWizard.get('volume_declarado_comercializar')?.updateValueAndValidity();
+      this.formWizard.get('data_estimada_plantio')?.updateValueAndValidity();
+      this.formWizard.get('data_estimada_colheita')?.updateValueAndValidity();
+      this.cdr.detectChanges();
+      return;
+    }
+
     // Reseta a seleção anterior se alterar a cultura ou safra
     this.decendioSelecionado.set(null);
     this.formWizard.get('data_estimada_plantio')?.setValue('');
@@ -489,6 +545,14 @@ export class CadastroGlebaComponent implements OnInit {
 
     this.statusZarc.set(null);
   }
+
+  public verificarCulturaIsentaZarc(cultura: string): boolean {
+    if (!cultura) return false;
+    const termosIsentos = ['reflorestamento', 'eucalipto', 'pinus', 'silvicultura', 'floresta', 'restauração'];
+    return termosIsentos.some(termo => cultura.toLowerCase().includes(termo));
+  }
+
+
 
   /**
    * 2. Método acionado no clique do botão final 'Revisar Cadastro'

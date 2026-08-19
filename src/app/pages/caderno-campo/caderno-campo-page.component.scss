@@ -1,225 +1,38 @@
-// ==============================================================================
-// LAYOUT PRINCIPAL DO CADERNO DE CAMPO
-// ==============================================================================
-.atestados-container {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background-color: #f8fafc;
-  min-height: calc(100vh - 64px);
-  box-sizing: border-box;
-
-  @media (max-width: 992px) {
-    flex-direction: column;
-  }
-}
-
-// ------------------------------------------------------------------------------
-// SIDEBAR ESQUERDA: LISTAGEM DE GLEBAS
-// ------------------------------------------------------------------------------
-.sidebar-glebas {
-  width: 320px;
-  flex-shrink: 0;
-  background: #ffffff;
-  border-radius: 1rem;
-  padding: 1.25rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+.vmg-caderno-page-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: transparent; // 🟢 Assume a cor de fundo padrão escura do layout principal
+  width: 100%;
+  box-sizing: border-box;
 
-  @media (max-width: 992px) {
+  .vmg-secao-glebas,
+  .vmg-secao-safras,
+  .vmg-secao-caderno-main {
     width: 100%;
   }
 
-  .sidebar-titulo {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #0f172a;
-  }
-
-  /* Campo de Busca */
-  .busca-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    .icone-busca {
-      position: absolute;
-      left: 10px;
-      color: #94a3b8;
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-    }
-
-    .input-busca {
-      width: 100%;
-      padding: 0.6rem 0.75rem 0.6rem 2.25rem;
-      background-color: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: 0.75rem;
-      font-size: 0.8125rem;
-      color: #334155;
-      outline: none;
-      transition: all 0.2s ease;
-
-      &:focus {
-        border-color: #059669;
-        background-color: #ffffff;
-        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
-      }
-
-      &::placeholder {
-        color: #94a3b8;
-      }
-    }
-  }
-
-  /* Lista de Cards */
-  .lista-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    overflow-y: auto;
-    max-height: calc(100vh - 220px);
-
-    .loading-container-sidebar {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 2rem 0;
-      color: #64748b;
-      font-size: 0.8125rem;
-    }
-
-    .lista-vazia {
-      text-align: center;
-      padding: 2rem 0;
-      color: #94a3b8;
-      font-size: 0.8125rem;
-    }
-
-    /* Item do Card de Gleba */
-    .card-gleba-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.875rem;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover {
-        border-color: #a7f3d0;
-        background-color: #f0fdf4;
-      }
-
-      &.card-gleba-ativo {
-        border: 2px solid #059669;
-        background-color: #ecfdf5;
-
-        .avatar-glb {
-          background-color: #059669;
-          color: #ffffff;
-        }
-      }
-
-      .card-gleba-conteudo {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        overflow: hidden;
-
-        .avatar-glb {
-          width: 36px;
-          height: 36px;
-          border-radius: 0.5rem;
-          background-color: #e2e8f0;
-          color: #475569;
-          font-weight: 700;
-          font-size: 0.75rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-
-        .info-glb {
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
-
-          .nome-glb {
-            font-size: 0.8125rem;
-            font-weight: 700;
-            color: #1e293b;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          .id-glb {
-            font-size: 0.6875rem;
-            color: #64748b;
-          }
-        }
-      }
-
-      .badge-talhao {
-        font-size: 0.625rem;
-        font-weight: 700;
-        color: #94a3b8;
-        background: #f1f5f9;
-        padding: 2px 6px;
-        border-radius: 4px;
-        flex-shrink: 0;
-      }
-    }
-  }
-}
-
-// ------------------------------------------------------------------------------
-// PAINEL DIREITO: DETALHES E EXIBIÇÃO
-// ------------------------------------------------------------------------------
-.painel-detalhe {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-
-  .loading-container-detalhe {
-    background: #ffffff;
+  /* Estado de Carregamento */
+  .vmg-loading-state {
+    background: #0f172a; // 🟢 Ajustado para fundo escuro com contraste
     border-radius: 1rem;
-    border: 1px solid #e2e8f0;
-    padding: 4rem 2rem;
+    border: 1px solid #1e293b;
+    padding: 3rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    color: #64748b;
+    color: #94a3b8;
     font-size: 0.875rem;
   }
 
-  .vmg-voltar-painel-mobile {
-    display: none;
-    margin-bottom: 1rem;
-
-    @media (max-width: 992px) {
-      display: inline-flex;
-    }
-  }
-
-  /* State Vazio */
-  .painel-vazio-container {
-    background: #ffffff;
+  /* Estado Vazio Inicial */
+  .vmg-empty-state {
+    background: #0f172a; // 🟢 Ajustado para fundo escuro com contraste
     border-radius: 1rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #1e293b;
     padding: 4rem 2rem;
     text-align: center;
     display: flex;
@@ -227,23 +40,25 @@
     align-items: center;
     justify-content: center;
 
-    .painel-vazio-emoji {
+    .icon-hand {
       font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      color: #10b981;
       margin-bottom: 1rem;
     }
 
-    .painel-vazio-titulo {
+    h3 {
       margin: 0 0 0.5rem 0;
       font-size: 1.25rem;
       font-weight: 700;
-      color: #0f172a;
+      color: #f8fafc;
     }
 
-    .painel-vazio-texto {
+    p {
       margin: 0;
       font-size: 0.875rem;
-      color: #64748b;
-      max-width: 400px;
+      color: #94a3b8;
     }
   }
 }

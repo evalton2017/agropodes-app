@@ -1,16 +1,15 @@
-import { Component, inject, signal, computed, effect, OnInit, DestroyRef } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
-import {CadernoCampoDetalhadoComponent} from './caderno-campo-detalhado.component/caderno-campo-detalhado.component';
-import {PessoaService} from '../../service/pessoa.service';
-import {GlebeApiResponse} from '../../dto/response/gleba.response';
-import {MonitoramentoService} from '../../service/monitoramento.service';
-import {GlebaService} from '../../service/gleba.service';
 
+import { CadernoCampoDetalhadoComponent } from './caderno-campo-detalhado.component/caderno-campo-detalhado.component';
+import { MonitoramentoService } from '../../service/monitoramento.service';
+import { DashboardProdutorGlebaCardComponent } from '../../components/dashboard-produtor-gleba-card.component/dashboard-produtor-gleba-card.component';
+import { SeletorSafrasComponent } from '../../components/safras-glebas/seletor-safras.component';
 
 @Component({
   selector: 'app-caderno-campo-page',
@@ -21,106 +20,74 @@ import {GlebaService} from '../../service/gleba.service';
     MatIconModule,
     MatProgressSpinnerModule,
     MatButtonModule,
+    DashboardProdutorGlebaCardComponent,
+    SeletorSafrasComponent,
     CadernoCampoDetalhadoComponent
   ],
   templateUrl: './caderno-campo-page.component.html',
   styleUrls: ['./caderno-campo-page.component.scss']
 })
 export class CadernoCampoPageComponent implements OnInit {
-  private readonly glebaService = inject(GlebaService);
-  private readonly pessoaService = inject(PessoaService);
   private readonly monitoramentoService = inject(MonitoramentoService);
   private readonly destroyRef = inject(DestroyRef);
 
-  public produtor = computed(() => this.pessoaService.produtorAtual());
-
-  public listaGlebasSidebar = signal<(GlebeApiResponse & { coordenadas?: [number, number][] })[]>([]);
   public glebaSelecionadaId = signal<number | null>(null);
+  public safraSelecionada = signal<string | null>(null);
   public cadernoAtivo = signal<any | null>(null);
-
-  public carregandoLista = signal<boolean>(false);
-  public carregandoDetalhe = signal<boolean>(false);
-  public buscaTexto = signal<string>('');
-
-  public gleba: any;
-
-  constructor() {
-    effect(() => {
-      const usuarioLogado = this.produtor();
-      if (usuarioLogado && usuarioLogado.id) {
-        this.carregarListaLateralGlebas(usuarioLogado.id);
-      }
-    }, { allowSignalWrites: true });
-
-    effect(() => {
-      const idGleba = this.glebaSelecionadaId();
-      if (idGleba) {
-        this.buscarCadernoCampoGleba(idGleba);
-      }
-    }, { allowSignalWrites: true });
-  }
+  public carregando = signal<boolean>(false);
 
   ngOnInit(): void {
     console.log('Painel do Caderno de Campo Inicializado.');
   }
 
-  private carregarListaLateralGlebas(idProdutor: number): void {
-    this.carregandoLista.set(true);
-    this.glebaService.getGlebasByProdutorId(idProdutor)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (glebas) => {
-          this.listaGlebasSidebar.set(glebas);
-          this.carregandoLista.set(false);
-
-          if (glebas && glebas.length > 0) {
-            const primeiroItem = glebas[0];
-            this.gleba = { wkt: primeiroItem.geometria, id_gleba: primeiroItem.idGleba };
-            if (primeiroItem.idGleba) {
-              this.selecionarGleba(primeiroItem.idGleba);
-            }
-          }
-        },
-        error: (err) => {
-          console.error('Erro ao carregar barra lateral de glebas:', err);
-          this.carregandoLista.set(false);
-        }
-      });
+  public onGlebaSelecionada(idGleba: number | null): void {
+    this.glebaSelecionadaId.set(idGleba);
+    this.safraSelecionada.set(null);
+    this.cadernoAtivo.set(null);
   }
 
-  private buscarCadernoCampoGleba(idGleba: number): void {
-    this.carregandoDetalhe.set(true);
-    this.monitoramentoService.obterCadernoCampo(idGleba)
+  /**
+   * Disparado quando o seletor emite as safras disponíveis ou a safra clicada
+   */
+  public onSafraSelecionada(event: any): void {
+    console.log('🎯 [PAGE] Evento de safra recebido do componente seletor:', event);
+
+    if (Array.isArray(event)) {
+      if (event.length > 0 && !this.safraSelecionada()) {
+        const primeiraSafra = event[0]?.id_safra || event[0]?.label || event[0];
+        this.onSafraSelecionada(primeiraSafra);
+      }
+      return;
+    }
+
+    // 🟢 Extração correta baseada no formato do objeto exibido no console
+    const safraString = typeof event === 'string'
+      ? event
+      : (event?.id_safra || event?.label || event?.safra || event?.safraAno || '');
+
+    if (!safraString) {
+      console.warn('⚠️ [PAGE] Safra string veio vazia!');
+      return;
+    }
+
+    console.log('✅ [PAGE] Safra definida com sucesso:', safraString);
+    this.safraSelecionada.set(safraString);
+  }
+
+  private buscarCadernoCampoGleba(idGleba: number, safra: string): void {
+    this.carregando.set(true);
+    this.monitoramentoService.obterCadernoCampo(idGleba, safra)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resposta) => {
           this.cadernoAtivo.set(resposta);
-          this.carregandoDetalhe.set(false);
+          this.carregando.set(false);
         },
         error: (err) => {
-          console.error('Erro ao buscar metadados do Caderno de Campo:', err);
-          this.carregandoDetalhe.set(false);
+          console.error('Erro ao buscar Caderno de Campo:', err);
+          this.cadernoAtivo.set(null);
+          this.carregando.set(false);
         }
       });
   }
-
-  public selecionarGleba(idGleba: number): void {
-    if (this.glebaSelecionadaId() === idGleba) return;
-    this.glebaSelecionadaId.set(idGleba);
-    const item = this.listaGlebasSidebar().find(g => g.idGleba === idGleba);
-    if (item) {
-      this.gleba = { wkt: item.geometria, id_gleba: item.idGleba };
-    }
-  }
-
-  public glebasFiltradas = computed(() => {
-    const lista = this.listaGlebasSidebar();
-    const texto = this.buscaTexto().toLowerCase().trim();
-    if (!texto) return lista;
-
-    return lista.filter(g =>
-      g.codigoCar?.toLowerCase().includes(texto) ||
-      g.idGleba?.toString().includes(texto)
-    );
-  });
 }

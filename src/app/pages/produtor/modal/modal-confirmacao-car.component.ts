@@ -78,13 +78,15 @@ export interface ModalCarData {
       </div>
     </mat-dialog-content>
 
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="cancelar()">
+    <mat-dialog-actions align="end" class="modal-actions">
+      <!-- Botão Corrigir CAR em Laranja -->
+      <button mat-flat-button class="btn-corrigir" (click)="cancelar()">
         {{ data.podeAvancar ? 'Corrigir CAR' : 'Fechar' }}
       </button>
 
+      <!-- Botão Confirmar em Verde -->
       @if (data.podeAvancar) {
-        <button mat-raised-button color="primary" (click)="confirmar()">
+        <button mat-flat-button class="btn-confirmar" (click)="confirmar()">
           Confirmar Dados e Avançar
         </button>
       }
@@ -163,6 +165,38 @@ export interface ModalCarData {
     .status-inativo {
       background-color: #9b1c1c;
       color: #ffffff;
+    }
+
+    /* Estilização dos Botões de Ação */
+    .modal-actions {
+      padding: 16px 24px 20px 24px;
+      gap: 12px;
+    }
+
+    .btn-corrigir {
+      background-color: #ea580c !important; /* Laranja */
+      color: #ffffff !important;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 0 20px;
+      height: 42px;
+
+      &:hover {
+        background-color: #c2410c !important;
+      }
+    }
+
+    .btn-confirmar {
+      background-color: #16a34a !important; /* Verde */
+      color: #ffffff !important;
+      font-weight: 700;
+      border-radius: 8px;
+      padding: 0 24px;
+      height: 42px;
+
+      &:hover {
+        background-color: #15803d !important;
+      }
     }
   `]
 })

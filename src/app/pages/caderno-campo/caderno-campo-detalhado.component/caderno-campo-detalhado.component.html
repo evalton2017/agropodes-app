@@ -2,7 +2,7 @@
   @if (carregandoCaderno()) {
     <div class="loading-state-full">
       <mat-spinner diameter="40"></mat-spinner>
-      <span>Carregando dados consolidados do Caderno de Campo...</span>
+      <span>Carregando dados consolidados da Safra {{ safra }}...</span>
     </div>
   } @else {
     <!-- 1. CABEÇALHO -->
@@ -19,7 +19,8 @@
       </div>
 
       <div class="badges-status">
-        <span class="badge-safra">Safra: {{ obterCadernoAtual()?.safra_ano || '2023/2024' }}</span>
+        <!-- Exibe dinamicamente a safra informada via Input ou vinda do payload -->
+        <span class="badge-safra">Safra: {{ safra || obterCadernoAtual()?.safra_ano || 'N/I' }}</span>
         <span class="badge-homologado">
           <mat-icon>verified</mat-icon> AUDITADO VMG
         </span>
@@ -122,7 +123,7 @@
             </div>
           </div>
 
-          <!-- 🟢 NOVO: TOTAIS ACUMULADOS DOS 60 MESES -->
+          <!-- TOTAIS ACUMULADOS -->
           @if (dadosClima()?.totais_periodo) {
             <div class="metricas-clima-grid">
               <div class="box-metrica">
@@ -155,7 +156,7 @@
             </div>
           }
 
-          <!-- 🟢 NOVO: TABELA DE ACUMULADO ANUAL (PORTARIA ITEM 3.8.a) -->
+          <!-- TABELA DE ACUMULADO ANUAL -->
           @if ((dadosClima()?.historico_acumulado_anual?.length || 0) > 0) {
             <div class="secao-historico-anual">
               <h4 class="subtitulo-tabela">Evolução Histórica por Safra / Ano</h4>

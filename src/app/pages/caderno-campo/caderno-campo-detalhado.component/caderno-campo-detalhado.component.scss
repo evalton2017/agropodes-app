@@ -1,13 +1,14 @@
 // ==============================================================================
-// CADERNO DE CAMPO DETALHADO (PERFIL ANALISTA / CLIMA)
+// LAYOUT CADERNO DE CAMPO DETALHADO
 // ==============================================================================
 
 .caderno-detalhado-wrapper {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
 
-  // States de Carregamento
+  /* States de Carregamento */
   .loading-state-full,
   .loading-state-sub {
     display: flex;
@@ -19,10 +20,15 @@
   }
 
   .loading-state-full {
-    padding: 3rem;
+    padding: 3.5rem 2rem;
     background: #ffffff;
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     border: 1px solid #e2e8f0;
+    justify-content: center;
+  }
+
+  .loading-state-sub {
+    padding: 2rem;
     justify-content: center;
   }
 
@@ -35,6 +41,11 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    background: #ffffff;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 
     .titulo-bloco {
       h2 {
@@ -45,7 +56,7 @@
       }
 
       p {
-        font-size: 0.85rem;
+        font-size: 0.8125rem;
         color: #64748b;
         margin: 0.25rem 0 0 0;
       }
@@ -59,9 +70,9 @@
       .badge-safra {
         background-color: #f1f5f9;
         color: #334155;
-        font-weight: 600;
-        padding: 0.35rem 0.85rem;
-        border-radius: 1rem;
+        font-weight: 700;
+        padding: 0.4rem 0.9rem;
+        border-radius: 2rem;
         font-size: 0.75rem;
         border: 1px solid #cbd5e1;
       }
@@ -69,14 +80,14 @@
       .badge-homologado {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        background-color: #dcfce7;
-        color: #15803d;
+        gap: 0.35rem;
+        background-color: #ecfdf5;
+        color: #059669;
         font-weight: 700;
-        padding: 0.35rem 0.85rem;
-        border-radius: 1rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 2rem;
         font-size: 0.75rem;
-        border: 1px solid #bbf7d0;
+        border: 1px solid #a7f3d0;
 
         mat-icon {
           font-size: 16px;
@@ -98,7 +109,7 @@
     .card-metric {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
+      border-radius: 1rem;
       padding: 1.25rem;
       display: flex;
       align-items: center;
@@ -108,7 +119,7 @@
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       }
 
       .metric-icon-wrapper {
@@ -118,6 +129,7 @@
         width: 48px;
         height: 48px;
         border-radius: 0.75rem;
+        flex-shrink: 0;
 
         mat-icon {
           font-size: 26px;
@@ -127,22 +139,22 @@
 
         &.icon-emerald {
           background-color: #ecfdf5;
-          color: #10b981;
+          color: #059669;
         }
 
         &.icon-amber {
           background-color: #fffbeb;
-          color: #f59e0b;
+          color: #d97706;
         }
 
         &.icon-blue {
-          background-color: #eff6ff;
-          color: #3b82f6;
+          background-color: #f0f9ff;
+          color: #0284c7;
         }
 
         &.icon-purple {
           background-color: #faf5ff;
-          color: #8b5cf6;
+          color: #7c3aed;
         }
       }
 
@@ -153,16 +165,16 @@
         .metric-label {
           font-size: 0.75rem;
           color: #64748b;
-          font-weight: 600;
+          font-weight: 700;
           text-transform: uppercase;
-          letter-spacing: 0.02em;
+          letter-spacing: 0.03em;
         }
 
         .metric-valor {
           font-size: 1.25rem;
           font-weight: 800;
           color: #0f172a;
-          margin-top: 0.1rem;
+          margin-top: 0.15rem;
         }
 
         .metric-sub {
@@ -175,13 +187,78 @@
   }
 
   // ----------------------------------------------------------------------------
-  // 3. CARD DE RELATÓRIO E DIAGNÓSTICO METEOROLÓGICO
+  // 3. SEÇÃO DE COMPONENTES DE CONTEÚDO (MAPA E CLIMA)
   // ----------------------------------------------------------------------------
+  .secao-componente {
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
   .relatorio-clima-card {
+    .card-header-sub {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+
+      mat-icon {
+        color: #0284c7;
+      }
+
+      h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+      }
+    }
+
     .clima-conteudo {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
+
+      .info-interpolacao {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        background-color: #f8fafc;
+        padding: 0.875rem 1.25rem;
+        border-radius: 0.75rem;
+        border: 1px solid #f1f5f9;
+
+        .item-info {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.8125rem;
+
+          .label {
+            color: #64748b;
+            font-weight: 600;
+          }
+
+          .valor {
+            color: #1e293b;
+            font-weight: 700;
+          }
+
+          .badge-tech {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+          }
+        }
+      }
 
       .metricas-clima-grid {
         display: grid;
@@ -191,15 +268,15 @@
         .box-metrica {
           background: #f8fafc;
           border: 1px solid #e2e8f0;
-          border-radius: 0.5rem;
+          border-radius: 0.75rem;
           padding: 1rem;
           display: flex;
           flex-direction: column;
 
           .sublabel {
-            font-size: 0.75rem;
+            font-size: 0.725rem;
             color: #64748b;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
           }
 
@@ -208,21 +285,10 @@
             font-weight: 800;
             margin-top: 0.25rem;
 
-            &.text-blue {
-              color: #0284c7;
-            }
-
-            &.text-amber {
-              color: #d97706;
-            }
-
-            &.text-cyan {
-              color: #0891b2;
-            }
-
-            &.text-slate {
-              color: #475569;
-            }
+            &.text-blue { color: #0284c7; }
+            &.text-amber { color: #d97706; }
+            &.text-cyan { color: #0891b2; }
+            &.text-slate { color: #475569; }
           }
         }
       }
@@ -237,48 +303,69 @@
 
         .table-responsive {
           overflow-x: auto;
+          border-radius: 0.75rem;
+          border: 1px solid #e2e8f0;
         }
 
         .tabela-clima-anual {
           width: 100%;
           border-collapse: collapse;
-          font-size: 0.85rem;
+          font-size: 0.8125rem;
 
           th, td {
-            padding: 0.65rem 1rem;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid #e2e8f0;
           }
 
           th {
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             color: #475569;
             font-weight: 700;
             text-align: left;
           }
 
+          tbody tr:last-child td {
+            border-bottom: none;
+          }
+
           tbody tr:hover {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
           }
 
-          .text-right {
-            text-align: right;
-          }
+          .text-right { text-align: right; }
+          .font-bold { font-weight: 700; }
+          .text-blue { color: #0284c7; }
+          .text-amber { color: #d97706; }
+          .text-slate { color: #64748b; }
+        }
+      }
 
-          .font-bold {
-            font-weight: 700;
-          }
+      .box-alertas {
+        background-color: #fff1f2;
+        border: 1px solid #fecdd3;
+        border-radius: 0.75rem;
+        padding: 1rem 1.25rem;
 
-          .text-blue {
-            color: #0284c7;
-          }
+        .alerta-titulo {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: #be123c;
+          font-weight: 700;
+          font-size: 0.875rem;
+          margin-bottom: 0.5rem;
 
-          .text-amber {
-            color: #d97706;
+          mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
           }
+        }
 
-          .text-slate {
-            color: #64748b;
-          }
+        .alerta-item {
+          font-size: 0.8125rem;
+          color: #9f1239;
+          margin-top: 0.25rem;
         }
       }
     }

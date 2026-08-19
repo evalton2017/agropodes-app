@@ -109,13 +109,18 @@
           [formWizard]="formWizard"
           [latitudeFoco]="latitudeCentroide()"
           [longitudeFoco]="longitudeCentroide()"
+          [wktGeometriaCar]="dadosCar()?.geometria"
           (metricasProcessadas)="definirMetricasCalculadasPostGis($event.area, $event.perimetro)">
-        >
         </app-mapa-delimitacao>
 
         <div class="actions-row">
           <button mat-button (click)="voltarPasso()">Voltar</button>
-          <button mat-raised-button color="primary" [disabled]="formWizard.get('geometria')?.invalid" (click)="avancarPasso()">Avançar</button>
+          <button mat-raised-button
+                  color="primary"
+                  [disabled]="formWizard.get('geometria')?.invalid"
+                  (click)="avancarPasso()">
+            Avançar
+          </button>
         </div>
       </mat-step>
 
@@ -133,9 +138,18 @@
                 <!-- 1. Cultura Principal -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Cultura Principal *</mat-label>
+
                   <mat-select formControlName="cultura_declarada" (selectionChange)="carregarSugestoesZarc()">
+                    <mat-option>
+                      <ngx-mat-select-search
+                        [formControl]="filtroCulturaCtrl"
+                        placeholderLabel="Digite para pesquisar cultura..."
+                        noEntriesFoundLabel="Nenhuma cultura localizada">
+                      </ngx-mat-select-search>
+                    </mat-option>
+
                     <mat-option value="">Selecione...</mat-option>
-                    @for (c of filtrosAgricolas(); track c) {
+                    @for (c of culturasFiltradas(); track c.id || c.nome) {
                       <mat-option [value]="c.nome">{{ c.nome }}</mat-option>
                     }
                   </mat-select>
