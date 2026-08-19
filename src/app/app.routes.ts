@@ -19,6 +19,9 @@ import {CadernoCampoPageComponent} from './pages/caderno-campo/caderno-campo-pag
 import {
   VerificacaoAgricolaComponent
 } from './pages/verificacao-agricola/verificacao-agricola.component/verificacao-agricola.component';
+import {
+  RelatorioProdutorComponent
+} from './pages/relatorios/produtor/relatorio-produtor.component/relatorio-produtor.component';
 
 
 
@@ -59,7 +62,7 @@ export const routes: Routes = [
   },
   {
     path: 'atestados-produtor',
-    component: AtestadosPageComponent,
+    component: RelatorioProdutorComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_PRODUTOR'] }
   },

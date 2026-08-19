@@ -1,7 +1,7 @@
 @if (atestado(); as dados) {
   <div class="vmg-documento-container" id="atestado-imprimir-escopo">
 
-    <!-- TOPO: TITULO DA TELA E AÇÕES GERAIS -->
+    <!-- TOPO: TÍTULO DA TELA E AÇÕES GERAIS -->
     <div class="vmg-topo-acoes">
       <div class="vmg-topo-titulos">
         <h1 class="vmg-main-title">Atestado do Produtor</h1>
@@ -17,7 +17,6 @@
           <mat-icon>share</mat-icon> Compartilhar
         </button>
       </div>
-
     </div>
 
     <!-- SEÇÃO 1: CABEÇALHO HORIZONTAL DE CARDS DE INFORMAÇÃO -->
@@ -25,27 +24,33 @@
 
       <!-- Card Gleba -->
       <div class="vmg-card-meta">
-        <div class="vmg-meta-icon bg-light-green text-green"><mat-icon>gite</mat-icon></div>
+        <div class="vmg-meta-icon bg-light-green text-green">
+          <mat-icon>gite</mat-icon>
+        </div>
         <div class="vmg-meta-txt">
           <span class="vmg-lbl">Gleba</span>
-          <span class="vmg-val font-bold">{{ dados.cabecalho.nome_gleba }}</span>
+          <span class="vmg-val font-bold" [title]="dados.cabecalho.nome_gleba">{{ dados.cabecalho.nome_gleba }}</span>
           <span class="vmg-sub">Área: {{ dados.cabecalho.area_hectares | number:'1.2-2' }} ha</span>
         </div>
       </div>
 
       <!-- Card Cultura -->
       <div class="vmg-card-meta">
-        <div class="vmg-meta-icon bg-light-green text-green"><mat-icon>grass</mat-icon></div>
+        <div class="vmg-meta-icon bg-light-green text-green">
+          <mat-icon>grass</mat-icon>
+        </div>
         <div class="vmg-meta-txt">
           <span class="vmg-lbl">Cultura Principal</span>
-          <span class="vmg-val font-bold text-green">{{ dados.cabecalho.cultura_principal }}</span>
+          <span class="vmg-val font-bold text-green" [title]="dados.cabecalho.cultura_principal">{{ dados.cabecalho.cultura_principal }}</span>
           <span class="vmg-sub">Safra: {{ dados.cabecalho.safra }}</span>
         </div>
       </div>
 
       <!-- Card Período -->
       <div class="vmg-card-meta">
-        <div class="vmg-meta-icon bg-light-green text-green"><mat-icon>calendar_today</mat-icon></div>
+        <div class="vmg-meta-icon bg-light-green text-green">
+          <mat-icon>calendar_today</mat-icon>
+        </div>
         <div class="vmg-meta-txt">
           <span class="vmg-lbl">Período Analisado</span>
           <span class="vmg-val font-medium">{{ periodoFormatado }}</span>
@@ -54,17 +59,14 @@
 
       <!-- Card Status -->
       <div class="vmg-card-meta">
-        <div class="vmg-meta-icon  text-white"  [ngClass]="dados.cabecalho.status_atestado == 'REPROVADO' ? 'bg-danger' : 'bg-success'">
-          <mat-icon>{{ dados.cabecalho.status_atestado == 'REPROVADO' ? 'cancel' : 'check_circle' }}</mat-icon></div>
+        <div class="vmg-meta-icon" [ngClass]="dados.cabecalho.status_atestado === 'REPROVADO' ? 'bg-danger text-white' : 'bg-light-green text-green'">
+          <mat-icon>{{ dados.cabecalho.status_atestado === 'REPROVADO' ? 'cancel' : 'check_circle' }}</mat-icon>
+        </div>
         <div class="vmg-meta-txt">
           <span class="vmg-lbl">Status do Atestado</span>
-          @if(dados.cabecalho.status_atestado == 'REPROVADO'){
-            <span class="vmg-status-final-txt text-danger">
-            {{ dados.cabecalho.status_atestado }} </span>
-          } @else {
-            <span class="vmg-status-final-txt text-success">
-            {{ dados.cabecalho.status_atestado }}</span>
-          }
+          <span class="vmg-status-final-txt" [ngClass]="dados.cabecalho.status_atestado === 'REPROVADO' ? 'text-danger' : 'text-success'">
+            {{ dados.cabecalho.status_atestado }}
+          </span>
           <span class="vmg-sub">Emitido em {{ dados.cabecalho.data_emissao_atestado | date:'dd/MM/yyyy' }}</span>
         </div>
       </div>
@@ -78,7 +80,7 @@
 
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">Ambiental</span>
-          <div class="vmg-conf-status text-success" [ngClass]="dados.conformidade.ambiental_conforme ? 'text-success' : 'text-danger'">
+          <div class="vmg-conf-status" [ngClass]="dados.conformidade.ambiental_conforme ? 'text-success' : 'text-danger'">
             <mat-icon>{{ dados.conformidade.ambiental_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
             {{ dados.conformidade.ambiental_conforme ? 'Conforme' : 'Divergente' }}
           </div>
@@ -97,7 +99,7 @@
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">Boas Práticas</span>
           <div class="vmg-conf-status" [ngClass]="dados.conformidade.boas_praticas_conforme ? 'text-success' : 'text-warning'">
-            <mat-icon>{{ dados.conformidade.boas_praticas_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
+            <mat-icon>{{ dados.conformidade.boas_praticas_conforme ? 'check_circle' : 'warning' }}</mat-icon>
             {{ dados.conformidade.boas_praticas_conforme ? 'Conforme' : 'Pendente' }}
           </div>
           <span class="vmg-conf-sub">Certificado de BPA válido</span>
@@ -106,7 +108,7 @@
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">ZARC</span>
           <div class="vmg-conf-status" [ngClass]="dados.conformidade.zarc_conforme ? 'text-success' : 'text-warning'">
-            <mat-icon>{{ dados.conformidade.zarc_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
+            <mat-icon>{{ dados.conformidade.zarc_conforme ? 'check_circle' : 'warning' }}</mat-icon>
             {{ dados.conformidade.zarc_conforme ? 'Conforme' : 'Fora da Janela' }}
           </div>
           <span class="vmg-conf-sub">Risco admissível dentro do limite</span>
@@ -114,7 +116,7 @@
 
         <div class="vmg-item-conf">
           <span class="vmg-conf-lbl">Produtividade</span>
-          <div class="vmg-conf-status text-success" [ngClass]="dados.conformidade.produtividade_conforme ? 'text-success' : 'text-danger'">
+          <div class="vmg-conf-status" [ngClass]="dados.conformidade.produtividade_conforme ? 'text-success' : 'text-danger'">
             <mat-icon>{{ dados.conformidade.produtividade_conforme ? 'check_circle' : 'cancel' }}</mat-icon>
             {{ dados.conformidade.produtividade_conforme ? 'Conforme' : 'Divergente' }}
           </div>
@@ -144,7 +146,7 @@
             <mat-icon>layers</mat-icon>
             <div class="vmg-info-pair">
               <span class="vmg-info-lbl-sub">Código CAR</span>
-              <span class="vmg-info-val-sub text-break">{{ dados.informacoes_gerais.codigo_car }}</span>
+              <span class="vmg-info-val-sub text-break font-mono">{{ dados.informacoes_gerais.codigo_car }}</span>
             </div>
           </div>
 
@@ -152,7 +154,7 @@
             <mat-icon>explore</mat-icon>
             <div class="vmg-info-pair">
               <span class="vmg-info-lbl-sub">Coordenadas (Centróide)</span>
-              <span class="vmg-info-val-sub">{{ dados.informacoes_gerais.coordenadas_centroide }}</span>
+              <span class="vmg-info-val-sub font-mono">{{ dados.informacoes_gerais.coordenadas_centroide }}</span>
             </div>
           </div>
 
@@ -170,16 +172,9 @@
       <!-- Bloco Mapa Geográfico -->
       <div class="vmg-secao-box col-flex">
         <h3 class="vmg-secao-titulo">Mapa da Gleba</h3>
-
         <div class="mini-mapa-frame">
-          <!-- O canvas do Leaflet será injetado estritamente nesta div -->
-          <div id="mini-mapa-gleba-detalhe" style="width: 100%; height: 100%; border-radius: 8px; min-height: 200px;"></div>
-
-          <button class="btn-expand-map" type="button" title="Expandir Mapa">
-            <mat-icon>fullscreen</mat-icon>
-          </button>
+          <div id="mini-mapa-gleba-detalhe" class="mapa-canvas"></div>
         </div>
-
       </div>
 
     </div>
@@ -192,10 +187,9 @@
         <h3 class="vmg-secao-titulo">Linha do Tempo da Safra</h3>
         <div class="vmg-timeline-horizontal">
           <div class="vmg-timeline-line"></div>
-
           @for (evento of dados.linha_tempo_safra; track evento.fase) {
             <div class="vmg-timeline-node">
-              <div class="vmg-node-circle bg-success"></div>
+              <div class="vmg-node-circle"></div>
               <span class="vmg-node-fase">{{ evento.fase }}</span>
               <span class="vmg-node-data">{{ evento.data_evento | date:'dd/MM/yyyy' }}</span>
             </div>
@@ -209,8 +203,9 @@
         <div class="vmg-donut-chart-box">
           <svg class="vmg-donut-svg" viewBox="0 0 36 36">
             <path class="vmg-donut-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <!-- stroke-dasharray calculado dinamicamente com base no percentual (ex: 56.11 de 76) -->
-            <path class="vmg-donut-fill" stroke-dasharray="73, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="vmg-donut-fill"
+                  [attr.stroke-dasharray]="((dados.produtividade.estimado_ia_sacas_ha / (dados.produtividade.referencia_regional_sacas_ha || 100)) * 100) + ', 100'"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
           <div class="vmg-donut-center-txt">
             <span class="vmg-donut-num">{{ dados.produtividade.estimado_ia_sacas_ha }}</span>
@@ -218,14 +213,15 @@
           </div>
         </div>
         <div class="vmg-chart-legendas">
-          <div><span class="vmg-lbl">Declarado:</span> <span class="font-bold">{{ dados.produtividade.declarado_sacas_ha }} sc/ha</span></div>
-          <div><span class="vmg-lbl">Ref. Regional:</span> <span class="font-bold">{{ dados.produtividade.referencia_regional_sacas_ha }} sc/ha</span></div>
+          <div><span class="vmg-lbl">Declarado:</span> <span class="font-bold text-white">{{ dados.produtividade.declarado_sacas_ha }} sc/ha</span></div>
+          <div><span class="vmg-lbl">Ref. Regional:</span> <span class="font-bold text-white">{{ dados.produtividade.referencia_regional_sacas_ha }} sc/ha</span></div>
         </div>
       </div>
 
     </div>
-    <!-- SEÇÃO 5: INTEGRALIDADE E BLOCO DE AUDITORIA CRIPTO -->
-    <div class="vmg-secao-box bg-white shadow-xs">
+
+    <!-- SEÇÃO 5: INTEGRALIDADE E AUDITORIA CRIPTO -->
+    <div class="vmg-secao-box">
       <h3 class="vmg-secao-titulo flex-center gap-1">
         <mat-icon class="text-muted">shield</mat-icon> Informações do Atestado
       </h3>
@@ -233,7 +229,7 @@
       <div class="vmg-grid-rastreabilidade">
         <div>
           <span class="vmg-lbl-rastre">Código do Atestado</span>
-          <span class="vmg-val-rastre font-bold">{{ dados.metadados_atestado.codigo_atestado }}</span>
+          <span class="vmg-val-rastre font-bold text-green font-mono">{{ dados.metadados_atestado.codigo_atestado }}</span>
         </div>
         <div>
           <span class="vmg-lbl-rastre">Órgão Emissor</span>

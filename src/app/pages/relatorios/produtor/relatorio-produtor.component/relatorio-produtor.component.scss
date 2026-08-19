@@ -1,0 +1,178 @@
+$dark-bg: #040a06;
+$card-bg: #07140b;
+$border-color: #1a3822;
+$text-primary: #e2e8f0;
+$text-secondary: #94a3b8;
+$green-neon: #00ff66;
+$green-lime: #a3e635;
+
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  background-color: $dark-bg;
+  color: $text-primary;
+}
+
+.pagina-relatorio-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+// Cabeçalho da Página
+.vmg-header-secao {
+  .vmg-title-page {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+  }
+  .vmg-subtitle-page {
+    font-size: 13px;
+    color: $text-secondary;
+    margin: 4px 0 0 0;
+  }
+}
+
+// Rótulos de Seção (Verde Limão em Caixa Alta)
+.vmg-secao-rotulo {
+  font-size: 12px;
+  font-weight: 800;
+  color: $green-lime;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+}
+
+/* ==========================================================================
+   SEÇÃO DE SAFRAS - BOTOES HORIZONTAIS (PILLS)
+   ========================================================================== */
+.vmg-secao-safras {
+  display: flex;
+  flex-direction: column;
+
+  .vmg-safras-pills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    .btn-safra-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid $border-color;
+      border-radius: 6px;
+      padding: 10px 18px;
+      color: $text-secondary;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      .diamond-icon {
+        font-size: 10px;
+        color: $text-secondary;
+      }
+
+      .safra-status-tag {
+        font-size: 11px;
+        font-weight: 500;
+        opacity: 0.8;
+      }
+
+      &:hover {
+        border-color: rgba(0, 255, 102, 0.4);
+        background: rgba(0, 255, 102, 0.03);
+        color: #ffffff;
+      }
+
+      /* Estado Selecionado (Verde Neon com Fundo Destacado) */
+      &.ativa {
+        background: $green-lime;
+        border-color: $green-lime;
+        color: #000000;
+
+        .diamond-icon {
+          color: #000000;
+        }
+
+        .safra-status-tag {
+          color: #000000;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   ESTADO VAZIO / CARREGAMENTO
+   ========================================================================== */
+.vmg-secao-atestado-main {
+  width: 100%;
+}
+
+.vmg-loading-state, .vmg-empty-state {
+  background-color: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: $text-secondary;
+
+  .icon-hand {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: $green-lime;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    color: #ffffff;
+    font-size: 18px;
+    margin: 0 0 8px 0;
+  }
+}
+
+/* ==========================================================================
+   OVERRIDE DO COMPONENTE DE CARDS DE GLEBAS (DISPOSIÇÃO HORIZONTAL)
+   ========================================================================== */
+::ng-deep app-dashboard-produtor-gleba-card {
+  display: block;
+  width: 100%;
+
+  .card-glebas-container {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .lista-glebas {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  .item-gleba-card {
+    background: $card-bg !important;
+    border: 1px solid $border-color !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+    margin-bottom: 0 !important;
+
+    &.ativo, &.selected {
+      border: 1px solid $green-neon !important;
+      box-shadow: 0 0 12px rgba(0, 255, 102, 0.15) !important;
+    }
+  }
+}

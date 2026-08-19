@@ -35,12 +35,12 @@ export const MENU_ITEMS: MenuItem[] = [
     roles: ['USER_PRODUTOR'],
     route: '/verificacao-agricola'
   },
-  {
+/*  {
     label: 'Monitoramento',
     icon: 'trending_up',
     roles: ['USER_PRODUTOR'],
     route: '/monitoramento',
-  },
+  },*/
   {
     label: 'Meus Atestados',
     icon: 'assignment',
@@ -65,12 +65,12 @@ export const MENU_ITEMS: MenuItem[] = [
     roles: ['USER_PRODUTOR'],
     route: '/consulta-analise-produtor'
   },
-  {
+ /* {
     label: 'Configuração',
     icon: 'settings',
     roles: ['USER_PRODUTOR'],
     route: '/configuracao-produtor'
-  },
+  },*/
 
 
   // ==========================================

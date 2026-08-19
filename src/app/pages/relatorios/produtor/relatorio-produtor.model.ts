@@ -27,6 +27,7 @@ export interface InformacoesGleba {
   municipio_uf: string;
   codigo_car: string;
   coordenadas_centroide: string;
+  geometria_wkt?: string;
   data_cadastro: string | Date;
 }
 

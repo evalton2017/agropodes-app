@@ -1,0 +1,50 @@
+<div class="pagina-relatorio-container">
+
+  <!-- CABEÇALHO DA PÁGINA -->
+  <div class="vmg-header-secao">
+    <h1 class="vmg-title-page">Meus Atestados</h1>
+    <p class="vmg-subtitle-page">Selecione uma gleba e a safra desejada para visualizar e emitir o atestado socioambiental e agrícola.</p>
+  </div>
+
+  <!-- 1. CARDS DE SELEÇÃO DE GLEBA (DISPARA onGlebaSelecionada COM ID NUMÉRICO) -->
+  <div class="vmg-secao-glebas">
+    <app-dashboard-produtor-gleba-card
+      (glebaSelecionadaChange)="onGlebaSelecionada($event)">
+    </app-dashboard-produtor-gleba-card>
+  </div>
+
+  @if (glebaSelecionadaId(); as idGleba) {
+
+    <!-- 2. COMPONENTE DE SELEÇÃO DE SAFRA (IGUAL A VERIFICAÇÃO AGRÍCOLA) -->
+    <div class="vmg-secao-safras">
+      <app-seletor-safras
+        [idGleba]="idGleba"
+        (safraSelecionada)="onSafraSelecionada($event)">
+      </app-seletor-safras>
+    </div>
+
+    <!-- 3. RENDERIZAÇÃO DO ATESTADO -->
+    <div class="vmg-secao-atestado-main">
+      @if (carregando()) {
+        <div class="vmg-loading-state">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Carregando atestado socioambiental e agrícola...</p>
+        </div>
+      } @else if (dadosAtestado()) {
+        <app-atestado-detalhado
+          [dadosAtestado]="dadosAtestado()!"
+          [gleba]="{ id_gleba: idGleba }">
+        </app-atestado-detalhado>
+      }
+    </div>
+
+  } @else {
+    <!-- ESTADO INICIAL VAZIO -->
+    <div class="vmg-empty-state">
+      <mat-icon class="icon-hand">touch_app</mat-icon>
+      <h3>Nenhuma Gleba Selecionada</h3>
+      <p>Selecione uma gleba acima para visualizar o Atestado do Produtor.</p>
+    </div>
+  }
+
+</div>

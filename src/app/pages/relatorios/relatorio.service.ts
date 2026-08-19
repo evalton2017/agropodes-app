@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AtestadoDetalhadoResponse } from './produtor/relatorio-produtor.model';
 import { environment } from '../../../environments/environment';
@@ -9,6 +9,24 @@ import { environment } from '../../../environments/environment';
 })
 export class RelatorioService {
   private readonly http = inject(HttpClient);
+
+  obterSafrasPorGleba(idGleba: number): Observable<string[]> {
+    return this.http.get<string[]>(
+      `${environment.urlProc}/relatorio/gleba/${idGleba}/safras`
+    );
+  }
+
+  obterAtestadoPorGlebaESafra(idGleba: number, safra?: string): Observable<AtestadoDetalhadoResponse> {
+    let params = new HttpParams();
+    if (safra) {
+      params = params.set('safra', safra);
+    }
+
+    return this.http.get<AtestadoDetalhadoResponse>(
+      `${environment.urlProc}/relatorio/gleba/${idGleba}/atestado-detalhes`,
+      { params }
+    );
+  }
 
   /**
    * Busca os metadados JSON do atestado para renderização na tela.
