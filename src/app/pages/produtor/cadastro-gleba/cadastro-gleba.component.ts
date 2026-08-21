@@ -86,6 +86,7 @@ export class CadastroGlebaComponent implements OnInit {
   public decendioSelecionado = signal<number | null>(null);
   public sugestoesZarcDisponiveis = signal<JanelaGeralZarcResponse | null>(null);
   public carregandoSugestoes = signal<boolean>(false);
+  public readonly anoAtual = new Date().getFullYear();
 
   private readonly fb = inject(FormBuilder);
   private readonly glebaService = inject(GlebaService);
@@ -412,9 +413,10 @@ export class CadastroGlebaComponent implements OnInit {
   }
 
   private gerarListaSafras(): string[] {
-    const anoAtual = new Date().getFullYear();
+    const anoAtual = new Date().getFullYear(); // 2026
     const safras: string[] = [];
-    for (let i = -4; i <= 1; i++) {
+    // Restringe para gerar apenas safras passadas e a corrente (sem anos futuros)
+    for (let i = -4; i <= 0; i++) {
       const anoInicio = anoAtual + i;
       const anoFim = anoInicio + 1;
       safras.push(`${anoInicio}/${anoFim}`);
@@ -560,40 +562,47 @@ export class CadastroGlebaComponent implements OnInit {
   public executarEnvioFinalCadastro(): void {
     if (this.formWizard.invalid) return;
 
-    const codigoIbgeMunicipio = this.formWizard.get('codigo_municipio')?.value || 0;
     const valores = this.formWizard.value;
+    const safraSelecionada = valores.safra || ''; // Ex: "2026/2027"
+
+    // 🟢 Extrai corretamente o ano inicial da safra (ex: 2026)
+    const anoInicioSafra = parseInt(safraSelecionada.split('/')[0], 10) || new Date().getFullYear();
+
+    // 🟢 Trava regulatória para impedir safras futuras
+    if (anoInicioSafra > new Date().getFullYear()) {
+      this.erroMensagem.set("Não é permitido cadastrar ou auditar safras futuras. Selecione uma safra vigente ou passada.");
+      return;
+    }
+
+    const codigoIbgeMunicipio = this.formWizard.get('codigo_municipio')?.value || 0;
 
     // Função interna para converter o formato brasileiro "dd/MM/yyyy" para o padrão ISO "YYYY-MM-DD"
     const converterBrParaIso = (dataBr: string): string => {
       if (!dataBr) return '';
       const partes = dataBr.split('/');
       if (partes.length === 3) {
-        return `${partes[2]}-${partes[1]}-${partes[0]}`; // Retorna "YYYY-MM-DD"
+        return `${partes[2]}-${partes[1]}-${partes[0]}`;
       }
       return dataBr;
     };
 
-    // Montagem do payload convertendo as chaves para camelCase e as datas para o padrão do Pydantic
     const payloadValidacao = {
       id_gleba: 0,
       municipio_ibge: Number(codigoIbgeMunicipio),
       cultura: valores.cultura_declarada ? valores.cultura_declarada.trim() : '',
-      safra: valores.safra ? valores.safra.trim() : '2025/2026',
+      safra: safraSelecionada.trim(),
       volumeDeclaradoComercializar: Number(valores.volume_declarado_comercializar) || 0,
-
-      // 🌟 CORREÇÃO DO ERRO DO PYDANTIC: Enviando em formato ISO sem caracteres inválidos
       dataEstimadaPlantio: converterBrParaIso(valores.data_estimada_plantio),
       dataEstimadaColheita: converterBrParaIso(valores.data_estimada_colheita)
     };
 
-    // Dispara a chamada HTTP limpa para o serviço
     this.glebaService.validarZarcSimplificado(payloadValidacao)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resposta) => {
           this.statusZarc.set(resposta);
           if (resposta.status_validacao === 'CONFORME') {
-            this.avancarPasso(); // Avança de etapa se estiver OK
+            this.avancarPasso();
           }
         },
         error: (err) => {
@@ -604,4 +613,5 @@ export class CadastroGlebaComponent implements OnInit {
         }
       });
   }
+
 }

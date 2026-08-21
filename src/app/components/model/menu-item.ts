@@ -57,7 +57,7 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'Contestação',
     icon: 'persons',
     roles: ['USER_PRODUTOR'],
-    route: '/contestacao-analise-produtor'
+    route: '/contestacao-produtor'
   },
   {
     label: 'Analises',

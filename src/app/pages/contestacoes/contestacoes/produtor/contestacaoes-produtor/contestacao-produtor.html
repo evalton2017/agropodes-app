@@ -1,0 +1,137 @@
+<div class="consulta-glebas-main-container">
+
+  <!-- SEÇÃO DE CARREGAMENTO ASSÍNCRONO -->
+  @if (carregando()) {
+    <div class="vmg-loading-overlay-box">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Consultando livros de registros imutáveis e PostGIS...</p>
+    </div>
+  }
+
+  @if (dadosPainel(); as painel) {
+
+    <!-- SEÇÃO INFERIOR: TABELA DE RESULTADOS GERENCIAIS -->
+    <div class="vmg-table-card-wrapper">
+      <div class="table-header-title-row">
+        <h3>Gerenciamento de Contestações de Glebas</h3>
+
+        <!-- VINCULAÇÃO DA FUNÇÃO DE PESQUISA POR INPUT -->
+        <div class="table-search-input-box">
+          <input type="text"
+                 [value]="termoBusca()"
+                 (input)="atualizarTermoBusca($event)"
+                 placeholder="Buscar gleba, município ou status...">
+          <mat-icon class="search-icon">search</mat-icon>
+        </div>
+      </div>
+
+      <div class="vmg-responsive-table-container">
+        <table class="vmg-native-table">
+          <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nome da Gleba</th>
+            <th>Município</th>
+            <th>Cultura Declarada</th>
+            <th>Área (ha)</th>
+            <th>Status</th>
+            <th>Última Atualização</th>
+            <th class="text-center">Ações</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (gleba of glebasPaginadas(); track gleba.idGleba) {
+              <tr>
+                <td class="font-semibold text-slate-700">{{ gleba.codigo }}</td>
+                <td>{{ gleba.nomeGleba }}</td>
+                <td>{{ gleba.municipio }}</td>
+                <td>{{ gleba.culturaDeclarada }}</td>
+                <td class="font-medium text-slate-600">{{ gleba.areaHa | number:'1.2-2':'pt-BR' }}</td>
+                <td>
+                  <span class="status-badge-chip" [ngClass]="{
+                    'chip-conforme': gleba.status === 'Conforme',
+                    'chip-analise': gleba.status === 'Em analise' || gleba.status === 'Alerta',
+                    'chip-alerta': gleba.status === 'Alerta'
+                  }">
+                    {{ gleba.status }}
+                  </span>
+                </td>
+                <td class="text-sm text-slate-500">{{ gleba.ultimaAtualizacao }}</td>
+                <td>
+                  <div class="actions-buttons-flex-row">
+                    <!-- Botões de Criar e Cancelar: Visíveis APENAS se status DIFERENTE de Conforme -->
+                    @if (gleba.status !== 'Conforme') {
+                      <button class="btn-action-icon edit" title="Criar Contestação" (click)="criarContestacao(gleba.idGleba)">
+                        <mat-icon>add_circle_outline</mat-icon>
+                      </button>
+                      <button class="btn-action-icon cancel" title="Cancelar Contestação" (click)="cancelarContestacao(gleba.idGleba)">
+                        <mat-icon>block</mat-icon>
+                      </button>
+                    }
+                    <!-- Botão Visualizar: Disponível para todos -->
+                    <button class="btn-action-icon view" title="Visualizar" (click)="visualizarGleba(gleba.idGleba)">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="text-center text-slate-400" style="padding: 3rem 0;">
+                  Nenhuma gleba encontrada para o produtor logado.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RODAPÉ DA TABELA -->
+      <div class="table-pagination-footer-bar">
+        <span class="pagination-counter-text">
+          Mostrando de {{ ((paginaAtual() - 1) * itensPorPagina()) + 1 }} a
+          {{ Math.min(paginaAtual() * itensPorPagina(), glebasFiltradas().length) }}
+          de {{ glebasFiltradas().length }} glebas
+        </span>
+
+        <div class="pagination-sizer-flex-row" style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 0.825rem; color: #64748b;">Exibir:</span>
+          <mat-form-field appearance="outline" style="width: 80px; margin-bottom: -1.25rem;">
+            <mat-select [value]="itensPorPagina()" (selectionChange)="alterarItensPorPagina($event)">
+              @for (opcao of opcoesItensPorPagina; track opcao) {
+                <mat-option [value]="opcao">{{ opcao }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="pagination-nav-selectors">
+          <button class="btn-page-nav"
+                  [disabled]="paginaAtual() === 1"
+                  (click)="alterarPagina(paginaAtual() - 1)">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+
+          @for (n of listaIndicesPaginas(); track n) {
+            <button class="btn-page-number"
+                    [ngClass]="{ 'active': paginaAtual() === n }"
+                    (click)="alterarPagina(n)">
+              {{ n }}
+            </button>
+          }
+
+          <button class="btn-page-nav"
+                  [disabled]="paginaAtual() === totalPaginas()"
+                  (click)="alterarPagina(paginaAtual() + 1)">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  }
+
+  @if (glebaSelecionada()) {
+    <app-gleba-detalhe [gleba]="glebaSelecionada()!"></app-gleba-detalhe>
+  }
+</div>

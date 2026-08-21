@@ -332,6 +332,13 @@
             background-color: #f1f5f9;
           }
 
+          tbody tr {
+            td.font-bold {
+              font-weight: 700;
+              color: #0f172a !important;
+            }
+          }
+
           .text-right { text-align: right; }
           .font-bold { font-weight: 700; }
           .text-blue { color: #0284c7; }

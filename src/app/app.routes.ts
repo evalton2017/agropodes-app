@@ -6,7 +6,6 @@ import {RelatorioAnalistaComponent} from './pages/relatorios/analista/relatorio-
 import {CadastroGlebaComponent} from './pages/produtor/cadastro-gleba/cadastro-gleba.component';
 import {ConsultaGlebaComponent} from './pages/produtor/consulta-gleba/consulta-gleba';
 import {PainelAnaliseComponent} from './pages/produtor/painel-analise.component/painel-analise.component';
-import {AtestadosPageComponent} from './pages/relatorios/produtor/atestados-page.component.ts/atestados-page.component';
 import {CadastroComponent} from './dto/cadastro/cadastro.component';
 import {ConsultaCarComponent} from './components/consulta-car/consulta-car.component';
 import {ClimaPageComponent} from './pages/monitoramento/analista/clima/clima-page.component';
@@ -22,7 +21,9 @@ import {
 import {
   RelatorioProdutorComponent
 } from './pages/relatorios/produtor/relatorio-produtor.component/relatorio-produtor.component';
-
+import {
+  ContestacaoProdutorComponent
+} from './pages/contestacoes/contestacoes/produtor/contestacaoes-produtor/contestacao-produtor';
 
 
 export const routes: Routes = [
@@ -57,6 +58,12 @@ export const routes: Routes = [
   {
     path: 'consulta-analise-produtor',
     component: PainelAnaliseComponent,
+    canActivate: [authGuard],
+    data: { roles: ['USER_PRODUTOR'] }
+  },
+  {
+    path: 'contestacao-produtor',
+    component: ContestacaoProdutorComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_PRODUTOR'] }
   },

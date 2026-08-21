@@ -1,0 +1,305 @@
+/* ==========================================================================
+   LAYOUT DE CONTESTAÇÕES - TABELA MAIS CLARA QUE O FUNDO
+   ========================================================================== */
+
+:host {
+  display: block;
+  background-color: #122119; /* 🟢 Fundo geral da tela em verde escuro corporativo */
+  min-height: 100vh;
+}
+
+.consulta-glebas-main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: #122119;
+  box-sizing: border-box;
+
+  .vmg-loading-overlay-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.90);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    gap: 1rem;
+    z-index: 10;
+
+    p {
+      font-size: 0.95rem;
+      color: #1b3b2b;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  .vmg-table-card-wrapper {
+    background: #eef5f1; /* 🟢 Card da tabela com um verde muito claro, suave e iluminado */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #c8dcd1; /* Borda em tom verde pastel sutil */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .table-header-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #d2e3d9;
+      gap: 1rem;
+
+      h3 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #1b3b2b; /* Título em verde escuro corporativo para máxima nitidez */
+        margin: 0;
+      }
+
+      .table-search-input-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        max-width: 320px;
+        width: 100%;
+
+        input {
+          width: 100%;
+          padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+          font-size: 0.875rem;
+          color: #1b3b2b;
+          background-color: #ffffff;
+          border: 1px solid #b4ccc0;
+          border-radius: 8px;
+          outline: none;
+          transition: all 0.2s ease;
+
+          &::placeholder {
+            color: #718096;
+          }
+
+          &:focus {
+            background-color: #ffffff;
+            border-color: #1b3b2b;
+            box-shadow: 0 0 0 3px rgba(27, 59, 43, 0.15);
+          }
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 0.75rem;
+          color: #4a5568;
+          font-size: 1.25rem;
+          width: 1.25rem;
+          height: 1.25rem;
+          pointer-events: none;
+        }
+      }
+    }
+
+    .vmg-responsive-table-container {
+      width: 100%;
+      overflow-x: auto;
+
+      .vmg-native-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.875rem;
+
+        thead {
+          background-color: #dcece3; /* 🟢 Cabeçalho da tabela com verde claro destacado */
+
+          tr {
+            th {
+              padding: 0.875rem 1.25rem;
+              font-weight: 700;
+              color: #163324 !important; /* Letras do cabeçalho altamente nítidas */
+              text-transform: uppercase;
+              font-size: 0.75rem;
+              letter-spacing: 0.05em;
+              border-bottom: 2px solid #b4ccc0;
+              white-space: nowrap;
+
+              &.text-center {
+                text-align: center;
+              }
+            }
+          }
+        }
+
+        tbody {
+          tr {
+            border-bottom: 1px solid #e1ede6;
+            transition: background-color 0.15s ease;
+
+            &:hover {
+              background-color: #e4efe9; /* 🟢 Hover levemente mais claro */
+            }
+
+            td {
+              padding: 1rem 1.25rem;
+              color: #22382c !important; /* Textos das linhas escuros e bem legíveis */
+              font-weight: 500;
+              white-space: nowrap;
+
+              &.font-semibold {
+                font-weight: 700;
+                color: #10241a !important;
+              }
+
+              &.text-center {
+                text-align: center;
+              }
+
+              .status-badge-chip {
+                display: inline-flex;
+                align-items: center;
+                padding: 0.25rem 0.75rem;
+                border-radius: 9999px;
+                font-size: 0.75rem;
+                font-weight: 700;
+                line-height: 1.2;
+
+                &.chip-conforme {
+                  background-color: #dcfce7;
+                  color: #166534;
+                }
+
+                &.chip-analise {
+                  background-color: #fef9c3;
+                  color: #854d0e;
+                }
+
+                &.chip-alerta {
+                  background-color: #fee2e2;
+                  color: #991b1b;
+                }
+              }
+
+              .actions-buttons-flex-row {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+
+                .btn-action-icon {
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 32px;
+                  height: 32px;
+                  border-radius: 6px;
+                  border: 1px solid #b4ccc0;
+                  background: #ffffff;
+                  cursor: pointer;
+                  transition: all 0.2s ease;
+                  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+                  mat-icon {
+                    font-size: 1.125rem;
+                    width: 1.125rem;
+                    height: 1.125rem;
+                  }
+
+                  &.view {
+                    color: #0284c7;
+                    &:hover {
+                      background-color: #e0f2fe;
+                      border-color: #0284c7;
+                    }
+                  }
+
+                  &.edit {
+                    color: #16a34a;
+                    &:hover {
+                      background-color: #dcfce7;
+                      border-color: #16a34a;
+                    }
+                  }
+
+                  &.cancel {
+                    color: #dc2626;
+                    &:hover {
+                      background-color: #fee2e2;
+                      border-color: #dc2626;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .table-pagination-footer-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid #d2e3d9;
+      background-color: #e8f1ec; /* Rodapé com o verde claro harmônico */
+      gap: 1rem;
+
+      .pagination-counter-text {
+        font-size: 0.875rem;
+        color: #3b5245;
+        font-weight: 500;
+      }
+
+      .pagination-nav-selectors {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+
+        .btn-page-nav,
+        .btn-page-number {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 32px;
+          height: 32px;
+          padding: 0 0.5rem;
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #1b3b2b;
+          background-color: #ffffff;
+          border: 1px solid #b4ccc0;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+
+          &:hover:not(:disabled) {
+            background-color: #dcece3;
+            border-color: #1b3b2b;
+            color: #1b3b2b;
+          }
+
+          &:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+          }
+
+          &.active {
+            background-color: #1b3b2b; /* Verde escuro institucional para a página ativa */
+            border-color: #1b3b2b;
+            color: #ffffff;
+          }
+
+          mat-icon {
+            font-size: 1.125rem;
+            width: 1.125rem;
+            height: 1.125rem;
+          }
+        }
+      }
+    }
+  }
+}

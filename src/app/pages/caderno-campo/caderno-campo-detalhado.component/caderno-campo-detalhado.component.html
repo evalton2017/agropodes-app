@@ -186,22 +186,17 @@
           }
 
           <!-- ALERTAS CLIMÁTICOS -->
-          @if ((dadosClima()?.alertas_emitidos?.length || 0) > 0 || (obterCadernoAtual()?.alertas_ambientais_emitidos?.length || 0) > 0) {
+          <!-- ALERTAS CLIMÁTICOS -->
+          @if (obterAlertasUnicos().length > 0) {
             <div class="box-alertas">
               <div class="alerta-titulo">
                 <mat-icon>warning</mat-icon>
                 <span>Alertas de Eventos Climáticos Extremos Mapeados</span>
               </div>
 
-              @for (alerta of dadosClima()?.alertas_emitidos; track $index) {
+              @for (alerta of obterAlertasUnicos(); track $index) {
                 <div class="alerta-item">
                   • <strong>{{ alerta?.evento }}:</strong> {{ alerta?.descricao }}
-                </div>
-              }
-
-              @for (alertaCaderno of obterCadernoAtual()?.alertas_ambientais_emitidos; track $index) {
-                <div class="alerta-item">
-                  • <strong>{{ alertaCaderno?.evento }}:</strong> {{ alertaCaderno?.descricao }}
                 </div>
               }
             </div>

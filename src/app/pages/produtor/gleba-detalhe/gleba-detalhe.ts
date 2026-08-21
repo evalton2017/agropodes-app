@@ -217,7 +217,9 @@ export class GlebaDetalheComponent implements OnChanges, AfterViewInit {
     switch (status.toUpperCase()) {
       case 'CONCLUIDO': return 'done';
       case 'EM_ANDAMENTO': return 'working';
-      case 'FORA_ZARC': return 'alert-node'; // Vermelho/Alerta para erros agroclimáticos
+      case 'FORA_ZARC': return 'alert-node';
+      case 'ALERTA': return 'alert-node';
+      case 'DIVERGENTE': return 'alert-node';
       case 'PENDENTE':
       default: return 'todo';
     }
@@ -228,7 +230,9 @@ export class GlebaDetalheComponent implements OnChanges, AfterViewInit {
     switch (status.toUpperCase()) {
       case 'CONCLUIDO': return 'check_circle';
       case 'EM_ANDAMENTO': return 'schedule';
-      case 'FORA_ZARC': return 'gpp_bad'; // Ícone de bloqueio/inconformidade
+      case 'FORA_ZARC': return 'gpp_bad';
+      case 'ALERTA': return 'gpp_bad';
+      case 'DIVERGENTE': return 'gpp_bad';
       case 'PENDENTE':
       default: return 'radio_button_unchecked';
     }
@@ -238,8 +242,10 @@ export class GlebaDetalheComponent implements OnChanges, AfterViewInit {
     if (!status) return 'Pendente';
     switch (status.toUpperCase()) {
       case 'CONCLUIDO': return 'Concluído';
+      case 'ALERTA': return 'Alerta';
       case 'EM_ANDAMENTO': return 'Em andamento';
       case 'FORA_ZARC': return 'Fora ZARC';
+      case 'DIVERGENTE': return 'Divergente';
       case 'PENDENTE':
       default: return 'Pendente';
     }
@@ -253,7 +259,8 @@ export class GlebaDetalheComponent implements OnChanges, AfterViewInit {
 
     if (atual === 'CONCLUIDO' && proximo === 'CONCLUIDO') return 'done';
     if (atual === 'CONCLUIDO' && proximo === 'EM_ANDAMENTO') return 'in-progress';
-    if (atual === 'FORA_ZARC' || proximo === 'FORA_ZARC') return 'alert-line'; // Linha de fluxo vermelha
+    if (atual === 'FORA_ZARC' || proximo === 'FORA_ZARC') return 'alert-line';
+    if (atual === 'ALERTA') return 'alert-line';
     return 'todo';
   }
 

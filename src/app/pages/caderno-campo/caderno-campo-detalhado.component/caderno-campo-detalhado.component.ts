@@ -36,7 +36,7 @@ import { MapaGrid3dComponent } from '../mapa-grid.component/mapa-grid.component'
 })
 export class CadernoCampoDetalhadoComponent implements OnInit, OnChanges {
   @Input() glebaId!: number;
-  @Input() safra?: string; // 🟢 Novo Input para receber a safra selecionada
+  @Input() safra?: string;
   @Input() caderno!: any;
   @Input() perfilAnalista: boolean = true;
   @Input() focoAbaInicial: 'GERAL' | 'CLIMA' | 'IA_CULTURAS' | 'PRODUTIVIDADE' = 'GERAL';
@@ -142,5 +142,20 @@ export class CadernoCampoDetalhadoComponent implements OnInit, OnChanges {
     return this.dadosClima()?.indicadores_acumulados?.dias_com_chuvas_excessivas
       ?? this.obterCadernoAtual()?.diagnostico_climatico?.dias_com_chuvas_excessivas
       ?? 0;
+  }
+
+  protected obterAlertasUnicos(): any[] {
+    const alertasClima = this.dadosClima()?.alertas_emitidos || [];
+    const alertasCaderno = this.obterCadernoAtual()?.alertas_ambientais_emitidos || [];
+
+    const combinados = [...alertasClima, ...alertasCaderno];
+    
+    const unicos = combinados.filter((alerta, index, self) =>
+        index === self.findIndex((a) => (
+          a?.evento === alerta?.evento && a?.descricao === alerta?.descricao
+        ))
+    );
+
+    return unicos;
   }
 }
