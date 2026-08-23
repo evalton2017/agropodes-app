@@ -303,3 +303,87 @@
     }
   }
 }
+.submit-btn {
+  width: 100%;
+  background-color: #1e3a2f !important; // Cor padrão do tema
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  transition: all 0.3s ease;
+  margin-top: 16px;
+
+  &:hover {
+    background-color: #274d3e !important;
+    border-color: #4ade80;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+  }
+
+  &:disabled {
+    background-color: #162c22 !important;
+    color: #6b7280 !important;
+    border-color: transparent;
+  }
+}
+
+/* Estilos do Modal de Feedback */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content-card {
+  background: #0b1f15;
+  border: 1px solid rgba(46, 125, 50, 0.5);
+  padding: 24px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  color: #e2e8f0;
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 12px;
+
+    &.success-icon {
+      color: #4ade80;
+    }
+
+    &.error-icon {
+      color: #ef4444;
+    }
+  }
+
+  h3 {
+    margin: 0 0 12px 0;
+    color: #ffffff;
+    font-size: 1.25rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+}

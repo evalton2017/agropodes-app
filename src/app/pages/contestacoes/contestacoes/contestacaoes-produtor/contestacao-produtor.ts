@@ -9,10 +9,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {GlebaDetalheComponent} from '../../../../produtor/gleba-detalhe/gleba-detalhe';
-import {GlebaService} from '../../../../../service/gleba.service';
-import {PessoaService} from '../../../../../service/pessoa.service';
-import {GlebaData, RespostaConsultaGlebasPainel} from '../../../../model/gleba.model';
+import {GlebaDetalheComponent} from '../../../produtor/gleba-detalhe/gleba-detalhe';
+import {GlebaService} from '../../../../service/gleba.service';
+import {PessoaService} from '../../../../service/pessoa.service';
+import {GlebaData, RespostaConsultaGlebasPainel} from '../../../model/gleba.model';
+import {Router} from '@angular/router';
 
 
 
@@ -38,6 +39,8 @@ export class ContestacaoProdutorComponent implements OnInit {
   private readonly produtorService = inject(GlebaService);
   private readonly pessoaService = inject(PessoaService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
+
 
   public carregando = signal<boolean>(false);
   public dadosPainel = signal<RespostaConsultaGlebasPainel | null>(null);
@@ -52,6 +55,7 @@ export class ContestacaoProdutorComponent implements OnInit {
   glebasFiltradas = computed(() => {
     const painel = this.dadosPainel();
     if (!painel) return [];
+
 
     const busca = this.termoBusca().toLowerCase().trim();
     if (!busca) return painel.glebas;
@@ -138,8 +142,7 @@ export class ContestacaoProdutorComponent implements OnInit {
   }
 
   public criarContestacao(idGleba: number): void {
-    console.log(`Abrir formulário/modal para Criar Contestação da gleba: ${idGleba}`);
-    // Aqui você integrará a chamada para a rota de criação de contestação utilizando o endpoint que criamos.
+    this.router.navigateByUrl(`/cadastrar-contestacao/${idGleba}`);
   }
 
   public cancelarContestacao(idGleba: number): void {

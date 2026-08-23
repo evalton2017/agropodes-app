@@ -60,7 +60,7 @@ export class CadernoCampoPageComponent implements OnInit {
       return;
     }
 
-    // 🟢 Extração correta baseada no formato do objeto exibido no console
+
     const safraString = typeof event === 'string'
       ? event
       : (event?.id_safra || event?.label || event?.safra || event?.safraAno || '');

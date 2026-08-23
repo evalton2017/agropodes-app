@@ -247,7 +247,7 @@
 .page-body {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 64px);
+  flex: 1; /* Ocupa todo o espaço vertical disponível, forçando o rodapé para o fim */
   width: 100%;
   box-sizing: border-box;
   background-color: var(--night);
@@ -256,9 +256,16 @@
 .main-content {
   padding: 24px;
   box-sizing: border-box;
-  flex: 1;
+  flex: 1; /* Faz o conteúdo principal expandir */
   width: 100%;
   min-width: 0;
+}
+
+.mat-sidenav-content, .app-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .content-container {

@@ -1,5 +1,4 @@
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -7,17 +6,17 @@ import {
   inject,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
+  afterNextRender,
   signal
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatCardModule} from '@angular/material/card';
-import {GlebaService} from '../../service/gleba.service';
+import { CommonModule } from '@angular/common';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { GlebaService } from '../../service/gleba.service';
 import * as wktParser from 'terraformer-wkt-parser';
 
 @Component({
@@ -28,7 +27,7 @@ import * as wktParser from 'terraformer-wkt-parser';
   styleUrls: ['./mapa-delimitacao.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapaDelimitacaoComponent implements OnInit, OnChanges {
+export class MapaDelimitacaoComponent implements OnChanges {
   private glebaService = inject(GlebaService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -36,34 +35,41 @@ export class MapaDelimitacaoComponent implements OnInit, OnChanges {
   @Input({required: true}) latitudeFoco: string = '-13.975810';
   @Input({required: true}) longitudeFoco: string = '-59.757567';
 
-  // 🟢 Novo Input que recebe a geometria WKT do CAR vinda do componente pai
-  @Input() wktGeometriaCar?: string;
+  @Input() wktGeometriaImovel?: string;
+  @Input() wktGeometriaPlantio?: string;
 
   @Output() metricasProcessadas = new EventEmitter<{ area: number; perimetro: number }>();
 
   private map: any;
   private drawControl: any;
   private drawnItems: any;
-  private camadaCarReferencia: any;
+  private camadaImovelReferencia: any;
+  private camadaPlantioReferencia: any;
   private LeafletCore: any;
 
-  // Signals que alimentam os cards de área do protótipo
   readonly areaCalculada = signal<string>('0,00 ha');
   readonly perimetroCalculado = signal<string>('0,00 m');
   readonly modoDesenhoAtivo = signal<boolean>(false);
 
   constructor() {
-    afterNextRender(async () => {
-      await this.inicializarMapaDesenho();
+    afterNextRender(() => {
+      setTimeout(async () => {
+        await this.inicializarMapaDesenho();
+      }, 50);
     });
   }
 
-  ngOnInit(): void {}
-
   ngOnChanges(changes: SimpleChanges): void {
-    // Re-desenha a camada do CAR se o Input mudar com o mapa já pronto
-    if (changes['wktGeometriaCar'] && this.map) {
-      this.desenharPoligonoCarReferencia();
+    const imovelAlterado = !!changes['wktGeometriaImovel'];
+    const plantioAlterado = !!changes['wktGeometriaPlantio'];
+
+    if ((imovelAlterado || plantioAlterado) && this.map) {
+      this.atualizarCamadasMapa();
+      setTimeout(() => {
+        if (this.map) {
+          this.map.invalidateSize(true);
+        }
+      }, 50);
     }
   }
 
@@ -72,34 +78,34 @@ export class MapaDelimitacaoComponent implements OnInit, OnChanges {
       const leafletModule = await import('leaflet');
       this.LeafletCore = (leafletModule.default || leafletModule) as any;
       const L = this.LeafletCore;
+
       await import('leaflet-draw');
+      (window as any).type = '';
 
       const centro: [number, number] = [Number(this.latitudeFoco), Number(this.longitudeFoco)];
-
-      // Inicializa o mapa com foco no centróide vindo do Passo 2
-      this.map = L.map('drawMap').setView(centro, 15);
+      this.map = L.map('drawMap').setView(centro, 13);
 
       L.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        {
-          attribution: 'Tiles © Esri'
-        }
+        { attribution: 'Tiles © Esri' }
       ).addTo(this.map);
 
-      // Elementos de controle do Leaflet Draw
       this.drawnItems = new L.FeatureGroup();
       this.map.addLayer(this.drawnItems);
 
       this.drawControl = new L.Control.Draw({
-        edit: {featureGroup: this.drawnItems, remove: true},
+        edit: { featureGroup: this.drawnItems, remove: true },
         draw: {
           polygon: {
             allowIntersection: false,
-            showArea: false,
-            drawError: {
-              color: '#e15454',
-              message: 'Interceptações não permitidas'
-            }
+            showArea: true,
+            shapeOptions: {
+              color: '#3b82f6',
+              weight: 3,
+              fillColor: '#60a5fa',
+              fillOpacity: 0.3
+            },
+            drawError: { color: '#e15454', message: 'Interceptações não permitidas' }
           },
           polyline: false, circle: false, rectangle: false, marker: false, circlemarker: false
         }
@@ -108,78 +114,104 @@ export class MapaDelimitacaoComponent implements OnInit, OnChanges {
 
       this.map.on(L.Draw.Event.CREATED, (event: any) => {
         const layer = event.layer;
+        layer.setStyle({
+          color: '#3b82f6',
+          weight: 3,
+          fillColor: '#60a5fa',
+          fillOpacity: 0.3
+        });
         this.drawnItems.clearLayers();
         this.drawnItems.addLayer(layer);
         this.processarGeometriaDesenho(layer);
       });
 
-      // 🟢 Desenha a camada do CAR assim que o mapa e a biblioteca estiverem prontos
-      this.desenharPoligonoCarReferencia();
+      this.atualizarCamadasMapa();
 
-      setTimeout(() => {
-        if (this.map) {
-          this.map.invalidateSize();
-          this.cdr.detectChanges();
-        }
-      }, 500);
+      requestAnimationFrame(() => {
+        this.map?.invalidateSize(true);
+      });
 
     } catch (error) {
       console.error('Erro ao inicializar mapa de delimitação:', error);
     }
   }
 
-  /**
-   * 🟢 Desenha a geometria do CAR em formato amarelado/pontilhado no fundo
-   */
-  private desenharPoligonoCarReferencia(): void {
-    if (!this.map || !this.wktGeometriaCar || !this.LeafletCore) return;
+  private atualizarCamadasMapa(): void {
+    if (!this.map || !this.LeafletCore) return;
+    const L = this.LeafletCore;
 
-    // Limpa a camada anterior caso já exista
-    if (this.camadaCarReferencia) {
-      this.map.removeLayer(this.camadaCarReferencia);
+    const grupoBounds = L.featureGroup();
+
+    // 1. Renderiza a Área Total do Imóvel (VERDE)
+    if (this.wktGeometriaImovel) {
+      if (this.camadaImovelReferencia) {
+        this.map.removeLayer(this.camadaImovelReferencia);
+      }
+      try {
+        const geoJsonImovel: any = wktParser.parse(this.wktGeometriaImovel);
+        this.camadaImovelReferencia = L.geoJSON(geoJsonImovel, {
+          style: {
+            color: '#16a34a',
+            weight: 2,
+            fillColor: '#22c55e',
+            fillOpacity: 0.12
+          },
+          coordsToLatLng: (coords: [number, number]) => new L.LatLng(coords[1], coords[0])
+        }).addTo(this.map);
+
+        grupoBounds.addLayer(this.camadaImovelReferencia);
+      } catch (e) {
+        console.error('Erro ao parsear WKT do imóvel:', e);
+      }
     }
 
-    try {
-      const geoJsonGeometria = wktParser.parse(this.wktGeometriaCar);
-
-      this.camadaCarReferencia = this.LeafletCore.geoJSON(geoJsonGeometria, {
-        style: {
-          color: '#f59e0b',        // Borda Amarela/Dourada em destaque
-          weight: 2.5,
-          dashArray: '6, 6',       // Estilo pontilhado indicando camada de referência
-          fillColor: '#fbbf24',
-          fillOpacity: 0.15        // Transparência suave mantendo o satélite visível
-        },
-        coordsToLatLng: (coords: [number, number]) => {
-          return new this.LeafletCore.LatLng(coords[1], coords[0]);
-        }
-      }).addTo(this.map);
-
-      // Centraliza e enquadra a câmera diretamente nos limites do imóvel do CAR
-      const limites = this.camadaCarReferencia.getBounds();
-      if (limites.isValid()) {
-        this.map.fitBounds(limites, { padding: [30, 30] });
+    // 2. Renderiza a Produtividade Agrícola / Plantio ( AMARELO)
+    if (this.wktGeometriaPlantio) {
+      if (this.camadaPlantioReferencia) {
+        this.map.removeLayer(this.camadaPlantioReferencia);
       }
+      try {
+        const geoJsonPlantio: any = wktParser.parse(this.wktGeometriaPlantio);
+        this.camadaPlantioReferencia = L.geoJSON(geoJsonPlantio, {
+          style: {
+            color: '#eab308',
+            weight: 2.5,
+            dashArray: '5, 5',
+            fillColor: '#facc15',
+            fillOpacity: 0.25
+          },
+          coordsToLatLng: (coords: [number, number]) => new L.LatLng(coords[1], coords[0])
+        }).addTo(this.map);
 
-    } catch (error) {
-      console.error('Falha ao desenhar WKT do CAR como referência:', error);
+        grupoBounds.addLayer(this.camadaPlantioReferencia);
+      } catch (e) {
+        console.error('Erro ao parsear WKT do plantio:', e);
+      }
+    }
+
+    // Enquadra a câmera abrangendo as geometrias carregadas
+    if (grupoBounds.getLayers().length > 0) {
+      const limites = grupoBounds.getBounds();
+      if (limites.isValid()) {
+        this.map.fitBounds(limites, { padding: [40, 40] });
+      }
     }
   }
 
-  /**
-   * Ativa o modo de desenho do polígono simulando o clique no botão lateral
-   */
   ativarFerramentaDesenho(): void {
-    if (!this.map) return;
+    if (!this.map || !this.LeafletCore) return;
     this.modoDesenhoAtivo.set(true);
-    const polygonDrawer = new (window as any).L.Draw.Polygon(this.map, this.drawControl.options.draw.polygon);
-    polygonDrawer.enable();
+    const L = this.LeafletCore;
+    if (L.Draw && L.Draw.Polygon) {
+      const polygonDrawer = new L.Draw.Polygon(this.map, this.drawControl.options.draw.polygon);
+      polygonDrawer.enable();
+    }
   }
 
   private processarGeometriaDesenho(layer: any): void {
-    const geojson = layer.toGeoJSON();
-    const coordenadas = geojson.geometry.coordinates[0];
-    const wktPontos = coordenadas.map((c: any) => `${c[0]} ${c[1]}`).join(', ');
+    const geojson: any = layer.toGeoJSON();
+    const coordenadas: any = geojson.geometry.coordinates[0];
+    const wktPontos: any = coordenadas.map((c: any) => `${c[0]} ${c[1]}`).join(', ');
     const wktConsolidado = `POLYGON((${wktPontos}))`;
 
     setTimeout(() => {
@@ -213,24 +245,17 @@ export class MapaDelimitacaoComponent implements OnInit, OnChanges {
     this.areaCalculada.set('0,00 ha');
     this.perimetroCalculado.set('0,00 m');
     this.modoDesenhoAtivo.set(false);
-    queueMicrotask(() => {
-      this.modoDesenhoAtivo.set(false);
-      this.cdr.detectChanges();
-    });
+    this.cdr.detectChanges();
   }
 
   public forcarRecalculoTamanho(): void {
     if (!this.map) return;
-
     setTimeout(() => {
-      this.map.invalidateSize();
-      if (this.camadaCarReferencia && this.camadaCarReferencia.getBounds().isValid()) {
-        this.map.fitBounds(this.camadaCarReferencia.getBounds(), { padding: [30, 30] });
-      } else {
-        const centro: [number, number] = [Number(this.latitudeFoco), Number(this.longitudeFoco)];
-        this.map.setView(centro, 15);
+      this.map.invalidateSize(true);
+      if (this.camadaImovelReferencia && this.camadaImovelReferencia.getBounds().isValid()) {
+        this.map.fitBounds(this.camadaImovelReferencia.getBounds(), { padding: [40, 40] });
       }
       this.cdr.detectChanges();
-    }, 100);
+    }, 150);
   }
 }

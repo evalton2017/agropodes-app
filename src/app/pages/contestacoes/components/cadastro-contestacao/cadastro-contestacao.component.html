@@ -1,0 +1,72 @@
+@if (carregandoDados) {
+  <div style="padding: 40px; color: #4ade80; text-align: center;">
+    <h3>Carregando dados da contestação...</h3>
+  </div>
+} @else if (dadosGleba) {
+  <div class="contestacao-layout">
+    <!-- Painel Lateral: Lista de Conflitos e Formulário -->
+    <div class="sidebar-panel">
+      <h3>Contestação da Gleba {{ dadosGleba.id_gleba }}</h3>
+      <p>Safra Recente: {{ dadosGleba.safra_recente }} | Área Total: {{ dadosGleba.area_total_ha }} ha</p>
+
+      <!-- Card com Conflitos Detectados -->
+      <div class="conflitos-card-container">
+        <h5>Detecções Encontradas</h5>
+        @for (conflito of dadosGleba.conflitos_detectados; track conflito.tipo_mapa739) {
+          <div class="conflito-item-card" [class.selected]="conflito.selecionado" (click)="onToggleConflito(conflito)">
+            <input type="checkbox" [checked]="conflito.selecionado" (click)="$event.stopPropagation(); onToggleConflito(conflito)">
+            <div class="conflito-info">
+              <strong>{{ conflito.tipo_mapa739 }}</strong>
+              <small>{{ conflito.tipo_cmn_5268 }}</small>
+              <span>Área: {{ conflito.area_ha }} ha</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Formulário -->
+      <form [formGroup]="formContestacao" (ngSubmit)="salvarContestacao()" class="contestacao-form">
+        <div class="form-group">
+          <label>Motivo da Contestação *</label>
+          <textarea formControlName="descricao_motivo" rows="4" placeholder="Descreva detalhadamente o motivo..."></textarea>
+        </div>
+
+        <button mat-flat-button type="submit" class="submit-btn">
+          Cadastrar Contestação
+        </button>
+      </form>
+    </div>
+
+    <!-- Painel do Mapa Interativo -->
+    <div class="map-render-column">
+      <app-contestacao-mapa
+        [geometriaGlebaWkt]="dadosGleba.geometria_gleba_wkt"
+        [conflitos]="dadosGleba.conflitos_detectados"
+        (poligonoDesenhado)="onPoligonoAtualizado($event)">
+      </app-contestacao-mapa>
+    </div>
+  </div>
+}
+
+<!-- Modal de Feedback (Sucesso / Erro) -->
+@if (modalAberto) {
+  <div class="modal-overlay">
+    <div class="modal-content-card">
+      @if (modalSucesso) {
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <h3>Contestação Registrada!</h3>
+      } @else {
+        <mat-icon class="error-icon">error</mat-icon>
+        <h3>Atenção</h3>
+      }
+
+      <p>{{ modalMensagem }}</p>
+
+      <div class="modal-actions">
+        <button mat-flat-button class="submit-btn" (click)="fecharModal()">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+}

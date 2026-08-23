@@ -21,9 +21,11 @@ import {
 import {
   RelatorioProdutorComponent
 } from './pages/relatorios/produtor/relatorio-produtor.component/relatorio-produtor.component';
+
+import {CadastroContestacaoComponent} from './pages/contestacoes/components/cadastro-contestacao/cadastro-contestacao';
 import {
   ContestacaoProdutorComponent
-} from './pages/contestacoes/contestacoes/produtor/contestacaoes-produtor/contestacao-produtor';
+} from './pages/contestacoes/contestacoes/contestacaoes-produtor/contestacao-produtor';
 
 
 export const routes: Routes = [
@@ -66,6 +68,11 @@ export const routes: Routes = [
     component: ContestacaoProdutorComponent,
     canActivate: [authGuard],
     data: { roles: ['USER_PRODUTOR'] }
+  },
+  {
+    path: 'cadastrar-contestacao/:idGleba',
+    component: CadastroContestacaoComponent,
+    data: { roles: ['USER_PRODUTOR', 'USER_ANALISTA'] }
   },
   {
     path: 'atestados-produtor',

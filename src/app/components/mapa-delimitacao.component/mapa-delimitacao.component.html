@@ -44,12 +44,29 @@
     </div>
   </div>
 
-  <!-- Janela da Direita: Mapa Interativo com Instrução Flutuante -->
+  <!-- Janela da Direita: Mapa Interativo com Legenda e Instrução -->
   <div class="map-render-column">
     <div class="map-frame-wrapper">
       <div id="drawMap" class="leaflet-draw-canvas"></div>
 
-      <!-- Banner de Instrução Inferior do Protótipo -->
+      <!-- 🟢 Legenda do Mapa -->
+      <div class="map-legend-box">
+        <h4>Legenda do Mapa</h4>
+        <div class="legend-item">
+          <span class="color-box imovel-color"></span>
+          <span>Área Total do Imóvel</span>
+        </div>
+        <div class="legend-item">
+          <span class="color-box plantio-color"></span>
+          <span>Produtividade Agrícola / Plantio</span>
+        </div>
+        <div class="legend-item">
+          <span class="color-box desenhada-color"></span>
+          <span>Área Desenhada</span>
+        </div>
+      </div>
+
+      <!-- Banner de Instrução Inferior -->
       <div class="map-instruction-banner">
         <mat-icon>mouse</mat-icon>
         <span>Clique nos pontos do mapa para criar o polígono da gleba.</span>

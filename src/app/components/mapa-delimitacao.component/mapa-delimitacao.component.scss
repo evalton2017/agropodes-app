@@ -3,7 +3,9 @@
    ========================================================================= */
 .delimitacao-step-container {
   display: flex;
-  gap: 2rem;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1.5rem;
   width: 100%;
   padding: 1rem 0;
   box-sizing: border-box;
@@ -13,38 +15,40 @@
    COLUNA DA ESQUERDA: PAINEL DE CONTROLE E MÉTRICAS
    ========================================================================= */
 .control-panel-column {
-  flex: 0.8;
+  flex: 1;
+  min-width: 280px;
+  max-width: 340px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 
   .section-title {
     h2 {
       margin: 0;
-      color: #2c3e50;
-      font-size: 1.4rem;
-      font-weight: 500;
+      color: #f8fafc; /* 🟢 Letra clara de alto contraste */
+      font-size: 1.3rem;
+      font-weight: 600;
     }
     p {
-      margin: 0.25rem 0 0 0;
-      color: #7f8c8d;
-      font-size: 0.88rem;
+      margin: 0.2rem 0 0 0;
+      color: #94a3b8; /* 🟢 Subtítulo legível */
+      font-size: 0.85rem;
     }
   }
 
   .panel-box {
     display: flex;
     flex-direction: column;
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
+    background: #1e293b; /* 🟢 Fundo escuro harmonioso com o tema */
+    border: 1px solid #334155;
+    border-radius: 8px;
     padding: 1rem;
     box-sizing: border-box;
 
     .box-label {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: bold;
-      color: #909399;
+      color: #cbd5e1; /* 🟢 Rótulos claros */
       text-transform: uppercase;
       margin-bottom: 0.75rem;
       letter-spacing: 0.5px;
@@ -55,14 +59,16 @@
       justify-content: flex-start;
       text-align: left;
       height: 40px;
-      font-size: 0.9rem;
-      margin-bottom: 0.25rem;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+      color: #f1f5f9 !important;
 
       mat-icon {
         margin-right: 0.5rem;
-        font-size: 1.2rem;
-        width: 1.2rem;
-        height: 1.2rem;
+        font-size: 1.1rem;
+        width: 1.1rem;
+        height: 1.1rem;
+        color: #38bdf8;
       }
     }
 
@@ -71,31 +77,35 @@
       text-align: left;
     }
 
-    /* Estilo do botão de desenho ativo conforme protótipo */
     .active-tool {
-      background-color: #e8f5e9 !important;
-      color: #2e7d32 !important;
-      border: 1px solid #a5d6a7;
+      background-color: #064e3b !important;
+      color: #34d399 !important;
+      border: 1px solid #059669;
     }
 
     .color-warn {
-      color: #d32f2f;
+      color: #f87171 !important;
     }
   }
 
-  /* Cartões estruturais de métricas físicas */
   .metric-box {
     padding: 0.75rem 1rem;
+    background: #1e293b;
+    border: 1px solid #334155;
+
+    .box-label {
+      color: #94a3b8;
+    }
 
     .metric-value {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: bold;
-      color: #303133;
+      color: #f8fafc;
     }
 
     .green-text {
-      color: #2e7d32;
+      color: #4ade80; /* 🟢 Verde vibrante para área calculada */
     }
   }
 }
@@ -104,66 +114,125 @@
    COLUNA DA DIREITA: VIEWPORT DE RENDERIZAÇÃO DO LEAFLET DRAW
    ========================================================================= */
 .map-render-column {
-  flex: 2;
+  flex: 2.5;
   display: flex;
+  min-width: 0;
 
   .map-frame-wrapper {
     position: relative;
     width: 100%;
-    height: 440px;
+    height: 480px; /* Altura fixa garantida */
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid #bcc0c4;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+    border: 1px solid #334155;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
-    /* 🟢 CORREÇÃO CRÍTICA: ID mapeado com dimensões em pixels para o Leaflet expandir a malha */
     #drawMap {
-      width: 100%;
-      height: 100%;
-      min-height: 440px;
-      display: block;
-      position: relative;
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 480px !important;
+      display: block !important;
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      background: #0f172a;
     }
 
-    /* Esconde controles nativos para usar a barra lateral customizada */
     ::ng-deep .leaflet-draw-toolbar {
       display: none !important;
     }
 
-    /* Banner informativo flutuante inferior do protótipo */
+    .map-legend-box {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 14px;
+      border-radius: 6px;
+      z-index: 1000;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+      h4 {
+        margin: 0 0 6px 0;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #94a3b8;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 3px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 5px;
+        font-size: 0.75rem;
+        color: #e2e8f0;
+
+        .color-box {
+          width: 12px;
+          height: 12px;
+          border-radius: 2px;
+          display: inline-block;
+
+          &.imovel-color {
+            background-color: #22c55e;
+            border: 1px solid #16a34a;
+          }
+
+          &.plantio-color {
+            background-color: #facc15;
+            border: 1px solid #eab308;
+          }
+
+          &.desenhada-color {
+            background-color: #3b82f6;
+            border: 1px solid #2563eb;
+          }
+        }
+      }
+    }
+
     .map-instruction-banner {
       position: absolute;
       bottom: 1rem;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.95);
-      padding: 0.5rem 1.25rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.4rem 1rem;
       border-radius: 30px;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-      z-index: 1000; /* Garante soberania visual sobre as camadas raster */
-      font-size: 0.85rem;
-      color: #606266;
+      gap: 0.4rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      font-size: 0.8rem;
+      color: #e2e8f0;
       white-space: nowrap;
 
       mat-icon {
-        font-size: 1.1rem;
-        width: 1.1rem;
-        height: 1.1rem;
-        color: #1e88e5;
+        font-size: 1rem;
+        width: 1rem;
+        height: 1rem;
+        color: #38bdf8;
       }
     }
   }
 }
 
 /* =========================================================================
-   RESPONSIVIDADE (DISPOSITIVOS MÓVEIS)
+   RESPONSIVIDADE
    ========================================================================= */
 @media (max-width: 900px) {
   .delimitacao-step-container {
     flex-direction: column;
-    gap: 1.5rem;
+  }
+  .control-panel-column {
+    max-width: 100%;
   }
 }

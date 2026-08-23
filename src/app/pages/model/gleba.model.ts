@@ -14,13 +14,14 @@ export interface DetalhamentoAmbiental {
 
 export interface CarFeicoesAmbientaisResponse {
   status: string;
-  descricao_status: string;
-  ultima_atualizacao: Date;
   cod_imovel: string;
-  nom_imovel: string;
-  area_total_declarada_ha: number;
-  geometria: string;
-  detalhamento_ambiental: DetalhamentoAmbiental;
+  nom_imovel: string | null;
+  descricao_status: string | null;
+  ultima_atualizacao: Date | null;
+  area_total_imovel: number;
+  total_area_consolidada: number;
+  geometria_imovel_wkt: string;
+  geometria_plantio_wkt: string;
 }
 
 export interface MunicipioResponse {

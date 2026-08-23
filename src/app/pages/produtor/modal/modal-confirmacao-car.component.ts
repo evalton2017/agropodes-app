@@ -61,7 +61,7 @@ export interface ModalCarData {
 
         <div class="info-item">
           <span class="label">Área Total Declarada:</span>
-          <span class="value">{{ data.dadosCar.area_total_declarada_ha | number:'1.2-2':'pt-BR' }} ha</span>
+          <span class="value">{{ data.dadosCar.area_total_imovel | number:'1.2-2':'pt-BR' }} ha</span>
         </div>
 
         <div class="info-item">

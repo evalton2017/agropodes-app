@@ -89,7 +89,7 @@
         <app-mapa-localizacao
           [formWizard]="formWizard"
           [listaMunicipios]="listaMunicipios()"
-          [wktGeometriaCar]="dadosCar()?.geometria"
+          [wktGeometriaCar]="dadosCar()?.geometria_imovel_wkt"
           (centroideCalculado)="atualizarCoordenadasDoCentroide($event.lat, $event.lng)">
         </app-mapa-localizacao>
 
@@ -109,7 +109,8 @@
           [formWizard]="formWizard"
           [latitudeFoco]="latitudeCentroide()"
           [longitudeFoco]="longitudeCentroide()"
-          [wktGeometriaCar]="dadosCar()?.geometria"
+          [wktGeometriaImovel]="dadosCar()?.geometria_imovel_wkt"
+          [wktGeometriaPlantio]="dadosCar()?.geometria_plantio_wkt"
           (metricasProcessadas)="definirMetricasCalculadasPostGis($event.area, $event.perimetro)">
         </app-mapa-delimitacao>
 
