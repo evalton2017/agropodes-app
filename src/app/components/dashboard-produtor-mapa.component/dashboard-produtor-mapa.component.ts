@@ -248,7 +248,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   }
 
   private renderizarGridMetadadosConforme(metadados: any, glebaAtiva: GlebaGeometriaResponse): void {
-    if (!this.map || !this.LeafletCore || !metadados) return;
+    if (!this.map || !this.LeafletCore || !metadados || !glebaAtiva?.geometria) return;
 
     this.limparCamadaRaster();
 
@@ -259,9 +259,40 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
     if (!Array.isArray(rawGrid) || rawGrid.length === 0) return;
 
+    // 1. Extrai vértices da geometria WKT
+    let polygonCoords: Array<[number, number]> = [];
+    try {
+      const geoJsonGeometria: any = wktParser.parse(glebaAtiva.geometria);
+
+      if (geoJsonGeometria) {
+        const rawCoords = geoJsonGeometria.type === 'Polygon'
+          ? geoJsonGeometria.coordinates[0]
+          : (geoJsonGeometria.coordinates ? geoJsonGeometria.coordinates[0][0] : []);
+
+        if (Array.isArray(rawCoords)) {
+          polygonCoords = rawCoords.map((c: [number, number]) => [c[1], c[0]]);
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ Não foi possível extrair coordenadas WKT para a máscara:', e);
+    }
+
+    // 🟢 2. Calcula os limites do Bounding Box usando a GEOMETRIA DO WKT (em vez do grid)
     let minLat = Infinity, maxLat = -Infinity;
     let minLng = Infinity, maxLng = -Infinity;
 
+    if (polygonCoords.length > 0) {
+      polygonCoords.forEach(coord => {
+        const pLat = coord[0];
+        const pLng = coord[1];
+        if (pLat < minLat) minLat = pLat;
+        if (pLat > maxLat) maxLat = pLat;
+        if (pLng < minLng) minLng = pLng;
+        if (pLng > maxLng) maxLng = pLng;
+      });
+    }
+
+    // 3. Processa os pontos do grid_hex para extrair as cores
     const pontosValidos: Array<{ lat: number; lng: number; hex: string }> = [];
 
     rawGrid.forEach((item: any) => {
@@ -271,22 +302,24 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       const corHex = saude?.hex || item.hex || item.color || '#a6d96a';
 
       if (!isNaN(lat) && !isNaN(lng)) {
-        if (lat < minLat) minLat = lat;
-        if (lat > maxLat) maxLat = lat;
-        if (lng < minLng) minLng = lng;
-        if (lng > maxLng) maxLng = lng;
-
+        // Caso a WKT falhe por algum motivo, usa os pontos como fallback
+        if (polygonCoords.length === 0) {
+          if (lat < minLat) minLat = lat;
+          if (lat > maxLat) maxLat = lat;
+          if (lng < minLng) minLng = lng;
+          if (lng > maxLng) maxLng = lng;
+        }
         pontosValidos.push({ lat, lng, hex: corHex });
       }
     });
 
     if (pontosValidos.length === 0) return;
 
-    const stepLat = 0.00009;
-    const stepLng = 0.00009;
+    const latDiff = maxLat - minLat || 0.0001;
+    const lngDiff = maxLng - minLng || 0.0001;
 
-    const cols = Math.max(20, Math.round((maxLng - minLng) / stepLng) + 1);
-    const rows = Math.max(20, Math.round((maxLat - minLat) / stepLat) + 1);
+    const cols = 100;
+    const rows = 100;
 
     const canvas = document.createElement('canvas');
     canvas.width = cols;
@@ -296,22 +329,48 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     if (ctx) {
       ctx.clearRect(0, 0, cols, rows);
 
+      // 🟢 4. MÁSCARA CANVAS (ctx.clip) alinhada exatamente às bordas WKT
+      if (polygonCoords.length > 0) {
+        ctx.beginPath();
+        polygonCoords.forEach((coord, idx) => {
+          const pLat = coord[0];
+          const pLng = coord[1];
+
+          const x = ((pLng - minLng) / lngDiff) * (cols - 1);
+          const y = ((maxLat - pLat) / latDiff) * (rows - 1);
+
+          if (idx === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        });
+        ctx.closePath();
+        ctx.clip(); // Corta rigorosamente no perímetro da linha verde
+      }
+
+      // 🟢 5. Blocos com dimensionamento ajustado para fundir os pontos sem deixar frestas
+      const cellWidth = Math.ceil(cols / 8);
+      const cellHeight = Math.ceil(rows / 5);
+
       pontosValidos.forEach(p => {
-        let x = Math.floor(((p.lng - minLng) / (maxLng - minLng || 1)) * (cols - 1));
-        let y = Math.floor(((maxLat - p.lat) / (maxLat - minLat || 1)) * (rows - 1));
+        let x = Math.floor(((p.lng - minLng) / lngDiff) * (cols - 1));
+        let y = Math.floor(((maxLat - p.lat) / latDiff) * (rows - 1));
 
         x = Math.max(0, Math.min(cols - 1, x));
         y = Math.max(0, Math.min(rows - 1, y));
 
         ctx.fillStyle = p.hex;
-        ctx.fillRect(x, y, 2, 2);
+        ctx.fillRect(x - Math.floor(cellWidth / 2), y - Math.floor(cellHeight / 2), cellWidth, cellHeight);
       });
 
       try {
         const imageUrl = canvas.toDataURL('image/png');
+
+        // 🟢 6. Bounds sobrepostos cravados nos limites reais da geometria da gleba
         const bounds = this.LeafletCore.latLngBounds(
-          [minLat - stepLat, minLng - stepLng],
-          [maxLat + stepLat, maxLng + stepLng]
+          [minLat, minLng],
+          [maxLat, maxLng]
         );
 
         this.rasterLayer = this.LeafletCore.imageOverlay(imageUrl, bounds, {
@@ -325,6 +384,38 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       } catch (err) {
         console.error('Erro ao renderizar imagem do raster:', err);
       }
+    }
+  }
+
+  
+  /**
+   * Recorta o Canvas sobreposto para alinhar estritamente ao desenho vetorial do Leaflet
+   */
+  private aplicarMascaraPoligono(): void {
+    try {
+      if (!this.rasterLayer || !this.geoJsonLayer) return;
+
+      const element = this.rasterLayer.getElement();
+      if (!element) return;
+
+      // Obtém as coordenadas dos vértices desenhados pela camada GeoJSON no mapa
+      const layers = this.geoJsonLayer.getLayers();
+      if (!layers || layers.length === 0) return;
+
+      const latLngs = layers[0].getLatLngs()[0];
+      if (!Array.isArray(latLngs)) return;
+
+      // Converte coordenadas geográficas (lat/lng) para pixels relativos à tela
+      const polygonPixels = latLngs.map((ll: any) => {
+        const point = this.map.latLngToContainerPoint(ll);
+        const overlayPoint = this.map.latLngToContainerPoint(this.rasterLayer.getBounds().getNorthWest());
+        return `${point.x - overlayPoint.x}px ${point.y - overlayPoint.y}px`;
+      });
+
+      // Aplica o recorte via CSS clip-path
+      element.style.clipPath = `polygon(${polygonPixels.join(', ')})`;
+    } catch (e) {
+      console.warn('Não foi possível aplicar o clip-path no raster:', e);
     }
   }
 

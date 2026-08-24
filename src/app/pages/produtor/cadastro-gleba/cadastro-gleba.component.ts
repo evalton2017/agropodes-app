@@ -174,12 +174,14 @@ export class CadastroGlebaComponent implements OnInit {
       codigo_municipio: [null, [Validators.required]],
       bioma: ['Cerrado'],
       bacia_hidrografica: [''],
-
       regiao_planejamento: [''],
-
       estado: ['PI', [Validators.required]],
       geometria: ['', [Validators.required]],
       cultura_declarada: ['', [Validators.required]],
+
+      // 🟢 NOVO CONTROLE: Armazena o rótulo sanitizado para o .pkl ('CAFÉ', 'SOJA', etc.)
+      cultura_declarada_ia: [''],
+
       safra: ['', [Validators.required]],
       volume_declarado_comercializar: new FormControl(0, [Validators.required, Validators.min(0)]),
       data_estimada_plantio: new FormControl('', Validators.required),
@@ -192,14 +194,57 @@ export class CadastroGlebaComponent implements OnInit {
         if (valorPlantio) {
           const dataColheitaObjeto = this.calcularDataColheitaAutomatica(valorPlantio);
           if (dataColheitaObjeto) {
-            // Formata de volta para String brasileira para não quebrar o input readonly
             const colheitaFormatada = formatDate(dataColheitaObjeto, 'dd/MM/yyyy', 'pt-BR');
-
-            // O { emitEvent: false } evita loops infinitos de escuta no formulário
             this.formWizard.get('data_estimada_colheita')?.setValue(colheitaFormatada, {emitEvent: false});
           }
         }
       });
+  }
+
+  // 2. Método acionado no evento (selectionChange) do mat-select de culturas
+  public aoSelecionarCultura(culturaObjeto: DominioCultura): void {
+    if (!culturaObjeto) return;
+
+    // Seta simultaneamente o nome de exibição e a tag da IA
+    this.formWizard.patchValue({
+      cultura_declarada: culturaObjeto.nome,
+      cultura_declarada_ia: culturaObjeto.nome_ia || culturaObjeto.nome
+    });
+
+    this.carregarSugestoesZarc();
+  }
+
+  // 3. Injeção no envio do payload final
+  finalizarCadastro(): void {
+    const produtorAtual = this.produtor();
+    if (!produtorAtual || !produtorAtual.id || this.formWizard.invalid) return;
+
+    this.carregando.set(true);
+
+    const formValues = this.formWizard.getRawValue();
+
+    const payload = {
+      ...formValues,
+      id_produtor: produtorAtual.id,
+      cultura_declarada: formValues.cultura_declarada,
+      cultura_declarada_ia: formValues.cultura_declarada_ia, // 🟢 ENVIADO PARA A REQUISICAOGLEBA (API)
+      data_estimada_plantio: this.converterData(formValues.data_estimada_plantio),
+      data_estimada_colheita: this.converterData(formValues.data_estimada_colheita),
+      area_hectares: this.areaCalculadaMapa()?.area_hectares || 0,
+      ip_origem: '127.0.0.1',
+      dispositivo_token: 'angular_ssr_token_2026'
+    };
+
+    this.glebaService.cadastrarGleba(payload).subscribe({
+      next: () => {
+        this.carregando.set(false);
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.carregando.set(false);
+        this.erroMensagem.set(err.error?.detail || 'Erro ao registrar.');
+      }
+    });
   }
 
   get isPasso1Valido(): boolean {
@@ -308,34 +353,6 @@ export class CadastroGlebaComponent implements OnInit {
       error: () => {
         this.carregando.set(false);
         this.erroMensagem.set('Falha ao processar cálculo geométrico.');
-      }
-    });
-  }
-
-  finalizarCadastro(): void {
-    const produtorAtual = this.produtor();
-    if (!produtorAtual || !produtorAtual.id || this.formWizard.invalid) return;
-
-    this.carregando.set(true);
-
-    const payload = {
-      ...this.formWizard.getRawValue(),
-      id_produtor: produtorAtual.id,
-      data_estimada_plantio: this.converterData(this.formWizard.get('data_estimada_plantio')?.value),
-      data_estimada_colheita: this.converterData(this.formWizard.get('data_estimada_colheita')?.value),
-      area_hectares: this.areaCalculadaMapa()?.area_hectares || 0,
-      ip_origem: '127.0.0.1',
-      dispositivo_token: 'angular_ssr_token_2026'
-    };
-
-    this.glebaService.cadastrarGleba(payload).subscribe({
-      next: () => {
-        this.carregando.set(false);
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        this.carregando.set(false);
-        this.erroMensagem.set(err.error?.detail || 'Erro ao registrar.');
       }
     });
   }

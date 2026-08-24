@@ -163,6 +163,7 @@ export interface DominioCultura {
   id: number;
   codigo: string;
   nome: string;
+  nome_ia: string;
   grupo: string | null;
   ativo: boolean;
   permite_zarc: boolean;

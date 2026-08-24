@@ -16,7 +16,7 @@
     <mat-stepper [linear]="false" #stepper (animationDone)="onPassoAnimacaoConcluida()">
 
 
-    <!-- ========================================== -->
+      <!-- ========================================== -->
       <!-- 1º PASSO: DADOS GERAIS -->
       <!-- ========================================== -->
       <mat-step [completed]="isPasso1Valido">
@@ -140,7 +140,7 @@
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Cultura Principal *</mat-label>
 
-                  <mat-select formControlName="cultura_declarada" (selectionChange)="carregarSugestoesZarc()">
+                  <mat-select formControlName="cultura_declarada">
                     <mat-option>
                       <ngx-mat-select-search
                         [formControl]="filtroCulturaCtrl"
@@ -151,7 +151,10 @@
 
                     <mat-option value="">Selecione...</mat-option>
                     @for (c of culturasFiltradas(); track c.id || c.nome) {
-                      <mat-option [value]="c.nome">{{ c.nome }}</mat-option>
+                      <!-- 🟢 AJUSTE: Ao clicar na opção, salva o nome_ia no formWizard -->
+                      <mat-option [value]="c.nome" (click)="aoSelecionarCultura(c)">
+                        {{ c.nome }}
+                      </mat-option>
                     }
                   </mat-select>
                 </mat-form-field>
@@ -169,7 +172,7 @@
               </div>
 
               <div class="grid-column">
-                <!-- 💡 AJUSTE ZARC: Unidade de medida explícita (Sacas de 60kg) para conformidade com o Proagro/CPR -->
+                <!-- Unidade de medida explícita (Sacas de 60kg) -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Volume Declarado a Comercializar (Sacas de 60kg) *</mat-label>
                   <input matInput type="number" formControlName="volume_declarado_comercializar" placeholder="Ex: 50">
