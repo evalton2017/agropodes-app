@@ -529,19 +529,24 @@ export class CadastroGlebaComponent implements OnInit {
    * 2. Calcula as datas dinamicamente com base no ANO DA SAFRA selecionada
    */
   public selecionarJanelaObrigatoria(janela: any): void {
-    const safraSelecionada = this.formWizard.get('safra')?.value; // Ex: "2026/2027"
+    const safraSelecionada = this.formWizard.get('safra')?.value; // Ex: "2025/2026"
+    const anoAtual = new Date().getFullYear(); // 2026
 
-    // 🟢 Extrai o ano base da safra selecionada no select
-    let anoVigente = new Date().getFullYear();
+    let anoInicioSafra = anoAtual;
     if (safraSelecionada) {
       const numerosSafra = safraSelecionada.replace(/[^0-9/]/g, '');
       const anoBaseStr = numerosSafra.split('/')[0];
       if (anoBaseStr) {
-        anoVigente = parseInt(anoBaseStr, 10);
+        anoInicioSafra = parseInt(anoBaseStr, 10);
       }
     }
 
-    // Cálculo do mês e decêndio (1 a 36 decêndios do ano)
+    // Trava regulatória: Se a safra iniciada for maior que o ano atual, bloqueia
+    if (anoInicioSafra > anoAtual) {
+      this.erroMensagem.set("Não é permitido selecionar janelas de plantio para safras futuras.");
+      return;
+    }
+
     const mesIdx = Math.floor((janela.decendio - 1) / 3);
     const subDecendio = (janela.decendio - 1) % 3;
 
@@ -549,15 +554,27 @@ export class CadastroGlebaComponent implements OnInit {
     if (subDecendio === 1) diaPlantio = 15;
     if (subDecendio === 2) diaPlantio = 25;
 
-    // Instancia os objetos de data com o ano correto da safra
-    const dataPlantioObj = new Date(anoVigente, mesIdx, diaPlantio);
-    const dataColheitaObj = new Date(anoVigente, mesIdx + 4, diaPlantio); // Ciclo estimado de 4 meses
+    let anoVigente = anoInicioSafra;
+    if (janela.decendio <= 9) {
+      anoVigente = anoInicioSafra + 1;
+    }
 
-    // Formata em padrão BR (dd/MM/yyyy)
+    const dataPlantioObj = new Date(anoVigente, mesIdx, diaPlantio);
+    const dataColheitaObj = new Date(anoVigente, mesIdx + 4, diaPlantio);
+
+    // 🟢 TRAVA CRÍTICA: Se a data calculada ultrapassar a data atual do sistema, impede o preenchimento
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    if (dataPlantioObj > hoje) {
+      this.erroMensagem.set("A data de plantio calculada não pode ser uma data futura.");
+      return;
+    }
+
+    this.erroMensagem.set(null);
     const dataPlantioExibicao = formatDate(dataPlantioObj, 'dd/MM/yyyy', 'pt-BR');
     const dataColheitaExibicao = formatDate(dataColheitaObj, 'dd/MM/yyyy', 'pt-BR');
 
-    // Atualiza o Signal e o Formulário
     this.decendioSelecionado.set(janela.decendio);
     this.formWizard.get('data_estimada_plantio')?.setValue(dataPlantioExibicao);
     this.formWizard.get('data_estimada_colheita')?.setValue(dataColheitaExibicao);

@@ -18,6 +18,7 @@ import {
   createInterceptorCondition,
   IncludeBearerTokenCondition
 } from 'keycloak-angular';
+import {authInterceptor} from './auth/auth.interceptor';
 
 registerLocaleData(localePt);
 
@@ -28,7 +29,7 @@ const urlCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
 
 export const createWithAppConfig = (isBrowser: boolean): ApplicationConfig => {
 
-  const interceptors = [loadingInterceptor, includeBearerTokenInterceptor];
+  const interceptors = [loadingInterceptor, includeBearerTokenInterceptor,authInterceptor];
 
   if (isBrowser) {
     interceptors.push(includeBearerTokenInterceptor);
