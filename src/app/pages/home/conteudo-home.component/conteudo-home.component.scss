@@ -170,10 +170,26 @@
       height: 48px !important;
       font-size: 0.95rem;
 
+      /* 🟢 Alinhamento perfeito do texto e da seta */
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 10px !important;
+
+      span {
+        display: inline-flex;
+        align-items: center;
+      }
+
       mat-icon {
-        margin-left: 6px;
+        margin-left: 0 !important; // Remove margens antigas para usar o gap do flex
         font-size: 18px;
+        width: 18px;
+        height: 18px;
         color: var(--night);
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
       }
 
       @media (max-width: 600px) {

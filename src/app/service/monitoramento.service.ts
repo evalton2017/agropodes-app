@@ -8,7 +8,6 @@ import { environment } from '../../environments/environment';
 })
 export class MonitoramentoService {
   private readonly http = inject(HttpClient);
-  // 🟢 Atualizado de '/mapa/contrato' para '/mapa/gleba'
   private readonly baseUrl = `${environment.urlProc}/mapa/gleba`;
 
   /**

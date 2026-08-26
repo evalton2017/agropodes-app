@@ -88,10 +88,6 @@
 
   <!-- Botões de Ação Direita (Desktop) -->
   <div class="actions-wrapper desktop-only">
-    <button mat-stroked-button class="btn-consultar" (click)="fazerLogin()">
-      <mat-icon class="icon-shield">verified_user</mat-icon>
-      <span>Consultar atestado</span>
-    </button>
 
     <button mat-flat-button class="btn-especialista" (click)="abrirModalContato()">
       <span>Falar com especialista</span>
@@ -132,10 +128,6 @@
     </button>
     <button mat-flat-button class="btn-especialista w-full" (click)="abrirModalContato(); menuMobileAberto = false">
       <span>Falar com especialista</span>
-    </button>
-    <button mat-stroked-button class="btn-consultar w-full" (click)="fazerLogin(); menuMobileAberto = false">
-      <mat-icon>verified_user</mat-icon>
-      <span>Consultar atestado</span>
     </button>
     <button mat-stroked-button class="btn-cadastrar w-full" (click)="cadastrarUsuario(); menuMobileAberto = false">
       <mat-icon>person_add</mat-icon>

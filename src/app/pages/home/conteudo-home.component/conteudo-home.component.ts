@@ -1,10 +1,12 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {MatIcon, MatIconModule} from '@angular/material/icon';
+import {Component, inject, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {MatIconModule} from '@angular/material/icon';
 import {SaidaPlataformaComponent} from '../saida-plataforma.component/saida-plataforma.component';
 import {ModelosCamadasComponent} from '../modelos-camadas.component/modelos-camadas.component';
 import {EvidenciasFaqComponent} from '../evidencias-faq.component/evidencias-faq.component';
+import {ResultadoCarPanelComponent} from '../resultado-car-panel.component/resultado-car-panel.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-conteudo-home',
@@ -16,21 +18,20 @@ import {EvidenciasFaqComponent} from '../evidencias-faq.component/evidencias-faq
 export class ConteudoHomeComponent {
   identificadorUnico = signal('');
   identificadorExemplo = 'AGP-2026-SOJ-0007391';
+  private readonly dialog = inject(MatDialog);
 
   preencherExemplo(): void {
     this.identificadorUnico.set(this.identificadorExemplo);
   }
 
   consultarAtestado(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
-    const codigo = this.identificadorUnico().trim();
-    if (codigo) {
-      alert(`Consultando atestado com o Identificador Único: ${codigo}`);
-    } else {
-      alert('Por favor, informe o Identificador Único.');
-    }
+    this.dialog.open(ResultadoCarPanelComponent, {
+      width: '650px',
+      maxWidth: '90vw',
+      panelClass: 'modal-car-center-overlay',
+      autoFocus: false,
+      data: { codCarInicial: '' }
+    });
   }
 
   conhecerPlataforma(){

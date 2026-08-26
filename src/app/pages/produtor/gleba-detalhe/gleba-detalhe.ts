@@ -220,6 +220,10 @@ export class GlebaDetalheComponent implements OnChanges, AfterViewInit {
       case 'FORA_ZARC': return 'alert-node';
       case 'ALERTA': return 'alert-node';
       case 'DIVERGENTE': return 'alert-node';
+      case 'CONDIZENTE': return 'done';
+      case 'REVISAO_MANUAL': return 'alert-node';
+      case 'BLOQUEADO': return 'alert-node';
+      case 'COMPATIVEL': return 'done';
       case 'PENDENTE':
       default: return 'todo';
     }
@@ -233,6 +237,10 @@ export class GlebaDetalheComponent implements OnChanges, AfterViewInit {
       case 'FORA_ZARC': return 'gpp_bad';
       case 'ALERTA': return 'gpp_bad';
       case 'DIVERGENTE': return 'gpp_bad';
+      case 'CONDIZENTE': return 'check_circle';
+      case 'REVISAO_MANUAL': return 'gpp_bad';
+      case 'BLOQUEADO': return 'gpp_bad';
+      case 'COMPATIVEL': return 'check_circle';
       case 'PENDENTE':
       default: return 'radio_button_unchecked';
     }
@@ -246,6 +254,10 @@ export class GlebaDetalheComponent implements OnChanges, AfterViewInit {
       case 'EM_ANDAMENTO': return 'Em andamento';
       case 'FORA_ZARC': return 'Fora ZARC';
       case 'DIVERGENTE': return 'Divergente';
+      case 'CONDIZENTE': return 'Condizente';
+      case 'REVISAO_MANUAL': return 'Revisão Manual';
+      case 'BLOQUEADO': return 'Bloqueado';
+      case 'COMPATIVEL': return 'Compativel';
       case 'PENDENTE':
       default: return 'Pendente';
     }

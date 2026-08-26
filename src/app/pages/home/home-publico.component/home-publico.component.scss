@@ -108,9 +108,10 @@ $text-light: #ffffff;
     font-weight: 500;
     font-size: 0.925rem;
     transition: color 0.2s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
+    justify-content: center;
+    gap: 0.35rem;
     cursor: pointer;
 
     &:hover, &.active {
@@ -121,6 +122,9 @@ $text-light: #ffffff;
       font-size: 16px;
       width: 16px;
       height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
@@ -163,6 +167,23 @@ $text-light: #ffffff;
 }
 
 .btn-consultar,
+.btn-cadastrar,
+.btn-especialista,
+.btn-entrar {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle;
+
+  mat-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-right: 6px;
+  }
+}
+
+.btn-consultar,
 .btn-cadastrar {
   border: 1px solid rgba(255, 255, 255, 0.22) !important;
   background-color: rgba(255, 255, 255, 0.04) !important;
@@ -176,6 +197,47 @@ $text-light: #ffffff;
   &:hover {
     background-color: rgba(255, 255, 255, 0.12) !important;
     border-color: rgba(255, 255, 255, 0.4) !important;
+  }
+}
+
+// ==========================================
+// 🟢 CORREÇÃO ESPECÍFICA DO BOTÃO HERO (Consultar um atestado)
+// ==========================================
+.hero-content,
+.hero-actions,
+button.consultar-atestado-hero,
+.btn-hero-primary {
+  // Ajuste universal para botões de destaque com setas em linha
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Se o botão principal da tela utilizar classe direta ou tag de anchor estilizada:
+a[mat-flat-button], button[mat-flat-button] {
+  &.mat-primary, &.btn-green-lima {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.75rem !important; // Espaçamento proporcional entre o texto e a seta
+  }
+}
+
+// Fallback geral para elementos com seta à direita no corpo do app
+.hero-section {
+  button, a {
+    &.mat-mdc-unelevated-button, &.mat-mdc-raised-button, &.mat-mdc-flat-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+
+      mat-icon, span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
   }
 }
 
@@ -269,4 +331,28 @@ $text-light: #ffffff;
   overflow-x: hidden;
 }
 
+/* =========================================================================
+   🟢 AJUSTE CIRÚRGICO DO BOTÃO HERO: "Consultar um atestado"
+   ========================================================================= */
+.hero-section, .content, :host {
+  // Alvo específico para o botão verde de destaque que contém a seta
+  button, a {
+    &.mat-mdc-unelevated-button, &.mat-mdc-raised-button, &.mat-mdc-flat-button {
+      // Identifica o botão com cor verde lima (background principal do hero)
+      &:not(.btn-consultar):not(.btn-cadastrar):not(.btn-especialista) {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.75rem !important; // Distância proporcional entre o texto e a seta
 
+        // Garante que o span de texto e o ícone/seta fiquem perfeitamente alinhados
+        span, mat-icon {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          margin: 0 !important;
+        }
+      }
+    }
+  }
+}

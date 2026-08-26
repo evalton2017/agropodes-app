@@ -1,0 +1,127 @@
+<div class="modal-centered-container">
+  <!-- Cabeçalho -->
+  <div class="modal-header">
+    <div class="badge-tag">
+      <span class="dot">◆</span> INFRAESTRUTURA VM6 • PORTARIA SDI/MAPA 739/2025
+    </div>
+    <button mat-icon-button (click)="fechar()" class="btn-close" aria-label="Fechar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <h3 class="panel-title">Análise Geoespacial de Conformidade CAR</h3>
+
+  <!-- Campo de Busca -->
+  <div class="search-section">
+    <mat-form-field appearance="outline" class="input-car-field">
+      <mat-label>Código do Imóvel (CAR)</mat-label>
+      <input
+        matInput
+        [ngModel]="codCarInput()"
+        (ngModelChange)="codCarInput.set($event)"
+        placeholder="Ex: MT-5104104-C59BA14B1FA3449AB0BEF13B91A627F6"
+        (keyup.enter)="buscarCompliance()"
+      />
+      <button matSuffix mat-icon-button (click)="buscarCompliance()" aria-label="Buscar">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <!-- Progress Spinner -->
+  @if (loading()) {
+    <div class="loading-spinner">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span>Cruzando dados com bases oficiais e PostGIS...</span>
+    </div>
+  }
+
+  <!-- Banner de Erro -->
+  @if (erroMensagem() && !loading()) {
+    <div class="error-banner">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ erroMensagem() }}</span>
+    </div>
+  }
+
+  <!-- Conteúdo de Resultados -->
+  @if (dadosResultado() && !loading()) {
+    <div class="result-content">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="label">MÓDULOS FISCAIS</span>
+          <span class="value">{{ dadosResultado()?.numero_modulos_fiscais }} MF</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="label">SOBREPOSIÇÃO APP / RL</span>
+          <span class="value" [class.danger]="dadosResultado()?.sobreposicao_app_rl === 'SIM'">
+            {{ dadosResultado()?.sobreposicao_app_rl }}
+          </span>
+        </div>
+
+        <div class="metric-card">
+          <span class="label">DESMATAMENTO TOTAL</span>
+          <span class="value danger">{{ dadosResultado()?.area_total_desmatada_ha }} ha</span>
+        </div>
+
+        <div class="metric-card highlight">
+          <span class="label">MULTA INDENIZATÓRIA</span>
+          <span class="value green">
+            {{ dadosResultado()?.valor_multa_indenizatoria | currency:'BRL':'symbol':'1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- BLOCO REGULATÓRIO / LEGISLAÇÃO GOVERNAMENTAL (ACIMA DA TABELA) -->
+      <div class="regulatory-notice-box">
+        <div class="notice-header">
+          <mat-icon class="notice-icon">gavel</mat-icon>
+          <span class="notice-title">REGRAMENTO GOVERNAMENTAL E SANÇÃO AMBIENTAL</span>
+        </div>
+        <p class="notice-text">
+          A cobrança de Reposição Florestal Obrigatória / Conversão Correlata rege-se pelos parâmetros oficiais do Serviço Florestal Brasileiro (SFB/MMA).
+          O regulamento aplica o valor de R$ 125,00 por hectare para fins de cálculo indenizatório. Médias propriedades rurais (de até 15 Módulos Fiscais)
+          possuem dispensa do encargo caso o passivo ambiental consolidado seja igual ou inferior a 20 ha.
+          Área desmatada atual:  <strong>{{ dadosResultado()?.area_total_desmatada_ha }} ha</strong>.
+        </p>
+      </div>
+
+      <!-- Tabela com Scroll Interno -->
+      <div class="table-container">
+        <h4 class="table-title">DETALHAMENTO DE ALERTAS E CONFLITOS ESPACIAIS</h4>
+
+        <div class="table-scroll-wrapper">
+          <table class="custom-table">
+            <thead>
+            <tr>
+              <th>Descrição do Alerta / Camada</th>
+              <th class="text-right">Área (Ha)</th>
+              <th class="text-center">Interseção</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (alerta of dadosResultado()?.detalhes_alertas; track $index) {
+                <tr>
+                  <td class="desc-cell">{{ alerta.descricao || alerta.nome }}</td>
+                  <td class="val-cell text-right">{{ alerta.area_ha }} ha</td>
+                  <td class="status-cell text-center">
+                    <span class="status-badge" [class.active]="alerta.intersecta_imovel">
+                      {{ alerta.intersecta_imovel ? 'SIM' : 'NÃO' }}
+                    </span>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3" class="empty-cell">
+                    Nenhum alerta de desmatamento ou sobreposição registrado para o imóvel.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+</div>

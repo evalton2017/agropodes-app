@@ -272,3 +272,25 @@ table {
   border-collapse: collapse;
   text-align: left;
 }
+
+/* Overlay centralizado no meio da tela */
+.modal-car-center-overlay {
+  .cdk-overlay-pane {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+}
+
+/* Escurecimento do fundo */
+.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(4px);
+}
