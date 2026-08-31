@@ -1,0 +1,174 @@
+<div class="empresas-container" style="padding: 24px; color: white;">
+  <app-alert [mensagem]="alertaMsg()" [tipo]="alertaTipo()" (fechar)="alertaMsg.set('')"></app-alert>
+
+  @if (isAdmin()) {
+    <div class="header-action-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2>Painel Administrativo: Gestão de Empresas</h2>
+      <button mat-flat-button color="primary" (click)="abrirNovoCadastro()">
+        <mat-icon>business</mat-icon> Nova Empresa
+      </button>
+    </div>
+
+    <div class="table-card">
+      <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8" style="width: 100%;">
+        <ng-container matColumnDef="razaoSocial">
+          <th mat-header-cell *matHeaderCellDef> Razão Social </th>
+          <td mat-cell *matCellDef="let element"> {{element.razaoSocial}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cnpj">
+          <th mat-header-cell *matHeaderCellDef> CNPJ </th>
+          <td mat-cell *matCellDef="let element"> {{element.cnpj}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let element">
+            <span [style.color]="element.ativo !== false ? '#4caf50' : '#f44336'">
+              {{ element.ativo !== false ? 'Ativo' : 'Inativo' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acoes">
+          <th mat-header-cell *matHeaderCellDef> Ações </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary" (click)="abrirEdicao(element)" matTooltip="Editar Empresa">
+              <mat-icon>manage_accounts</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [length]="totalElements()" [pageSize]="pageSize()" [pageSizeOptions]="[5, 10, 25]" (page)="mudarPagina($event)"></mat-paginator>
+    </div>
+
+    <!-- ACTION BAR LATERAL -->
+    @if (drawerAberto()) {
+      <div class="drawer-backdrop" (click)="fecharActionbar()" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:1000;"></div>
+      <div class="action-bar drawer-open" style="position:fixed;top:0;right:0;width:500px;height:100vh;background:#122017;padding:24px;z-index:1001;overflow-y:auto;box-shadow:-4px 0 15px rgba(0,0,0,0.5);">
+
+        <div class="drawer-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h3>{{ modoEdicao() ? 'Editar Empresa' : 'Cadastrar Nova Empresa' }}</h3>
+          <button mat-icon-button (click)="fecharActionbar()"><mat-icon>close</mat-icon></button>
+        </div>
+
+        <div class="drawer-body" *ngIf="empresaSelecionada() as e">
+          <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
+            <mat-label>Razão Social</mat-label>
+            <input matInput [(ngModel)]="e.razaoSocial" [readonly]="modoEdicao()" placeholder="Nome da Empresa">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width:100%; margin-bottom:12px;">
+            <mat-label>CNPJ</mat-label>
+            <input matInput [value]="e.cnpj" (input)="aplicarMascaraCnpj($event)" [readonly]="modoEdicao()" placeholder="00.000.000/0000-00" maxlength="18">
+          </mat-form-field>
+
+          <!-- SEÇÃO DE ENDEREÇOS MÚLTIPLOS -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0 8px;">
+            <h4 style="color: #76ff03; margin: 0;">Endereços</h4>
+            <button mat-stroked-button color="accent" (click)="adicionarEndereco()" style="font-size: 12px; color: #76ff03; border-color: #76ff03;">
+              <mat-icon>add</mat-icon> Adicionar Endereço
+            </button>
+          </div>
+
+          @for (end of e.enderecos; track $index; let i = $index) {
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 12px; color: rgba(255,255,255,0.7);">Endereço #{{ i + 1 }}</span>
+                @if (e.enderecos.length > 1) {
+                  <button mat-icon-button color="warn" (click)="removerEndereco(i)" matTooltip="Remover endereço">
+                    <mat-icon style="font-size: 18px; color: #f44336;">delete</mat-icon>
+                  </button>
+                }
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <mat-form-field appearance="outline" style="width: 40%;">
+                  <mat-label>CEP</mat-label>
+                  <input matInput [(ngModel)]="end.cep" (blur)="buscarCep(i, $event)" placeholder="00000-000" maxlength="9">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 60%;">
+                  <mat-label>Logradouro</mat-label>
+                  <input matInput [(ngModel)]="end.logradouro">
+                </mat-form-field>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <mat-form-field appearance="outline" style="width: 35%;">
+                  <mat-label>Número</mat-label>
+                  <input matInput [(ngModel)]="end.numero">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 65%;">
+                  <mat-label>Complemento</mat-label>
+                  <input matInput [(ngModel)]="end.complemento">
+                </mat-form-field>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <mat-form-field appearance="outline" style="width: 40%;">
+                  <mat-label>Bairro</mat-label>
+                  <input matInput [(ngModel)]="end.bairro">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 45%;">
+                  <mat-label>Cidade</mat-label>
+                  <input matInput [(ngModel)]="end.cidade">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 15%;">
+                  <mat-label>UF</mat-label>
+                  <input matInput [(ngModel)]="end.estado" maxlength="2">
+                </mat-form-field>
+              </div>
+            </div>
+          }
+
+          <!-- SEÇÃO DE TELEFONES MÚLTIPLOS -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0 8px;">
+            <h4 style="color: #76ff03; margin: 0;">Telefones</h4>
+            <button mat-stroked-button color="accent" (click)="adicionarTelefone()" style="font-size: 12px; color: #76ff03; border-color: #76ff03;">
+              <mat-icon>add</mat-icon> Adicionar Telefone
+            </button>
+          </div>
+
+          @for (tel of e.telefones; track $index; let i = $index) {
+            <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 12px; color: rgba(255,255,255,0.7);">Telefone #{{ i + 1 }}</span>
+                @if (e.telefones.length > 1) {
+                  <button mat-icon-button color="warn" (click)="removerTelefone(i)" matTooltip="Remover telefone">
+                    <mat-icon style="font-size: 18px; color: #f44336;">delete</mat-icon>
+                  </button>
+                }
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <mat-form-field appearance="outline" style="width: 30%;">
+                  <mat-label>DDD</mat-label>
+                  <input matInput [(ngModel)]="tel.ddd" maxlength="3" placeholder="00">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 70%;">
+                  <mat-label>Número</mat-label>
+                  <input matInput [(ngModel)]="tel.numero" placeholder="00000-0000">
+                </mat-form-field>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="drawer-footer" style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+          <button mat-stroked-button (click)="fecharActionbar()">Cancelar</button>
+          <button mat-flat-button color="primary" (click)="salvar()">Salvar</button>
+        </div>
+
+      </div>
+    }
+  } @else {
+    <div style="text-align: center; padding: 40px; color: #ff9800;">
+      <h3>Acesso Restrito</h3>
+      <p>Você não possui permissão de Administrador para visualizar a gestão de empresas.</p>
+    </div>
+  }
+</div>

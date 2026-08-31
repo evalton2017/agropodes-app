@@ -1,0 +1,88 @@
+@if (carregandoDados) {
+  <div style="padding: 40px; color: #4ade80; text-align: center;">
+    <h3>Carregando detecções da propriedade...</h3>
+  </div>
+} @else if (dadosPropriedade) {
+  <div class="contestacao-layout">
+    <div class="sidebar-panel">
+      <h3>Contestação da Propriedade</h3>
+      <p class="prop-info">
+        <strong>CAR:</strong> {{ dadosPropriedade.codigo_car }}<br>
+        <strong>Área Total:</strong> {{ dadosPropriedade.area_total_ha }} ha
+      </p>
+
+      <div class="conflitos-card-container">
+        <h5>Detecções Ambientais / Prodes</h5>
+        @for (conflito of dadosPropriedade.conflitos_detectados; track conflito.tipo_mapa739) {
+          <div
+            class="conflito-item-card"
+            [class.selected]="conflito.selecionado"
+            (click)="onToggleConflito(conflito)"
+          >
+            <input
+              type="checkbox"
+              [checked]="conflito.selecionado"
+              (click)="$event.stopPropagation(); onToggleConflito(conflito)"
+            >
+            <div class="conflito-info">
+              <strong>{{ conflito.tipo_mapa739 }}</strong>
+              <small>{{ conflito.tipo_cmn_5268 }}</small>
+              <span>Área Sobreposta: {{ conflito.area_ha }} ha</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <form [formGroup]="formContestacao" (ngSubmit)="salvarContestacao()" class="contestacao-form">
+        <div class="form-group">
+          <label>Motivo da Contestação *</label>
+          <textarea
+            formControlName="descricao_motivo"
+            rows="4"
+            placeholder="Descreva detalhadamente a justificativa para a contestação da propriedade..."
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Anexo / Documento Técnico (Opcional)</label>
+          <input type="file" (change)="onArquivoSelecionado($event)" accept="image/*,.pdf" />
+        </div>
+
+        <button mat-flat-button type="submit" class="submit-btn">
+          Cadastrar Contestação de Propriedade
+        </button>
+      </form>
+    </div>
+
+    <div class="map-render-column">
+      <app-contestacao-mapa
+        [geometriaGlebaWkt]="dadosPropriedade.geometria_propriedade_wkt"
+        [conflitos]="dadosPropriedade.conflitos_detectados"
+        (poligonoDesenhado)="onPoligonoAtualizado($event)"
+      >
+      </app-contestacao-mapa>
+    </div>
+  </div>
+}
+
+@if (modalAberto) {
+  <div class="modal-overlay">
+    <div class="modal-content-card">
+      @if (modalSucesso) {
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <h3>Contestação Registrada!</h3>
+      } @else {
+        <mat-icon class="error-icon">error</mat-icon>
+        <h3>Atenção</h3>
+      }
+
+      <p>{{ modalMensagem }}</p>
+
+      <div class="modal-actions">
+        <button mat-flat-button class="submit-btn" (click)="fecharModal()">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+}

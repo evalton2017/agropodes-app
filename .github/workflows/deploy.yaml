@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 2214
           script: |
-            # Acessa a pasta onde está o docker-compose-deploy.yml na VPS
+            # Acessa a pasta onde está o docker-compose-app.yml na VPS
             cd ~/develop || mkdir -p ~/develop && cd ~/develop
 
             # Autentica no Docker Hub usando Token seguro
@@ -65,7 +65,7 @@ jobs:
             docker network inspect traefik-network >/dev/null 2>&1 || docker network create traefik-network
 
             # Pull da imagem nova
-            docker compose -f docker-compose-deploy.yml pull agroprods-web
+            docker compose -f docker-compose-app.yml pull agroprods-web
 
             # Sobe a aplicação atualizada sem derrubar o Traefik (Zero Downtime relativo)
-            docker compose -f docker-compose-deploy.yml up -d --force-recreate agroprods-web
+            docker compose -f docker-compose-app.yml up -d --force-recreate agroprods-web

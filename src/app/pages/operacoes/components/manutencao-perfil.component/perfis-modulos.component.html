@@ -1,0 +1,81 @@
+<div class="perfis-container">
+  <div class="header-action-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Gestão de Perfis e Módulos</h2>
+    <button mat-flat-button color="primary" (click)="abrirActionbarAssociacao()">
+      <mat-icon>link</mat-icon> Associar Módulo ao Perfil
+    </button>
+  </div>
+
+  <!-- Acordeão de Perfis na tela principal -->
+  <mat-accordion class="perfis-accordion" displayMode="flat">
+    @for (perfil of listaPerfis(); track perfil.id) {
+      <mat-expansion-panel class="custom-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <strong>{{ perfil.nome }}</strong> &nbsp; ({{ perfil.codigo }})
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ perfil.modulos?.length || 0 }} módulo(s) associado(s)
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="modulos-list" style="padding: 10px 0;">
+          @if (perfil.modulos && perfil.modulos.length > 0) {
+            <mat-chip-set>
+              @for (modulo of perfil.modulos; track modulo.id) {
+                <mat-chip>
+                  <mat-icon matChipAvatar>extension</mat-icon>
+                  {{ modulo.nome }} ({{ modulo.chaveRota }})
+                </mat-chip>
+              }
+            </mat-chip-set>
+          } @else {
+            <p style="color: #000000; font-style: italic;">Nenhum módulo associado a este perfil.</p>
+          }
+        </div>
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+
+  <!-- Action Bar Lateral com Seleção de Perfil e Checkboxes -->
+  @if (drawerAberto()) {
+    <div class="drawer-backdrop" (click)="fecharActionbar()"></div>
+    <div class="action-bar drawer-open">
+
+      <div class="drawer-header">
+        <h3 style="margin: 0;">Associar Módulos ao Perfil</h3>
+        <button mat-icon-button (click)="fecharActionbar()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <mat-form-field appearance="outline" class="full-width" style="margin-bottom: 16px;">
+          <mat-label style="color: #e8f5e9;">Selecione o Perfil</mat-label>
+          <mat-select [(ngModel)]="associacaoSelecionada.perfilId"
+                      (selectionChange)="onPerfilSelecionado($event.value)">
+            @for (perfil of listaPerfis(); track perfil.id) {
+              <mat-option [value]="perfil.id">{{ perfil.nome }} ({{ perfil.codigo }})</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <label style="display: block; font-weight: 500; margin-bottom: 8px;">Selecione os Módulos:</label>
+        <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+          @for (modulo of listaTodosModulos(); track modulo.id) {
+            <mat-checkbox [checked]="isModuloSelecionado(modulo.id)"
+                          (change)="toggleModulo(modulo.id, $event)">
+              <span>{{ modulo.nome }} <small style="opacity: 0.7;">({{ modulo.chaveRota }})</small></span>
+            </mat-checkbox>
+          }
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button mat-stroked-button (click)="fecharActionbar()">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="salvarAssociacao()">Salvar Associação</button>
+      </div>
+
+    </div>
+  }
+</div>

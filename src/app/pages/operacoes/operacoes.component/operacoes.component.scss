@@ -1,0 +1,49 @@
+.operacoes-wrapper {
+  padding: 24px;
+  color: var(--white);
+
+  h2 {
+    font-family: var(--font-display);
+    color: var(--lima);
+    margin-bottom: 20px;
+  }
+
+  .operacoes-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    background: var(--carbon-2);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--white-12);
+
+    button {
+      color: var(--white-70) !important;
+      font-weight: 600;
+      border-radius: 6px;
+      transition: all 0.2s ease-in-out;
+
+      mat-icon {
+        margin-right: 6px;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--white) !important;
+      }
+
+      &.active {
+        background: var(--lima) !important;
+        color: var(--carbon-0) !important; // Cor de contraste para o botão ativo
+      }
+    }
+  }
+
+  .tab-content-container {
+    background: var(--carbon-2);
+    border: 1px solid var(--white-12);
+    border-radius: 12px;
+    padding: 24px;
+    min-height: 400px;
+  }
+}

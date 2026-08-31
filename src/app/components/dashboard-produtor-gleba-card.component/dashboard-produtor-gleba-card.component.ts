@@ -69,6 +69,7 @@ import {GlebaGeometriaResponse} from '../../pages/dashboard/model/dashboard-prod
 })
 export class DashboardProdutorGlebaCardComponent implements OnInit {
   @Output() glebaSelecionadaChange = new EventEmitter<number>();
+  @Output() glebaObjetoChange = new EventEmitter<GlebaGeometriaResponse>();
 
   private readonly produtorService = inject(DashboardProdutorService);
   private readonly pessoaService = inject(PessoaService);
@@ -107,5 +108,7 @@ export class DashboardProdutorGlebaCardComponent implements OnInit {
   public selecionarGleba(gleba: GlebaGeometriaResponse): void {
     this.glebaSelecionadaId.set(gleba.idGleba);
     this.glebaSelecionadaChange.emit(gleba.idGleba);
+    this.glebaObjetoChange.emit(gleba); 
   }
+
 }

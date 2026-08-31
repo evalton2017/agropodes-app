@@ -1,0 +1,156 @@
+<div class="usuarios-container">
+  <div class="header-action-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Gestão de Usuários da Empresa</h2>
+    <button mat-flat-button color="primary" (click)="abrirNovoCadastro()">
+      <mat-icon>person_add</mat-icon> Novo Produtor
+    </button>
+  </div>
+
+  <div class="table-card">
+    <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef> Nome </th>
+        <td mat-cell *matCellDef="let element"> {{element.nome}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> E-mail </th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef> Tipo </th>
+        <td mat-cell *matCellDef="let element"> {{element.tipo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="empresa">
+        <th mat-header-cell *matHeaderCellDef> Empresa </th>
+        <td mat-cell *matCellDef="let element"> {{element.empresa?.razaoSocial || 'N/A'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cpfCnpj">
+        <th mat-header-cell *matHeaderCellDef> CpfCnpj </th>
+        <td mat-cell *matCellDef="let element"> {{element.cpfCnpj || 'N/A'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="perfil">
+        <th mat-header-cell *matHeaderCellDef> Contrato </th>
+        <td mat-cell *matCellDef="let element"> {{element.perfil?.nome || 'Sem Contrato'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element">
+          <span [style.color]="element.ativo !== false ? '#4caf50' : '#f44336'">
+            {{ element.ativo !== false ? 'Ativo' : 'Inativo' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef> Ações </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- 🟢 Corrigido para chamar abrirEdicao ou o nome correspondente no seu TS -->
+          <button mat-icon-button color="primary" (click)="abrirEdicao(element)" matTooltip="Editar Usuário">
+            <mat-icon>manage_accounts</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [length]="totalElements()"
+                   [pageSize]="pageSize()"
+                   [pageSizeOptions]="[5, 10, 25]"
+                   (page)="mudarPagina($event)">
+    </mat-paginator>
+  </div>
+
+  <!-- ACTION BAR LATERAL -->
+  @if (drawerAberto()) {
+    <div class="drawer-backdrop" (click)="fecharActionbar()"></div>
+    <div class="action-bar drawer-open">
+      <div class="drawer-header">
+        <h3>{{ modoEdicao() ? 'Editar Usuário' : 'Cadastrar Novo Produtor' }}</h3>
+        <button mat-icon-button (click)="fecharActionbar()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="drawer-body" *ngIf="usuarioSelecionado() as u">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nome</mat-label>
+          <input matInput [(ngModel)]="u.nome" [readonly]="modoEdicao()" placeholder="Nome completo ou primeiro nome">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="!modoEdicao()">
+          <mat-label>Sobrenome</mat-label>
+          <input matInput [(ngModel)]="u.sobrenome">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="!modoEdicao()">
+          <mat-label>Username (Keycloak)</mat-label>
+          <input matInput [(ngModel)]="u.username">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>E-mail</mat-label>
+          <input matInput [(ngModel)]="u.email" [readonly]="modoEdicao()">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>CPF ou CNPJ do Produtor</mat-label>
+          <input matInput
+                 [value]="u.cpfCnpj || ''"
+                 (input)="onCpfCnpjInput($event)"
+                 [readonly]="modoEdicao()"
+                 placeholder="000.000.000-00"
+                 maxlength="18">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="!modoEdicao()">
+          <mat-label>Senha Temporária/Inicial</mat-label>
+          <input matInput type="password" [(ngModel)]="u.password">
+        </mat-form-field>
+
+        <!-- CNPJ da Empresa com Máscara Fixa (Editável) -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>CNPJ da Empresa</mat-label>
+          <input matInput
+                 [value]="u.cnpjEmpresa || ''"
+                 (input)="onCnpjEmpresaInput($event)"
+                 placeholder="00.000.000/0000-00"
+                 maxlength="18">
+        </mat-form-field>
+
+        <!-- Seleção de Contrato (Apenas perfis do tipo Produtor) -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contrato (Perfil)</mat-label>
+          <mat-select [(ngModel)]="u.perfilId">
+            <mat-option [value]="null">Nenhum</mat-option>
+            @for (perfil of listaPerfis(); track perfil.id) {
+              <mat-option [value]="perfil.id">{{ perfil.nome }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="toggle-container">
+          <label>Status do Usuário:</label>
+          <mat-slide-toggle [(ngModel)]="u.ativo">
+            {{ u.ativo !== false ? 'Ativo' : 'Inativo' }}
+          </mat-slide-toggle>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button mat-stroked-button (click)="fecharActionbar()">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="salvar()">
+          {{ modoEdicao() ? 'Salvar Alterações' : 'Criar Produtor' }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

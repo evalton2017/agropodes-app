@@ -1,0 +1,129 @@
+<div class="acompanhamento-container">
+  <div class="header-section">
+    <h2>Acompanhamento de Contestações</h2>
+    <p>Gerencie e acompanhe o status das contestações de propriedades e glebas.</p>
+  </div>
+
+  <!-- Tabela de Contestações -->
+  <div class="table-card">
+    <table mat-table [dataSource]="listaContestacoes" class="mat-elevation-z0">
+
+      <!-- ID -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let element"> #{{ element.id_contestacao }} </td>
+      </ng-container>
+
+      <!-- Coluna: Tipo (Propriedade ou Gleba) -->
+      <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef> Tipo </th>
+        <td mat-cell *matCellDef="let element">
+          @if (element.id_propriedade) {
+            <span class="badge badge-propriedade">Propriedade</span>
+          } @else if (element.id_gleba) {
+            <span class="badge badge-gleba">Gleba</span>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Alvo / Nome -->
+      <ng-container matColumnDef="alvo">
+        <th mat-header-cell *matHeaderCellDef> Nome / Alvo </th>
+        <td mat-cell *matCellDef="let element"> {{ element.nome_alvo }} </td>
+      </ng-container>
+
+      <!-- CAR -->
+      <ng-container matColumnDef="car">
+        <th mat-header-cell *matHeaderCellDef> Código CAR </th>
+        <td mat-cell *matCellDef="let element"> {{ element.codigo_car || 'N/A' }} </td>
+      </ng-container>
+
+      <!-- Data -->
+      <ng-container matColumnDef="data">
+        <th mat-header-cell *matHeaderCellDef> Data Cadastro </th>
+        <td mat-cell *matCellDef="let element"> {{ element.data_criacao | date:'dd/MM/yyyy HH:mm' }} </td>
+      </ng-container>
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element">
+          <span [ngClass]="'status-tag ' + element.status_contestacao.toLowerCase()">
+            {{ element.status_contestacao }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Ações -->
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef class="text-center"> Ações </th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <div class="actions-wrapper">
+            <!-- 1. Detalhar / Visualizar (Sempre Disponível) -->
+            <button mat-icon-button color="primary" matTooltip="Visualizar Detalhes" (click)="onVisualizar(element.id_contestacao)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+
+            <!-- 2. Cancelar (Apenas se status == PENDENTE) -->
+            @if (element.permite_cancelar) {
+              <button mat-icon-button color="warn" matTooltip="Cancelar Contestação" (click)="onCancelar(element)">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            }
+
+            <!-- 3. Relatório (Apenas se CONCLUIDO e com Parecer) -->
+            @if (element.permite_relatorio) {
+              <button mat-icon-button class="btn-relatorio" matTooltip="Baixar Relatório PDF" (click)="onGerarRelatorio(element.id_contestacao)">
+                <mat-icon>picture_as_pdf</mat-icon>
+              </button>
+            }
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    @if (!carregando && listaContestacoes.length === 0) {
+      <div class="empty-state">
+        <mat-icon>assignment_late</mat-icon>
+        <p>Nenhuma contestação encontrada.</p>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Modal de Detalhes -->
+@if (modalDetalhesAberto && contestacaoSelecionada) {
+  <app-visualizar-contestacao-modal
+    [contestacao]="contestacaoSelecionada"
+    (fechar)="fecharModalDetalhes()">
+  </app-visualizar-contestacao-modal>
+}
+
+@if (modalCancelarAberto && contestacaoParaCancelar) {
+  <div class="modal-overlay" (click)="fecharModalCancelar()">
+    <div class="confirm-modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-icon warning">
+        <mat-icon>warning_amber</mat-icon>
+      </div>
+
+      <h3>Confirmar Cancelamento</h3>
+      <p>
+        Deseja realmente cancelar a contestação
+        <strong>#{{ contestacaoParaCancelar.id_contestacao }}</strong>?
+        Esta ação não poderá ser desfeita.
+      </p>
+
+      <div class="confirm-actions">
+        <button mat-button class="btn-cancel" (click)="fecharModalCancelar()">
+          Voltar
+        </button>
+        <button mat-flat-button class="btn-confirm-danger" (click)="confirmarCancelamento()">
+          Sim, Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+}

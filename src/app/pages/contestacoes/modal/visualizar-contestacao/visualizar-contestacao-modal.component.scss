@@ -1,0 +1,269 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+  box-sizing: border-box;
+
+  .modal-card {
+    background-color: #0f231b;
+    border: 1px solid #1e4535;
+    border-radius: 12px;
+    width: 1080px;
+    max-width: 95vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+
+    .modal-header {
+      padding: 16px 24px;
+      background-color: #142e23;
+      border-bottom: 1px solid #1e4535;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        h3 {
+          margin: 0;
+          color: #ffffff;
+          font-size: 1.2rem;
+        }
+
+        .type-tag {
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+
+          &.propriedade {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid #3b82f6;
+          }
+
+          &.gleba {
+            background-color: rgba(168, 85, 247, 0.2);
+            color: #c084fc;
+            border: 1px solid #a855f7;
+          }
+        }
+      }
+
+      button {
+        color: #94a3b8;
+      }
+    }
+
+    .modal-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+
+      .info-column {
+        flex: 1;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        border-right: 1px solid #1e4535;
+        overflow-y: auto;
+
+        .info-section {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+
+            .icon-inline {
+              font-size: 16px;
+              width: 16px;
+              height: 16px;
+              margin-right: 4px;
+            }
+          }
+
+          p {
+            margin: 0;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+          }
+
+          .text-box {
+            background: #142e23;
+            border: 1px solid #1e4535;
+            padding: 10px 12px;
+            border-radius: 6px;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            line-height: 1.4;
+
+            &.analyst {
+              border-color: #4ade80;
+              background-color: #11281e;
+              color: #ffffff;
+            }
+          }
+
+          .status-badge {
+            align-self: flex-start;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+
+            &.pendente {
+              background-color: rgba(234, 179, 8, 0.2);
+              color: #fde047;
+            }
+            &.concluido, &.deferido {
+              background-color: rgba(74, 222, 128, 0.2);
+              color: #4ade80;
+            }
+            &.indeferido, &.cancelado {
+              background-color: rgba(248, 113, 113, 0.2);
+              color: #f87171;
+            }
+          }
+
+          .docs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            .doc-item {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              background-color: #142e23;
+              border: 1px solid #1e4535;
+              padding: 8px 12px;
+              border-radius: 6px;
+              color: #4ade80;
+              text-decoration: none;
+              font-size: 0.85rem;
+
+              span {
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+
+              .download-icon {
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+              }
+
+              &:hover {
+                background-color: #1a382c;
+              }
+            }
+          }
+
+          .no-docs {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-style: italic;
+          }
+        }
+
+        .info-row {
+          display: flex;
+          gap: 16px;
+
+          .info-section {
+            flex: 1;
+          }
+        }
+      }
+
+      .map-column {
+        flex: 1.3;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        background-color: #0b1913;
+
+        .mapa-view {
+          width: 100%;
+          height: 100%;
+          min-height: 400px;
+        }
+
+        .map-legend {
+          position: absolute;
+          bottom: 12px;
+          right: 12px;
+          background-color: rgba(15, 35, 27, 0.92);
+          border: 1px solid #1e4535;
+          padding: 10px 14px;
+          border-radius: 8px;
+          z-index: 1000;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+          h4 {
+            margin: 0 0 6px 0;
+            font-size: 0.75rem;
+            color: #a7f3d0;
+            text-transform: uppercase;
+            font-weight: 700;
+          }
+
+          .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+
+            .color-box {
+              width: 12px;
+              height: 12px;
+              border-radius: 2px;
+            }
+
+            span {
+              font-size: 0.78rem;
+              color: #ffffff;
+            }
+          }
+        }
+      }
+    }
+
+    .modal-footer {
+      padding: 12px 24px;
+      background-color: #142e23;
+      border-top: 1px solid #1e4535;
+      display: flex;
+      justify-content: flex-end;
+
+      .close-btn {
+        background-color: #1e4535 !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+}

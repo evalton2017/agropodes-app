@@ -45,17 +45,39 @@ export class LayoutComponent implements OnInit {
   private readonly allMenuItems: MenuItem[] = MENU_ITEMS;
 
   menuItems = computed(() => {
-    const roles = this.userRoles();
-    return this.filterMenusByRoles(this.allMenuItems, roles);
+    const pessoa = this.pessoaService.produtorAtual();
+    const carregando = this.pessoaService.carregandoPerfil();
+
+    // 🟢 ENQUANTO ESTIVER CARREGANDO, RETORNA VAZIO (Evita mostrar todos os menus)
+    if (carregando || !pessoa || !pessoa.perfil || !pessoa.perfil.modulos) {
+      return [];
+    }
+
+    // Extrai as chaves de rotas permitidas do banco de dados daquela pessoa
+    const rotasPermitidas = pessoa.perfil.modulos.map((m: any) => m.chaveRota);
+    return this.filtrarMenuPorRotas(this.allMenuItems, rotasPermitidas);
   });
 
-  constructor() {
-    this.breakpointObserver.observe(['(max-width: 768px)']).subscribe(result => {
-      this.isMobile.set(result.matches);
-      if (result.matches) {
-        this.isExpanded.set(false);
-      }
-    });
+  private filtrarMenuPorRotas(menus: MenuItem[], rotasPermitidas: string[]): MenuItem[] {
+    return menus
+      .map(item => {
+        // Se o item tem filhos (submenus), filtra recursivamente os filhos
+        if (item.children) {
+          const filhosFiltrados = this.filtrarMenuPorRotas(item.children, rotasPermitidas);
+          return { ...item, children: filhosFiltrados };
+        }
+        return item;
+      })
+      .filter(item => {
+        // O item permanece se tiver filhos válidos OU se a rota principal estiver na lista permitida
+        const temFilhosValidos = item.children && item.children.length > 0;
+        const rotaPermitida = item.route ? rotasPermitidas.includes(item.route) : false;
+
+        // O Dashboard (/home) costuma ser comum, garanta que ele passe se necessário
+        const ehDashboard = item.route === '/home';
+
+        return temFilhosValidos || rotaPermitida || ehDashboard;
+      });
   }
 
   ngOnInit(): void {

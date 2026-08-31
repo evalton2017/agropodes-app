@@ -30,17 +30,30 @@ export const MENU_ITEMS: MenuItem[] = [
     ]
   },
   {
+    label: 'Propriedades',
+    icon: 'house',
+    roles: ['USER_PRODUTOR'],
+    route: '/propriedades',
+  },
+  {
     label: 'Verificação Agrícola',
     icon: 'thunderstorm',
     roles: ['USER_PRODUTOR'],
     route: '/verificacao-agricola'
   },
-/*  {
-    label: 'Monitoramento',
-    icon: 'trending_up',
-    roles: ['USER_PRODUTOR'],
-    route: '/monitoramento',
-  },*/
+  {
+    label: 'Contestação',
+    icon: 'persons',
+    roles: ['USER_PRODUTOR', 'USER_ANALISTA'],
+    children: [
+      { route: '/contestacao-produtor', label: 'Gleba', icon: 'eco', roles: ['USER_PRODUTOR'] },
+      { route: '/contestacao-propriedade', label: 'Propriedade', icon: 'eco', roles: ['USER_PRODUTOR'] },
+      { route: '/acompanhamento-contestacao', label: 'Acompanhamento', icon: 'trending_up', roles: ['USER_PRODUTOR'] },
+      { route: '/contestacao-analista', label: 'Contestações', icon: 'eco', roles: ['USER_ANALISTA'] },
+      { route: '/aprovacoes', label: 'Aprovações', icon: 'cloud', roles: ['USER_ANALISTA'] },
+      { route: '/relatorio', label: 'Relatorios', icon: 'trending_up', roles: ['USER_ANALISTA'] },
+    ]
+  },
   {
     label: 'Meus Atestados',
     icon: 'assignment',
@@ -54,16 +67,10 @@ export const MENU_ITEMS: MenuItem[] = [
     route: '/caderno-campo'
   },
   {
-    label: 'Contestação',
-    icon: 'persons',
-    roles: ['USER_PRODUTOR'],
-    route: '/contestacao-produtor'
-  },
-  {
-    label: 'Analises',
+    label: 'Ambiental',
     icon: 'rate_review',
     roles: ['USER_PRODUTOR'],
-    route: '/consulta-analise-produtor'
+    route: '/consulta-ambiental'
   },
  /* {
     label: 'Configuração',
@@ -111,5 +118,11 @@ export const MENU_ITEMS: MenuItem[] = [
       { route: '/mapa-contratos', label: 'Contratos', icon: 'description', roles: ['USER_ADMIN', 'USER_ANALISTA'] },
       { route: '/mapa-auditoria', label: 'Auditoria', icon: 'gavel', roles: ['USER_ADMIN', 'USER_ANALISTA'] }
     ]
+  },
+  {
+    label: 'Operações',
+    icon: 'admin_panel_settings',
+    roles: ['USER_ANALISTA', 'USER_ADMIN'],
+    route: '/operacoes'
   }
 ];

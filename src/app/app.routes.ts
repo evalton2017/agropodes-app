@@ -1,32 +1,7 @@
-import {Routes} from '@angular/router';
-import {HomeComponent} from './pages/home/home.component';
-import {authGuard} from './auth/auth.guard';
-import {RelatorioDetalheCarComponent} from './pages/relatorios/produtor/detalhe-car/relatorio-detalhe-car.component';
-import {RelatorioAnalistaComponent} from './pages/relatorios/analista/relatorio-analista.component';
-import {CadastroGlebaComponent} from './pages/produtor/cadastro-gleba/cadastro-gleba.component';
-import {ConsultaGlebaComponent} from './pages/produtor/consulta-gleba/consulta-gleba';
-import {PainelAnaliseComponent} from './pages/produtor/painel-analise.component/painel-analise.component';
-import {CadastroComponent} from './dto/cadastro/cadastro.component';
-import {ConsultaCarComponent} from './components/consulta-car/consulta-car.component';
-import {ClimaPageComponent} from './pages/monitoramento/analista/clima/clima-page.component';
-import {AcessoNegadoComponent} from './components/acesso-negado/acesso-negado.component';
-import {AppGlebasListComponent} from './pages/monitoramento/analista/components/glebas-list/glebas-list';
-import {
-  AppGlebaDetalheComponent
-} from './pages/monitoramento/analista/components/glebas-list/gleba-detalhe/gleba-detalhe';
-import {CadernoCampoPageComponent} from './pages/caderno-campo/caderno-campo-page.component';
-import {
-  VerificacaoAgricolaComponent
-} from './pages/verificacao-agricola/verificacao-agricola.component/verificacao-agricola.component';
-import {
-  RelatorioProdutorComponent
-} from './pages/relatorios/produtor/relatorio-produtor.component/relatorio-produtor.component';
-
-import {CadastroContestacaoComponent} from './pages/contestacoes/components/cadastro-contestacao/cadastro-contestacao';
-import {
-  ContestacaoProdutorComponent
-} from './pages/contestacoes/contestacoes/contestacaoes-produtor/contestacao-produtor';
-
+import { Routes } from '@angular/router';
+import { HomeComponent } from './pages/home/home.component';
+import { CadastroComponent } from './dto/cadastro/cadastro.component';
+import { AcessoNegadoComponent } from './components/acesso-negado/acesso-negado.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -35,88 +10,24 @@ export const routes: Routes = [
     component: HomeComponent,
     data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
   },
+
+  // Módulos Carregados via Lazy Loading
+  {
+    path: '',
+    loadChildren: () => import('./routes/produtor.routes').then(m => m.PRODUTOR_ROUTES)
+  },
+  {
+    path: '',
+    loadChildren: () => import('./routes/analista.routes').then(m => m.ANALISTA_ROUTES)
+  },
+  {
+    path: '',
+    loadChildren: () => import('./routes/compartilhado.routes').then(m => m.COMPARTILHADO_ROUTES)
+  },
+
   {
     path: 'cadastrar-usuario',
     component: CadastroComponent
-  },
-  {
-    path: 'cadastro-gleba',
-    component: CadastroGlebaComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
-  },
-  {
-    path: 'consulta-gleba',
-    component: ConsultaGlebaComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
-  },
-  {
-    path: 'consulta-car',
-    component: ConsultaCarComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR'] }
-  },
-  {
-    path: 'consulta-analise-produtor',
-    component: PainelAnaliseComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_PRODUTOR'] }
-  },
-  {
-    path: 'contestacao-produtor',
-    component: ContestacaoProdutorComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_PRODUTOR'] }
-  },
-  {
-    path: 'cadastrar-contestacao/:idGleba',
-    component: CadastroContestacaoComponent,
-    data: { roles: ['USER_PRODUTOR', 'USER_ANALISTA'] }
-  },
-  {
-    path: 'atestados-produtor',
-    component: RelatorioProdutorComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_PRODUTOR'] }
-  },
-  {
-    path: 'relatorio-detalhe-car',
-    component: RelatorioDetalheCarComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_PRODUTOR'] }
-  },
-  {
-    path: 'relatorios-analista',
-    component: RelatorioAnalistaComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] }
-  },
-  {
-    path: 'monitoramento-clima',
-    component: ClimaPageComponent,
-    canActivate: [authGuard],
-    data: { roles: ['USER_ANALISTA'] }
-  },
-  {
-    path: 'glebas',
-    component: AppGlebasListComponent,
-    data: { roles: ['USER_PRODUTOR', 'USER_ANALISTA'] }
-  },
-  {
-    path: 'glebas/detalhe/:id',
-    component: AppGlebaDetalheComponent,
-    data: { roles: ['USER_PRODUTOR', 'USER_ANALISTA'] }
-  },
-  {
-    path:'caderno-campo',
-    component: CadernoCampoPageComponent,
-    data: { roles: ['USER_PRODUTOR', 'USER_ANALISTA'] }
-  },
-  {
-    path: 'verificacao-agricola',
-    component: VerificacaoAgricolaComponent,
-    data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] }
   },
   {
     path: 'acesso-negado',

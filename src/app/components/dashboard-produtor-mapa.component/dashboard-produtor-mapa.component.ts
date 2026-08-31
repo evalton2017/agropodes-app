@@ -12,12 +12,12 @@ import {
   signal
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Subscription, forkJoin } from 'rxjs';
+import { Subscription } from 'rxjs';
 import * as wktParser from 'terraformer-wkt-parser';
 import { GlebaGeometriaResponse } from '../../pages/dashboard/model/dashboard-produtor.model';
-import {GlebaService} from '../../service/gleba.service';
-import {RasterMetadadosResponse} from '../../pages/model/raster.model';
-
+import { GlebaService } from '../../service/gleba.service';
+import { RasterMetadadosResponse } from '../../pages/model/raster.model';
+import { SateliteService } from '../service/satelite.service';
 
 @Component({
   selector: 'app-dashboard-produtor-mapa',
@@ -37,6 +37,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly glebaService = inject(GlebaService);
+  private readonly sateliteService = inject(SateliteService);
 
   private map: any;
   private geoJsonLayer: any;
@@ -45,7 +46,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
   private LeafletCore: any;
 
   private glebaAtiva?: GlebaGeometriaResponse;
-  private metadadosRasterAtivo?: RasterMetadadosResponse;
+  private metadadosRasterAtivo?: any;
   private dadosSub?: Subscription;
 
   private readonly latPadrao = -13.975810;
@@ -61,7 +62,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Dispara a atualização se o idGleba OU a safra mudarem
       if ((changes['idGleba'] || changes['safra']) && this.idGleba) {
         this.carregarEDesenharGleba();
       }
@@ -104,14 +104,43 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
         // Desenha o polígono verde no mapa
         this.desenharPoligonoGleba(this.glebaAtiva!);
 
-        // 2. Extrai o ID do raster ou faz a busca do raster ativo da safra
-        const idRasterTarget = laudo.id_raster || laudo.idRaster || this.extrairIdRaster(laudo);
+        // 2. Converte WKT para GeoJSON para consultar a API de satélite mais recente (STAC)
+        try {
+          const geoJsonGeom = wktParser.parse(this.glebaAtiva!.geometria);
 
-        if (idRasterTarget) {
-          this.carregarEMostrarRaster(idRasterTarget);
-        } else {
-          // Fallback: Busca o raster vinculado à gleba e safra
-          this.buscarRasterPorGlebaESafra(Number(this.idGleba), this.safra);
+          // 🟢 Integração com a API Python de Satélite Recente
+          this.sateliteService.obterTileUrlRaster(geoJsonGeom, this.safra, this.modoVisualizacao).subscribe({
+            next: (resSatelite: any) => {
+              this.metadadosRasterAtivo = {
+                data_captura: resSatelite.data_captura,
+                cloud_cover: resSatelite.cloud_cover
+              };
+
+              // Tenta buscar o grid de metadados padrão da gleba para renderizar as cores de saúde da planta na camada raster
+              const idRasterTarget = laudo.id_raster || laudo.idRaster || this.extrairIdRaster(laudo);
+              if (idRasterTarget) {
+                this.carregarEMostrarRaster(idRasterTarget);
+              } else {
+                this.carregando.set(false);
+                this.atualizarHTMLLegenda();
+                this.cdr.detectChanges();
+              }
+            },
+            error: (errSat) => {
+              console.warn('⚠️ Erro na API de Satélite STAC, usando fallback local:', errSat);
+              // Fallback caso a API STAC externe algum erro pontual
+              const idRasterTarget = laudo.id_raster || laudo.idRaster || this.extrairIdRaster(laudo);
+              if (idRasterTarget) this.carregarEMostrarRaster(idRasterTarget);
+              else {
+                this.carregando.set(false);
+                this.cdr.detectChanges();
+              }
+            }
+          });
+        } catch (e) {
+          console.error('Erro ao processar geometria para STAC:', e);
+          this.carregando.set(false);
+          this.cdr.detectChanges();
         }
       },
       error: (err) => {
@@ -122,13 +151,13 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     });
   }
 
-  /**
-   * Busca os metadados do grid do raster e renderiza o Canvas no mapa
-   */
   private carregarEMostrarRaster(idRaster: number | string): void {
     this.glebaService.obterMetadadosRaster(idRaster).subscribe({
       next: (metadados) => {
-        this.metadadosRasterAtivo = metadados;
+        // Preserva a data de captura do STAC se já existir, senão usa do metadado
+        if (!this.metadadosRasterAtivo?.data_captura && metadados.data_captura) {
+          this.metadadosRasterAtivo = metadados;
+        }
         if (this.glebaAtiva) {
           this.renderizarGridMetadadosConforme(metadados, this.glebaAtiva);
         }
@@ -138,33 +167,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       },
       error: (err) => {
         console.error('❌ Erro ao obter metadados do raster:', err);
-        this.metadadosRasterAtivo = undefined;
         this.atualizarHTMLLegenda();
-        this.carregando.set(false);
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  /**
-   * Fallback para localizar o ID do raster quando não vem na raiz do laudo
-   */
-  private buscarRasterPorGlebaESafra(idGleba: number, safra?: string): void {
-    // Chamada de apoio do seu serviço de glebas/rasters
-    this.glebaService.obterDetalheLaudoGleba(idGleba, safra).subscribe({
-      next: (rasters: any) => {
-        const rasterAtivo = Array.isArray(rasters) ? rasters[0] : rasters;
-        const idRaster = rasterAtivo?.id_raster || rasterAtivo?.id;
-
-        if (idRaster) {
-          this.carregarEMostrarRaster(idRaster);
-        } else {
-          console.warn('⚠️ Nenhum raster disponível para esta safra.');
-          this.carregando.set(false);
-          this.cdr.detectChanges();
-        }
-      },
-      error: () => {
         this.carregando.set(false);
         this.cdr.detectChanges();
       }
@@ -259,11 +262,9 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
     if (!Array.isArray(rawGrid) || rawGrid.length === 0) return;
 
-    // 1. Extrai vértices da geometria WKT
     let polygonCoords: Array<[number, number]> = [];
     try {
       const geoJsonGeometria: any = wktParser.parse(glebaAtiva.geometria);
-
       if (geoJsonGeometria) {
         const rawCoords = geoJsonGeometria.type === 'Polygon'
           ? geoJsonGeometria.coordinates[0]
@@ -277,7 +278,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       console.warn('⚠️ Não foi possível extrair coordenadas WKT para a máscara:', e);
     }
 
-    // 🟢 2. Calcula os limites do Bounding Box usando a GEOMETRIA DO WKT (em vez do grid)
     let minLat = Infinity, maxLat = -Infinity;
     let minLng = Infinity, maxLng = -Infinity;
 
@@ -292,7 +292,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       });
     }
 
-    // 3. Processa os pontos do grid_hex para extrair as cores
     const pontosValidos: Array<{ lat: number; lng: number; hex: string }> = [];
 
     rawGrid.forEach((item: any) => {
@@ -302,7 +301,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       const corHex = saude?.hex || item.hex || item.color || '#a6d96a';
 
       if (!isNaN(lat) && !isNaN(lng)) {
-        // Caso a WKT falhe por algum motivo, usa os pontos como fallback
         if (polygonCoords.length === 0) {
           if (lat < minLat) minLat = lat;
           if (lat > maxLat) maxLat = lat;
@@ -317,7 +315,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
     const latDiff = maxLat - minLat || 0.0001;
     const lngDiff = maxLng - minLng || 0.0001;
-
     const cols = 100;
     const rows = 100;
 
@@ -329,27 +326,21 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
     if (ctx) {
       ctx.clearRect(0, 0, cols, rows);
 
-      // 🟢 4. MÁSCARA CANVAS (ctx.clip) alinhada exatamente às bordas WKT
       if (polygonCoords.length > 0) {
         ctx.beginPath();
         polygonCoords.forEach((coord, idx) => {
           const pLat = coord[0];
           const pLng = coord[1];
-
           const x = ((pLng - minLng) / lngDiff) * (cols - 1);
           const y = ((maxLat - pLat) / latDiff) * (rows - 1);
 
-          if (idx === 0) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         });
         ctx.closePath();
-        ctx.clip(); // Corta rigorosamente no perímetro da linha verde
+        ctx.clip();
       }
 
-      // 🟢 5. Blocos com dimensionamento ajustado para fundir os pontos sem deixar frestas
       const cellWidth = Math.ceil(cols / 8);
       const cellHeight = Math.ceil(rows / 5);
 
@@ -366,12 +357,7 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
 
       try {
         const imageUrl = canvas.toDataURL('image/png');
-
-        // 🟢 6. Bounds sobrepostos cravados nos limites reais da geometria da gleba
-        const bounds = this.LeafletCore.latLngBounds(
-          [minLat, minLng],
-          [maxLat, maxLng]
-        );
+        const bounds = this.LeafletCore.latLngBounds([minLat, minLng], [maxLat, maxLng]);
 
         this.rasterLayer = this.LeafletCore.imageOverlay(imageUrl, bounds, {
           opacity: 0.85,
@@ -384,38 +370,6 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       } catch (err) {
         console.error('Erro ao renderizar imagem do raster:', err);
       }
-    }
-  }
-
-  
-  /**
-   * Recorta o Canvas sobreposto para alinhar estritamente ao desenho vetorial do Leaflet
-   */
-  private aplicarMascaraPoligono(): void {
-    try {
-      if (!this.rasterLayer || !this.geoJsonLayer) return;
-
-      const element = this.rasterLayer.getElement();
-      if (!element) return;
-
-      // Obtém as coordenadas dos vértices desenhados pela camada GeoJSON no mapa
-      const layers = this.geoJsonLayer.getLayers();
-      if (!layers || layers.length === 0) return;
-
-      const latLngs = layers[0].getLatLngs()[0];
-      if (!Array.isArray(latLngs)) return;
-
-      // Converte coordenadas geográficas (lat/lng) para pixels relativos à tela
-      const polygonPixels = latLngs.map((ll: any) => {
-        const point = this.map.latLngToContainerPoint(ll);
-        const overlayPoint = this.map.latLngToContainerPoint(this.rasterLayer.getBounds().getNorthWest());
-        return `${point.x - overlayPoint.x}px ${point.y - overlayPoint.y}px`;
-      });
-
-      // Aplica o recorte via CSS clip-path
-      element.style.clipPath = `polygon(${polygonPixels.join(', ')})`;
-    } catch (e) {
-      console.warn('Não foi possível aplicar o clip-path no raster:', e);
     }
   }
 
@@ -465,15 +419,19 @@ export class DashboardProdutorMapaComponent implements OnChanges, OnDestroy {
       : null;
 
     const headerRasterHtml = dataCaptura
-      ? `<div class="legend-header-title">📸 Sentinel-2: ${dataCaptura} ${cloudCover !== null ? `(${cloudCover}% nuvens)` : ''}</div>`
+      ? `<div class="legend-header-title">📸 Sentinel-2: ${String(dataCaptura).substring(0, 10)} ${cloudCover !== null ? `(${cloudCover}% nuvens)` : ''}</div>`
       : '';
 
     container.innerHTML = `
       ${headerRasterHtml}
       <div class="legend-section-title">Vigor Vegetativo (NDVI)</div>
-      <div class="legend-item"><span class="legend-color ndvi-densa"></span> Vegetação Densa / Lavoura (> 0.55)</div>
-      <div class="legend-item"><span class="legend-color ndvi-rala"></span> Vegetação Baixa / Rala (0.30 - 0.55)</div>
-      <div class="legend-item"><span class="legend-color ndvi-solo"></span> Solo Exposto (< 0.30)</div>
+      <div class="legend-item"><span class="legend-color" style="background-color: #2ca02c;"></span> Vegetação Densa (> 0.55)</div>
+      <div class="legend-item"><span class="legend-color" style="background-color: #98df8a;"></span> Vegetação Rala (0.30 - 0.55)</div>
+      <div class="legend-item"><span class="legend-color" style="background-color: #ff7f0e;"></span> Solo Exposto (< 0.30)</div>
+
+      <div class="legend-section-title" style="margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 4px;">Status da Gleba</div>
+      <div class="legend-item"><span class="legend-color" style="background-color: #16a34a;"></span> Conforme</div>
+      <div class="legend-item"><span class="legend-color" style="background-color: #dc2626;"></span> Não Conforme</div>
     `;
   }
 

@@ -1,0 +1,70 @@
+/* Fundo escuro cobrindo a tela quando a action bar estiver aberta */
+.drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+/* Action Bar Lateral (Desliza da direita para a esquerda com fundo verde escuro) */
+.action-bar {
+  position: fixed;
+  top: 0;
+  right: -450px; /* Escondida inicialmente fora da tela */
+  width: 450px;
+  max-width: 90vw;
+  height: 100vh;
+  background-color: #0d2818 !important; /* Verde escuro elegante */
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &.drawer-open {
+    right: 0; /* Desliza para dentro da tela */
+  }
+
+  /* Cores de textos e elementos internos */
+  h3, label, span {
+    color: #e8f5e9 !important;
+  }
+
+  .drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    button {
+      color: #e8f5e9 !important;
+    }
+  }
+
+  .drawer-body {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+
+    .full-width {
+      width: 100%;
+    }
+  }
+
+  .drawer-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    button {
+      color: #e8f5e9 !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+  }
+}

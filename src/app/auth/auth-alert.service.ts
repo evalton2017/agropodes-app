@@ -16,19 +16,27 @@ export class AuthAlertService {
     this.isAlertShown = true;
 
     // Exibe o aviso visual para o usuário
-    this.snackBar.open('Sua sessão expirou. Faça login novamente.', 'Entrar', {
+    const snackBarRef = this.snackBar.open('Sua sessão expirou. Faça login novamente.', 'Entrar', {
       duration: 5000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
-    }).onAction().subscribe(() => {
+    });
+
+    // Redireciona se o usuário clicar no botão "Entrar"
+    snackBarRef.onAction().subscribe(() => {
       this.redirectToLogin();
     });
 
-    // Redireciona após o aviso ou imediatamente
-    this.redirectToLogin();
+    // Redireciona também quando o snackbar fechar automaticamente (após os 5 segundos)
+    snackBarRef.afterDismissed().subscribe(() => {
+      this.redirectToLogin();
+    });
   }
 
   private redirectToLogin() {
+    // Garante que o redirecionamento ocorra apenas uma vez por ciclo de alerta
+    if (!this.isAlertShown) return;
+
     this.router.navigate(['/login']).then(() => {
       this.isAlertShown = false;
     });

@@ -9,7 +9,7 @@ const keycloakConfig: KeycloakConfig = {
 export const environment = {
   versao: '1.0.0',
   production: false,
-  url: 'https://dev.agroprodes.com.br/agroprodes/api/v1',
+  url: 'http://localhost:9090/agroprodes/api/v1',
   urlProc: 'http://localhost:8000/api/v1',
   postLogoutRedirectUri: 'http://localhost:4200/app/',
   keycloakConfig,

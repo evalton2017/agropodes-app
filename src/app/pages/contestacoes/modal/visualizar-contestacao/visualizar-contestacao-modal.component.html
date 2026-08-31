@@ -1,0 +1,106 @@
+<div class="modal-overlay" (click)="onFechar()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="title-group">
+        <h3>Detalhes da Contestação #{{ contestacao.id_contestacao }}</h3>
+        <span class="type-tag" [ngClass]="contestacao.id_propriedade ? 'propriedade' : 'gleba'">
+          {{ contestacao.id_propriedade ? 'Propriedade' : 'Gleba' }}
+        </span>
+      </div>
+      <button mat-icon-button (click)="onFechar()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Body Layout Dividido em Duas Colunas -->
+    <div class="modal-body">
+      <!-- Coluna Esquerda: Informações Gerais -->
+      <div class="info-column">
+        <div class="info-section">
+          <label>Alvo / Imóvel</label>
+          <p><strong>{{ contestacao.nome_alvo }}</strong></p>
+        </div>
+
+        <div class="info-section">
+          <label>Código CAR</label>
+          <p>{{ contestacao.codigo_car || 'Não informado' }}</p>
+        </div>
+
+        <div class="info-row">
+          <div class="info-section">
+            <label>Área Demarcada</label>
+            <p><strong>{{ contestacao.tamanho_area_demarcada_ha | number:'1.2-4' }} ha</strong></p>
+          </div>
+          <div class="info-section">
+            <label>Área Detectada</label>
+            <p><strong>{{ (contestacao.tamanho_area_detectada_ha | number:'1.2-4') || '0.00' }} ha</strong></p>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <label>Status Atual</label>
+          <span class="status-badge" [ngClass]="contestacao.status_contestacao.toLowerCase()">
+            {{ contestacao.status_contestacao }}
+          </span>
+        </div>
+
+        <div class="info-section">
+          <label>Justificativa do Produtor</label>
+          <div class="text-box">
+            {{ contestacao.descricao_motivo }}
+          </div>
+        </div>
+
+        <!-- Parecer do Analista (Se houver) -->
+        @if (contestacao.parecer_analista) {
+          <div class="info-section">
+            <label><mat-icon class="icon-inline">rate_review</mat-icon> Parecer do Analista</label>
+            <div class="text-box analyst">
+              {{ contestacao.parecer_analista }}
+            </div>
+          </div>
+        }
+
+        <!-- Documentos Anexados -->
+        <div class="info-section">
+          <label>Documentos Anexados</label>
+          @if (contestacao.documentos_anexados && contestacao.documentos_anexados.length > 0) {
+            <div class="docs-list">
+              @for (doc of contestacao.documentos_anexados; track doc) {
+                <a [href]="doc" target="_blank" class="doc-item">
+                  <mat-icon>description</mat-icon>
+                  <span>{{ obterNomeArquivo(doc) }}</span>
+                  <mat-icon class="download-icon">open_in_new</mat-icon>
+                </a>
+              }
+            </div>
+          } @else {
+            <p class="no-docs">Nenhum documento anexado.</p>
+          }
+        </div>
+      </div>
+
+      <!-- Coluna Direita: Mapa e Legenda -->
+      <div class="map-column">
+        <div id="mapa-detalhe-contestacao" class="mapa-view"></div>
+
+        <!-- Legenda Informativa das Camadas Dinâmicas -->
+        <div class="map-legend">
+          <h4>Legenda do Mapa</h4>
+          @for (item of contestacao.legenda_mapa; track item.chave) {
+            <div class="legend-item">
+              <span class="color-box" [style.background-color]="item.cor_hex"></span>
+              <span>{{ item.nome }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button mat-flat-button class="close-btn" (click)="onFechar()">Fechar</button>
+    </div>
+  </div>
+</div>

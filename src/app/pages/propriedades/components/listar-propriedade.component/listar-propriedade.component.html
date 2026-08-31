@@ -1,0 +1,62 @@
+<div class="list-card">
+  <div class="list-header">
+    <div class="title-group">
+      <h3>MINHAS PROPRIEDADES RURAIS</h3>
+      <span class="sub-title">Gerenciamento de Imóveis Rurais e Conformidade Ambiental</span>
+    </div>
+    <button mat-flat-button class="btn-cadastrar" (click)="novaPropriedadeClick.emit()">
+      <mat-icon>add</mat-icon>
+      <span>Cadastrar Propriedade</span>
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="agro-table">
+      <thead>
+      <tr>
+        <th>CÓDIGO CAR</th>
+        <th class="text-right">ÁREA (HA)</th>
+        <th class="text-center">ALERTAS</th>
+        <th class="text-right">DESMATADO (HA)</th>
+        <th class="text-center">APP/RL</th>
+        <th>CADASTRO</th>
+        <th class="text-center">AÇÕES</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (prop of propriedades; track prop.id_propriedade) {
+          <tr>
+            <td class="car-code">{{ prop.codigo_car }}</td>
+            <td class="text-right font-bold">{{ prop.area_hectares }} ha</td>
+            <td class="text-center">
+              <span class="badge" [class.alert]="prop.total_deteccoes > 0">
+                {{ prop.total_deteccoes }}
+              </span>
+            </td>
+            <td class="text-right danger-text">{{ prop.area_desmatada_ha }} ha</td>
+            <td class="text-center">
+              <span class="status-tag" [class.danger]="prop.tem_sobreposicao_app_rl">
+                {{ prop.tem_sobreposicao_app_rl ? 'SIM' : 'NÃO' }}
+              </span>
+            </td>
+            <td>{{ prop.data_criacao | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="text-center">
+              <button mat-icon-button class="btn-action" (click)="onContestar(prop)" title="Realizar Contestação">
+                <mat-icon>gavel</mat-icon>
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-row">
+              <div class="empty-content">
+                <mat-icon class="empty-icon">search_off</mat-icon>
+                <span>Nenhuma propriedade cadastrada. Clique no botão acima para adicionar.</span>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

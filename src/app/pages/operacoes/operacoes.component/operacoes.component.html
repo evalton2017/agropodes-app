@@ -1,0 +1,54 @@
+<div class="operacoes-wrapper">
+  <h2>Painel de Operações e Manutenção</h2>
+
+  <!-- Barra de Navegação customizada em botões (Limpa e sem erros do Angular Material) -->
+  <div class="operacoes-tabs">
+    <button
+      mat-button
+      [class.active]="abaAtiva() === 'usuarios'"
+      (click)="selecionarAba('usuarios')">
+      <mat-icon>group</mat-icon> Usuários
+    </button>
+
+    <button
+      mat-button
+      [class.active]="abaAtiva() === 'empresas'"
+      (click)="selecionarAba('empresas')">
+      <mat-icon>business</mat-icon> Empresas
+    </button>
+
+    <button
+      mat-button
+      [class.active]="abaAtiva() === 'modulos'"
+      (click)="selecionarAba('modulos')">
+      <mat-icon>business</mat-icon> Módulos
+    </button>
+
+
+    <button
+      mat-button
+      [class.active]="abaAtiva() === 'perfis'"
+      (click)="selecionarAba('perfis')">
+      <mat-icon>security</mat-icon> Perfis e Módulos
+    </button>
+  </div>
+
+  <!-- Renderização condicional direta e limpa -->
+  <div class="tab-content-container">
+    @if (abaAtiva() === 'usuarios') {
+      <app-manutencao-usuario></app-manutencao-usuario>
+    }
+
+    @if (abaAtiva() === 'empresas') {
+      <app-manutencao-empresa></app-manutencao-empresa>
+    }
+
+    @if (abaAtiva() === 'modulos') {
+      <app-modulo-cadastro></app-modulo-cadastro>
+    }
+
+    @if (abaAtiva() === 'perfis') {
+      <app-perfis-modulo></app-perfis-modulo>
+    }
+  </div>
+</div>

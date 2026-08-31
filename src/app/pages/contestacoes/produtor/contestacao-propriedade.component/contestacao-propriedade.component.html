@@ -1,0 +1,92 @@
+<div class="contestacao-propriedade-wrapper">
+
+  <!-- VISÃO 1: LISTA -->
+  @if (viewModo() === 'LISTA') {
+    <app-listar-propriedade
+      [propriedades]="listaPropriedades()"
+      (iniciarContestacao)="iniciarFluxoContestacao($event)"
+      (novaPropriedadeClick)="abrirCadastro()"
+    ></app-listar-propriedade>
+  }
+
+  <!-- VISÃO 2: CADASTRO -->
+  @if (viewModo() === 'CADASTRO') {
+    <div class="nav-back">
+      <button mat-button (click)="voltarParaLista()">
+        <mat-icon>arrow_back</mat-icon> Voltar para a lista
+      </button>
+    </div>
+    <app-cadastrar-propriedade (cadastradoSucesso)="onCadastradoComSucesso()"></app-cadastrar-propriedade>
+  }
+
+  <!-- VISÃO 3: SELEÇÃO DE DETECÇÕES E ENVIAR CONTESTAÇÃO -->
+  @if (viewModo() === 'CONTESTACAO_DETECOES') {
+    <div class="contestacao-panel">
+      <div class="panel-header">
+        <button mat-icon-button (click)="voltarParaLista()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h3>CONTESTAÇÃO AMBIENTAL - CAR: {{ propriedadeSelecionada()?.codigo_car }}</h3>
+      </div>
+
+      <p class="desc-help">Selecione uma ou mais detecções detectadas pelo PostGIS que você deseja contestar:</p>
+
+      <div class="deteccoes-grid">
+        @for (det of propriedadeSelecionada()?.deteccoes; track det.id_deteccao) {
+          <div
+            class="deteccao-card"
+            [class.selected]="deteccoesSelecionadas().includes(det.id_deteccao)"
+            (click)="toggleSelecaoDeteccao(det.id_deteccao)"
+          >
+            <mat-checkbox
+              [checked]="deteccoesSelecionadas().includes(det.id_deteccao)"
+              (click)="$event.stopPropagation()"
+            ></mat-checkbox>
+            <div class="info">
+              <span class="alerta-nome">{{ det.nome_alerta }}</span>
+              <span class="alerta-tipo">{{ det.tipo_conflito }}</span>
+              <span class="alerta-area">{{ det.area_ha }} ha</span>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-box">Não há detecções registradas nesta propriedade para contestação.</div>
+        }
+      </div>
+
+      @if (deteccoesSelecionadas().length > 0) {
+        <div class="form-motivo">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Motivo e Justificativa da Contestação</mat-label>
+            <textarea
+              matInput
+              rows="4"
+              [ngModel]="motivoContestacao()"
+              (ngModelChange)="motivoContestacao.set($event)"
+              placeholder="Descreva detalhadamente a justificativa técnica para a contestação da área..."
+            ></textarea>
+          </mat-form-field>
+
+          <button
+            mat-flat-button
+            class="btn-send"
+            (click)="enviarContestacao()"
+            [disabled]="loadingEnvio() || !motivoContestacao().trim()"
+          >
+            @if (loadingEnvio()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <span>Enviar Contestação Das Detecções Selecionadas</span>
+            }
+          </button>
+        </div>
+      }
+
+      @if (mensagemSucesso()) {
+        <div class="success-banner">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ mensagemSucesso() }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

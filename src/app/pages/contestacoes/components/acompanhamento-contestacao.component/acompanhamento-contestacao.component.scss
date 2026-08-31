@@ -1,0 +1,193 @@
+.acompanhamento-container {
+  padding: 24px;
+  background-color: #0b1913;
+  min-height: calc(100vh - 60px);
+  color: #e2e8f0;
+
+  .header-section {
+    margin-bottom: 24px;
+    h2 {
+      color: #ffffff;
+      font-size: 1.5rem;
+      margin: 0 0 6px 0;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  }
+
+  .table-card {
+    background: #0f231b;
+    border: 1px solid #1e4535;
+    border-radius: 12px;
+    overflow: hidden;
+
+    table {
+      width: 100%;
+      background: transparent;
+
+      th {
+        background-color: #142e23;
+        color: #a7f3d0;
+        font-weight: 600;
+        font-size: 0.85rem;
+        border-bottom: 1px solid #1e4535;
+      }
+
+      td {
+        color: #cbd5e1;
+        border-bottom: 1px solid #1e4535;
+        font-size: 0.88rem;
+      }
+
+      tr:hover {
+        background-color: #142e23;
+      }
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+
+      &-propriedade {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+        border: 1px solid #3b82f6;
+      }
+
+      &-gleba {
+        background-color: rgba(168, 85, 247, 0.2);
+        color: #c084fc;
+        border: 1px solid #a855f7;
+      }
+    }
+
+    .status-tag {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+
+      &.pendente {
+        background-color: rgba(234, 179, 8, 0.2);
+        color: #fde047;
+      }
+      &.concluido, &.deferido {
+        background-color: rgba(74, 222, 128, 0.2);
+        color: #4ade80;
+      }
+      &.indeferido, &.cancelado {
+        background-color: rgba(248, 113, 113, 0.2);
+        color: #f87171;
+      }
+    }
+
+    .actions-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+
+      .btn-relatorio {
+        color: #ef4444;
+      }
+    }
+
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+      color: #64748b;
+      mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+      }
+    }
+  }
+}
+
+/* Modal de Confirmação Personalizado */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 16px;
+
+  .confirm-modal-card {
+    background: #0f231b;
+    border: 1px solid #1e4535;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+
+    .modal-icon.warning {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px auto;
+      border-radius: 50%;
+      background-color: rgba(234, 179, 8, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+        color: #fde047;
+      }
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      color: #ffffff;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 0 0 20px 0;
+      color: #cbd5e1;
+      font-size: 0.88rem;
+      line-height: 1.4;
+
+      strong {
+        color: #ffffff;
+      }
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+
+      .btn-cancel {
+        color: #94a3b8 !important;
+        border: 1px solid #1e4535;
+      }
+
+      .btn-confirm-danger {
+        background-color: #ef4444 !important;
+        color: #ffffff !important;
+        font-weight: 600;
+
+        &:hover {
+          background-color: #dc2626 !important;
+        }
+      }
+    }
+  }
+}

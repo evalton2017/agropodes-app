@@ -149,7 +149,7 @@ export class CadastroContestacaoComponent implements OnInit {
     formData.append('analise_automatica_json', JSON.stringify(this.dadosGleba));
 
     if (this.arquivoSelecionado) {
-      formData.append('imagem', this.arquivoSelecionado);
+      formData.append('documento', this.arquivoSelecionado, this.arquivoSelecionado.name);
     }
 
     this.contestacaoService.cadastrarContestacao(formData).subscribe({

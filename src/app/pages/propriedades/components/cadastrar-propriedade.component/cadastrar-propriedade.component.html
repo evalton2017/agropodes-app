@@ -1,0 +1,118 @@
+<div class="cadastrar-propriedade-card">
+  <div class="card-header">
+    <h3>CADASTRAR E CONSULTAR PROPRIEDADE RURAL (CAR)</h3>
+    <span class="sub-header">Pré-validação geoespacial oficial SDI/MAPA Portaria 739/2025</span>
+  </div>
+
+  <!-- Reuso do Componente Existente de Cards das Glebas -->
+  <app-dashboard-produtor-gleba-card
+    (glebaObjetoChange)="onGlebaSelecionada($event)">
+  </app-dashboard-produtor-gleba-card>
+
+  <!-- Campo de Pesquisa Manual / Autopreenchido pelo Card -->
+  <div class="search-box">
+    <mat-form-field appearance="outline" class="input-car">
+      <mat-label>Código do Imóvel no CAR</mat-label>
+      <input
+        matInput
+        [ngModel]="codCarInput()"
+        (ngModelChange)="codCarInput.set($event)"
+        placeholder="Ex: MT-5108907-..."
+        (keyup.enter)="buscarCompliance()"
+      />
+      <button matSuffix mat-icon-button (click)="buscarCompliance()" aria-label="Buscar CAR">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <!-- Carregamento e Mensagens -->
+  @if (loadingConsulta()) {
+    <div class="spinner-box">
+      <mat-spinner diameter="32"></mat-spinner>
+      <span>Varrendo camadas do PostGIS e PRODES...</span>
+    </div>
+  }
+
+  @if (erroMensagem()) {
+    <div class="error-box">
+      <mat-icon>error</mat-icon>
+      <span>{{ erroMensagem() }}</span>
+    </div>
+  }
+
+  <!-- Pré-Visualização do Compliance -->
+  @if (complianceResultado() && !loadingConsulta()) {
+    <div class="preview-compliance">
+      <div class="metrics-grid">
+        <div class="m-card">
+          <span class="label">MÓDULOS FISCAIS</span>
+          <span class="val">{{ complianceResultado()?.numero_modulos_fiscais }} MF</span>
+        </div>
+        <div class="m-card">
+          <span class="label">DESMATAMENTO TOTAL</span>
+          <span class="val danger">{{ complianceResultado()?.area_total_desmatada_ha }} ha</span>
+        </div>
+        <div class="m-card">
+          <span class="label">SOBREPOSIÇÃO APP / RL</span>
+          <span class="val" [class.danger]="complianceResultado()?.sobreposicao_app_rl === 'SIM'">
+            {{ complianceResultado()?.sobreposicao_app_rl }}
+          </span>
+        </div>
+        <div class="m-card highlight">
+          <span class="label">MULTA INDENIZATÓRIA</span>
+          <span class="val green">
+            {{ complianceResultado()?.valor_multa_indenizatoria | currency:'BRL':'symbol':'1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Tabela de Alertas -->
+      <div class="table-box">
+        <h4>DETECÇÕES ENCONTRADAS ({{ complianceResultado()?.detalhes_alertas?.length || 0 }})</h4>
+        <div class="table-scroll-wrapper">
+          <table class="data-table">
+            <thead>
+            <tr>
+              <th>Descrição do Alerta / Camada</th>
+              <th>Tipo Conflito</th>
+              <th class="text-right">Área (Ha)</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (alerta of complianceResultado()?.detalhes_alertas; track $index) {
+                <tr>
+                  <td>{{ alerta.nome || alerta.descricao }}</td>
+                  <td>{{ alerta.tipo_conflito }}</td>
+                  <td class="text-right">{{ alerta.area_ha }} ha</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3" class="empty">Nenhum conflito ambiental detectado.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="actions-bar">
+        <button
+          mat-flat-button
+          class="btn-confirm"
+          (click)="confirmarEGravar()"
+          [disabled]="loadingSalvar() || !complianceResultado()?.valor_multa_indenizatoria"
+        >
+          <ng-container>
+            @if (loadingSalvar()) {
+              <mat-spinner diameter="18"></mat-spinner>
+            } @else {
+              <mat-icon>check_circle</mat-icon>
+              <span>Confirmar e Salvar Propriedade</span>
+            }
+          </ng-container>
+        </button>
+      </div>
+    </div>
+  }
+</div>
