@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '../auth/auth.guard';
+import {PropriedadeComponent} from '../pages/propriedades/propriedade.component/propriedade.component';
 
 export const PRODUTOR_ROUTES: Routes = [
   {
@@ -70,8 +71,14 @@ export const PRODUTOR_ROUTES: Routes = [
       {
         path: 'contestacao-propriedade',
         loadComponent: () =>
-          import('../pages/contestacoes/produtor/contestacao-propriedade.component/contestacao-propriedade.component').then(m => m.ContestacaoPropriedadeComponent)
+          import('../pages/contestacoes/produtor/contestacao-propriedade.component/contestacao-propriedade.component').then(m => m.ContestacaoPropriedadeComponent),
+        data: { origem: 'contestacao' }
       },
+      {
+        path: 'propriedades',
+        component: PropriedadeComponent,
+        data: { origem: 'propriedades' }
+      }
     ]
   }
 ];

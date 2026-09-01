@@ -1,0 +1,108 @@
+<div class="detalhes-wrapper">
+  <!-- Botão Voltar -->
+  <div class="nav-header">
+    <button mat-button class="btn-back" (click)="voltarClick.emit()">
+      <mat-icon>arrow_back</mat-icon> Voltar para a lista
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-box">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Carregando dados da propriedade e renderizando espacialização...</span>
+    </div>
+  } @else if (detalhes()) {
+
+    <!-- CARD DE INFORMAÇÕES BÁSICAS DO IMÓVEL E PROPRIETÁRIO -->
+    <div class="detail-card">
+      <div class="card-header">
+        <h2>{{ detalhes()?.nome_propriedade }}</h2>
+        <span class="sub-title">CAR: {{ detalhes()?.codigo_car }}</span>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">PROPRIETÁRIO / RAZÃO SOCIAL</span>
+          <span class="value font-bold">{{ detalhes()?.proprietario?.nome || 'Não informado' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">CPF / CNPJ</span>
+          <span class="value font-mono">{{ detalhes()?.proprietario?.cpf_cnpj || 'Não informado' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">ÁREA TOTAL</span>
+          <span class="value font-bold">{{ detalhes()?.area_hectares }} ha</span>
+        </div>
+        <div class="info-item">
+          <span class="label">MUNICÍPIO / UF</span>
+          <span class="value">{{ detalhes()?.municipio }} / {{ detalhes()?.uf }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">DATA DE CADASTRO</span>
+          <span class="value">{{ detalhes()?.data_criacao }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAPA DE ESPACIALIZAÇÃO DO IMÓVEL E DETECÇÕES -->
+    <div class="detail-card">
+      <h3 class="section-title">ESPACIALIZAÇÃO DO IMÓVEL E DETECÇÕES</h3>
+
+      @if (detalhes()?.mapa_base64) {
+        <div class="map-container">
+          <img [src]="detalhes()?.mapa_base64" alt="Mapa da Propriedade" />
+
+          <div class="legenda-box">
+            <span class="legenda-title">Legenda das Camadas:</span>
+            <div class="legenda-items">
+              @for (item of detalhes()?.legenda_mapa; track item.nome) {
+                <div class="legenda-item">
+                  <span class="color-badge" [style.background-color]="item.cor_hex"></span>
+                  <span>{{ item.nome }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- 🟢 TABELA RESTAURADA: DETALHAMENTO DAS DETECÇÕES AMBIENTAIS -->
+    <div class="detail-card">
+      <h3 class="section-title">DETECÇÕES E SOBREPOSIÇÕES ENCONTRADAS</h3>
+
+      <div class="table-responsive">
+        <table class="agro-table">
+          <thead>
+          <tr>
+            <th>ALERTA / CAMADA</th>
+            <th>TIPO DE CONFLITO</th>
+            <th class="text-right">ÁREA (M²)</th>
+            <th class="text-right">ÁREA (HA)</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (det of detalhes()?.deteccoes; track det.id_deteccao) {
+              <tr>
+                <td class="font-bold">{{ det.alerta }}</td>
+                <td>{{ det.tipo_conflito || 'SOBREPOSIÇÃO' }}</td>
+                <td class="text-right font-mono">{{ det.area_m2 | number:'1.2-2' }}</td>
+                <td class="text-right danger-text font-bold">{{ det.area_ha }} ha</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="empty-row">
+                  <div class="empty-content">
+                    <mat-icon class="empty-icon">check_circle</mat-icon>
+                    <span>Nenhuma detecção registrada para esta propriedade.</span>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  }
+</div>

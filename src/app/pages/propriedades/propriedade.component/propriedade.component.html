@@ -1,0 +1,42 @@
+<div class="propriedade-wrapper">
+
+  <!-- VISÃO 1: LISTA (Modo Gerenciamento) -->
+  @if (viewModo() === 'LISTA') {
+    <app-listar-propriedade
+      [propriedades]="listaPropriedades()"
+      modo="GERENCIAMENTO"
+      (novaPropriedadeClick)="abrirCadastro()"
+      (detalhesClick)="verDetalhes($event)"
+      (adicionarSocioClick)="abrirModalAdicionarSocio($event)"
+    ></app-listar-propriedade>
+  }
+
+  <!-- VISÃO 2: CADASTRO -->
+  @if (viewModo() === 'CADASTRO') {
+    <div class="nav-back">
+      <button mat-button (click)="voltarParaLista()">
+        <mat-icon>arrow_back</mat-icon> Voltar para a lista
+      </button>
+    </div>
+    <app-cadastrar-propriedade (cadastradoSucesso)="onCadastradoComSucesso()"></app-cadastrar-propriedade>
+  }
+
+  <!-- VISÃO 3: DETALHES -->
+  @if (viewModo() === 'DETALHES' && idPropriedadeSelecionada()) {
+    <app-detalhes-propriedade
+      [idPropriedade]="idPropriedadeSelecionada()!"
+      (voltarClick)="voltarParaLista()"
+    ></app-detalhes-propriedade>
+  }
+
+  <!-- VISÃO 4: EDIÇÃO -->
+  @if (viewModo() === 'EDICAO') {
+    <div class="nav-back">
+      <button mat-button (click)="voltarParaLista()">
+        <mat-icon>arrow_back</mat-icon> Voltar para a lista
+      </button>
+    </div>
+    <!-- <app-editar-propriedade [propriedade]="propriedadeSelecionada()"></app-editar-propriedade> -->
+  }
+
+</div>

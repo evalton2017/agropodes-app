@@ -4,9 +4,9 @@
   @if (viewModo() === 'LISTA') {
     <app-listar-propriedade
       [propriedades]="listaPropriedades()"
-      (iniciarContestacao)="iniciarFluxoContestacao($event)"
-      (novaPropriedadeClick)="abrirCadastro()"
-    ></app-listar-propriedade>
+      modo="CONTESTACAO"
+      (iniciarContestacao)="iniciarFluxoContestacao($event)">
+    </app-listar-propriedade>
   }
 
   <!-- VISÃO 2: CADASTRO -->

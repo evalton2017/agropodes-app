@@ -67,7 +67,8 @@ export class ModuloCadastroComponent implements OnInit {
         this.carregarModulos();
       },
       error: (err) => {
-        const msg = err.error?.message || 'Erro ao cadastrar módulo.';
+        console.log(err);
+        const msg = err.error.detail || 'Erro ao cadastrar módulo.';
         this.alertService.error(msg);
       }
     });
