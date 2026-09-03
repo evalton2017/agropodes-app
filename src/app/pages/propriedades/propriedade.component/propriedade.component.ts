@@ -11,6 +11,8 @@ import {
 import {
   DetalhesPropriedadeComponent
 } from '../components/detalhes-propriedade.component/detalhes-propriedade.component';
+import {ModalCadastrarSocioComponent} from '../modal/modal-cadastrar-socio.component';
+import {MatDialog} from '@angular/material/dialog';
 
 export type ModoViewPropriedade = 'LISTA' | 'CADASTRO' | 'DETALHES' | 'EDICAO';
 
@@ -33,6 +35,7 @@ export class PropriedadeComponent implements OnInit {
   viewModo = signal<ModoViewPropriedade>('LISTA');
   listaPropriedades = signal<Propriedade[]>([]);
   idPropriedadeSelecionada = signal<number | null>(null);
+  private dialog = inject(MatDialog);
 
   private propriedadeService = inject(PropriedadeService);
 
@@ -56,9 +59,20 @@ export class PropriedadeComponent implements OnInit {
     this.viewModo.set('DETALHES');
   }
 
-  abrirModalAdicionarSocio(prop: Propriedade): void {
-    this.idPropriedadeSelecionada.set(prop.id_propriedade);
-    this.viewModo.set('EDICAO');
+  abrirModalAdicionarSocio(propriedade: Propriedade): void {
+    const dialogRef = this.dialog.open(ModalCadastrarSocioComponent, {
+      width: '440px',
+      data: {
+        idPropriedade: propriedade.id_propriedade,
+        codigoCar: propriedade.codigo_car
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((recarregar) => {
+      if (recarregar) {
+        this.carregarPropriedades();
+      }
+    });
   }
 
   voltarParaLista(): void {

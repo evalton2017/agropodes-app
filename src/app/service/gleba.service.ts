@@ -28,6 +28,8 @@ import {FiltrosDashboard} from '../pages/dashboard/service/dashboard-filtro.serv
 export class GlebaService {
   private readonly http = inject(HttpClient);
 
+  private readonly baseUrl = `${environment.urlProc}/gleba`;
+
   buscarSafra(idGleba: number): Observable<SafrasGlebaAPIResponse> {
     return this.http.get<SafrasGlebaAPIResponse>(
       `${environment.urlProc}/gleba/${idGleba}/safras`
@@ -121,7 +123,7 @@ export class GlebaService {
     return this.http.get<GlebaGeometriaResponse>(
       `${environment.urlProc}/produtor/${idProdutor}/glebas`);
   }
-  
+
   obterDetalheLaudoGleba(idGleba: number, safra?: string): Observable<GlebaData> {
     let params = new HttpParams();
     if (safra) {
@@ -129,6 +131,10 @@ export class GlebaService {
     }
 
     return this.http.get<GlebaData>(`${environment.urlProc}/gleba/${idGleba}/laudo-detalhado`, { params });
+  }
+
+  atualizarCulturaGleba(idGleba: number, cultura: string): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/${idGleba}/cultura`, { cultura });
   }
 
 

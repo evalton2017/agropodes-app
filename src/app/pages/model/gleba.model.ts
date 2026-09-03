@@ -183,3 +183,15 @@ export interface SafraItem {
   vigente: boolean;
 }
 
+export const CULTURAS_PERMITIDAS: string[] = [
+  'Soja',
+  'Milho',
+  'Algodão',
+  'Café Arábica',
+  'Cana-De-Açúcar (Açúcar E Álcool)',
+  'Pastagem',
+  'Trigo',
+  'Arroz',
+  'Eucalipto / Silvicultura',
+  'Outras Culturas / Pousio'
+];

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {DetalhesPropriedadeResponse, PropriedadeService} from '../../propriedade.service';
+import {PropriedadeService} from '../../propriedade.service';
+import {DetalhesPropriedadeResponse} from '../../propriedade.model';
 
 @Component({
   selector: 'app-detalhes-propriedade',

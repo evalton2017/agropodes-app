@@ -47,3 +47,44 @@ export interface NovaContestacaoPropriedadeRequest {
   motivo_contestacao: string;
   wkt_demarcado?: string;
 }
+
+export interface CadastrarSocioDTO {
+  cpf_cnpj: string;
+  nome: string;
+  email?: string;
+  percentual_participacao?: number;
+  tipo_vinculo?: string; // 'SOCIO' | 'CO_PROPRIETARIO' | 'ARRENDATARIO'
+}
+
+export interface SocioPropriedadeItem {
+  id_pessoa: number;
+  nome: string;
+  cpf_cnpj: string;
+  email?: string;
+  tipo_vinculo: string;
+  percentual_participacao: number;
+}
+
+export interface DetalhesPropriedadeResponse {
+  id_propriedade: number;
+  nome_propriedade: string;
+  codigo_car: string;
+  area_hectares: number;
+  data_criacao: string;
+  municipio: string;
+  uf: string;
+  mapa_base64?: string;
+  legenda_mapa?: Array<{ nome: string; cor_hex: string }>;
+  proprietario?: {
+    nome: string;
+    cpf_cnpj: string;
+  };
+  socios?: SocioPropriedadeItem[];
+  deteccoes: Array<{
+    id_deteccao: number;
+    alerta: string;
+    tipo_conflito: string;
+    area_m2: number;
+    area_ha: number;
+  }>;
+}

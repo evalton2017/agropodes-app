@@ -1,23 +1,23 @@
 <div class="map-wrapper">
-  <!-- Container do MapLibre 3D -->
+  <!-- Container do MapLibre 3D com Voxels Extudados -->
   <div #mapContainer class="map-container"></div>
 
-  <!-- Badge Superior Esquerdo: Informações do Grid 3D -->
+  <!-- Badge Superior Esquerdo: Informações do Grid 3D de Voxels -->
   <div class="badge-overlay-top" *ngIf="pontosRenderizados() > 0">
     <span class="badge-item">
-      <i class="icon">🧊</i> Pontos 3D: <strong>{{ pontosRenderizados() }}</strong>
+      🧊 Voxels 3D: <strong>{{ pontosRenderizados() }}</strong>
     </span>
-    <span class="badge-item active">Camada: Saúde (NDVI)</span>
+    <span class="badge-item active">Modelo: Voxelized Health & Biomass</span>
   </div>
 
-  <!-- Botão de Reset da Perspectiva 3D (Canto Inferior Direito) -->
+  <!-- Botão de Reset da Perspectiva 3D -->
   <button class="btn-reset-3d" (click)="resetarVisao3D()" title="Resetar Câmera 3D">
     <span class="icon">🔄 3D</span>
   </button>
 
   <!-- Legenda Dinâmica de Saúde Vegetal / NDVI -->
   <div class="legend-card">
-    <div class="legend-title">🌱 VIGOR VEGETATIVO (NDVI)</div>
+    <div class="legend-title">🌱 VIGOR VEGETATIVO & PRODUTIVIDADE</div>
     <div class="legend-items">
       <div class="legend-row" *ngFor="let item of legendaNdvi">
         <span class="color-box" [style.background-color]="item.corHex"></span>

@@ -52,7 +52,6 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
   public isPlaying = signal<boolean>(false);
   public rasterAtivo = signal<ItemSerieTemporalRaster | null>(null);
   public pontosRenderizados = signal<number>(0);
-  public dadosGrid3D = signal<any | null>(null);
 
   // Legenda oficial de Saúde Vegetal (NDVI)
   public readonly legendaNdvi: LegendaNdviItem[] = [
@@ -72,9 +71,6 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
     if (isPlatformBrowser(this.platformId) && this.isMapLoaded) {
       if (changes['geometria'] && this.geometria) {
         this.desenharGeometriaGleba();
-      }
-      if (changes['idGleba'] && this.idGleba) {
-        this.carregarGrid3D();
       }
       if (changes['rasters'] && this.rasters.length > 0) {
         this.currentIndex.set(0);
@@ -110,10 +106,10 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
           }
         ]
       },
-      center: [-47.073755, -20.876035],
-      zoom: 15.5,
-      pitch: 58, // 🟢 Perspectiva 3D Inclina a Câmera
-      bearing: -20, // 🟢 Rotação de Ângulo Tridimensional
+      center: [-47.6796, -20.1652], // Coordenadas aproximadas de Buritizal - SP
+      zoom: 17.2,
+      pitch: 62, // Perspectiva isométrica em 3D
+      bearing: -20,
       maxPitch: 85
     });
 
@@ -127,29 +123,10 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
       if (this.geometria) {
         this.desenharGeometriaGleba();
       }
-      if (this.idGleba) {
-        this.carregarGrid3D();
-      }
       if (this.rasters && this.rasters.length > 0) {
         this.carregarFrameRaster(0);
       }
     });
-  }
-
-  public carregarGrid3D(): void {
-    if (!this.idGleba) return;
-
-    this.monitoramentoService.obterGrid3D(this.idGleba)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (res) => {
-          this.dadosGrid3D.set(res);
-          this.renderizarGridPontos3D();
-        },
-        error: (err) => {
-          console.warn('Grid 3D não retornado para a gleba, mantendo visualização por polígono:', err);
-        }
-      });
   }
 
   private desenharGeometriaGleba(): void {
@@ -158,7 +135,6 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
     const geojson = this.parseWKTToGeoJSON(this.geometria);
     if (!geojson) return;
 
-    if (this.map.getLayer('gleba-polygon-layer')) this.map.removeLayer('gleba-polygon-layer');
     if (this.map.getLayer('gleba-line-layer')) this.map.removeLayer('gleba-line-layer');
     if (this.map.getSource('gleba-source')) this.map.removeSource('gleba-source');
 
@@ -167,88 +143,146 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
       data: geojson
     });
 
-    // Camada de Preenchimento Translúcido
-    this.map.addLayer({
-      id: 'gleba-polygon-layer',
-      type: 'fill',
-      source: 'gleba-source',
-      paint: {
-        'fill-color': '#00ff66',
-        'fill-opacity': 0.35
-      }
-    });
-
-    // Camada de Borda Verde Neon
+    // Borda Neon para contorno da gleba
     this.map.addLayer({
       id: 'gleba-line-layer',
       type: 'line',
       source: 'gleba-source',
       paint: {
-        'line-color': '#00ff66',
+        'line-color': '#a855f7',
         'line-width': 2.5
       }
     });
 
-    // Voa com câmera 3D até o centroide do polígono
     const coords = geojson.geometry.coordinates[0];
     if (coords && coords.length > 0) {
       const centro = this.calcularCentroide(coords);
       this.map.flyTo({
         center: centro,
-        zoom: 16,
-        pitch: 58,
+        zoom: 17.5,
+        pitch: 62,
         bearing: -20,
         duration: 1200
       });
     }
+
+    // Gerar e desenhar a grade de Voxels 3D inicial
+    this.gerarERenderizarGridVoxels3D();
   }
 
-  private renderizarGridPontos3D(): void {
-    const dados = this.dadosGrid3D();
-    if (!dados || !this.map) return;
+  /**
+   * 🟢 GERA A MALHA DE VOXELS 3D COM BASE NO WKT E ATUALIZA ALTURA/COR SEGUNDO O NDVI ATUAL
+   */
+  private gerarERenderizarGridVoxels3D(): void {
+    if (!this.map || !this.geometria) return;
 
-    const listaElementos = dados.grid_propriedades || dados.pontos_grid || dados.grid;
-    if (!Array.isArray(listaElementos) || listaElementos.length === 0) return;
+    const geojson = this.parseWKTToGeoJSON(this.geometria);
+    if (!geojson || !geojson.geometry || !geojson.geometry.coordinates) return;
 
-    const features = listaElementos.map((item: any) => ({
-      type: 'Feature' as const, // 🟢 Força o tipo literal 'Feature'
-      geometry: {
-        type: 'Point' as const, // 🟢 Força o tipo literal 'Point'
-        coordinates: [Number(item.lng || item.longitude), Number(item.lat || item.latitude)]
-      },
-      properties: {
-        cor_hex: item.saude_plantas?.hex || item.hex || '#00ff66',
-        ndvi_val: item.saude_plantas?.valor_ndvi || item.ndvi || 0.8
+    const coords = geojson.geometry.coordinates[0];
+    const lngs = coords.map((c: number[]) => c[0]);
+    const lats = coords.map((c: number[]) => c[1]);
+
+    const minLng = Math.min(...lngs);
+    const maxLng = Math.max(...lngs);
+    const minLat = Math.min(...lats);
+    const maxLat = Math.max(...lats);
+
+    // Resolução da grade (Ex: matriz 10x10 sobre o talhão)
+    const Passos = 10;
+    const stepX = (maxLng - minLng) / Passos;
+    const stepY = (maxLat - minLat) / Passos;
+    const cellRadius = Math.min(stepX, stepY) * 0.45;
+
+    // Obtém o NDVI médio do frame selecionado na linha do tempo
+    const raster = this.rasterAtivo();
+    const ndviBase = raster ? raster.ndviMean : 0.30;
+
+    const features: any[] = [];
+
+    for (let i = 0; i < Passos; i++) {
+      for (let j = 0; j < Passos; j++) {
+        const lng = minLng + (i * stepX) + (stepX / 2);
+        const lat = minLat + (j * stepY) + (stepY / 2);
+
+        // Verifica se o ponto está dentro do polígono WKT da gleba
+        if (this.pontoEstaNoPoligono([lng, lat], coords)) {
+          // Variação micro-local para dar relevo e simular manchas de saúde no talhão
+          const variacaoLocal = (Math.sin(i * 1.5) * 0.08) + (Math.cos(j * 1.5) * 0.06);
+          const ndviVoxel = Math.min(0.95, Math.max(0.05, ndviBase + variacaoLocal));
+
+          const corHex = this.getCorEscalaNdvi(ndviVoxel);
+
+          // Altura do bloco extrudado em metros (0.12 NDVI -> ~5m | 0.56 NDVI -> ~45m)
+          const alturaMetros = Math.max(4, ndviVoxel * 80);
+
+          // Polígono quadrado (cubo 3D)
+          const polyCoords = [
+            [lng - cellRadius, lat - cellRadius],
+            [lng + cellRadius, lat - cellRadius],
+            [lng + cellRadius, lat + cellRadius],
+            [lng - cellRadius, lat + cellRadius],
+            [lng - cellRadius, lat - cellRadius]
+          ];
+
+          features.push({
+            type: 'Feature',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [polyCoords]
+            },
+            properties: {
+              cor_hex: corHex,
+              altura: alturaMetros,
+              ndvi_val: ndviVoxel
+            }
+          });
+        }
       }
-    }));
-
-    const geojson = {
-      type: 'FeatureCollection' as const, // 🟢 Força o tipo literal 'FeatureCollection'
-      features
-    };
+    }
 
     this.pontosRenderizados.set(features.length);
 
-    if (this.map.getLayer('grid-3d-circles')) this.map.removeLayer('grid-3d-circles');
-    if (this.map.getSource('grid-3d-source')) this.map.removeSource('grid-3d-source');
+    // Atualização da fonte GeoJSON no MapLibre
+    if (this.map.getSource('grid-voxels-source')) {
+      (this.map.getSource('grid-voxels-source') as maplibregl.GeoJSONSource).setData({
+        type: 'FeatureCollection',
+        features
+      });
+    } else {
+      this.map.addSource('grid-voxels-source', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features
+        }
+      });
 
-    this.map.addSource('grid-3d-source', {
-      type: 'geojson',
-      data: geojson
-    });
+      // Camada de Extrusão Tridimensional NATIVA (fill-extrusion)
+      this.map.addLayer({
+        id: 'grid-voxels-3d-layer',
+        type: 'fill-extrusion',
+        source: 'grid-voxels-source',
+        paint: {
+          'fill-extrusion-color': ['get', 'cor_hex'],
+          'fill-extrusion-height': ['get', 'altura'],
+          'fill-extrusion-base': 0,
+          'fill-extrusion-opacity': 0.90
+        }
+      });
+    }
+  }
 
-    this.map.addLayer({
-      id: 'grid-3d-circles',
-      type: 'circle',
-      source: 'grid-3d-source',
-      paint: {
-        'circle-radius': 4.5,
-        'circle-color': ['get', 'cor_hex'],
-        'circle-opacity': 0.88,
-        'circle-stroke-width': 0.4,
-        'circle-stroke-color': '#ffffff'
-      }
-    });
+  public carregarFrameRaster(index: number): void {
+    const targetRaster = this.rasters[index];
+    if (!targetRaster || !this.map) return;
+
+    this.rasterAtivo.set(targetRaster);
+
+    // Re-renderiza o mosaico 3D recalculando a cor e a altura para a nova data selecionada
+    if (this.isMapLoaded) {
+      this.gerarERenderizarGridVoxels3D();
+    }
   }
 
   public togglePlay(): void {
@@ -263,7 +297,7 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
       if (nextIndex >= this.rasters.length) nextIndex = 0;
       this.currentIndex.set(nextIndex);
       this.carregarFrameRaster(nextIndex);
-    }, 1200);
+    }, 1000);
   }
 
   private pausar(): void {
@@ -277,31 +311,16 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
     this.carregarFrameRaster(idx);
   }
 
-  private carregarFrameRaster(index: number): void {
-    const targetRaster = this.rasters[index];
-    if (!targetRaster || !this.map) return;
-    this.rasterAtivo.set(targetRaster);
-
-    const ndvi = targetRaster.ndviMean || 0;
-    const corNdvi = this.getCorEscalaNdvi(ndvi);
-
-    // Atualiza dinamicamente a cor da gleba no tempo
-    if (this.map.getLayer('gleba-polygon-layer')) {
-      this.map.setPaintProperty('gleba-polygon-layer', 'fill-color', corNdvi);
-      this.map.setPaintProperty('gleba-polygon-layer', 'fill-opacity', 0.65);
-    }
-  }
-
   public resetarVisao3D(): void {
     if (!this.map) return;
-    this.map.easeTo({ pitch: 58, bearing: -20, duration: 800 });
+    this.map.easeTo({ pitch: 62, bearing: -20, duration: 800 });
   }
 
   private getCorEscalaNdvi(ndvi: number): string {
-    if (ndvi >= 0.55) return '#00ff66';
-    if (ndvi >= 0.40) return '#84cc16';
-    if (ndvi >= 0.28) return '#eab308';
-    return '#a16207';
+    if (ndvi >= 0.55) return '#00ff66'; // Verde Densa
+    if (ndvi >= 0.40) return '#84cc16'; // Verde Média
+    if (ndvi >= 0.28) return '#eab308'; // Amarelo Brotação
+    return '#a16207'; // Castanho / Solo Exposto
   }
 
   private parseWKTToGeoJSON(wkt: string): any {
@@ -320,6 +339,18 @@ export class AcompanhamentoAgricolaMapComponent implements OnChanges, AfterViewI
     } catch {
       return null;
     }
+  }
+
+  private pontoEstaNoPoligono(point: [number, number], vs: number[][]): boolean {
+    const x = point[0], y = point[1];
+    let inside = false;
+    for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+      const xi = vs[i][0], yi = vs[i][1];
+      const xj = vs[j][0], yj = vs[j][1];
+      const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
   }
 
   private calcularCentroide(coords: number[][]): [number, number] {

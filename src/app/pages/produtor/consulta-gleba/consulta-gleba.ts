@@ -13,6 +13,8 @@ import {PessoaService} from '../../../service/pessoa.service';
 import {GlebaDetalheComponent} from '../gleba-detalhe/gleba-detalhe';
 import {GlebaService} from '../../../service/gleba.service';
 import {GlebaData, RespostaConsultaGlebasPainel} from '../../model/gleba.model';
+import {ModalEditarCulturaGlebaComponent} from '../modal/modal-editar-cultura-gleba.component';
+import {MatDialog} from '@angular/material/dialog';
 
 
 @Component({
@@ -36,6 +38,7 @@ export class ConsultaGlebaComponent implements OnInit {
   private readonly produtorService = inject(GlebaService);
   private readonly pessoaService = inject(PessoaService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
 
   public carregando = signal<boolean>(false);
   public dadosPainel = signal<RespostaConsultaGlebasPainel | null>(null);
@@ -140,8 +143,35 @@ export class ConsultaGlebaComponent implements OnInit {
       }
     })
   }
-  public editarGleba(idGleba: number): void { console.log(`Abrir formulário de reajuste agronômico: ${idGleba}`); }
-  public baixarAtestado(idGleba: number): void { console.log(`Disparar download do PDF/A do Ledger: ${idGleba}`); }
+
+  public editarGleba(gleba: any): void {
+    const dialogRef = this.dialog.open(ModalEditarCulturaGlebaComponent, {
+      width: '400px',
+      data: {
+        idGleba: gleba.idGleba,
+        nomeGleba: gleba.nomeGleba,
+        culturaAtual: gleba.culturaDeclarada
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((novaCultura: string | undefined) => {
+      if (novaCultura && this.dadosPainel()) {
+        // Atualiza reativamente a cultura na lista do painel
+        const painelAtual = this.dadosPainel()!;
+        const glebasAtualizadas = painelAtual.glebas.map(g => {
+          if (g.idGleba === gleba.idGleba) {
+            return { ...g, culturaDeclarada: novaCultura };
+          }
+          return g;
+        });
+
+        this.dadosPainel.set({
+          ...painelAtual,
+          glebas: glebasAtualizadas
+        });
+      }
+    });
+  }
 
 
   protected readonly Math = Math;
