@@ -5,17 +5,25 @@
 }
 
 /* ==========================================================================
-   CONTAINER BASE (ELIMINA A BARRA DUPLA)
+   CONTAINER BASE
    ========================================================================== */
 .app-container {
   min-height: 100vh;
   background-color: var(--night) !important;
-  overflow: hidden !important; /* Desativa scroll no container externo */
+  overflow: hidden !important;
 }
 
 /* ==========================================================================
    CABEÇALHO SUPERIOR (HEADER)
    ========================================================================== */
+.app-header {
+  position: fixed;
+  top: 0;
+  z-index: 90;
+  background-color: var(--carbon-1) !important;
+  border-bottom: 1px solid var(--white-12);
+  transition: all 0.2s ease;
+}
 
 .header-profile-btn, .mobile-menu-btn {
   color: var(--white-70);
@@ -24,7 +32,7 @@
 .header-title {
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--lima);
   letter-spacing: 1px;
 }
@@ -57,12 +65,16 @@
   display: flex;
   flex-direction: column;
   width: var(--sidenav-width) !important;
-  height: 100vh;
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  box-sizing: border-box;
   z-index: 100;
+}
+
+/* 🟢 PERMITE QUE O CONTEÚDO DO MENU ROLE EM TELAS PEQUENAS */
+.main-nav-list {
+  padding-top: 8px !important;
+  flex: 1;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
 }
 
 .sidenav-logo-container {
@@ -129,8 +141,10 @@
     .user-fullname {
       color: var(--white);
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .user-role {
@@ -143,10 +157,6 @@
 }
 
 /* LISTA DE NAVEGAÇÃO */
-.main-nav-list {
-  padding-top: 8px !important;
-}
-
 .app-sidenav mat-nav-list a,
 .app-sidenav .menu-expansion-header {
   color: var(--white-70);
@@ -178,7 +188,7 @@
   }
 }
 
-/* RESET DEFINITIVO DO MINHAS GLEBAS (MAT-EXPANSION-PANEL) */
+/* RESET DEFINITIVO DO MAT-EXPANSION-PANEL */
 ::ng-deep .app-sidenav {
   mat-expansion-panel,
   .mat-expansion-panel,
@@ -225,6 +235,7 @@
   margin-top: auto;
   border-top: 1px solid var(--white-12);
   padding: 8px 0;
+  background-color: var(--carbon-1);
 
   .logout-btn {
     color: var(--white-70);
@@ -242,12 +253,12 @@
 }
 
 /* ==========================================================================
-   CONTEÚDO PRINCIPAL (ÁREA DA TELA QUE ROLA)
+   CONTEÚDO PRINCIPAL
    ========================================================================== */
 .page-body {
   display: flex;
   flex-direction: column;
-  flex: 1; /* Ocupa todo o espaço vertical disponível, forçando o rodapé para o fim */
+  flex: 1;
   width: 100%;
   box-sizing: border-box;
   background-color: var(--night);
@@ -256,7 +267,7 @@
 .main-content {
   padding: 24px;
   box-sizing: border-box;
-  flex: 1; /* Faz o conteúdo principal expandir */
+  flex: 1;
   width: 100%;
   min-width: 0;
 }
@@ -277,9 +288,17 @@
 }
 
 /* ==========================================================================
-   REGRAS RESPONSIVAS (TRAVAMENTO RIGOROSO DE BORDAS)
+   REGRAS RESPONSIVAS DESKTOP vs MOBILE
    ========================================================================== */
 @media (min-width: 960px) {
+  .app-sidenav {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+  }
+
   .app-header {
     left: var(--sidenav-width, 260px) !important;
     right: 0 !important;
@@ -296,11 +315,25 @@
 }
 
 @media (max-width: 959px) {
-  .app-header,
-  .app-content-wrapper,
-  .mat-sidenav-content {
+  /* 🟢 MODO OVERLAY/DRAWER EM MOBILE */
+  .app-sidenav {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh !important;
+    width: 260px !important;
+    z-index: 1000 !important;
+  }
+
+  .app-header {
     left: 0 !important;
     right: 0 !important;
+    width: 100% !important;
+  }
+
+  .app-content-wrapper,
+  .mat-sidenav-content {
     margin-left: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -308,5 +341,9 @@
 
   .main-content {
     padding: 12px;
+  }
+
+  .header-title {
+    font-size: 0.75rem;
   }
 }

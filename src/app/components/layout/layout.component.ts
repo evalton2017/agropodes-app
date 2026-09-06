@@ -1,23 +1,22 @@
 import { Component, inject, OnInit, PLATFORM_ID, signal, computed } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FooterComponent } from '../footer/footer.component';
-import { BreakpointObserver } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MenuItem } from '../../dto/menu-item';
 import Keycloak from 'keycloak-js';
 import { environment } from '../../../environments/environment';
 import { MatMenuModule } from '@angular/material/menu';
-import {NotificationButtonComponent} from '../button/notificacao-button.component';
-import {MENU_ITEMS} from '../model/menu-item';
+import { NotificationButtonComponent } from '../button/notificacao-button.component';
+import { MENU_ITEMS } from '../model/menu-item';
 import { MatTooltipModule } from "@angular/material/tooltip";
-import {PessoaService} from '../../service/pessoa.service';
-
+import { PessoaService } from '../../service/pessoa.service';
 
 @Component({
   selector: 'layout-app',
@@ -36,24 +35,22 @@ export class LayoutComponent implements OnInit {
   private readonly keycloak = inject(Keycloak);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly pessoaService = inject(PessoaService);
+
   username = signal<string>('Usuário');
-  isMobile = signal(false);
-  isExpanded = signal(false);
+  isMobile = signal<boolean>(false);
+  isExpanded = signal<boolean>(false);
 
   private readonly userRoles = signal<string[]>([]);
-
   private readonly allMenuItems: MenuItem[] = MENU_ITEMS;
 
   menuItems = computed(() => {
     const pessoa = this.pessoaService.produtorAtual();
     const carregando = this.pessoaService.carregandoPerfil();
 
-    // 🟢 ENQUANTO ESTIVER CARREGANDO, RETORNA VAZIO (Evita mostrar todos os menus)
     if (carregando || !pessoa || !pessoa.perfil || !pessoa.perfil.modulos) {
       return [];
     }
 
-    // Extrai as chaves de rotas permitidas do banco de dados daquela pessoa
     const rotasPermitidas = pessoa.perfil.modulos.map((m: any) => m.chaveRota);
     return this.filtrarMenuPorRotas(this.allMenuItems, rotasPermitidas);
   });
@@ -61,7 +58,6 @@ export class LayoutComponent implements OnInit {
   private filtrarMenuPorRotas(menus: MenuItem[], rotasPermitidas: string[]): MenuItem[] {
     return menus
       .map(item => {
-        // Se o item tem filhos (submenus), filtra recursivamente os filhos
         if (item.children) {
           const filhosFiltrados = this.filtrarMenuPorRotas(item.children, rotasPermitidas);
           return { ...item, children: filhosFiltrados };
@@ -69,19 +65,25 @@ export class LayoutComponent implements OnInit {
         return item;
       })
       .filter(item => {
-        // O item permanece se tiver filhos válidos OU se a rota principal estiver na lista permitida
         const temFilhosValidos = item.children && item.children.length > 0;
         const rotaPermitida = item.route ? rotasPermitidas.includes(item.route) : false;
-
-        // O Dashboard (/home) costuma ser comum, garanta que ele passe se necessário
         const ehDashboard = item.route === '/home';
-
         return temFilhosValidos || rotaPermitida || ehDashboard;
       });
   }
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      // 🟢 DETECÇÃO E RESPOSTA A MUDANÇAS DE TELA (MOBILE VS DESKTOP)
+      this.breakpointObserver
+        .observe(['(max-width: 959px)'])
+        .subscribe(result => {
+          this.isMobile.set(result.matches);
+          if (result.matches) {
+            this.isExpanded.set(false);
+          }
+        });
+
       this.loadUserProfile();
       this.extractUserRoles();
       this.consultarProdutorLogado();
@@ -97,22 +99,6 @@ export class LayoutComponent implements OnInit {
 
       this.userRoles.set([...realmRoles, ...resourceRoles]);
     }
-  }
-
-  // Função utilitária recursiva para filtrar menus e submenus (children)
-  private filterMenusByRoles(menus: MenuItem[], roles: string[]): MenuItem[] {
-    return menus
-      .filter(item => !item.roles || item.roles.some(r => roles.includes(r)))
-      .map(item => {
-        if (item.children) {
-          return {
-            ...item,
-            children: this.filterMenusByRoles(item.children, roles)
-          };
-        }
-        return item;
-      })
-      .filter(item => !item.children || item.children.length > 0);
   }
 
   private async loadUserProfile() {
@@ -152,4 +138,10 @@ export class LayoutComponent implements OnInit {
 
   expandMenu() { if (!this.isMobile()) this.isExpanded.set(true); }
   collapseMenu() { if (!this.isMobile()) this.isExpanded.set(false); }
+
+  public fecharMenuMobile(sidenav: MatSidenav): void {
+    if (this.isMobile()) {
+      sidenav.close();
+    }
+  }
 }

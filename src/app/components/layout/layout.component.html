@@ -1,10 +1,11 @@
 @if (menuItems().length > 0) {
   <mat-sidenav-container class="app-container" [hasBackdrop]="isMobile()">
 
+    <!-- SIDENAV -->
     <mat-sidenav
       #sidenav
       [mode]="isMobile() ? 'over' : 'side'"
-      [opened]="!isMobile()"
+      [opened]="isMobile() ? false : true"
       class="app-sidenav"
       [class.desktop-collapsed]="!isMobile() && !isExpanded()"
       [class.desktop-expanded]="!isMobile() && isExpanded()"
@@ -18,7 +19,7 @@
       </div>
       <hr class="divider">
 
-      <!-- PERFIL DO USUÁRIO NO MENU (CONFORME MOCKUP) -->
+      <!-- PERFIL DO USUÁRIO NO MENU -->
       <div class="user-profile-card">
         <div class="avatar-circle">
           <mat-icon>eco</mat-icon>
@@ -54,7 +55,7 @@
                      routerLinkActive="active-link"
                      [matTooltip]="child.label"
                      matTooltipPosition="right"
-                     (click)="isMobile() ? sidenav.close() : null">
+                     (click)="fecharMenuMobile(sidenav)">
                     <mat-icon matListItemIcon>{{ child.icon }}</mat-icon>
                     <span matListItemTitle class="menu-text">{{ child.label }}</span>
                   </a>
@@ -68,7 +69,7 @@
                routerLinkActive="active-link"
                [matTooltip]="item.label"
                matTooltipPosition="right"
-               (click)="isMobile() ? sidenav.close() : null">
+               (click)="fecharMenuMobile(sidenav)">
               <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
               <span matListItemTitle class="menu-text">{{ item.label }}</span>
             </a>
@@ -79,7 +80,7 @@
 
       <!-- BOTÃO SAIR NO RODAPÉ DO MENU -->
       <div class="sidenav-footer">
-        <a mat-list-item (click)="logout()" class="logout-btn" matTooltip="Sair" matTooltipPosition="right">
+        <a mat-list-item (click)="logout(); fecharMenuMobile(sidenav)" class="logout-btn" matTooltip="Sair" matTooltipPosition="right">
           <mat-icon matListItemIcon>logout</mat-icon>
           <span matListItemTitle class="menu-text">Sair</span>
         </a>
@@ -88,16 +89,10 @@
     </mat-sidenav>
 
     <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
-    <mat-sidenav-content
-      class="app-content-wrapper"
-      [class.content-collapsed]="!isMobile() && !isExpanded()"
-      [class.content-expanded]="!isMobile() && isExpanded()">
+    <mat-sidenav-content class="app-content-wrapper">
 
       <!-- HEADER TOP BAR -->
-      <mat-toolbar
-        class="app-header"
-        [class.header-collapsed]="!isMobile() && !isExpanded()"
-        [class.header-expanded]="!isMobile() && isExpanded()">
+      <mat-toolbar class="app-header">
 
         @if (isMobile()) {
           <button mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn" aria-label="Abrir Menu">
