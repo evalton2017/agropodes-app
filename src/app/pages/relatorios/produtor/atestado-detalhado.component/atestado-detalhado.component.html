@@ -184,7 +184,15 @@
 
       <!-- Linha do Tempo -->
       <div class="vmg-secao-box">
-        <h3 class="vmg-secao-titulo">Linha do Tempo da Safra</h3>
+        <div class="vmg-titulo-wrapper">
+          <h3 class="vmg-secao-titulo">Linha do Tempo da Safra Baseada no Zarc</h3>
+          <div class="vmg-tooltip-container">
+            <span class="vmg-icone-ajuda">?</span>
+            <div class="vmg-tooltip-texto">
+              <strong>O período ZARC</strong> (janela de plantio do Zoneamento Agrícola de Risco Climático) é o intervalo de tempo ideal e de menor risco climático recomendado para a semeadura e o plantio de uma cultura agrícola em cada município brasileiro.
+            </div>
+          </div>
+        </div>
         <div class="vmg-timeline-horizontal">
           <div class="vmg-timeline-line"></div>
           @for (evento of dados.linha_tempo_safra; track evento.fase) {

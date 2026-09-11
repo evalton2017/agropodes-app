@@ -464,3 +464,86 @@ $green-lime: #a3e635;
     display: block !important;
   }
 }
+
+/* ==========================================================================
+   AJUSTES DO TOOLTIP ZARC
+   ========================================================================== */
+.vmg-titulo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;
+
+  .vmg-secao-titulo {
+    margin: 0 !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+.vmg-tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+
+  .vmg-icone-ajuda {
+    width: 18px;
+    height: 18px;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: $green-lime;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 255, 102, 0.15);
+      border-color: $green-neon;
+      color: $green-neon;
+    }
+  }
+
+  .vmg-tooltip-texto {
+    visibility: hidden;
+    opacity: 0;
+    width: 280px;
+    background-color: #07140b;
+    color: $text-primary;
+    text-align: left;
+    border-radius: 8px;
+    padding: 10px 12px;
+    position: absolute;
+    z-index: 100;
+    bottom: 135%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.2s ease-in-out;
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 1.4;
+    border: 1px solid $border-color;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: $border-color transparent transparent transparent;
+    }
+  }
+
+  &:hover .vmg-tooltip-texto {
+    visibility: visible;
+    opacity: 1;
+  }
+}

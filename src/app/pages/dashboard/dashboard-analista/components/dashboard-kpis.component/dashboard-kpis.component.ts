@@ -25,6 +25,7 @@ export class DashboardKpisComponent  {
   constructor() {
     effect(() => {
       const filtrosAtuais = this.filtroService.filtrosAtivos();
+      console.log(filtrosAtuais);
       this.carregarDados(filtrosAtuais);
     });
   }

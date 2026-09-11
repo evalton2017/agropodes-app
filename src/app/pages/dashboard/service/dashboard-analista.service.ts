@@ -114,6 +114,10 @@ export class DashboardAnalistaService {
     return this.http.get<any[]>(`${this.baseUrl}/timeline/${idGleba}`);
   }
 
+  obterSafrasDisponiveis(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/safras`);
+  }
+
   public obterGlebasListagem(filtros?: any): Observable<GlebaItemDTO[]> {
     let params = new HttpParams();
 

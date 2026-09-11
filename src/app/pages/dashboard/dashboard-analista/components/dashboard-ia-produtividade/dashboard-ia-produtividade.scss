@@ -1,148 +1,192 @@
 /* ==========================================================================
-   📈 GRÁFICOS DE IA RESPONSIVOS (SEM ESMAGAMENTO HORIZONTAL)
+   🤖 WIDGET DE IA - PRODUTIVIDADE ESTIMADA (ALTO CONTRASTE)
    ========================================================================== */
 
 .ia-card {
-  background: #ffffff;
-  border: 1px solid #f1f5f9;
-  border-radius: 12px;
-  padding: 1.25rem;
-  box-sizing: border-box;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.02);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-
-  // 🔄 CORREÇÃO: Altura flexível no celular para dar espaço ao empilhamento vertical
-  height: auto;
-  min-height: 290px;
-
-  @media (min-width: 480px) {
-    height: 280px; // Trava o alinhamento em blocos horizontais apenas em telas maiores
-  }
+  background: #112217 !important; // Fundo escuro florestal alinhado ao tema
+  border: 1px solid #1e3827 !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  position: relative !important;
+  min-height: 320px !important;
 }
 
 .ia-card-title {
-  font-size: 0.813rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 0.75rem 0;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #f1f5f9 !important; // Branco de alto contraste
+  margin: 0 0 16px 0 !important;
+  letter-spacing: -0.01em !important;
 }
 
-// Contêiner divisor das colunas
+/* 🟢 GRID SPLIT COM FLEXIBILIDADE RESPONSIVA */
 .ia-grid-split {
-  display: flex;
-  flex-direction: column; // 🔄 CORREÇÃO: No celular, o gráfico vai para baixo dos números
-  gap: 1.25rem;
-  flex: 1;
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  flex: 1 !important;
+  width: 100% !important;
 
-  @media (min-width: 480px) {
-    flex-direction: row; // Em telas médias e computadores, mantém lado a lado
-    justify-content: space-between;
-    gap: 1rem;
+  @media (min-width: 640px) {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 16px !important;
   }
 }
 
+/* 🟢 COLUNA ESQUERDA: ESTATÍSTICAS NUMÉRICAS */
 .ia-stats-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.625rem;
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 14px !important;
+  width: 100% !important;
 
-  @media (min-width: 480px) {
-    flex: 1;
+  @media (min-width: 640px) {
+    flex: 1 !important;
   }
 }
 
-.label-subtext {
-  font-size: 0.688rem;
-  color: #94a3b8;
-  font-weight: 500;
-  display: block;
-}
-
-// Título exclusivo do topo do canvas
+.label-subtext,
 .label-subtext-title {
-  font-size: 0.688rem;
-  color: #94a3b8;
-  font-weight: 500;
-  display: block;
-  margin-bottom: 6px;
+  font-size: 11px !important;
+  color: #94a3b8 !important; // Cinza claro de alta visibilidade
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  display: block !important;
+  margin-bottom: 4px !important;
 }
 
 .stat-block {
   .stat-main-text {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #475569;
-    margin: 0.125rem 0 0 0;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: #cbd5e1 !important; // Destaque para o sufixo "sacas/ha"
+    margin: 2px 0 0 0 !important;
 
     .huge-num {
-      font-size: 1.625rem;
-      font-weight: 800;
-      color: #0f172a;
-      line-height: 1;
+      font-size: 28px !important;
+      font-weight: 900 !important;
+      color: #4ade80 !important; // Verde vibrante em destaque
+      line-height: 1 !important;
+      margin-right: 4px !important;
     }
   }
 
   .stat-sub-text {
-    font-size: 0.813rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0.125rem 0 0 0;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important; // Branco puro para valores secundários
+    margin: 2px 0 0 0 !important;
+    font-family: 'JetBrains Mono', monospace, Roboto !important;
   }
 }
 
+/* 🟢 COLUNA DIREITA: GRÁFICO DE EVOLUÇÃO */
 .ia-chart-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  width: 100%;
-  min-width: 0; // Impede que o canvas quebre o tamanho do flexbox pai
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
 
-  @media (min-width: 480px) {
-    flex: 1;
-    height: 100%;
+  @media (min-width: 640px) {
+    flex: 1.1 !important;
+    height: 100% !important;
   }
 
   .canvas-container {
     width: 100% !important;
-    height: 110px !important; // Reduzido ligeiramente para acomodar o espaço no mobile
+    height: 120px !important;
     position: relative !important;
-    margin-top: auto;
+    margin-top: 6px !important;
   }
 }
 
+/* 🟢 FOOTER DO CARD */
 .ia-card-footer {
-  border-top: 1px solid #f8fafc;
-  padding-top: 0.5rem;
-  text-align: center;
-  margin-top: 12px;
-  width: 100%;
+  border-top: 1px solid #1e3827 !important;
+  padding-top: 12px !important;
+  text-align: right !important;
+  margin-top: 16px !important;
+  width: 100% !important;
 
   .ia-footer-link {
-    font-size: 0.715rem;
-    color: #2563eb;
-    font-weight: 600;
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    padding: 0;
-    &:hover { text-decoration: underline; }
+    font-size: 13px !important;
+    color: #4ade80 !important;
+    font-weight: 700 !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+
+    &:hover {
+      text-decoration: underline !important;
+      color: #86efac !important;
+    }
   }
 }
 
-.ia-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
-  border-radius: 12px;
+/* ==========================================================================
+   📌 LEGENDA DE STATUS (RODAPÉ DE ALTO CONTRASTE)
+   ========================================================================== */
+
+.dashboard-legenda-status {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 24px !important;
+  width: 100% !important;
+  margin-top: 32px !important;
+  padding: 16px 20px !important;
+  background-color: #0b1a10 !important;
+  border: 1px solid #183321 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  box-sizing: border-box !important;
+
+  .legenda-titulo {
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+  }
+
+  .legenda-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+
+    /* CÍRCULO COLORIDO (DOT) */
+    .dot-status {
+      width: 12px !important;
+      height: 12px !important;
+      min-width: 12px !important;
+      min-height: 12px !important;
+      border-radius: 50% !important;
+      display: inline-block !important;
+
+      /* 🎨 CORES FIXAS GARANTIDAS VIA SCSS */
+      &.dot-concluido     { background-color: #10b981 !important; } // Verde Emerald
+      &.dot-andamento     { background-color: #f59e0b !important; } // Âmbar / Amarelo
+      &.dot-pendente      { background-color: #94a3b8 !important; } // Cinza Slate
+      &.dot-alerta        { background-color: #f97316 !important; } // Laranja
+      &.dot-critico       { background-color: #ea580c !important; } // Laranja Escuro / Vermelho
+      &.dot-nao-conforme  { background-color: #ef4444 !important; } // Vermelho Intenso
+    }
+
+    .legenda-texto {
+      font-size: 13px !important;
+      color: #f1f5f9 !important; // Texto em tom claro legível
+      font-weight: 600 !important;
+      white-space: nowrap !important;
+    }
+  }
 }

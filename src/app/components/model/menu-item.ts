@@ -10,12 +10,6 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: 'dashboard',
     roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
   },
- /* {
-    route: '/consulta-car',
-    label: 'Consulta CAR',
-    icon: 'grain',
-    roles: ['USER_ADMIN', 'USER_ANALISTA', 'USER_PRODUTOR']
-  },*/
 
   // ==========================================
   // MENUS EXCLUSIVOS: PRODUTOR
@@ -87,6 +81,12 @@ export const MENU_ITEMS: MenuItem[] = [
     route: '/glebas',
     label: 'Glebas',
     icon: 'map',
+    roles: ['USER_ADMIN', 'USER_ANALISTA']
+  },
+  {
+    route: '/analista-propriedades',
+    label: 'Propriedades',
+    icon: 'eco',
     roles: ['USER_ADMIN', 'USER_ANALISTA']
   },
   {

@@ -1,101 +1,181 @@
+/* ==========================================================================
+   📋 TABELA DE EVENTOS CLIMÁTICOS RECENTES (ALTO CONTRASTE + SCROLLBAR)
+   ========================================================================== */
+
 .dashboard-card {
-  position: relative;
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: relative !important;
+  background: #112217 !important; // Fundo florestal escuro
+  border: 1px solid #1e3827 !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  box-sizing: border-box !important;
+  min-height: 320px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
 }
 
 .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
 
   h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #0f172a;
-    margin: 0;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: #f1f5f9 !important; // Branco de alta legibilidade
+    margin: 0 !important;
+    letter-spacing: -0.01em !important;
   }
 
   .header-link {
-    background: none;
-    border: none;
-    color: #2563eb;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
+    background: none !important;
+    border: none !important;
+    color: #4ade80 !important; // Verde brilhante
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    cursor: pointer !important;
+    padding: 0 !important;
 
     &:hover {
-      text-decoration: underline;
+      text-decoration: underline !important;
+      color: #86efac !important;
     }
   }
 }
 
+/* 🟢 CONTAINER COM ROLAGEM HORIZONTAL E VERTICAL */
 .table-responsive {
-  overflow-x: auto;
+  width: 100% !important;
+  max-height: 240px !important; // Limite vertical para acionar a barra de rolagem
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  margin-bottom: 4px !important;
+
+  /* 🟢 Personalização da Barra de Rolagem (Scrollbar) */
+  &::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #0b1a10 !important;
+    border-radius: 4px !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #1e3827 !important;
+    border-radius: 4px !important;
+
+    &:hover {
+      background: #2e543b !important;
+    }
+  }
 }
 
 .dashboard-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.875rem;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 13.5px !important;
+
+  /* 🟢 Cabeçalho Fixo na Rolagem */
+  thead {
+    position: sticky !important;
+    top: 0 !important;
+    background: #112217 !important;
+    z-index: 2 !important;
+  }
 
   th {
-    color: #64748b;
-    font-weight: 600;
-    padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid #e2e8f0;
+    color: #86efac !important; // Título das colunas em tom esverdeado legível
+    font-weight: 800 !important;
+    font-size: 11.5px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 10px 8px !important;
+    border-bottom: 2px solid #1e3827 !important;
   }
 
   td {
-    padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid #f1f5f9;
-    color: #1e293b;
+    padding: 12px 8px !important;
+    border-bottom: 1px solid #183321 !important;
+    color: #e2e8f0 !important; // Texto claro legível
+    font-weight: 500 !important;
+  }
+
+  tr:hover td {
+    background-color: #162c1e !important; // Destaque ao passar o mouse na linha
   }
 
   .evento-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
 
     .evento-icon {
-      font-size: 1.25rem;
-      width: 1.25rem;
-      height: 1.25rem;
-      color: #2563eb;
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+      color: #60a5fa !important; // Azul brilhante para os ícones
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .evento-text {
+      font-weight: 700 !important;
+      color: #ffffff !important;
     }
   }
 
+  /* 🟢 BADGES DE IMPACTO DE ALTO CONTRASTE */
   .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    display: inline-block !important;
+    padding: 3px 10px !important;
+    border-radius: 6px !important;
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.02em !important;
 
     &.sucesso {
-      background: #dcfce7;
-      color: #166534;
+      background-color: #14532d !important;
+      color: #86efac !important;
+      border: 1px solid #166534 !important;
     }
 
     &.alerta {
-      background: #fef3c7;
-      color: #92400e;
+      background-color: #78350f !important;
+      color: #fde68a !important;
+      border: 1px solid #92400e !important;
     }
 
     &.critico {
-      background: #ffe4e6;
-      color: #9f1239;
+      background-color: #881337 !important;
+      color: #fecdd3 !important;
+      border: 1px solid #9f1239 !important;
     }
   }
 
   .empty-row {
-    text-align: center;
-    color: #94a3b8;
-    padding: 2rem;
+    text-align: center !important;
+    color: #94a3b8 !important;
+    padding: 32px 0 !important;
+    font-style: italic !important;
   }
+}
+
+/* 🟢 LOADING OVERLAY */
+.ia-loading-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(17, 34, 23, 0.8) !important;
+  backdrop-filter: blur(2px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 5 !important;
+  border-radius: 12px !important;
 }

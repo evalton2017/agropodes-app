@@ -11,20 +11,21 @@
       </span>
     </div>
 
-    <!-- 🟢 BARRAS DE SAFRAS COM MARGEM INFERIOR DE SEPARAÇÃO -->
-    <div class="safra-pills-container">
-      @for (safra of listaSafras; track safra; let idx = $index) {
+    <!-- BARRAS DE SAFRAS DINÂMICAS RECURSIVAS -->
+    <div class="safra-pills-container mt-4 flex flex-wrap gap-2">
+      @for (safra of listaSafras; track safra) {
         <button
           type="button"
           class="safra-btn-pill"
           [class.active-vigente]="filtroSafra === safra"
           (click)="selecionarSafra(safra)">
 
-          @if (filtroSafra === safra) {
+          @if (isSafraVigente(safra)) {
+            <span class="icone-diamond diamond-verde">◆</span>
             <span class="safra-texto-vigente">{{ safra }}</span>
             <span class="badge-status-vigente">Vigente</span>
           } @else {
-            <span class="icone-diamond" [class.diamond-laranja]="idx === 3" [class.diamond-verde]="idx !== 3">◆</span>
+            <span class="icone-diamond diamond-laranja">◆</span>
             <span class="safra-texto-concluida">{{ safra }}</span>
             <span class="badge-status-concluida">Concluída</span>
           }
@@ -35,12 +36,12 @@
   </div>
 
   <!-- 📊 KPIS SUPERIORES COM ESPAÇAMENTO ISOLADO (DESCOLADO DOS BOTÕES) -->
-  <div class="kpis-section-wrapper">
+  <div class="kpis-section-wrapper mt-6">
     <app-dashboard-kpis></app-dashboard-kpis>
   </div>
 
   <!-- 📈 GRÁFICOS EM GRID -->
-  <div class="grid-container-graficos">
+  <div class="grid-container-graficos mt-6">
     <dashboard-grafico-estados></dashboard-grafico-estados>
     <dashboard-contratos-estado></dashboard-contratos-estado>
     <dashboard-grafico-culturas></dashboard-grafico-culturas>
@@ -48,55 +49,55 @@
   </div>
 
   <!-- 🤖 WIDGETS DE IA -->
-  <div class="ia-grid-container">
+  <div class="ia-grid-container mt-6">
     <dashboard-analise-ambiental></dashboard-analise-ambiental>
     <dashboard-ia-classificacao></dashboard-ia-classificacao>
     <dashboard-ia-produtividade></dashboard-ia-produtividade>
   </div>
 
   <!-- 🌤️ CLIMA -->
-  <div class="ia-clima w-full mt-4">
+  <div class="ia-clima w-full mt-6">
     <dashboard-ia-clima></dashboard-ia-clima>
   </div>
 
   <!-- 📋 TABELAS INFERIORES -->
-  <div class="grid-container-tabelas">
+  <div class="grid-container-tabelas mt-6">
     <dashboard-eventos></dashboard-eventos>
     <dashboard-atestados></dashboard-atestados>
   </div>
 
   <!-- 📌 LEGENDA DE STATUS -->
-  <div class="bg-[#0b1a10] p-4 border border-[#183321] rounded-xl shadow-sm mt-6 flex flex-row flex-wrap items-center gap-6 text-sm text-slate-300 w-full">
-    <span class="font-bold text-slate-100">Legenda de Status:</span>
+  <div class="dashboard-legenda-status">
+    <span class="legenda-titulo">Legenda de Status:</span>
 
-    <div class="flex items-center gap-2">
-      <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-      <span class="whitespace-nowrap">Concluído</span>
+    <div class="legenda-item">
+      <span class="dot-status dot-concluido"></span>
+      <span class="legenda-texto">Concluído</span>
     </div>
 
-    <div class="flex items-center gap-2">
-      <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-      <span class="whitespace-nowrap">Em andamento</span>
+    <div class="legenda-item">
+      <span class="dot-status dot-andamento"></span>
+      <span class="legenda-texto">Em andamento</span>
     </div>
 
-    <div class="flex items-center gap-2">
-      <span class="w-3 h-3 rounded-full bg-slate-400"></span>
-      <span class="whitespace-nowrap">Pendente</span>
+    <div class="legenda-item">
+      <span class="dot-status dot-pendente"></span>
+      <span class="legenda-texto">Pendente</span>
     </div>
 
-    <div class="flex items-center gap-2">
-      <span class="w-3 h-3 rounded-full bg-orange-500"></span>
-      <span class="whitespace-nowrap">Alerta</span>
+    <div class="legenda-item">
+      <span class="dot-status dot-alerta"></span>
+      <span class="legenda-texto">Alerta</span>
     </div>
 
-    <div class="flex items-center gap-2">
-      <span class="w-3 h-3 rounded-full bg-orange-600"></span>
-      <span class="whitespace-nowrap">Crítico</span>
+    <div class="legenda-item">
+      <span class="dot-status dot-critico"></span>
+      <span class="legenda-texto">Crítico</span>
     </div>
 
-    <div class="flex items-center gap-2">
-      <span class="w-3 h-3 rounded-full bg-red-600"></span>
-      <span class="whitespace-nowrap">Não Conforme</span>
+    <div class="legenda-item">
+      <span class="dot-status dot-nao-conforme"></span>
+      <span class="legenda-texto">Não Conforme</span>
     </div>
   </div>
 

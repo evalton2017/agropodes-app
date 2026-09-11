@@ -1,20 +1,19 @@
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DashboardFiltroService } from '../service/dashboard-filtro.service';
-import {DashboardKpisComponent} from './components/dashboard-kpis.component/dashboard-kpis.component';
-import {AppDashboardGraficoCulturas} from './components/dashboard-grafico-culturas/app-dashboard-grafico-culturas';
-import {AppDashboardGraficoEstados} from './components/dashboard-grafico-estados/app-dashboard-grafico-estados';
-import {AppDashboardAlertas} from './components/dashboard-alertas.ts/app-dashboard-alertas';
-import {AppDashboardContratosEstado} from './components/dashboard-contratos-estado/app-dashboard-contratos-estado';
-import {AppDashboardIaClassificacao} from './components/dashboard-ia-classificacao/dashboard-ia-classificacao';
-import {AppDashboardIaProdutividade} from './components/dashboard-ia-produtividade/dashboard-ia-produtividade';
-import {AppDashboardIaClima} from './components/dashboard-ia-clima/dashboard-ia-clima';
-import {DashboardEventosComponent} from './components/dashboard-eventos/dashboard-eventos';
-import {AppDashboardAtestadosComponent} from './components/dashboard-atestados/dashboard-atestados';
-import {AppDashboardAnaliseAmbiental} from './components/dashboard-analise-ambiental/app-dashboard-analise-ambiental';
-
-
+import { DashboardKpisComponent } from './components/dashboard-kpis.component/dashboard-kpis.component';
+import { AppDashboardGraficoCulturas } from './components/dashboard-grafico-culturas/app-dashboard-grafico-culturas';
+import { AppDashboardGraficoEstados } from './components/dashboard-grafico-estados/app-dashboard-grafico-estados';
+import { AppDashboardAlertas } from './components/dashboard-alertas.ts/app-dashboard-alertas';
+import { AppDashboardContratosEstado } from './components/dashboard-contratos-estado/app-dashboard-contratos-estado';
+import { AppDashboardIaClassificacao } from './components/dashboard-ia-classificacao/dashboard-ia-classificacao';
+import { AppDashboardIaProdutividade } from './components/dashboard-ia-produtividade/dashboard-ia-produtividade';
+import { AppDashboardIaClima } from './components/dashboard-ia-clima/dashboard-ia-clima';
+import { DashboardEventosComponent } from './components/dashboard-eventos/dashboard-eventos';
+import { AppDashboardAtestadosComponent } from './components/dashboard-atestados/dashboard-atestados';
+import { AppDashboardAnaliseAmbiental } from './components/dashboard-analise-ambiental/app-dashboard-analise-ambiental';
+import { DashboardAnalistaService } from '../service/dashboard-analista.service';
 
 @Component({
   selector: 'app-dashboard-analista',
@@ -39,23 +38,34 @@ import {AppDashboardAnaliseAmbiental} from './components/dashboard-analise-ambie
 })
 export class DashboardAnalistaComponent implements OnInit {
   private readonly filtroService = inject(DashboardFiltroService);
+  private readonly dashboardService = inject(DashboardAnalistaService);
 
-  public filtroSafra = '2025/2026';
-  public filtroEstado = 'Todos';
-  public listaSafras: string[] = [];
-
-  constructor() {
-    this.listaSafras = this.gerarListaSafrasFormatadas();
-    this.filtroSafra = this.listaSafras[0] || '2025/2026';
-  }
+  listaSafras: string[] = [];
+  filtroSafra: string = '2025/2026';
+  safraVigenteSistema: string = '2026/2027';
 
   ngOnInit(): void {
-    this.publicarFiltros();
+    this.carregarSafras();
   }
 
-  /**
-   * Dispara a re-filtragem instantânea de todos os widgets ao clicar na safra
-   */
+  public carregarSafras(): void {
+    this.dashboardService.obterSafrasDisponiveis().subscribe({
+      next: (safras) => {
+        if (safras && safras.length > 0) {
+          this.listaSafras = safras;
+          this.safraVigenteSistema = safras[0]; // A mais recente retornada pelo backend (ex: 2026/2027)
+          this.filtroSafra = safras[0];
+        }
+        // Dispara a publicação dos filtros com a safra obtida do banco
+        this.publicarFiltros();
+      },
+      error: (err) => {
+        console.error('Erro ao carregar safras dinâmicas:', err);
+        this.publicarFiltros();
+      }
+    });
+  }
+
   public selecionarSafra(safra: string): void {
     if (this.filtroSafra !== safra) {
       this.filtroSafra = safra;
@@ -66,20 +76,11 @@ export class DashboardAnalistaComponent implements OnInit {
   private publicarFiltros(): void {
     this.filtroService.definirFiltros({
       safra: this.filtroSafra ? this.filtroSafra.trim() : '2025/2026',
-      estado: this.filtroEstado
+      estado: 'Todos'
     });
   }
 
-  private gerarListaSafrasFormatadas(): string[] {
-    const anoAtual = new Date().getFullYear(); // 2026
-    const safras: string[] = [];
-
-    for (let i = 0; i < 6; i++) {
-      const anoInicio = (anoAtual - 1) - i;
-      const anoFim = anoInicio + 1;
-      safras.push(`${anoInicio}/${anoFim}`);
-    }
-
-    return safras;
+  public isSafraVigente(safra: string): boolean {
+    return safra === this.safraVigenteSistema;
   }
 }

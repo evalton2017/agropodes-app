@@ -177,3 +177,55 @@
 .card-produtores { background-color: #f8fafc; border-color: #f1f5f9; }
 .card-produtores .kpi-icon-circle { background-color: #e2e8f0; color: #475569; }
 .card-produtores .kpi-title, .card-produtores .kpi-trend { color: #334155; }
+
+.safra-pills-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .safra-btn-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &.active-vigente {
+      border-color: #2e7d32;
+      background-color: #f1f8e9;
+      font-weight: 600;
+    }
+
+    .icone-diamond {
+      font-size: 10px;
+
+      &.diamond-verde {
+        color: #4caf50;
+      }
+
+      &.diamond-laranja {
+        color: #ff9800;
+      }
+    }
+
+    .badge-status-vigente {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .badge-status-concluida {
+      background-color: #eceff1;
+      color: #546e7a;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  }
+}

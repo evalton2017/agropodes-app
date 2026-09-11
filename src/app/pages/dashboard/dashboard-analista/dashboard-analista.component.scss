@@ -1,5 +1,5 @@
 /* ==========================================================================
-   🏛️ DASHBOARD ANALISTA - TEMA VERDE MEDIO/MUTED (~15% A 20% MAIS ESCURO)
+   🏛️ DASHBOARD ANALISTA - TEMA VERDE MEDIO/MUTED DE ALTO CONTRASTE
    ========================================================================== */
 
 .dashboard-main-wrapper.dashboard-light-theme,
@@ -8,7 +8,7 @@
   width: 100% !important;
   max-width: 100vw !important;
   overflow-x: hidden !important;
-  padding: 32px 28px !important; // 🟢 Aumentado de 24px para mais respiro nas bordas externas
+  padding: 32px 28px !important;
   box-sizing: border-box !important;
   background-color: #dbe4dd !important;
 }
@@ -22,7 +22,7 @@
    ========================================================================== */
 
 .header-dashboard-row {
-  margin-bottom: 24px !important; // 🟢 Aumentado de 16px para descolar do topo
+  margin-bottom: 24px !important;
 
   .header-title-block {
     h1 {
@@ -34,23 +34,24 @@
     }
 
     span {
-      font-size: 13px !important;
-      color: #43584a !important;
+      font-size: 13.5px !important;
+      color: #3b4e42 !important;
       margin-top: 6px !important;
     }
   }
 }
 
+/* 🟢 BARRAS DE SAFRA (PILLS DE FILTRO) */
 .safra-pills-container {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: wrap !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  gap: 12px !important;
+  gap: 10px !important;
   width: 100% !important;
-  margin-top: 20px !important;   // 🟢 Aumentado de 14px
-  margin-bottom: 32px !important; // 🟢 Aumentado de 24px para afastar dos KPIs
+  margin-top: 20px !important;
+  margin-bottom: 28px !important;
 }
 
 .safra-btn-pill {
@@ -58,74 +59,99 @@
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  height: 40px !important;
+  height: 42px !important;
   padding: 0 16px !important;
-  background-color: #c8d6cb !important;
-  border: 1px solid #a8baa8 !important;
-  border-radius: 6px !important;
+  background-color: #c0d1c3 !important;
+  border: 1px solid #91a895 !important;
+  border-radius: 8px !important;
   cursor: pointer !important;
   outline: none !important;
   user-select: none !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
-  transition: all 0.15s ease-in-out !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.2s ease-in-out !important;
 
   &:hover {
-    background-color: #b7c9bb !important;
-    border-color: #8c9e8d !important;
+    background-color: #b0c4b3 !important;
+    border-color: #728c76 !important;
+    transform: translateY(-1px);
   }
 
-  /* CASO SELECIONADO: SAFRA VIGENTE */
-  &.active-vigente {
-    background-color: #14532d !important;
-    border-color: #14532d !important;
-    box-shadow: 0 4px 10px rgba(20, 83, 45, 0.3) !important;
-
-    .safra-texto-vigente {
-      color: #ffffff !important;
-      font-weight: 800 !important;
-      font-size: 13.5px !important;
-      font-family: monospace, monospace !important;
-    }
-
-    .badge-status-vigente {
-      color: #bbf7d0 !important;
-      font-size: 11px !important;
-      font-weight: 600 !important;
-    }
-  }
-
-  /* CASO INATIVO: SAFRAS CONCLUÍDAS */
+  /* 🟢 ÍCONE DIAMANTE EM ESTADO INATIVO */
   .icone-diamond {
-    font-size: 10px !important;
+    font-size: 11px !important;
     line-height: 1 !important;
 
-    &.diamond-verde { color: #15803d !important; }
+    &.diamond-verde { color: #166534 !important; }
     &.diamond-laranja { color: #c2410c !important; }
   }
 
+  /* 🟢 TEXTOS EM ESTADO INATIVO (FUNDO CLARO) */
+  .safra-texto-vigente,
   .safra-texto-concluida {
-    color: #0f4c5c !important;
+    color: #0d1f12 !important;
     font-weight: 800 !important;
-    font-size: 13px !important;
-    font-family: monospace, monospace !important;
+    font-size: 14px !important;
+    font-family: 'JetBrains Mono', monospace, Roboto !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .badge-status-vigente {
+    background-color: #dcfce7 !important;
+    color: #15803d !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
   }
 
   .badge-status-concluida {
-    color: #4a5d4e !important;
+    background-color: #e2e8f0 !important;
+    color: #334155 !important;
     font-size: 11px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+  }
+
+  /* 🟢 ESTADO SELECIONADO / ATIVO (FUNDO ESCURO - FORÇA LEITURA EM BRANCO/BRILHANTE) */
+  &.active-vigente {
+    background-color: #0b2b18 !important;
+    border-color: #0b2b18 !important;
+    box-shadow: 0 4px 12px rgba(11, 43, 24, 0.35) !important;
+
+    /* Força a visibilidade legível das safras no fundo escuro */
+    .safra-texto-vigente,
+    .safra-texto-concluida {
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
+
+    .icone-diamond {
+      &.diamond-verde { color: #4ade80 !important; }
+      &.diamond-laranja { color: #fb923c !important; }
+    }
+
+    .badge-status-vigente {
+      background-color: #166534 !important;
+      color: #86efac !important;
+    }
+
+    .badge-status-concluida {
+      background-color: #1e293b !important;
+      color: #cbd5e1 !important;
+    }
   }
 }
 
 /* ==========================================================================
-   📊 CARDS E SEÇÕES DO DASHBOARD (MARGENS E ESPAÇAMENTOS AMPLIADOS)
+   📊 CARDS E SEÇÕES DO DASHBOARD (KPIS, GRÁFICOS, WIDGETS E TABELAS)
    ========================================================================== */
 
 /* Seção de KPIs Superior */
 .kpis-section-wrapper {
   width: 100% !important;
   margin-top: 16px !important;
-  margin-bottom: 32px !important; // 🟢 Aumentado de 24px para afastar da 1ª fileira de gráficos
+  margin-bottom: 32px !important;
   display: block !important;
 
   app-dashboard-kpis {
@@ -143,7 +169,7 @@
     background-color: #112217 !important;
     border: 1px solid #1e3827 !important;
     border-radius: 12px !important;
-    padding: 20px !important; // 🟢 Aumentado de 16px para dar mais respiro interno nos conteúdos
+    padding: 20px !important;
     color: #f8fafc !important;
     position: relative !important;
     overflow: hidden !important;
@@ -156,6 +182,8 @@
   .card-header h3 {
     color: #f1f5f9 !important;
     font-weight: 800 !important;
+    font-size: 16px !important;
+    letter-spacing: -0.01em !important;
   }
 
   dashboard-grafico-estados {
@@ -178,15 +206,15 @@
   }
 }
 
-/* 🟢 GRIDS DAS FILEIRAS DE COMPONENTES - GAP E MARGENS AUMENTADOS */
+/* 🟢 GRIDS DAS FILEIRAS DE COMPONENTES - RESPRIO E ESPAÇAMENTOS OTIMIZADOS */
 .grid-container-graficos,
 .ia-grid-container,
 .grid-container-tabelas {
   display: grid !important;
-  gap: 24px !important;          // 🟢 Aumentado de 16px para afastar os cards lateralmente
+  gap: 24px !important;
   width: 100% !important;
-  margin-top: 28px !important;    // 🟢 Aumentado de 20px
-  margin-bottom: 28px !important; // 🟢 Descola verticalmente da próxima fileira
+  margin-top: 28px !important;
+  margin-bottom: 28px !important;
 }
 
 .grid-container-graficos {
@@ -215,4 +243,51 @@
 .grid-container-tabelas {
   grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
   @media (min-width: 1024px) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+/* ==========================================================================
+   📌 LEGENDA DE STATUS (RODAPÉ)
+   ========================================================================== */
+
+.dashboard-legenda-status {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 24px !important;
+  width: 100% !important;
+  margin-top: 32px !important;
+  padding: 16px 20px !important;
+  background-color: #0b1a10 !important; // Fundo escuro em contraste com o painel #dbe4dd
+  border: 1px solid #183321 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  box-sizing: border-box !important;
+
+  .legenda-titulo {
+    font-weight: 800 !important;
+    color: #f1f5f9 !important;
+    font-size: 14px !important;
+  }
+
+  .legenda-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+
+    .dot-status {
+      width: 12px !important;
+      height: 12px !important;
+      border-radius: 50% !important;
+      display: inline-block !important;
+      flex-shrink: 0 !important;
+    }
+
+    .legenda-texto {
+      font-size: 13px !important;
+      color: #cbd5e1 !important;
+      font-weight: 600 !important;
+      white-space: nowrap !important;
+    }
+  }
 }

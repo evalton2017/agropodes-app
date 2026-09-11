@@ -62,13 +62,17 @@ export class DashboardEventosComponent {
     return 'wb_sunny';
   }
 
-  protected obterClasseBadgeImpacto(impacto: string): string {
-    switch (impacto) {
-      case 'Alto':
+  obterClasseBadgeImpacto(impacto: string): string {
+    switch (impacto?.toLowerCase()) {
+      case 'crítico':
+      case 'critico':
         return 'critico';
-      case 'Médio':
+      case 'alto':
         return 'alerta';
-      case 'Baixo':
+      case 'médio':
+      case 'medio':
+        return 'alerta';
+      case 'baixo':
       default:
         return 'sucesso';
     }
