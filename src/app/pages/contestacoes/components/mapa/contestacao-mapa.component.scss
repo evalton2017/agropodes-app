@@ -1,3 +1,7 @@
+/* ==========================================================================
+   🌿 COMPONENTE DO MAPA DE CONTESTAÇÃO DA GLEBA (MAPA LEAFLET)
+   ========================================================================== */
+
 :host {
   display: block;
   width: 100%;
@@ -18,13 +22,66 @@
   background-color: #0b1f15;
 }
 
+/* 🟢 CARD DE MÉTRICAS GEOESPACIAIS (CANTO SUPERIOR ESQUERDO) */
+.map-metrics-card {
+  position: absolute;
+  top: 16px;
+  left: 60px; /* Evita sobreposição com os botões do zoom e Leaflet Draw */
+  z-index: 1000;
+  background: rgba(11, 31, 21, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(46, 125, 50, 0.4);
+  border-radius: 8px;
+  padding: 8px 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+
+  .metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    .label {
+      color: #94a3b8;
+    }
+
+    .value {
+      color: #86efac;
+      font-weight: 700;
+    }
+
+    &.highlight {
+      border-top: 1px solid rgba(46, 125, 50, 0.3);
+      padding-top: 4px;
+      margin-top: 2px;
+
+      .label {
+        color: #00bfff;
+        font-weight: 600;
+      }
+
+      .value {
+        color: #00bfff;
+        font-weight: 800;
+      }
+    }
+  }
+}
+
+/* 🟢 LEGENDA SOBREPOSTA NO CANTO SUPERIOR DIREITO */
 .map-legend {
   position: absolute;
   top: 16px;
   right: 16px;
   background: rgba(11, 31, 21, 0.95);
+  backdrop-filter: blur(4px);
   border: 1px solid rgba(46, 125, 50, 0.4);
-  padding: 12px;
+  padding: 12px 14px;
   border-radius: 8px;
   z-index: 1000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -33,9 +90,12 @@
 
   h4 {
     margin: 0 0 8px 0;
-    font-size: 0.85rem;
-    color: #4ade80;
-    font-weight: 600;
+    font-size: 0.82rem;
+    color: #86efac;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(46, 125, 50, 0.3);
+    padding-bottom: 4px;
   }
 
   .legend-item {
@@ -49,21 +109,48 @@
     }
 
     .color-box {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       border-radius: 3px;
       display: inline-block;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-sizing: border-box;
+
+      &.prop-box {
+        background: rgba(134, 239, 172, 0.2);
+        border: 2px solid #86efac;
+      }
+
+      &.det-box {
+        background: rgba(255, 77, 77, 0.4);
+        border: 1px solid #ff4d4d;
+      }
+
+      &.selected-box {
+        background: rgba(255, 230, 0, 0.75);
+        border: 1px solid #ffe600;
+      }
+
+      &.drawn-box {
+        background: rgba(0, 191, 255, 0.4);
+        border: 2px solid #00bfff;
+      }
+    }
+
+    span {
+      font-size: 0.78rem;
+      color: #cbd5e1;
     }
   }
 }
 
+/* BANNER DE INSTRUÇÕES (RODAPÉ DO MAPA) */
 .map-instruction-banner {
   position: absolute;
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(11, 31, 21, 0.9);
+  background: rgba(11, 31, 21, 0.92);
+  backdrop-filter: blur(4px);
   border: 1px solid rgba(46, 125, 50, 0.4);
   padding: 8px 16px;
   border-radius: 8px;
@@ -72,11 +159,39 @@
   align-items: center;
   gap: 8px;
   color: #e2e8f0;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 
   mat-icon {
     color: #4ade80;
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
+}
+
+/* BANNER DE ERRO DE VALIDAÇÃO ESPACIAL (RODAPÉ DO MAPA) */
+.map-error-banner {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(220, 38, 38, 0.92);
+  backdrop-filter: blur(4px);
+  border: 1px solid #ef4444;
+  padding: 8px 16px;
+  border-radius: 8px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+
+  mat-icon {
+    color: #ffffff;
     font-size: 18px;
     height: 18px;
     width: 18px;

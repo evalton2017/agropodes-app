@@ -1,14 +1,14 @@
-import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {CommonModule} from '@angular/common';
-import {ContestacaoService} from '../../service/contestacaoService.service';
-import {ConflitoDetalhe, DetalhesConflitosGlebaResponse} from '../../model/contestacao.model';
-import {ContestacaoMapaComponent} from '../mapa/contestacao-mapa.component';
-import {LoadingService} from '../../../../shared/service/loading.service';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {PessoaService} from '../../../../service/pessoa.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ContestacaoService } from '../../service/contestacaoService.service';
+import { ConflitoDetalhe, DetalhesConflitosGlebaResponse } from '../../model/contestacao.model';
+import { ContestacaoMapaComponent } from '../mapa/contestacao-mapa.component';
+import { LoadingService } from '../../../../shared/service/loading.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { PessoaService } from '../../../../service/pessoa.service';
 
 @Component({
   selector: 'app-cadastro-contestacao',
@@ -28,7 +28,8 @@ export class CadastroContestacaoComponent implements OnInit {
   public dadosGleba?: DetalhesConflitosGlebaResponse;
   public carregandoDados: boolean = true;
   public formContestacao!: FormGroup;
-  public arquivoSelecionado?: File;
+
+  public arquivosAnexos: File[] = [];
   public poligonoDesenhadoWkt: string = '';
   public areaDemarcadaHa: number = 0;
 
@@ -76,28 +77,29 @@ export class CadastroContestacaoComponent implements OnInit {
     this.contestacaoService.obterDetalhesConflitosGleba(this.idGleba)
       .subscribe({
         next: (res) => {
-          console.log('Dados recebidos da API:', res);
+          // 🟢 FILTRO: Mantém apenas as detecções que possuem sobreposição real na gleba (área > 0)
+          const conflitosValidos = (res?.conflitos_detectados || []).filter(
+            (c: any) => Number(c.area_ha) > 0
+          );
 
           this.dadosGleba = {
             ...res,
             id_gleba: res?.id_gleba ?? this.idGleba,
             safra_recente: res?.safra_recente || '',
             area_total_ha: res?.area_total_ha || 0,
-            conflitos_detectados: (res?.conflitos_detectados || []).map((c, index) => ({
+            conflitos_detectados: conflitosValidos.map((c, index) => ({
               ...c,
-              selecionado: index === 0
+              selecionado: index === 0 // Seleciona automaticamente o primeiro conflito real (maior área)
             }))
           };
 
           this.carregandoDados = false;
           this.loadingService.hide();
-
-          // Força a atualização da tela imediatamente sem depender do mouse
           this.cdr.markForCheck();
           this.cdr.detectChanges();
         },
         error: (err) => {
-          console.error('Erro ao buscar conflitos da gleba', err);
+          console.error('Erro ao buscar conflitos da gleba:', err);
           this.carregandoDados = false;
           this.loadingService.hide();
           this.modalSucesso = false;
@@ -118,42 +120,61 @@ export class CadastroContestacaoComponent implements OnInit {
     }
   }
 
-  onArquivoSelecionado(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.arquivoSelecionado = file;
+  onFilesSelected(event: any): void {
+    if (event.target.files && event.target.files.length > 0) {
+      const novos = Array.from(event.target.files) as File[];
+      this.arquivosAnexos = [...this.arquivosAnexos, ...novos];
     }
+  }
+
+  removerArquivo(index: number): void {
+    this.arquivosAnexos.splice(index, 1);
   }
 
   onPoligonoAtualizado(dados: { wkt: string, areaHa: number }): void {
     this.poligonoDesenhadoWkt = dados.wkt;
     this.areaDemarcadaHa = dados.areaHa;
+    this.cdr.markForCheck();
   }
 
   salvarContestacao(): void {
-    if (this.formContestacao.invalid || !this.poligonoDesenhadoWkt) {
+    const conflitoSelecionado = this.dadosGleba?.conflitos_detectados.find(c => c.selecionado);
+
+    // 🟢 Validações: precisa ter justificativa + (detecção selecionada OU desenho no mapa)
+    if (this.formContestacao.invalid) {
       this.modalSucesso = false;
-      this.modalMensagem = 'Preencha a justificativa detalhadamente e desenhe o polígono de contestação no mapa.';
+      this.modalMensagem = 'Informe detalhadamente a justificativa técnica para a contestação (mínimo de 10 caracteres).';
       this.modalAberto = true;
-      this.cdr.detectChanges();
       return;
     }
 
-    const conflitoSelecionado = this.dadosGleba?.conflitos_detectados.find(c => c.selecionado);
+    if (!conflitoSelecionado && !this.poligonoDesenhadoWkt) {
+      this.modalSucesso = false;
+      this.modalMensagem = 'Selecione ao menos uma detecção de conflito ou desenhe o polígono de contestação dentro dos limites da Gleba.';
+      this.modalAberto = true;
+      return;
+    }
+
+    // Define o polígono e a área de envio
+    const poligonoFinal = this.poligonoDesenhadoWkt || conflitoSelecionado?.geometria_wkt || this.dadosGleba?.geometria_gleba_wkt || '';
+    const areaFinalHa = this.areaDemarcadaHa > 0 ? this.areaDemarcadaHa : (conflitoSelecionado?.area_ha || this.dadosGleba?.area_total_ha || 0);
 
     const formData = new FormData();
     formData.append('id_gleba', this.idGleba.toString());
-    formData.append('poligono_contestacao', this.poligonoDesenhadoWkt);
-    if (conflitoSelecionado) {
-      formData.append('poligono_detectado', conflitoSelecionado.geometria_wkt);
-      formData.append('tamanho_area_detectada_ha', conflitoSelecionado.area_ha.toString());
-    }
-    formData.append('tamanho_area_demarcada_ha', this.areaDemarcadaHa.toString());
+    formData.append('poligono_contestacao', poligonoFinal);
+    formData.append('tamanho_area_demarcada_ha', areaFinalHa.toString());
     formData.append('descricao_motivo', this.formContestacao.get('descricao_motivo')?.value);
+
+    if (conflitoSelecionado) {
+      formData.append('poligono_detectado', conflitoSelecionado.geometria_wkt || '');
+      formData.append('tamanho_area_detectada_ha', (conflitoSelecionado.area_ha || 0).toString());
+    }
+
     formData.append('analise_automatica_json', JSON.stringify(this.dadosGleba));
 
-    if (this.arquivoSelecionado) {
-      formData.append('documento', this.arquivoSelecionado, this.arquivoSelecionado.name);
+    // Upload dos arquivos comprobatórios
+    if (this.arquivosAnexos.length > 0) {
+      formData.append('documento', this.arquivosAnexos[0], this.arquivosAnexos[0].name);
     }
 
     this.contestacaoService.cadastrarContestacao(formData).subscribe({
@@ -161,13 +182,12 @@ export class CadastroContestacaoComponent implements OnInit {
         this.modalSucesso = true;
         this.modalMensagem = 'Sua contestação foi registrada com sucesso! Você pode acompanhar o andamento desta solicitação diretamente na aba de Análises.';
         this.modalAberto = true;
-        this.cdr.markForCheck();
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Erro ao cadastrar contestação', err);
+        console.error('Erro ao cadastrar contestação:', err);
         this.modalSucesso = false;
-        const detalheErro = err.error?.detail || err.message || 'Erro desconhecido no servidor';
+        const detalheErro = err.error?.detail || err.message || 'Erro no servidor';
         this.modalMensagem = `Erro ao registrar contestação: ${detalheErro}`;
         this.modalAberto = true;
         this.cdr.detectChanges();
@@ -180,7 +200,6 @@ export class CadastroContestacaoComponent implements OnInit {
     this.modalAberto = false;
     this.cdr.detectChanges();
 
-    // Se foi sucesso, redireciona para a página de contestações
     if (foiSucesso) {
       this.router.navigateByUrl('/contestacao-produtor');
     }

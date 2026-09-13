@@ -1,43 +1,84 @@
 @if (carregandoDados) {
-  <div style="padding: 40px; color: #4ade80; text-align: center;">
-    <h3>Carregando dados da contestação...</h3>
+  <div style="padding: 40px; color: #86efac; text-align: center;">
+    <h3>Carregando dados geoespaciais da Gleba...</h3>
   </div>
 } @else if (dadosGleba) {
   <div class="contestacao-layout">
-    <!-- Painel Lateral: Lista de Conflitos e Formulário -->
-    <div class="sidebar-panel">
-      <h3>Contestação da Gleba {{ dadosGleba.id_gleba }}</h3>
-      <p>Safra Recente: {{ dadosGleba.safra_recente }} | Área Total: {{ dadosGleba.area_total_ha }} ha</p>
 
-      <!-- Card com Conflitos Detectados -->
+    <!-- Painel Lateral: Métricas, Conflitos e Formulário -->
+    <div class="sidebar-panel">
+      <div class="panel-header">
+        <h3>CONTESTAÇÃO DA GLEBA {{ dadosGleba.id_gleba }}</h3>
+        <div class="gleba-badge-info font-mono">
+          <span>Safra: {{ dadosGleba.safra_recente || '2025/2026' }}</span>
+          <span class="ml-2">Área Gleba: {{ dadosGleba.area_total_ha | number:'1.2-4':'pt-BR' }} ha</span>
+        </div>
+      </div>
+
+      <!-- Card com Detecções Encontradas -->
       <div class="conflitos-card-container">
-        <h5>Detecções Encontradas</h5>
+        <h5>Detecções de Conflito Ambientais</h5>
         @for (conflito of dadosGleba.conflitos_detectados; track conflito.tipo_mapa739) {
           <div class="conflito-item-card" [class.selected]="conflito.selecionado" (click)="onToggleConflito(conflito)">
             <input type="checkbox" [checked]="conflito.selecionado" (click)="$event.stopPropagation(); onToggleConflito(conflito)">
             <div class="conflito-info">
               <strong>{{ conflito.tipo_mapa739 }}</strong>
               <small>{{ conflito.tipo_cmn_5268 }}</small>
-              <span>Área: {{ conflito.area_ha }} ha</span>
+              <span class="area-tag">Área: {{ conflito.area_ha | number:'1.2-4':'pt-BR' }} ha</span>
             </div>
           </div>
+        } @empty {
+          <div class="empty-box">Nenhum conflito automático mapeado. Utilize o mapa ao lado para desenhar a área contestada.</div>
         }
       </div>
 
-      <!-- Formulário -->
-      <form [formGroup]="formContestacao" (ngSubmit)="salvarContestacao()" class="contestacao-form">
+      <!-- Formulário de Justificativa e Anexos -->
+      <form [formGroup]="formContestacao" (ngSubmit)="salvarContestacao()" class="contestacao-form mt-3">
         <div class="form-group">
-          <label>Motivo da Contestação *</label>
-          <textarea formControlName="descricao_motivo" rows="4" placeholder="Descreva detalhadamente o motivo..."></textarea>
+          <label class="input-label">Motivo e Justificativa Técnica *</label>
+          <textarea
+            formControlName="descricao_motivo"
+            rows="4"
+            class="textarea-florestal"
+            placeholder="Descreva detalhadamente a justificativa para a contestação da área..."
+          ></textarea>
         </div>
 
-        <button mat-flat-button type="submit" class="submit-btn">
-          Cadastrar Contestação
+        <!-- Indicador do Desenho Ativo -->
+        @if (areaDemarcadaHa > 0) {
+          <div class="drawn-status-badge mt-2">
+            <mat-icon>edit_location_alt</mat-icon>
+            <span>Área Demarcada no Mapa: {{ areaDemarcadaHa | number:'1.2-4':'pt-BR' }} ha</span>
+          </div>
+        }
+
+        <!-- Upload de Fotos / PDFs -->
+        <div class="upload-section mt-3">
+          <label class="input-label">Anexar Laudos Técnicos ou Fotos Comprobatórias</label>
+          <input type="file" multiple id="fileInputGleba" class="hidden-input" (change)="onFilesSelected($event)" accept=".pdf,image/*" />
+          <label for="fileInputGleba" class="btn-choose-files">
+            <mat-icon>cloud_upload</mat-icon> Selecionar Arquivos
+          </label>
+
+          @if (arquivosAnexos.length > 0) {
+            <ul class="file-list mt-2">
+              @for (file of arquivosAnexos; track file.name; let i = $index) {
+                <li class="file-item">
+                  <span class="truncate max-w-[85%]"><mat-icon>attach_file</mat-icon> {{ file.name }}</span>
+                  <button type="button" class="btn-remove-file" (click)="removerArquivo(i)"><mat-icon>close</mat-icon></button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <button mat-flat-button type="submit" class="submit-btn mt-4">
+          <mat-icon>send</mat-icon> Cadastrar Contestação da Gleba
         </button>
       </form>
     </div>
 
-    <!-- Painel do Mapa Interativo -->
+    <!-- Painel do Mapa Interativo com Validação de Polígono -->
     <div class="map-render-column">
       <app-contestacao-mapa
         [geometriaGlebaWkt]="dadosGleba.geometria_gleba_wkt"

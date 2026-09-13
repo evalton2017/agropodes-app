@@ -23,7 +23,7 @@ export class ContestacaoService {
   }
 
   cadastrarContestacao(formData: FormData): Observable<any> {
-    return this.http.post<any>(`${environment.urlProc}/contestacoes/`, formData);
+    return this.http.post<any>(`${environment.urlProc}/contestacoes/gleba`, formData);
   }
 
   /**

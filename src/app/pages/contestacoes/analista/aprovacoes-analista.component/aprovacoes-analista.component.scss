@@ -1,5 +1,5 @@
 /* ==========================================================================
-   🌿 FILA DE APROVAÇÕES - CORREÇÃO DE BOTÕES E TEMA FLORESTAL
+   🌿 FILA DE APROVAÇÕES - TABELA E MODAL MULTIPART (TEMA FLORESTAL)
    ========================================================================== */
 
 .main-aprovacoes-card {
@@ -38,7 +38,7 @@
       }
     }
 
-    /* 🟢 CORREÇÃO DO BOTÃO ATUALIZAR (REMOVIDO SEU FUNDO BRANCO) */
+    /* BOTÃO ATUALIZAR LISTA */
     .btn-refresh,
     .btn-atualizar {
       background-color: #0b1a10 !important;
@@ -129,17 +129,21 @@
   font-weight: 600 !important;
 }
 
-.td-data {
-  min-width: 130px !important;
-  color: #94a3b8 !important;
-  white-space: nowrap !important;
-}
-
 .td-acoes {
-  min-width: 210px !important;
+  min-width: 230px !important;
+  text-align: center !important;
+
+  /* Força a div interna a respeitar o flex com gap */
+  div, .flex {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important; /* Espaçamento de 8px entre botões */
+    width: auto !important;
+  }
 }
 
-/* 🟢 FORÇA SOBRESCRIÇÃO TOTAL DOS BOTÕES DE AÇÃO (FORÇA O TEMA FLORESTAL) */
+/* FORÇA O ESPAÇAMENTO ENTRE OS BOTÕES MESMO SEM SUPORTE A GAP */
 .dashboard-table button.btn-acao,
 button.btn-acao {
   height: 34px !important;
@@ -154,6 +158,11 @@ button.btn-acao {
   gap: 6px !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
   transition: all 0.2s ease-in-out !important;
+  margin-right: 8px !important; /* Garantia de separação */
+
+  &:last-child {
+    margin-right: 0 !important; /* O último botão (Indeferir) não ganha margem à direita */
+  }
 
   mat-icon {
     font-size: 16px !important;
@@ -163,7 +172,7 @@ button.btn-acao {
     margin: 0 !important;
   }
 
-  /* 🟢 REMOVE DEFINITIVAMENTE O RETÂNGULO BRANCO DO BOTÃO VER MAPA */
+  /* BOTÃO VER MAPA */
   &.btn-detalhar {
     background-color: #0b1a10 !important;
     border: 1px solid #1e3827 !important;
@@ -214,7 +223,6 @@ button.btn-acao {
   }
 }
 
-/* Fallback Tabela Vazia */
 .empty-row {
   text-align: center !important;
   color: #94a3b8 !important;
@@ -222,7 +230,6 @@ button.btn-acao {
   font-style: italic !important;
 }
 
-/* Overlay de Loading */
 .ia-loading-overlay {
   position: absolute !important;
   inset: 0 !important;
@@ -235,22 +242,291 @@ button.btn-acao {
   border-radius: 12px !important;
 }
 
-/* ESPAÇAMENTO ENTRE OS BOTÕES DE AÇÃO */
-.acoes-container {
+/* ==========================================================================
+   🟢 MODAL DE PARECER (DEFERIMENTO / INDEFERIMENTO)
+   ========================================================================== */
+
+.modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(4px) !important;
   display: flex !important;
-  flex-direction: row !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 8px !important; // Garante o respiro de 8px entre cada botão
-  width: 100% !important;
+  z-index: 99999 !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
 }
 
-/* Fallback de margem para navegadores sem suporte a gap em flexbox */
-.dashboard-table button.btn-acao,
-button.btn-acao {
-  margin-right: 8px !important;
+.modal-container-florestal {
+  background: #0f231b !important;
+  border: 1px solid rgba(46, 125, 50, 0.4) !important;
+  border-radius: 12px !important;
+  width: 100% !important;
+  max-width: 580px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  color: #e2e8f0 !important;
 
-  &:last-child {
-    margin-right: 0 !important;
+  /* HEADER DO MODAL */
+  .modal-header {
+    background: #142e23 !important;
+    padding: 16px 20px !important;
+    border-bottom: 1px solid rgba(46, 125, 50, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    h2 {
+      margin: 0 !important;
+      font-size: 1.1rem !important;
+      font-weight: 700 !important;
+      color: #ffffff !important;
+    }
+
+    mat-icon {
+      font-size: 20px !important;
+      width: 20px !important;
+      height: 20px !important;
+
+      &.icon-deferir {
+        color: #4ade80 !important;
+      }
+      &.icon-indeferir {
+        color: #f87171 !important;
+      }
+    }
+
+    .btn-close {
+      background: transparent !important;
+      border: none !important;
+      color: #94a3b8 !important;
+      cursor: pointer !important;
+      padding: 4px !important;
+      border-radius: 4px !important;
+      display: flex !important;
+      align-items: center !important;
+
+      &:hover {
+        color: #ffffff !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+      }
+    }
+  }
+
+  /* CORPO DO MODAL */
+  .modal-body {
+    padding: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+
+    .info-resumo {
+      background: #07160f !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      padding: 10px 14px !important;
+      border-radius: 6px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 4px !important;
+      font-size: 0.82rem !important;
+      color: #cbd5e1 !important;
+
+      strong {
+        color: #ffffff !important;
+      }
+    }
+
+    .field-group {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 6px !important;
+
+      .label-florestal {
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        color: #cbd5e1 !important;
+      }
+
+      .textarea-florestal {
+        width: 100% !important;
+        background: #07160f !important;
+        border: 1px solid rgba(46, 125, 50, 0.4) !important;
+        border-radius: 6px !important;
+        padding: 10px 12px !important;
+        color: #ffffff !important;
+        font-size: 0.88rem !important;
+        resize: vertical !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+
+        &:focus {
+          border-color: #4ade80 !important;
+          box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.15) !important;
+        }
+      }
+    }
+
+    /* UPLOAD DE ARQUIVOS */
+    .file-dropzone {
+      .hidden-file-input {
+        display: none !important;
+      }
+
+      .btn-choose-files {
+        background: #07160f !important;
+        border: 1px dashed rgba(74, 222, 128, 0.4) !important;
+        color: #cbd5e1 !important;
+        padding: 10px 14px !important;
+        border-radius: 6px !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        transition: all 0.2s ease !important;
+
+        mat-icon {
+          font-size: 18px !important;
+          width: 18px !important;
+          height: 18px !important;
+          color: #4ade80 !important;
+        }
+
+        &:hover {
+          border-color: #4ade80 !important;
+          color: #ffffff !important;
+          background: rgba(74, 222, 128, 0.05) !important;
+        }
+      }
+    }
+
+    .file-list {
+      list-style: none !important;
+      padding: 0 !important;
+      margin: 8px 0 0 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 6px !important;
+
+      .file-item {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        background: #07160f !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        padding: 6px 10px !important;
+        border-radius: 4px !important;
+        font-size: 0.78rem !important;
+
+        .file-name {
+          display: flex !important;
+          align-items: center !important;
+          gap: 6px !important;
+          color: #e2e8f0 !important;
+
+          mat-icon {
+            font-size: 14px !important;
+            width: 14px !important;
+            height: 14px !important;
+            color: #4ade80 !important;
+          }
+        }
+
+        .btn-remove-file {
+          background: none !important;
+          border: none !important;
+          color: #ef4444 !important;
+          cursor: pointer !important;
+          display: flex !important;
+          align-items: center !important;
+          padding: 2px !important;
+
+          mat-icon {
+            font-size: 14px !important;
+            width: 14px !important;
+            height: 14px !important;
+          }
+        }
+      }
+    }
+  }
+
+  /* FOOTER DO MODAL */
+  .modal-footer {
+    padding: 14px 20px !important;
+    background: #142e23 !important;
+    border-top: 1px solid rgba(46, 125, 50, 0.3) !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+
+    .btn-secundario {
+      background: transparent !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #cbd5e1 !important;
+      padding: 8px 16px !important;
+      border-radius: 6px !important;
+      font-size: 0.85rem !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: #ffffff !important;
+      }
+    }
+
+    .btn-primario {
+      padding: 8px 18px !important;
+      border-radius: 6px !important;
+      font-size: 0.85rem !important;
+      font-weight: 700 !important;
+      color: #ffffff !important;
+      border: none !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      transition: all 0.2s ease !important;
+
+      mat-icon {
+        font-size: 16px !important;
+        width: 16px !important;
+        height: 16px !important;
+      }
+
+      &.bg-deferir {
+        background-color: #166534 !important;
+        border: 1px solid #15803d !important;
+
+        &:hover:not(:disabled) {
+          background-color: #22c55e !important;
+          border-color: #4ade80 !important;
+        }
+      }
+
+      &.bg-indeferir {
+        background-color: #9f1239 !important;
+        border: 1px solid #be123c !important;
+
+        &:hover:not(:disabled) {
+          background-color: #f43f5e !important;
+          border-color: #fb7185 !important;
+        }
+      }
+
+      &:disabled {
+        opacity: 0.6 !important;
+        cursor: not-allowed !important;
+      }
+    }
   }
 }
