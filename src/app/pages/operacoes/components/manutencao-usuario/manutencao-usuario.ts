@@ -84,16 +84,12 @@ export class ManutencaoUsuarioComponent implements OnInit {
   carregarPerfis() {
     this.manutencaoService.listarPerfis().subscribe({
       next: (res: any) => {
-        // Filtra para garantir que apenas perfis/contratos de produtor apareçam se necessário
-        const perfisProdutor = res.filter((p: any) => !p.tipoBase?.includes('ANALISTA'));
+        const perfisProdutor = res.filter((p: any) => !p.codigo?.includes('ANALISTA') && !p.codigo?.includes('ADMIN'))
         this.listaPerfis.set(perfisProdutor.length ? perfisProdutor : res);
       },
-      error: () => {
-        // Fallback caso o endpoint de perfis direto não retorne
-        this.listaPerfis.set([
-          { id: 1, nome: 'Contrato Básico' },
-          { id: 2, nome: 'Contrato Monitoramento' }
-        ]);
+      error: (error) => {
+        console.log(error);
+        this.alertaService.error(error.message.detail);
       }
     });
   }
@@ -158,15 +154,20 @@ export class ManutencaoUsuarioComponent implements OnInit {
 
   salvar() {
     const dados = this.usuarioSelecionado();
+    const idEmpresa = dados.empresa?.id;
 
     if (this.modoEdicao()) {
       // Atualizar Usuário
-      this.manutencaoService.atualizarUsuario(dados.id, dados.nome, dados.ativo, dados.perfilId, dados.empresaId).subscribe({
+      this.manutencaoService.atualizarUsuario(dados.id, dados.nome, dados.ativo, dados.perfilId, idEmpresa).subscribe({
         next: () => {
+          this.alertaService.success('Usuário atualizado com sucesso!');
           this.fecharActionbar();
           this.carregarUsuarios(this.pageIndex(), this.pageSize());
         },
-        error: (err) => alert('Erro ao atualizar usuário: ' + (err.error?.message || err.message))
+        error: (err) => {
+          const mensagemErro = err.error?.detail || err.error?.message || 'Erro ao atualizar usuário.';
+          this.alertaService.error(mensagemErro);
+        }
       });
     } else {
       // Cadastrar Novo Produtor
@@ -182,11 +183,14 @@ export class ManutencaoUsuarioComponent implements OnInit {
 
       this.manutencaoService.cadastrarProdutor(payload, dados.perfilId).subscribe({
         next: () => {
-          alert('Produtor cadastrado com sucesso!');
+          this.alertaService.success('Produtor cadastrado com sucesso!');
           this.fecharActionbar();
           this.carregarUsuarios(this.pageIndex(), this.pageSize());
         },
-        error: (err) => alert('Erro ao cadastrar produtor: ' + (err.error?.message || err.message))
+        error: (err) => {
+          const mensagemErro = err.error?.detail || err.error?.message || 'Erro ao cadastrar produtor.';
+          this.alertaService.error(mensagemErro);
+        }
       });
     }
   }

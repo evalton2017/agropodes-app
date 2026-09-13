@@ -93,7 +93,7 @@ export class ManutencaoService {
 
   // Listar Perfis (Contratos) - Ajuste para o endpoint do seu projeto se necessário
   listarPerfis(): Observable<any> {
-    return this.http.get(`${environment.url}/perfis`);
+    return this.http.get(`${environment.url}/perfis-modulos/perfis`);
   }
 
   listarEmpresasPaginated(page: number = 0, size: number = 10): Observable<EmpresaPageResponse> {

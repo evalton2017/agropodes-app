@@ -11,82 +11,153 @@
 
   <!-- VISÃO 2: CADASTRO -->
   @if (viewModo() === 'CADASTRO') {
-    <div class="nav-back">
-      <button mat-button (click)="voltarParaLista()">
+    <div class="nav-back mb-3">
+      <button type="button" class="btn-voltar" (click)="voltarParaLista()">
         <mat-icon>arrow_back</mat-icon> Voltar para a lista
       </button>
     </div>
-    <app-cadastrar-propriedade (cadastradoSucesso)="onCadastradoComSucesso()"></app-cadastrar-propriedade>
+    <app-cadastrar-propriedade></app-cadastrar-propriedade>
   }
 
-  <!-- VISÃO 3: SELEÇÃO DE DETECÇÕES E ENVIAR CONTESTAÇÃO -->
+  <!-- VISÃO 3: SPLIT PANEL CONTESTAÇÃO -->
   @if (viewModo() === 'CONTESTACAO_DETECOES') {
-    <div class="contestacao-panel">
-      <div class="panel-header">
-        <button mat-icon-button (click)="voltarParaLista()">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <h3>CONTESTAÇÃO AMBIENTAL - CAR: {{ propriedadeSelecionada()?.codigo_car }}</h3>
-      </div>
+    <div class="split-panel-container">
 
-      <p class="desc-help">Selecione uma ou mais detecções detectadas pelo PostGIS que você deseja contestar:</p>
-
-      <div class="deteccoes-grid">
-        @for (det of propriedadeSelecionada()?.deteccoes; track det.id_deteccao) {
-          <div
-            class="deteccao-card"
-            [class.selected]="deteccoesSelecionadas().includes(det.id_deteccao)"
-            (click)="toggleSelecaoDeteccao(det.id_deteccao)"
-          >
-            <mat-checkbox
-              [checked]="deteccoesSelecionadas().includes(det.id_deteccao)"
-              (click)="$event.stopPropagation()"
-            ></mat-checkbox>
-            <div class="info">
-              <span class="alerta-nome">{{ det.nome_alerta }}</span>
-              <span class="alerta-tipo">{{ det.tipo_conflito }}</span>
-              <span class="alerta-area">{{ det.area_ha }} ha</span>
-            </div>
+      <!-- COLUNA ESQUERDA: LISTA E JUSTIFICATIVA -->
+      <div class="panel-form-col">
+        <div class="panel-header">
+          <button type="button" class="btn-icon-back" (click)="voltarParaLista()" title="Voltar">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <div class="header-titles">
+            <h3>CONTESTAÇÃO AMBIENTAL</h3>
+            <span class="sub-car font-mono">CAR: {{ propriedadeSelecionada()?.codigo_car }}</span>
           </div>
-        } @empty {
-          <div class="empty-box">Não há detecções registradas nesta propriedade para contestação.</div>
-        }
-      </div>
+        </div>
 
-      @if (deteccoesSelecionadas().length > 0) {
-        <div class="form-motivo">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Motivo e Justificativa da Contestação</mat-label>
-            <textarea
-              matInput
-              rows="4"
-              [ngModel]="motivoContestacao()"
-              (ngModelChange)="motivoContestacao.set($event)"
-              placeholder="Descreva detalhadamente a justificativa técnica para a contestação da área..."
-            ></textarea>
-          </mat-form-field>
+        <p class="desc-help">
+          Selecione as detecções ou desenhe uma área no mapa para contestação técnica:
+        </p>
+
+        <div class="deteccoes-grid">
+          @for (det of propriedadeSelecionada()?.deteccoes; track det.id_deteccao) {
+            <div
+              class="deteccao-card"
+              [class.selected]="deteccoesSelecionadas().includes(det.id_deteccao)"
+              (click)="toggleSelecaoDeteccao(det)"
+            >
+              <div class="card-chk">
+                <mat-checkbox
+                  [checked]="deteccoesSelecionadas().includes(det.id_deteccao)"
+                  (click)="$event.stopPropagation()"
+                  (change)="toggleSelecaoDeteccao(det)"
+                ></mat-checkbox>
+              </div>
+
+              <div class="info">
+                <div class="flex items-center justify-between">
+                  <span class="alerta-nome">{{ det.nome_alerta || 'Alerta Ambiental' }}</span>
+                  <span class="alerta-area">{{ det.area_ha | number:'1.2-3':'pt-BR' }} ha</span>
+                </div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="badge-tipo">{{ det.tipo_conflito }}</span>
+                  <button type="button" class="btn-focar-mapa" (click)="$event.stopPropagation(); focarDeteccaoNoMapa(det)">
+                    <mat-icon>center_focus_strong</mat-icon> Ver no mapa
+                  </button>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-box">Não há detecções automáticas registradas nesta propriedade. Utilize a ferramenta no mapa para desenhar a área a ser contestada.</div>
+          }
+        </div>
+
+        <!-- JUSTIFICATIVA E ANEXOS -->
+        <div class="form-motivo-section">
+          <label class="input-label">Motivo e Justificativa Técnica *</label>
+          <textarea
+            rows="4"
+            class="textarea-florestal"
+            [ngModel]="motivoContestacao()"
+            (ngModelChange)="motivoContestacao.set($event)"
+            placeholder="Descreva detalhadamente a justificativa para a contestação da área..."
+          ></textarea>
+
+          @if (poligonoDesenhadoWkt()) {
+            <div class="drawn-status-badge mt-2">
+              <mat-icon>edit_location_alt</mat-icon> Polígono desenhado manualmente anexado à contestação.
+            </div>
+          }
+
+          <div class="upload-section mt-3">
+            <label class="input-label">Anexar Laudos Técnicos ou Fotos</label>
+            <input type="file" multiple id="fileAnexo" class="hidden-input" (change)="onFilesSelected($event)" accept=".pdf,image/*" />
+            <label for="fileAnexo" class="btn-choose-files">
+              <mat-icon>cloud_upload</mat-icon> Selecionar Arquivos
+            </label>
+
+            @if (arquivosAnexos().length > 0) {
+              <ul class="file-list mt-2">
+                @for (arq of arquivosAnexos(); track arq.name; let i = $index) {
+                  <li class="file-item">
+                    <span><mat-icon>attach_file</mat-icon> {{ arq.name }}</span>
+                    <button type="button" class="btn-remove-file" (click)="removerArquivo(i)"><mat-icon>close</mat-icon></button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
 
           <button
-            mat-flat-button
-            class="btn-send"
+            type="button"
+            class="btn-send-contestacao"
             (click)="enviarContestacao()"
-            [disabled]="loadingEnvio() || !motivoContestacao().trim()"
+            [disabled]="loadingEnvio() || (!deteccoesSelecionadas().length && !poligonoDesenhadoWkt()) || !motivoContestacao().trim()"
           >
             @if (loadingEnvio()) {
               <mat-spinner diameter="20"></mat-spinner>
             } @else {
-              <span>Enviar Contestação Das Detecções Selecionadas</span>
+              <mat-icon>send</mat-icon>
+              <span>Enviar Contestação</span>
             }
           </button>
         </div>
-      }
 
-      @if (mensagemSucesso()) {
-        <div class="success-banner">
-          <mat-icon>check_circle</mat-icon>
-          <span>{{ mensagemSucesso() }}</span>
+        @if (mensagemSucesso()) {
+          <div class="success-banner mt-3">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ mensagemSucesso() }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- COLUNA DIREITA: MAPA + LEGENDA COMPLETA -->
+      <div class="panel-map-col">
+
+        <!-- 🟢 LEGENDA SOBREPOSTA NO CANTO SUPERIOR DIREITO -->
+        <div class="map-legend-box">
+          <div class="legend-header">LEGENDA DO MAPA</div>
+          <div class="legend-item">
+            <span class="color-box prop-box"></span>
+            <span>Limite do Imóvel (CAR)</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box det-box"></span>
+            <span>Detecção Ambiental</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box selected-box"></span>
+            <span>Detecção Selecionada</span>
+          </div>
+          <div class="legend-item">
+            <span class="color-box drawn-box"></span>
+            <span>Polígono Desenhado (Manual)</span>
+          </div>
         </div>
-      }
+
+        <div #mapElement class="leaflet-map-container"></div>
+      </div>
+
     </div>
   }
 </div>

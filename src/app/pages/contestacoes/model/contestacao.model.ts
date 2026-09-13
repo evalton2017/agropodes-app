@@ -76,3 +76,18 @@ export interface DetalhesContestacaoCompleto {
   documentos_anexados: string[];
   legenda_mapa: LegendaCamada[];
 }
+
+export interface ContestacaoAnalista {
+  id_contestacao: number;
+  id_gleba?: number;
+  id_propriedade?: number;
+  codigo_car?: string;
+  nome_produtor?: string;
+  tamanho_area_demarcada_ha: number;
+  tamanho_area_detectada_ha?: number;
+  descricao_motivo: string;
+  status_contestacao: string;
+  parecer_analista?: string;
+  data_criacao: string;
+  data_atualizacao: string;
+}

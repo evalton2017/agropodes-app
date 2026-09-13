@@ -39,6 +39,6 @@ export class ListarPropriedadeComponent {
   }
 
   onAdicionarSocio(propriedade: Propriedade): void {
-    this.adicionarSocioClick.emit(propriedade); // 🟢 Emite a propriedade selecionada para o pai
+    this.adicionarSocioClick.emit(propriedade);
   }
 }

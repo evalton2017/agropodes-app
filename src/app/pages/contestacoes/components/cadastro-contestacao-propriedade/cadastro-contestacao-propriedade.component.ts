@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,7 @@ import { LoadingService } from '../../../../shared/service/loading.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {ConflitoDetalhe, DetalhesConflitosPropriedadeResponse} from '../../model/contestacao.model';
+import {PessoaService} from '../../../../service/pessoa.service';
 
 @Component({
   selector: 'app-cadastro-contestacao-propriedade',
@@ -31,6 +32,9 @@ export class CadastroContestacaoPropriedadeComponent implements OnInit {
   public poligonoDesenhadoWkt: string = '';
   public areaDemarcadaHa: number = 0;
 
+  private readonly pessoaService = inject(PessoaService);
+  readonly idProdutorLogado = this.pessoaService.idProdutorLogado;
+
   // Modal feedback
   public modalAberto: boolean = false;
   public modalSucesso: boolean = false;
@@ -43,7 +47,9 @@ export class CadastroContestacaoPropriedadeComponent implements OnInit {
     private contestacaoService: ContestacaoService,
     private cdr: ChangeDetectorRef,
     private router: Router
-  ) {}
+  ) {
+    console.log('CHEGOU NO COMPONENTE DE CADASTRADO ');
+  }
 
   ngOnInit(): void {
     const paramId = this.route.snapshot.paramMap.get('idPropriedade') || this.route.snapshot.paramMap.get('id');

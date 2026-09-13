@@ -28,7 +28,7 @@ export class PropriedadeService {
   }
 
   // Lista propriedades cadastradas para o produtor
-  listarPropriedadesProdutor(idProdutor: number = 1): Observable<Propriedade[]> {
+  listarPropriedadesProdutor(idProdutor: number ): Observable<Propriedade[]> {
     return this.http.get<Propriedade[]>(`${this.baseUrl}/propriedades/produtor/${idProdutor}`);
   }
 
@@ -36,9 +36,14 @@ export class PropriedadeService {
     return this.http.get<DetalhesPropriedadeResponse>(`${this.baseUrl}/propriedades/${idPropriedade}/detalhes`);
   }
 
-  // Efetiva o cadastro da propriedade no banco de dados
-  cadastrarPropriedade(codigoCar: string): Observable<Propriedade> {
-    return this.http.post<Propriedade>(`${this.baseUrl}/propriedades/cadastrar`, { codigo_car: codigoCar });
+  cadastrarPropriedade(codigoCar: string, id_produtor: number): Observable<Propriedade> {
+    const params = new HttpParams().set('id_produtor', id_produtor.toString());
+
+    return this.http.post<Propriedade>(
+      `${this.baseUrl}/propriedades/cadastrar`,
+      { codigo_car: codigoCar },
+      { params }
+    );
   }
 
   // Envia contestação referente a uma ou mais detecções selecionadas

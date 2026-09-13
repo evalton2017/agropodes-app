@@ -25,7 +25,6 @@ export class DetalhesPropriedadeComponent implements OnInit {
   loading = signal<boolean>(true);
   detalhes = signal<DetalhesPropriedadeResponse | null>(null);
 
-  // 🟢 Injeção do PropriedadeService em vez do HttpClient
   private propriedadeService = inject(PropriedadeService);
 
   ngOnInit(): void {
@@ -35,7 +34,6 @@ export class DetalhesPropriedadeComponent implements OnInit {
   carregarDetalhes(): void {
     this.loading.set(true);
 
-    // 🟢 Chamada delegada ao Service
     this.propriedadeService.obterDetalhesPropriedade(this.idPropriedade())
       .subscribe({
         next: (res) => {

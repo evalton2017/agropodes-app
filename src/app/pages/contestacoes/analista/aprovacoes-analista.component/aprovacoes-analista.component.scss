@@ -1,0 +1,256 @@
+/* ==========================================================================
+   🌿 FILA DE APROVAÇÕES - CORREÇÃO DE BOTÕES E TEMA FLORESTAL
+   ========================================================================== */
+
+.main-aprovacoes-card {
+  position: relative !important;
+  background: #112217 !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  box-sizing: border-box !important;
+
+  .card-header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 24px !important;
+
+    .header-title-container {
+      display: flex !important;
+      flex-direction: column !important;
+
+      .card-title-custom {
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        color: #f1f5f9 !important;
+        margin: 0 !important;
+        letter-spacing: -0.01em !important;
+      }
+
+      .subtext {
+        font-size: 12.5px !important;
+        color: #94a3b8 !important;
+        margin-top: 4px !important;
+      }
+    }
+
+    /* 🟢 CORREÇÃO DO BOTÃO ATUALIZAR (REMOVIDO SEU FUNDO BRANCO) */
+    .btn-refresh,
+    .btn-atualizar {
+      background-color: #0b1a10 !important;
+      border: 1px solid #1e3827 !important;
+      color: #86efac !important;
+      padding: 8px 14px !important;
+      border-radius: 6px !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      font-size: 12.5px !important;
+      font-weight: 700 !important;
+      transition: all 0.2s ease-in-out !important;
+
+      mat-icon {
+        font-size: 18px !important;
+        width: 18px !important;
+        height: 18px !important;
+        line-height: 18px !important;
+        color: #4ade80 !important;
+      }
+
+      &:hover {
+        background-color: #162c1e !important;
+        border-color: #4ade80 !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+}
+
+/* 🟢 CONFIGURAÇÃO DA TABELA */
+.table-responsive-wrapper {
+  width: 100% !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
+}
+
+.dashboard-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 13px !important;
+
+  th {
+    background-color: #0b1a10 !important;
+    color: #86efac !important;
+    font-weight: 800 !important;
+    font-size: 11.5px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 12px 14px !important;
+    border-bottom: 2px solid #1e3827 !important;
+    white-space: nowrap !important;
+  }
+
+  td {
+    padding: 14px !important;
+    border-bottom: 1px solid #183321 !important;
+    color: #e2e8f0 !important;
+    vertical-align: middle !important;
+  }
+
+  tr:hover td {
+    background-color: #162c1e !important;
+  }
+
+  tr:last-child td {
+    border-bottom: none !important;
+  }
+}
+
+.td-codigo {
+  font-family: 'JetBrains Mono', monospace, Roboto !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  min-width: 220px !important;
+}
+
+.td-produtor {
+  min-width: 120px !important;
+  color: #cbd5e1 !important;
+}
+
+.td-area {
+  min-width: 100px !important;
+  font-weight: 600 !important;
+}
+
+.td-data {
+  min-width: 130px !important;
+  color: #94a3b8 !important;
+  white-space: nowrap !important;
+}
+
+.td-acoes {
+  min-width: 210px !important;
+}
+
+/* 🟢 FORÇA SOBRESCRIÇÃO TOTAL DOS BOTÕES DE AÇÃO (FORÇA O TEMA FLORESTAL) */
+.dashboard-table button.btn-acao,
+button.btn-acao {
+  height: 34px !important;
+  padding: 0 12px !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease-in-out !important;
+
+  mat-icon {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+    line-height: 16px !important;
+    margin: 0 !important;
+  }
+
+  /* 🟢 REMOVE DEFINITIVAMENTE O RETÂNGULO BRANCO DO BOTÃO VER MAPA */
+  &.btn-detalhar {
+    background-color: #0b1a10 !important;
+    border: 1px solid #1e3827 !important;
+    color: #86efac !important;
+    padding: 0 10px !important;
+
+    mat-icon {
+      color: #4ade80 !important;
+    }
+
+    &:hover {
+      background-color: #162c1e !important;
+      border-color: #4ade80 !important;
+      color: #ffffff !important;
+    }
+  }
+
+  /* BOTÃO DEFERIR (VERDE) */
+  &.btn-deferir {
+    background-color: #166534 !important;
+    color: #ffffff !important;
+    border: 1px solid #15803d !important;
+
+    mat-icon {
+      color: #86efac !important;
+    }
+
+    &:hover {
+      background-color: #22c55e !important;
+      border-color: #4ade80 !important;
+    }
+  }
+
+  /* BOTÃO INDEFERIR (VERMELHO) */
+  &.btn-indeferir {
+    background-color: #9f1239 !important;
+    color: #ffffff !important;
+    border: 1px solid #be123c !important;
+
+    mat-icon {
+      color: #fecdd3 !important;
+    }
+
+    &:hover {
+      background-color: #f43f5e !important;
+      border-color: #fb7185 !important;
+    }
+  }
+}
+
+/* Fallback Tabela Vazia */
+.empty-row {
+  text-align: center !important;
+  color: #94a3b8 !important;
+  padding: 32px !important;
+  font-style: italic !important;
+}
+
+/* Overlay de Loading */
+.ia-loading-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(17, 34, 23, 0.85) !important;
+  backdrop-filter: blur(2px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+  border-radius: 12px !important;
+}
+
+/* ESPAÇAMENTO ENTRE OS BOTÕES DE AÇÃO */
+.acoes-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important; // Garante o respiro de 8px entre cada botão
+  width: 100% !important;
+}
+
+/* Fallback de margem para navegadores sem suporte a gap em flexbox */
+.dashboard-table button.btn-acao,
+button.btn-acao {
+  margin-right: 8px !important;
+
+  &:last-child {
+    margin-right: 0 !important;
+  }
+}

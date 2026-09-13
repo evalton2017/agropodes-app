@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '../auth/auth.guard';
+import {
+  ContestacaoAnalistaComponent
+} from '../pages/contestacoes/analista/contestacao-analista.component/contestacao-analista.component';
 
 export const ANALISTA_ROUTES: Routes = [
   {
@@ -17,6 +20,22 @@ export const ANALISTA_ROUTES: Routes = [
         data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] },
         loadComponent: () =>
           import('../pages/relatorios/analista/relatorio-analista.component').then(m => m.RelatorioAnalistaComponent)
+      },
+      {
+        path: 'contestacao-analista',
+        data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+        loadComponent: () =>
+          import(
+            '../pages/contestacoes/analista/contestacao-analista.component/contestacao-analista.component'
+            ).then((m) => m.ContestacaoAnalistaComponent)
+      },
+      {
+        path: 'aprovacoes',
+        data: { roles: ['USER_ADMIN', 'USER_ANALISTA'] },
+        loadComponent: () =>
+          import(
+            '../pages/contestacoes/analista/aprovacoes-analista.component/aprovacoes-analista.component'
+            ).then((m) => m.AprovacoesAnalistaComponent)
       },
       {
         path: 'monitoramento-clima',

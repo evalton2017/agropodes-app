@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import {Component, OnInit, ChangeDetectorRef, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import {
   VisualizarContestacaoModalComponent
 } from '../../modal/visualizar-contestacao/visualizar-contestacao-modal.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {PessoaService} from '../../../../service/pessoa.service';
 
 
 @Component({
@@ -29,9 +30,11 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
   styleUrls: ['./acompanhamento-contestacao.component.scss']
 })
 export class AcompanhamentoContestacaoComponent implements OnInit {
-  public idProdutor: number = 1; // Substituir pelo ID dinâmico do usuário/produtor logado
+
   public listaContestacoes: ContestacaoItemAcompanhamento[] = [];
   public carregando: boolean = true;
+  private readonly pessoaService = inject(PessoaService);
+  readonly idProdutorLogado = this.pessoaService.idProdutorLogado;
 
   public modalCancelarAberto: boolean = false;
   public contestacaoParaCancelar?: ContestacaoItemAcompanhamento;
@@ -65,21 +68,26 @@ export class AcompanhamentoContestacaoComponent implements OnInit {
   carregarAcompanhamento(): void {
     this.carregando = true;
     this.loadingService.show();
+    const idProdutor = this.idProdutorLogado();
 
-    this.contestacaoService.listarAcompanhamento(this.idProdutor).subscribe({
-      next: (data) => {
-        this.listaContestacoes = data;
-        this.carregando = false;
-        this.loadingService.hide();
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Erro ao carregar contestações:', err);
-        this.carregando = false;
-        this.loadingService.hide();
-        this.cdr.detectChanges();
-      }
-    });
+    if(idProdutor) {
+      this.contestacaoService.listarAcompanhamento(idProdutor).subscribe({
+        next: (data) => {
+          this.listaContestacoes = data;
+          this.carregando = false;
+          this.loadingService.hide();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Erro ao carregar contestações:', err);
+          this.carregando = false;
+          this.loadingService.hide();
+          this.cdr.detectChanges();
+        }
+      });
+    }
+
+
   }
 
   onVisualizar(idContestacao: number): void {

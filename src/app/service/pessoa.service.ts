@@ -19,6 +19,10 @@ export class PessoaService {
   readonly perfilUsuario = computed(() => this.produtorAtual()?.perfil?.codigo || null);
   readonly tipoUsuario = computed(() => this.produtorAtual()?.tipo || null);
 
+  // 🟢 COMPUTED ADICIONADOS: Acesso direto ao ID do produtor em qualquer componente
+  readonly idProdutorLogado = computed<number | null>(() => this.produtorAtual()?.id ?? null);
+  readonly possuiProdutorLogado = computed<boolean>(() => this.idProdutorLogado() !== null);
+
   // Verifica se o usuário tem acesso a uma rota específica com base nos módulos da API
   readonly rotasPermitidas = computed(() => {
     const modulos = this.produtorAtual()?.modulosPermitidos || [];

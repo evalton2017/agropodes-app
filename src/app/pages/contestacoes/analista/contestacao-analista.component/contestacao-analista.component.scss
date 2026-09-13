@@ -1,0 +1,270 @@
+/* ==========================================================================
+   🌿 COMPONENTE DE CONTESTAÇÕES - TEMA ESCURO FLORESTAL
+   ========================================================================== */
+
+.main-contestacao-card {
+  background: #112217 !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  position: relative !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+
+  .subtext {
+    font-size: 12px !important;
+    color: #94a3b8 !important;
+    display: block !important;
+    margin-top: 2px !important;
+  }
+}
+
+/* 🟢 BARRA DE FILTROS */
+.filtros-bar {
+  .input-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+
+    label {
+      font-size: 12px !important;
+      color: #86efac !important;
+      font-weight: 700 !important;
+    }
+
+    .input-date,
+    .select-status {
+      background: #0b1a10 !important;
+      border: 1px solid #1e3827 !important;
+      color: #f1f5f9 !important;
+      padding: 6px 10px !important;
+      border-radius: 6px !important;
+      font-size: 12px !important;
+      outline: none !important;
+
+      &:focus {
+        border-color: #4ade80 !important;
+      }
+    }
+  }
+
+  .btn-filtrar {
+    background: #166534 !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 7px 14px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+
+    &:hover { background: #22c55e !important; }
+  }
+
+  .btn-limpar {
+    background: transparent !important;
+    color: #94a3b8 !important;
+    border: 1px solid #1e3827 !important;
+    padding: 7px 12px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+
+    &:hover { color: #ffffff !important; }
+  }
+}
+
+/* 🟢 TABELA E ROLAGEM */
+.table-responsive-wrapper {
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  margin-top: 16px !important;
+
+  &::-webkit-scrollbar { width: 6px; height: 6px; }
+  &::-webkit-scrollbar-track { background: #0b1a10; }
+  &::-webkit-scrollbar-thumb { background: #1e3827; border-radius: 4px; }
+}
+
+.dashboard-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+
+  th {
+    position: sticky !important;
+    top: 0 !important;
+    background: #112217 !important;
+    color: #86efac !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    padding: 12px 10px !important;
+    border-bottom: 2px solid #1e3827 !important;
+    z-index: 2 !important;
+  }
+
+  td {
+    padding: 12px 10px !important;
+    border-bottom: 1px solid #183321 !important;
+    color: #e2e8f0 !important;
+    font-size: 13px !important;
+  }
+
+  tr:hover td { background: #162c1e !important; }
+
+  .badge {
+    padding: 3px 10px !important;
+    border-radius: 6px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+
+    &.dot-concluido { background: #14532d !important; color: #86efac !important; }
+    &.dot-andamento { background: #78350f !important; color: #fde68a !important; }
+    &.dot-nao-conforme { background: #881337 !important; color: #fecdd3 !important; }
+    &.dot-pendente { background: #1e293b !important; color: #cbd5e1 !important; }
+  }
+}
+
+.icon-green { color: #4ade80 !important; }
+
+.ia-loading-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(17, 34, 23, 0.85) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+}
+
+/* ==========================================================================
+   🌿 CABEÇALHO E BARRA DE FILTROS ALINHADOS EM LINHA
+   ========================================================================== */
+
+.card-header {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  flex-wrap: wrap !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin-bottom: 20px !important;
+
+  .header-title-container {
+    display: flex !important;
+    flex-direction: column !important;
+
+    .card-title-custom {
+      font-size: 18px !important;
+      font-weight: 800 !important;
+      color: #f1f5f9 !important;
+      margin: 0 !important;
+      letter-spacing: -0.01em !important;
+    }
+
+    .subtext {
+      font-size: 12.5px !important;
+      color: #94a3b8 !important;
+      margin-top: 4px !important;
+    }
+  }
+}
+
+/* 🟢 BARRA DE FILTROS HORIZONTAL COM ALTURA PADRONIZADA */
+.filtros-bar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+
+  .input-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+
+    label {
+      font-size: 12.5px !important;
+      color: #86efac !important; // Verde pastel legível
+      font-weight: 700 !important;
+      white-space: nowrap !important;
+    }
+
+    .input-date,
+    .select-status {
+      height: 36px !important;
+      background-color: #0b1a10 !important;
+      border: 1px solid #1e3827 !important;
+      color: #ffffff !important;
+      padding: 0 12px !important;
+      border-radius: 6px !important;
+      font-size: 13px !important;
+      font-family: inherit !important;
+      outline: none !important;
+      box-sizing: border-box !important;
+
+      /* Customiza o ícone de calendário nativo */
+      &::-webkit-calendar-picker-indicator {
+        filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg) !important;
+        cursor: pointer !important;
+      }
+
+      &:focus {
+        border-color: #4ade80 !important;
+        box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.15) !important;
+      }
+    }
+
+    .select-status {
+      min-width: 150px !important;
+      cursor: pointer !important;
+
+      option {
+        background-color: #0b1a10 !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+
+  /* 🟢 BOTÕES DE AÇÃO DOS FILTROS */
+  .btn-filtrar {
+    height: 36px !important;
+    background-color: #166534 !important;
+    color: #ffffff !important;
+    border: 1px solid #15803d !important;
+    padding: 0 16px !important;
+    border-radius: 6px !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease-in-out !important;
+
+    &:hover {
+      background-color: #15803d !important;
+      border-color: #22c55e !important;
+    }
+  }
+
+  .btn-limpar {
+    height: 36px !important;
+    background-color: transparent !important;
+    color: #cbd5e1 !important;
+    border: 1px solid #1e3827 !important;
+    padding: 0 14px !important;
+    border-radius: 6px !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease-in-out !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      color: #ffffff !important;
+      border-color: #334155 !important;
+    }
+  }
+}

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {environment} from '../../../../environments/environment';
 import {
+  ContestacaoAnalista,
   ContestacaoItemAcompanhamento,
   ContestacaoPayload,
   DetalhesConflitosGlebaResponse,
@@ -56,4 +57,51 @@ export class ContestacaoService {
       responseType: 'blob'
     });
   }
+
+  listarContestacoes(
+    dataInicio?: string,
+    dataFim?: string,
+    statusContestacao?: string,
+    limite = 50,
+    offset = 0
+  ): Observable<ContestacaoAnalista[]> {
+    let params = new HttpParams()
+      .set('limite', limite.toString())
+      .set('offset', offset.toString());
+
+    if (dataInicio) params = params.set('data_inicio', dataInicio);
+    if (dataFim) params = params.set('data_fim', dataFim);
+    if (statusContestacao) params = params.set('status_contestacao', statusContestacao);
+
+    return this.http.get<ContestacaoAnalista[]>(`${environment.urlProc}/contestacoes`, { params });
+  }
+
+  obterAprovacoesPendentes(limite = 50, offset = 0): Observable<DetalhesContestacaoCompleto[]> {
+    const params = new HttpParams()
+      .set('limite', limite.toString())
+      .set('offset', offset.toString());
+
+    return this.http.get<DetalhesContestacaoCompleto[]>(`${environment.urlProc}/contestacoes/aprovacoes-pendentes`, { params });
+  }
+
+  enviarParecerAnalistaMultipart(
+    idContestacao: number,
+    parecer: string,
+    statusFinal: 'DEFERIDO' | 'INDEFERIDO',
+    arquivos: File[]
+  ): Observable<any> {
+    const formData = new FormData();
+    formData.append('parecer_analista', parecer);
+    formData.append('status_final', statusFinal);
+
+    if (arquivos && arquivos.length > 0) {
+      arquivos.forEach((file) => {
+        formData.append('arquivos', file, file.name);
+      });
+    }
+
+    return this.http.post(`${environment.urlProc}/contestacoes/parecer-analista/${idContestacao}`, formData);
+  }
+
+
 }

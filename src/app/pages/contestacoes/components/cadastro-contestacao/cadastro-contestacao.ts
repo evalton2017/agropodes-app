@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component,  OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
@@ -8,6 +8,7 @@ import {ContestacaoMapaComponent} from '../mapa/contestacao-mapa.component';
 import {LoadingService} from '../../../../shared/service/loading.service';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {PessoaService} from '../../../../service/pessoa.service';
 
 @Component({
   selector: 'app-cadastro-contestacao',
@@ -30,6 +31,9 @@ export class CadastroContestacaoComponent implements OnInit {
   public arquivoSelecionado?: File;
   public poligonoDesenhadoWkt: string = '';
   public areaDemarcadaHa: number = 0;
+
+  private readonly pessoaService = inject(PessoaService);
+  readonly idProdutorLogado = this.pessoaService.idProdutorLogado;
 
   // Modal feedback
   public modalAberto: boolean = false;

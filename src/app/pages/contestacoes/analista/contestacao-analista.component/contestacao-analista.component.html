@@ -1,0 +1,102 @@
+<div class="dashboard-card main-contestacao-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="35"></mat-spinner>
+    </div>
+  }
+
+  <!-- 🏷️ CABEÇALHO COM FILTROS DE PERÍODO -->
+  <div class="card-header flex-col md:flex-row gap-4">
+    <div>
+      <h3 class="card-title-custom">Análise de Contestações Técnicas</h3>
+      <span class="subtext">Gerenciamento e validação de contestações territoriais</span>
+    </div>
+
+    <!-- BARRA DE FILTROS -->
+    <div class="filtros-bar flex flex-wrap items-center gap-3">
+      <div class="input-group">
+        <label>De:</label>
+        <input type="date" [(ngModel)]="dataInicio" class="input-date" />
+      </div>
+
+      <div class="input-group">
+        <label>Até:</label>
+        <input type="date" [(ngModel)]="dataFim" class="input-date" />
+      </div>
+
+      <div class="input-group">
+        <select [(ngModel)]="statusFiltro" class="select-status">
+          <option value="">Todos os Status</option>
+          <option value="PENDENTE">Pendente</option>
+          <option value="DEFERIDO">Aprovado / Deferido</option>
+          <option value="INDEFERIDO">Indeferido</option>
+        </select>
+      </div>
+
+      <button class="btn-filtrar" (click)="carregarContestacoes()">Filtrar</button>
+      <button class="btn-limpar" (click)="limparFiltros()">Limpar</button>
+    </div>
+  </div>
+
+  <!-- 📋 TABELA DE CONTESTAÇÕES -->
+  <div class="table-responsive-wrapper">
+    <table class="dashboard-table">
+      <thead>
+      <tr>
+        <th>Código CAR</th>
+        <th>Produtor</th>
+        <th>Área Demarcada</th>
+        <th>Data Solicitação</th>
+        <th>Status</th>
+        <th class="text-center">Ações</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (item of contestacoes(); track item.id_contestacao) {
+          <tr>
+            <td class="td-codigo font-mono">{{ item.codigo_car }}</td>
+            <td class="td-produtor" [title]="item.nome_produtor">{{ item.nome_produtor }}</td>
+            <td class="td-area">{{ item.tamanho_area_demarcada_ha | number:'1.2-2':'pt-BR' }} ha</td>
+            <td class="td-data">{{ item.data_criacao | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="td-status">
+              <span class="badge" [ngClass]="obterClasseBadge(item.status_contestacao)">
+                {{ item.status_contestacao }}
+              </span>
+            </td>
+            <td class="td-acoes text-center">
+              <button mat-icon-button [matMenuTriggerFor]="menuOpcoes" aria-label="Opções">
+                <mat-icon class="text-slate-300">more_vert</mat-icon>
+              </button>
+
+              <!-- MENU DE OPÇÕES POR ITEM -->
+              <mat-menu #menuOpcoes="matMenu" class="menu-florestal">
+                <button mat-menu-item (click)="detalharContestacao(item)">
+                  <mat-icon class="icon-green">visibility</mat-icon>
+                  <span>Detalhar Contestação</span>
+                </button>
+                <button mat-menu-item (click)="emitirRelatorio(item)">
+                  <mat-icon class="icon-green">picture_as_pdf</mat-icon>
+                  <span>Emitir Relatório</span>
+                </button>
+              </mat-menu>
+            </td>
+          </tr>
+        } @empty {
+          @if (!carregando()) {
+            <tr>
+              <td colspan="6" class="empty-row">Nenhuma contestação encontrada para os filtros selecionados.</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 🟢 MODAL DE CONTESTAÇÃO REUTILIZÁVEL -->
+@if (modalDetalhesAberto && contestacaoSelecionada) {
+  <app-visualizar-contestacao-modal
+    [contestacao]="contestacaoSelecionada"
+    (fechar)="fecharModalDetalhes()">
+  </app-visualizar-contestacao-modal>
+}

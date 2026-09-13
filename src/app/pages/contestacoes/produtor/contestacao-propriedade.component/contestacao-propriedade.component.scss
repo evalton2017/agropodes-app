@@ -1,130 +1,285 @@
-/* Estilização AgroProdes Dark + Neon Green */
+/* ==========================================================================
+   🌿 PAINEL DE CONTESTAÇÃO AMBIENTAL (SPLIT SCREEN FLORESTAL)
+   ========================================================================== */
+
 .contestacao-propriedade-wrapper {
-  color: #e0e8e0;
+  width: 100%;
+  color: #e2e8f0;
   font-family: 'Inter', sans-serif;
+}
 
-  .agro-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #121c13;
-    border-radius: 8px;
-    overflow: hidden;
+.btn-voltar {
+  background: #0b1a10;
+  border: 1px solid #1e3827;
+  color: #86efac;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  &:hover { border-color: #4ade80; color: #ffffff; }
+}
 
-    th, td {
-      padding: 12px 16px;
-      font-size: 0.85rem;
-    }
+/* LAYOUT SPLIT (FORMULÁRIO À ESQUERDA | MAPA À DIREITA) */
+.split-panel-container {
+  display: grid;
+  grid-template-columns: 480px 1fr;
+  gap: 16px;
+  min-height: calc(100vh - 120px);
 
-    th {
-      background-color: #1a281b;
-      color: #9cb09d;
-    }
-
-    tr {
-      border-bottom: 1px solid #1f2e20;
-    }
-
-    .car-code {
-      font-family: monospace;
-      font-weight: bold;
-      color: #fff;
-    }
-
-    .btn-action {
-      color: #a0f025;
-      &:hover {
-        background-color: rgba(160, 240, 37, 0.1);
-      }
-    }
-  }
-
-  .cadastrar-propriedade-card, .contestacao-panel {
-    background-color: #0c120c;
-    border: 1px solid #1f2e20;
-    border-top: 3px solid #a0f025;
-    border-radius: 12px;
-    padding: 24px;
-
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-      margin: 16px 0;
-
-      .m-card {
-        background: #121c13;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #1f2e20;
-        display: flex;
-        flex-direction: column;
-
-        .label {
-          font-size: 0.65rem;
-          color: #819482;
-        }
-
-        .val {
-          font-size: 1.1rem;
-          font-weight: bold;
-          color: #fff;
-
-          &.danger { color: #ff5252; }
-          &.green { color: #a0f025; }
-        }
-      }
-    }
-
-    .deteccoes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 12px;
-      margin: 16px 0;
-
-      .deteccao-card {
-        background-color: #121c13;
-        border: 1px solid #1f2e20;
-        border-radius: 8px;
-        padding: 12px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: pointer;
-
-        &.selected {
-          border-color: #a0f025;
-          background-color: #142415;
-        }
-
-        .info {
-          display: flex;
-          flex-direction: column;
-          font-size: 0.8rem;
-
-          .alerta-nome { font-weight: bold; color: #fff; }
-          .alerta-tipo { color: #819482; font-size: 0.7rem; }
-          .alerta-area { color: #a0f025; font-weight: bold; }
-        }
-      }
-    }
-
-    .btn-confirm, .btn-send {
-      background-color: #a0f025;
-      color: #000;
-      font-weight: bold;
-      &:hover { background-color: #8ce010; }
-    }
-  }
-
-  .success-banner {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: rgba(160, 240, 37, 0.1);
-    border: 1px solid #a0f025;
-    color: #a0f025;
-    padding: 12px;
-    border-radius: 6px;
-    margin-top: 16px;
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
   }
 }
+
+/* COLUNA ESQUERDA: FORMULÁRIO */
+.panel-form-col {
+  background: #112217;
+  border: 1px solid #1e3827;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1e3827;
+
+    .btn-icon-back {
+      background: #0b1a10;
+      border: 1px solid #1e3827;
+      color: #86efac;
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      &:hover { border-color: #4ade80; }
+    }
+
+    .header-titles {
+      h3 { font-size: 15px; font-weight: 800; color: #ffffff; margin: 0; }
+      .sub-car { font-size: 11px; color: #a0f025; }
+    }
+  }
+
+  .desc-help { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+}
+
+/* CARDS DE DETECÇÃO */
+.deteccoes-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-bottom: 16px;
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-thumb { background: #1e3827; border-radius: 4px; }
+
+  .deteccao-card {
+    background: #0b1a10;
+    border: 1px solid #183321;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover { border-color: #4ade80; }
+
+    &.selected {
+      border-color: #ffe600;
+      background: #24220b;
+    }
+
+    .info {
+      flex: 1;
+      .alerta-nome { font-weight: 700; font-size: 12.5px; color: #ffffff; }
+      .alerta-area { font-size: 11.5px; color: #ff5252; font-weight: 700; }
+      .badge-tipo { background: rgba(255, 77, 77, 0.15); color: #ff5252; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
+      .btn-focar-mapa {
+        background: transparent; border: none; color: #86efac; font-size: 10.5px; cursor: pointer; display: flex; align-items: center; gap: 2px;
+        mat-icon { font-size: 14px; width: 14px; height: 14px; }
+        &:hover { text-decoration: underline; color: #ffffff; }
+      }
+    }
+  }
+}
+
+/* FORMULÁRIO E UPLOAD */
+.form-motivo-section {
+  border-top: 1px solid #1e3827;
+  padding-top: 14px;
+
+  .input-label { font-size: 12px; color: #86efac; font-weight: 700; display: block; margin-bottom: 6px; }
+
+  .textarea-florestal {
+    width: 100%;
+    background: #0b1a10;
+    border: 1px solid #1e3827;
+    border-radius: 6px;
+    padding: 10px;
+    color: #ffffff;
+    font-size: 12px;
+    outline: none;
+    box-sizing: border-box;
+    &:focus { border-color: #4ade80; }
+  }
+
+  .drawn-status-badge {
+    background: rgba(0, 191, 255, 0.15);
+    border: 1px solid #00bfff;
+    color: #00bfff;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    mat-icon { font-size: 14px; width: 14px; height: 14px; }
+  }
+
+  .hidden-input { display: none; }
+
+  .btn-choose-files {
+    background: #0b1a10;
+    border: 1px dashed #1e3827;
+    color: #cbd5e1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    &:hover { border-color: #4ade80; color: #ffffff; }
+  }
+
+  .file-list {
+    list-style: none; padding: 0; margin: 0;
+    .file-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #0b1a10; border: 1px solid #183321; padding: 6px 10px; border-radius: 4px; font-size: 11.5px; margin-bottom: 4px;
+      .btn-remove-file { background: none; border: none; color: #ff5252; cursor: pointer; }
+    }
+  }
+
+  .btn-send-contestacao {
+    width: 100%;
+    height: 42px;
+    background: #a0f025;
+    color: #050b05;
+    font-weight: 800;
+    font-size: 13px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    &:hover:not([disabled]) { background: #b5f547; box-shadow: 0 0 16px rgba(160, 240, 37, 0.3); }
+    &:disabled { background: #233524; color: #5d735e; cursor: not-allowed; }
+  }
+}
+
+/* COLUNA DIREITA: MAPA E LEGENDA */
+.panel-map-col {
+  background: #112217;
+  border: 1px solid #1e3827;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  min-height: 450px;
+
+  /* 🟢 LEGENDA SOBREPOSTA NO CANTO SUPERIOR DIREITO */
+  .map-legend-box {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 1000;
+    background: rgba(11, 26, 16, 0.92);
+    backdrop-filter: blur(4px);
+    border: 1px solid #1e3827;
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    font-size: 11px;
+    color: #e2e8f0;
+
+    .legend-header {
+      font-weight: 800;
+      font-size: 10.5px;
+      color: #86efac;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #1e3827;
+      padding-bottom: 4px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .color-box {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        display: inline-block;
+
+        &.prop-box {
+          background: rgba(134, 239, 172, 0.2);
+          border: 2px solid #86efac;
+        }
+
+        &.det-box {
+          background: rgba(255, 77, 77, 0.4);
+          border: 1px solid #ff4d4d;
+        }
+
+        &.selected-box {
+          background: rgba(255, 230, 0, 0.7);
+          border: 1px solid #ffe600;
+        }
+
+        &.drawn-box {
+          background: rgba(0, 191, 255, 0.4);
+          border: 2px solid #00bfff;
+        }
+      }
+    }
+  }
+
+  .leaflet-map-container {
+    width: 100%;
+    height: 100%;
+    min-height: 450px;
+    z-index: 1;
+  }
+}
+
+.empty-box { text-align: center; color: #94a3b8; font-size: 12px; padding: 20px; font-style: italic; }
+.success-banner { background: rgba(34, 197, 94, 0.15); border: 1px solid #22c55e; color: #4ade80; padding: 10px; border-radius: 6px; display: flex; align-items: center; gap: 8px; font-size: 12px; }

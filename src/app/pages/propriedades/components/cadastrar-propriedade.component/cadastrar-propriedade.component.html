@@ -98,19 +98,17 @@
 
       <div class="actions-bar">
         <button
-          mat-flat-button
+          type="button"
           class="btn-confirm"
           (click)="confirmarEGravar()"
           [disabled]="loadingSalvar() || !complianceResultado()?.valor_multa_indenizatoria"
         >
-          <ng-container>
-            @if (loadingSalvar()) {
-              <mat-spinner diameter="18"></mat-spinner>
-            } @else {
-              <mat-icon>check_circle</mat-icon>
-              <span>Confirmar e Salvar Propriedade</span>
-            }
-          </ng-container>
+          @if (loadingSalvar()) {
+            <mat-spinner diameter="18"></mat-spinner>
+          } @else {
+            <mat-icon>check_circle</mat-icon>
+            <span>Confirmar e Salvar Propriedade</span>
+          }
         </button>
       </div>
     </div>

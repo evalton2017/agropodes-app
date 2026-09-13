@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
+import {Component, EventEmitter, Output, inject, signal, computed, effect} from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,6 +13,7 @@ import {
   DashboardProdutorGlebaCardComponent
 } from '../../../../components/dashboard-produtor-gleba-card.component/dashboard-produtor-gleba-card.component';
 import {GlebaGeometriaResponse} from '../../../dashboard/model/dashboard-produtor.model';
+import {PessoaService} from '../../../../service/pessoa.service';
 
 
 @Component({
@@ -33,9 +34,14 @@ import {GlebaGeometriaResponse} from '../../../dashboard/model/dashboard-produto
   styleUrl: './cadastrar-propriedade.component.scss'
 })
 export class CadastrarPropriedadeComponent {
-  private readonly propriedadeService = inject(PropriedadeService);
+
 
   @Output() cadastradoSucesso = new EventEmitter<void>();
+
+  private readonly propriedadeService = inject(PropriedadeService);
+
+  private readonly pessoaService = inject(PessoaService);
+  readonly idProdutorLogado = this.pessoaService.idProdutorLogado;
 
   codCarInput = signal<string>('');
   loadingConsulta = signal<boolean>(false);
@@ -86,16 +92,22 @@ export class CadastrarPropriedadeComponent {
     }
 
     this.loadingSalvar.set(true);
-    this.propriedadeService.cadastrarPropriedade(car).subscribe({
-      next: () => {
-        this.loadingSalvar.set(false);
-        this.cadastradoSucesso.emit();
-      },
-      error: (err) => {
-        console.error(err);
-        this.erroMensagem.set('Erro ao efetivar o cadastro da propriedade no banco.');
-        this.loadingSalvar.set(false);
-      }
-    });
+    const id = this.idProdutorLogado();
+    if(id){
+      this.propriedadeService.cadastrarPropriedade(car, id).subscribe({
+        next: () => {
+          this.loadingSalvar.set(false);
+          this.cadastradoSucesso.emit();
+        },
+        error: (err) => {
+          console.error(err);
+          this.erroMensagem.set('Erro ao efetivar o cadastro da propriedade no banco.');
+          this.loadingSalvar.set(false);
+        }
+      });
+    }else{
+      this.loadingSalvar.set(false);
+    }
+
   }
 }
