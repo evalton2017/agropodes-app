@@ -8,11 +8,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import * as L from 'leaflet';
-
-(window as any).L = L;
-import 'leaflet-draw';
-
 import wkt from 'wellknown';
 
 import { ListarPropriedadeComponent } from '../../../propriedades/components/listar-propriedade.component/listar-propriedade.component';
@@ -21,7 +16,7 @@ import { ContestacaoService } from '../../service/contestacaoService.service';
 import { PropriedadeService } from '../../../propriedades/propriedade.service';
 import { DeteccaoPropriedade, Propriedade } from '../../../propriedades/propriedade.model';
 import { PessoaService } from '../../../../service/pessoa.service';
-import {AlertService} from '../../../../components/service/alert.service';
+import { AlertService } from '../../../../components/service/alert.service';
 
 export type ModoViewContestacao = 'LISTA' | 'CADASTRO' | 'CONTESTACAO_DETECOES';
 
@@ -67,10 +62,11 @@ export class ContestacaoPropriedadeComponent implements OnInit, OnDestroy {
   loadingEnvio = signal<boolean>(false);
   mensagemSucesso = signal<string | null>(null);
 
-  private map: L.Map | null = null;
-  private imovelLayer: L.GeoJSON | null = null;
-  private deteccoesLayersMap = new Map<number, L.GeoJSON>();
-  private drawnItemsGroup = new L.FeatureGroup();
+  private map: any = null;
+  private imovelLayer: any = null;
+  private deteccoesLayersMap = new Map<number, any>();
+  private drawnItemsGroup: any = null;
+  private LeafletCore: any = null;
 
   constructor() {
     effect(() => {
@@ -140,129 +136,146 @@ export class ContestacaoPropriedadeComponent implements OnInit, OnDestroy {
     this.focarDeteccaoNoMapa(det);
   }
 
-  private inicializarMapa(): void {
+  // 🟢 AJUSTE PRINCIPAL: CARREGAMENTO ASSÍNCRONO E ATRIBUIÇÃO GLOBAL EXPLICITA
+  private async inicializarMapa(): Promise<void> {
     if (!this.mapElement || this.map) return;
 
-    this.map = L.map(this.mapElement.nativeElement, { zoomControl: true }).setView([-12.64, -55.42], 12);
+    try {
+      // 1. Importa o módulo core do Leaflet
+      const leafletModule = await import('leaflet');
+      this.LeafletCore = (leafletModule.default || leafletModule) as any;
+      const L = this.LeafletCore;
 
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri'
-    }).addTo(this.map);
+      // 2. Registra no escopo global ANTES de carregar o leaflet-draw
+      (window as any).L = L;
+      (window as any).type = '';
 
-    // 🟢 1. CRIAÇÃO DOS PANES EXCLUSIVOS DE SOBREPOSIÇÃO (Z-INDEX HIERÁRQUICO)
-    this.map.createPane('imovelPane');
-    this.map.getPane('imovelPane')!.style.zIndex = '400';
+      // 3. Importa dinamicamente a extensão de desenho
+      await import('leaflet-draw');
 
-    this.map.createPane('deteccoesPane');
-    this.map.getPane('deteccoesPane')!.style.zIndex = '450';
+      this.map = L.map(this.mapElement.nativeElement, { zoomControl: true }).setView([-12.64, -55.42], 12);
 
-    this.map.createPane('drawnPane');
-    this.map.getPane('drawnPane')!.style.zIndex = '500'; // Topo absoluto
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri'
+      }).addTo(this.map);
 
-    // Adiciona o grupo de camadas desenhadas ao pane de topo
-    this.drawnItemsGroup = new L.FeatureGroup();
-    this.map.addLayer(this.drawnItemsGroup);
+      // 4. PANES EXCLUSIVOS DE SOBREPOSIÇÃO
+      this.map.createPane('imovelPane');
+      this.map.getPane('imovelPane')!.style.zIndex = '400';
 
-    // 🟢 2. CONFIGURAÇÃO DA FERRAMENTA DE DESENHO
-    const drawControl = new L.Control.Draw({
-      position: 'topleft',
-      draw: {
-        polygon: {
-          allowIntersection: false,
-          shapeOptions: {
-            color: '#00bfff',
-            fillColor: '#00bfff',
-            fillOpacity: 0.5,
-            weight: 3,
-            pane: 'drawnPane' // Força o desenho no topo
-          }
-        },
-        polyline: false,
-        circle: false,
-        rectangle: false,
-        marker: false,
-        circlemarker: false
-      },
-      edit: {
-        featureGroup: this.drawnItemsGroup,
-        remove: true
-      }
-    });
-    this.map.addControl(drawControl);
+      this.map.createPane('deteccoesPane');
+      this.map.getPane('deteccoesPane')!.style.zIndex = '450';
 
-    // CAPTURA DO POLÍGONO DESENHADO PELO PRODUTOR
-    this.map.on(L.Draw.Event.CREATED, (e: any) => {
-      const layer = e.layer;
-      this.drawnItemsGroup.clearLayers();
-      this.drawnItemsGroup.addLayer(layer);
+      this.map.createPane('drawnPane');
+      this.map.getPane('drawnPane')!.style.zIndex = '500';
 
-      // Traz para a frente garantindo a sobreposição
-      if (layer.bringToFront) {
-        layer.bringToFront();
-      }
+      this.drawnItemsGroup = new L.FeatureGroup();
+      this.map.addLayer(this.drawnItemsGroup);
 
-      const geojson = layer.toGeoJSON();
-      const wktString = wkt.stringify(geojson.geometry);
-      this.poligonoDesenhadoWkt.set(wktString);
-    });
-
-    this.map.on(L.Draw.Event.DELETED, () => {
-      this.poligonoDesenhadoWkt.set(null);
-    });
-
-    const prop = this.propriedadeSelecionada();
-    if (!prop) return;
-
-    // 🟢 3. RENDERIZA O LIMITE DA PROPRIEDADE (FUNDO / VERDE)
-    if (prop.geometria_wkt) {
-      try {
-        const geojsonImovel = wkt.parse(prop.geometria_wkt);
-        this.imovelLayer = L.geoJSON(geojsonImovel, {
-          pane: 'imovelPane',
-          style: { color: '#86efac', weight: 2.5, fillColor: '#86efac', fillOpacity: 0.15 }
-        }).addTo(this.map);
-
-        this.map.fitBounds(this.imovelLayer.getBounds(), { padding: [30, 30] });
-      } catch (e) {
-        console.error('Erro ao processar WKT da propriedade:', e);
-      }
-    }
-
-    // 🟢 4. RENDERIZA AS DETECÇÕES (INTERMEDIÁRIO / CAMADA DETECCOESPANE)
-    if (prop.deteccoes && prop.deteccoes.length > 0) {
-      prop.deteccoes.forEach((det) => {
-        if (det.geom_ocorrencia_wkt) {
-          try {
-            const geojsonDet = wkt.parse(det.geom_ocorrencia_wkt);
-            const isSelected = this.deteccoesSelecionadas().includes(det.id_deteccao);
-
-            const layer = L.geoJSON(geojsonDet, {
-              pane: 'deteccoesPane',
-              style: {
-                color: isSelected ? '#ffe600' : '#ff4d4d',
-                weight: isSelected ? 3 : 2,
-                fillColor: isSelected ? '#ffe600' : '#ff4d4d',
-                fillOpacity: isSelected ? 0.75 : 0.4
-              }
-            }).addTo(this.map!);
-
-            if (isSelected) {
-              layer.bringToFront();
+      // 5. FERRAMENTA DE DESENHO
+      const drawControl = new L.Control.Draw({
+        position: 'topleft',
+        draw: {
+          polygon: {
+            allowIntersection: false,
+            shapeOptions: {
+              color: '#00bfff',
+              fillColor: '#00bfff',
+              fillOpacity: 0.5,
+              weight: 3,
+              pane: 'drawnPane'
             }
-
-            layer.on('click', () => this.toggleSelecaoDeteccao(det));
-            this.deteccoesLayersMap.set(det.id_deteccao, layer);
-          } catch (e) {
-            console.error('Erro ao renderizar WKT da detecção:', e);
-          }
+          },
+          polyline: false,
+          circle: false,
+          rectangle: false,
+          marker: false,
+          circlemarker: false
+        },
+        edit: {
+          featureGroup: this.drawnItemsGroup,
+          remove: true
         }
       });
+      this.map.addControl(drawControl);
+
+      // EVENTOS DE DESENHO
+      this.map.on(L.Draw.Event.CREATED, (e: any) => {
+        const layer = e.layer;
+        this.drawnItemsGroup.clearLayers();
+        this.drawnItemsGroup.addLayer(layer);
+
+        if (layer.bringToFront) {
+          layer.bringToFront();
+        }
+
+        const geojson = layer.toGeoJSON();
+        const wktString = wkt.stringify(geojson.geometry);
+        this.poligonoDesenhadoWkt.set(wktString);
+      });
+
+      this.map.on(L.Draw.Event.DELETED, () => {
+        this.poligonoDesenhadoWkt.set(null);
+      });
+
+      const prop = this.propriedadeSelecionada();
+      if (!prop) return;
+
+      // 6. CAMADA DO IMÓVEL (VERDE)
+      if (prop.geometria_wkt) {
+        try {
+          const geojsonImovel = wkt.parse(prop.geometria_wkt);
+          this.imovelLayer = L.geoJSON(geojsonImovel, {
+            pane: 'imovelPane',
+            style: { color: '#86efac', weight: 2.5, fillColor: '#86efac', fillOpacity: 0.15 }
+          }).addTo(this.map);
+
+          this.map.fitBounds(this.imovelLayer.getBounds(), { padding: [30, 30] });
+        } catch (e) {
+          console.error('Erro ao processar WKT da propriedade:', e);
+        }
+      }
+
+      // 7. CAMADA DAS DETECÇÕES
+      if (prop.deteccoes && prop.deteccoes.length > 0) {
+        prop.deteccoes.forEach((det) => {
+          if (det.geom_ocorrencia_wkt) {
+            try {
+              const geojsonDet = wkt.parse(det.geom_ocorrencia_wkt);
+              const isSelected = this.deteccoesSelecionadas().includes(det.id_deteccao);
+
+              const layer = L.geoJSON(geojsonDet, {
+                pane: 'deteccoesPane',
+                style: {
+                  color: isSelected ? '#ffe600' : '#ff4d4d',
+                  weight: isSelected ? 3 : 2,
+                  fillColor: isSelected ? '#ffe600' : '#ff4d4d',
+                  fillOpacity: isSelected ? 0.75 : 0.4
+                }
+              }).addTo(this.map!);
+
+              if (isSelected) {
+                layer.bringToFront();
+              }
+
+              layer.on('click', () => this.toggleSelecaoDeteccao(det));
+              this.deteccoesLayersMap.set(det.id_deteccao, layer);
+            } catch (e) {
+              console.error('Erro ao renderizar WKT da detecção:', e);
+            }
+          }
+        });
+      }
+
+      requestAnimationFrame(() => {
+        this.map?.invalidateSize(true);
+      });
+
+    } catch (error) {
+      console.error('Erro ao inicializar mapa:', error);
     }
   }
 
-  /**
-   * 🟢 ATUALIZA O ESTILO E TRAZ A DETECÇÃO SELECIONADA PARA A FRENTE DAS OUTRAS DETECÇÕES
-   */
   private atualizarEstiloCamadaMapa(idDeteccao: number): void {
     const layer = this.deteccoesLayersMap.get(idDeteccao);
     if (layer) {
@@ -276,7 +289,6 @@ export class ContestacaoPropriedadeComponent implements OnInit, OnDestroy {
       });
 
       if (isSelected) {
-        // Traz a detecção amarela selecionada para frente das detecções vermelhas
         layer.bringToFront();
       }
     }
@@ -288,7 +300,7 @@ export class ContestacaoPropriedadeComponent implements OnInit, OnDestroy {
 
     if (layer && this.map) {
       this.map.fitBounds(layer.getBounds(), { maxZoom: 16, padding: [40, 40] });
-      layer.bringToFront(); // Garante o destaque na frente
+      layer.bringToFront();
     }
   }
 
@@ -298,7 +310,9 @@ export class ContestacaoPropriedadeComponent implements OnInit, OnDestroy {
       this.map = null;
       this.imovelLayer = null;
       this.deteccoesLayersMap.clear();
-      this.drawnItemsGroup.clearLayers();
+      if (this.drawnItemsGroup) {
+        this.drawnItemsGroup.clearLayers();
+      }
     }
   }
 
@@ -322,33 +336,28 @@ export class ContestacaoPropriedadeComponent implements OnInit, OnDestroy {
 
     this.loadingEnvio.set(true);
 
-    // 1. Identifica a detecção selecionada (se houver)
     const deteccaoSelecionada = prop.deteccoes?.find(
       d => idsDeteccoes.includes(d.id_deteccao)
     );
 
-    // 2. Define o Polígono de Contestação WKT (Prioridade: Desenho Manual > WKT da Detecção > WKT da Propriedade)
     const poligonoWkt =
       this.poligonoDesenhadoWkt() ||
       deteccaoSelecionada?.geom_ocorrencia_wkt ||
       prop.geometria_wkt ||
       '';
 
-    // 3. Define a Área Demarcada em Hectares
     const areaHa =
       deteccaoSelecionada?.area_ha ||
       prop.area_desmatada_ha ||
       prop.area_hectares ||
       0.0;
 
-    // MONTAGEM DO FORMDATA CONFORME O CONTRATO SWAGGER FASTAPI
     const formData = new FormData();
     formData.append('id_propriedade', prop.id_propriedade.toString());
     formData.append('poligono_contestacao', poligonoWkt);
     formData.append('tamanho_area_demarcada_ha', areaHa.toString());
     formData.append('descricao_motivo', motivo);
 
-    // Campos Opcionais
     if (deteccaoSelecionada?.geom_ocorrencia_wkt) {
       formData.append('poligono_detectado', deteccaoSelecionada.geom_ocorrencia_wkt);
     }
@@ -356,13 +365,11 @@ export class ContestacaoPropriedadeComponent implements OnInit, OnDestroy {
       formData.append('tamanho_area_detectada_ha', deteccaoSelecionada.area_ha.toString());
     }
 
-    // Anexo de Documento/Foto (Envia o primeiro arquivo sob a chave 'documento' esperada pela API)
     const arquivos = this.arquivosAnexos();
     if (arquivos && arquivos.length > 0) {
       formData.append('documento', arquivos[0], arquivos[0].name);
     }
 
-    // Chamada HTTP
     this.contestacaoService.cadastrarContestacaoPropriedade(formData).subscribe({
       next: () => {
         this.loadingEnvio.set(false);
