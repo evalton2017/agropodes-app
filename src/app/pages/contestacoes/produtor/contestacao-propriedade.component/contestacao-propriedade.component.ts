@@ -9,7 +9,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import * as L from 'leaflet';
+
+(window as any).L = L;
 import 'leaflet-draw';
+
 import wkt from 'wellknown';
 
 import { ListarPropriedadeComponent } from '../../../propriedades/components/listar-propriedade.component/listar-propriedade.component';
