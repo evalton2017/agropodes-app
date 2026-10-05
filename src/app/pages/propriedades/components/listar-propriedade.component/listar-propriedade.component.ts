@@ -16,12 +16,13 @@ export type ModoExibicaoLista = 'GERENCIAMENTO' | 'CONTESTACAO';
 })
 export class ListarPropriedadeComponent {
   @Input() propriedades: Propriedade[] = [];
-  @Input() modo: ModoExibicaoLista = 'GERENCIAMENTO'; // 🟢 Padrão: Gerenciamento
+  @Input() modo: ModoExibicaoLista = 'GERENCIAMENTO';
 
   @Output() iniciarContestacao = new EventEmitter<Propriedade>();
   @Output() novaPropriedadeClick = new EventEmitter<void>();
   @Output() detalhesClick = new EventEmitter<Propriedade>();
   @Output() adicionarSocioClick = new EventEmitter<Propriedade>();
+  @Output() verificarMultaClick = new EventEmitter<Propriedade>();
 
   private router = inject(Router);
 
@@ -41,4 +42,9 @@ export class ListarPropriedadeComponent {
   onAdicionarSocio(propriedade: Propriedade): void {
     this.adicionarSocioClick.emit(propriedade);
   }
+
+  onVerificarMulta(propriedade: Propriedade): void {
+    this.verificarMultaClick.emit(propriedade);
+  }
+
 }

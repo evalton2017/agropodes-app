@@ -1,4 +1,3 @@
-// alert.service.ts
 import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -25,7 +24,7 @@ export class AlertService {
     if (type === 'erro') panelClass = 'snackbar-erro';
     if (type === 'alerta') panelClass = 'snackbar-alerta';
 
-    this.snackBar.open(message, 'X', {
+    this.snackBar.open(message, '✕', {
       duration: 4000,
       horizontalPosition: 'right',
       verticalPosition: 'top',

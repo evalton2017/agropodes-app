@@ -62,7 +62,7 @@ export interface DetalhesContestacaoCompleto {
   id_propriedade?: number | null;
   id_gleba?: number | null;
   codigo_car?: string | null;
-  nome_alvo: string;
+  nome_produtor: string;
   tamanho_area_demarcada_ha: number;
   tamanho_area_detectada_ha?: number | null;
   descricao_motivo: string;

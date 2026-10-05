@@ -1,0 +1,110 @@
+<div class="modal-multa-container">
+  <div class="modal-header">
+    <h2>
+      <mat-icon class="icon-warning">gavel</mat-icon>
+      Prévia e Apuração de Multa Ambiental
+    </h2>
+    <button mat-icon-button (click)="fechar()"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <div class="modal-body">
+    @if (carregando()) {
+      <div class="loading-state">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Calculando dosimetria e infrações autuáveis...</span>
+      </div>
+    } @else if (dadosSimulacao(); as sim) {
+
+      <!-- 🟢 CARD DE EXPLICAÇÃO DA BASE LEGAL E METODOLOGIA -->
+      <div class="legal-info-card">
+        <div class="legal-title">
+          <mat-icon>gavel</mat-icon>
+          <span>Fundamentação Legal e Diretrizes de Cálculo</span>
+        </div>
+        <p class="legal-desc">
+          A apuração do valor estimado considera estritamente <strong>alertas de infrações não autorizadas</strong> (desmatamentos recentes, queimadas e embargos), alinhando o valor base à dosimetria administrativa e às exigências de conformidade do crédito rural.
+        </p>
+
+        <ul class="legal-bullets">
+          <li>
+            <strong>Lei nº 9.605/1998 & Decreto nº 6.514/2008:</strong> Define os tipos infracionais e os parâmetros operacionais para a gradação das multas administrativas ambientais.
+          </li>
+          <li>
+            <strong>Resolução CMN nº 5.268/2025:</strong> Regulamenta as vedações socioambientais no Crédito Rural e os critérios de apuração de inconsistências ambientais.
+          </li>
+          <li>
+            <strong>Portaria SDI/MAPA nº 739/2025:</strong> Baliza o cruzamento geográfico do CAR/ZARC com registros de eventos adversos e alertas de corte raso não autorizado.
+          </li>
+          <li>
+            <strong>Marco Temporal de 22/07/2008:</strong> Exclui do cálculo de multas ativas a vegetação nativa preservada, áreas cadastrais do CAR e supressões históricas consolidadas e passíveis de regularização pelo PRA (Código Florestal).
+          </li>
+        </ul>
+      </div>
+
+      @if (sim.total_deteccoes > 0) {
+        <div class="summary-box">
+          <div class="info-item">
+            <span class="lbl">Imóvel Rural:</span>
+            <strong>{{ sim.nome_propriedade }}</strong>
+          </div>
+          <div class="info-item">
+            <span class="lbl">Infrações Autuáveis:</span>
+            <span class="badge-alert">{{ sim.total_deteccoes }} alerta(s)</span>
+          </div>
+          <div class="info-item total-highlight">
+            <span class="lbl">Valor Total Estimado:</span>
+            <strong class="val">{{ sim.valor_total_estimado | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong>
+          </div>
+        </div>
+
+        <h4 class="table-title">Detalhamento das Infrações Identificadas</h4>
+        <div class="table-wrapper">
+          <table class="infracoes-table">
+            <thead>
+            <tr>
+              <th>Alerta</th>
+              <th>Conflito</th>
+              <th class="text-right">Área (ha)</th>
+              <th class="text-right">Base / ha</th>
+              <th class="text-right">Valor Estimado</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (item of sim.detalhamento_multas; track item.id_deteccao) {
+                <tr>
+                  <td><strong>{{ item.nome_alerta }}</strong></td>
+                  <td><span class="tag-conflito">{{ item.tipo_conflito || 'N/A' }}</span></td>
+                  <td class="text-right">{{ item.area_ha }} ha</td>
+                  <td class="text-right">{{ item.valor_base_ha | currency:'BRL':'symbol':'1.2-2' }}</td>
+                  <td class="text-right font-bold text-danger">{{ item.valor_estimado | currency:'BRL':'symbol':'1.2-2' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon class="icon-ok">check_circle</mat-icon>
+          <h3>Nenhuma Infração Autuável Identificada</h3>
+          <p>Esta propriedade está em conformidade. Não foram detectadas infrações ativas posteriores ao marco temporal de 22/07/2008.</p>
+        </div>
+      }
+    }
+  </div>
+
+  <div class="modal-footer">
+    <button mat-button (click)="fechar()">Cancelar</button>
+    @if (dadosSimulacao() && dadosSimulacao()!.total_deteccoes > 0) {
+      @if (processandoGeracao()) {
+        <button mat-flat-button color="warn" disabled>
+          <mat-spinner diameter="20"></mat-spinner>
+        </button>
+      } @else {
+        <button mat-flat-button color="warn" (click)="gerarMulta()">
+          <mat-icon>receipt</mat-icon>
+          <span>Lançar e Gerar Multa</span>
+        </button>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="dashboard-card main-multas-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="35"></mat-spinner>
+    </div>
+  }
+
+  <!-- 🏷️ CABEÇALHO DA TABELA -->
+  <div class="card-header flex flex-col md:flex-row justify-between items-center gap-4">
+    <div>
+      <h3 class="card-title-custom">Minhas Infrações e Multas Ambientais</h3>
+      <span class="subtext">Acompanhamento e detalhamento de notificações de infração</span>
+    </div>
+
+    <!-- FILTRO DE STATUS -->
+    <div class="flex items-center gap-2">
+      <select [(ngModel)]="filtroStatus" (change)="carregarMultas()" class="select-status">
+        <option value="">Todos os Status</option>
+        <option value="GERADA">Pendente de Pagamento</option>
+        <option value="PAGA">Paga</option>
+        <option value="CONTESTADA">Em Contestação</option>
+        <option value="CANCELADA">Cancelada</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 📋 TABELA DE MULTAS -->
+  <div class="table-responsive-wrapper">
+    <table class="dashboard-table">
+      <thead>
+      <tr>
+        <th>Código CAR / Propriedade</th>
+        <th>Tipo Infração</th>
+        <th>Área Afetada</th>
+        <th>Valor Total</th>
+        <th>Data Geração</th>
+        <th>Status</th>
+        <th class="text-center">Ações</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (item of multas(); track item.id_multa) {
+          <tr>
+            <td class="td-codigo font-mono">{{ item.codigo_car || 'Propriedade #' + item.id_propriedade }}</td>
+            <td class="td-infracao">{{ item.tipo_infracao }}</td>
+            <td class="td-area">{{ item.area_afetada_ha | number:'1.2-2':'pt-BR' }} ha</td>
+            <td class="td-valor font-bold">R$ {{ item.valor_total_multa | number:'1.2-2':'pt-BR' }}</td>
+            <td class="td-data">{{ item.data_geracao | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="td-status">
+              <span class="badge" [ngClass]="obterClasseBadge(item.status_multa)">
+                {{ item.status_multa }}
+              </span>
+            </td>
+            <td class="td-acoes text-center">
+              <button mat-icon-button class="btn-visualizar" (click)="visualizarMulta(item)" title="Visualizar Detalhes">
+                <mat-icon class="icon-green">visibility</mat-icon>
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          @if (!carregando()) {
+            <tr>
+              <td colspan="7" class="empty-row">Nenhuma infração ou multa encontrada.</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

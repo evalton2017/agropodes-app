@@ -1,0 +1,427 @@
+/* ==========================================================================
+   🌿 RELATÓRIOS DE CONTESTAÇÃO DO ANALISTA - TEMA FLORESTAL FIGMA
+   ========================================================================== */
+
+.relatorios-main-card {
+  position: relative !important;
+  background: #112217 !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  color: #e2e8f0 !important;
+
+  .card-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 20px !important;
+
+    .header-title-container {
+      .card-title-custom {
+        font-size: 1.25rem !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin: 0 !important;
+
+        .title-icon {
+          color: #4ade80 !important;
+        }
+      }
+
+      .subtext {
+        font-size: 0.82rem !important;
+        color: #94a3b8 !important;
+        margin-top: 4px !important;
+      }
+    }
+
+    .btn-refresh {
+      background-color: #0b1a10 !important;
+      border: 1px solid #1e3827 !important;
+      color: #86efac !important;
+      padding: 8px 14px !important;
+      border-radius: 6px !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      font-size: 0.82rem !important;
+      font-weight: 700 !important;
+
+      &:hover {
+        background-color: #162c1e !important;
+        border-color: #4ade80 !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+}
+
+/* FILTROS */
+.filtros-container {
+  background: #0b1a10 !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 8px !important;
+  padding: 14px 18px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 14px !important;
+  margin-bottom: 20px !important;
+  flex-wrap: wrap !important;
+
+  .filtro-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+
+    label {
+      font-size: 0.75rem !important;
+      font-weight: 700 !important;
+      color: #94a3b8 !important;
+      text-transform: uppercase !important;
+    }
+
+    select, input {
+      background: #112217 !important;
+      border: 1px solid #1e3827 !important;
+      border-radius: 6px !important;
+      color: #ffffff !important;
+      padding: 8px 12px !important;
+      font-size: 0.85rem !important;
+      outline: none !important;
+
+      &:focus {
+        border-color: #4ade80 !important;
+      }
+    }
+  }
+
+  .search-item {
+    flex: 1 !important;
+    min-width: 200px !important;
+  }
+
+  .filtro-acoes {
+    display: flex !important;
+    gap: 8px !important;
+
+    .btn-aplicar {
+      background: #166534 !important;
+      border: 1px solid #15803d !important;
+      color: #ffffff !important;
+      padding: 8px 16px !important;
+      border-radius: 6px !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+
+      &:hover {
+        background: #22c55e !important;
+      }
+    }
+
+    .btn-limpar {
+      background: transparent !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      color: #94a3b8 !important;
+      padding: 8px 12px !important;
+      border-radius: 6px !important;
+      cursor: pointer !important;
+
+      &:hover {
+        color: #ffffff !important;
+      }
+    }
+  }
+}
+
+/* KPIS GRID */
+.kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 16px !important;
+  margin-bottom: 24px !important;
+
+  .kpi-card {
+    background: #0b1a10 !important;
+    border: 1px solid #1e3827 !important;
+    border-radius: 10px !important;
+    padding: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+
+    .kpi-label {
+      font-size: 0.8rem !important;
+      font-weight: 700 !important;
+      color: #cbd5e1 !important;
+    }
+
+    .kpi-value {
+      font-size: 1.6rem !important;
+      font-weight: 800 !important;
+      color: #ffffff !important;
+      margin: 8px 0 4px 0 !important;
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+
+    .kpi-sub {
+      font-size: 0.75rem !important;
+      &.green { color: #4ade80 !important; }
+      &.red { color: #f87171 !important; }
+      &.yellow { color: #fde047 !important; }
+    }
+  }
+}
+
+/* CHARTS GRID */
+.charts-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
+  gap: 20px !important;
+  margin-bottom: 24px !important;
+
+  .chart-card {
+    background: #0b1a10 !important;
+    border: 1px solid #1e3827 !important;
+    border-radius: 10px !important;
+    padding: 18px !important;
+
+    .chart-header {
+      border-bottom: 1px solid #1e3827 !important;
+      padding-bottom: 10px !important;
+      margin-bottom: 14px !important;
+
+      h4 {
+        margin: 0 !important;
+        font-size: 0.95rem !important;
+        color: #86efac !important;
+        font-weight: 700 !important;
+      }
+    }
+
+    .progress-row {
+      margin-bottom: 12px !important;
+
+      .progress-info {
+        display: flex !important;
+        justify-content: space-between !important;
+        font-size: 0.82rem !important;
+        margin-bottom: 4px !important;
+        color: #cbd5e1 !important;
+      }
+
+      .progress-bar-bg {
+        background: #112217 !important;
+        border-radius: 4px !important;
+        height: 8px !important;
+        overflow: hidden !important;
+
+        .progress-bar-fill {
+          background: #3b82f6 !important;
+          height: 100% !important;
+          border-radius: 4px !important;
+
+          &.green-fill {
+            background: #22c55e !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* TABELA */
+.table-section {
+  background: #0b1a10 !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 10px !important;
+  padding: 18px !important;
+
+  .table-header-title {
+    margin-bottom: 14px !important;
+    h4 {
+      margin: 0 !important;
+      color: #86efac !important;
+      font-size: 0.95rem !important;
+      font-weight: 700 !important;
+    }
+  }
+
+  .dashboard-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 0.85rem !important;
+
+    th {
+      background: #112217 !important;
+      color: #86efac !important;
+      padding: 12px 14px !important;
+      text-transform: uppercase !important;
+      font-size: 0.72rem !important;
+      font-weight: 800 !important;
+      border-bottom: 2px solid #1e3827 !important;
+    }
+
+    td {
+      padding: 12px 14px !important;
+      border-bottom: 1px solid #183321 !important;
+      color: #e2e8f0 !important;
+    }
+
+    .td-protocolo {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-weight: 700 !important;
+      color: #ffffff !important;
+    }
+
+    .status-badge {
+      padding: 3px 8px !important;
+      border-radius: 4px !important;
+      font-size: 0.72rem !important;
+      font-weight: 800 !important;
+      text-transform: uppercase !important;
+
+      &.deferido { background: rgba(74, 222, 128, 0.2) !important; color: #4ade80 !important; }
+      &.indeferido { background: rgba(248, 113, 113, 0.2) !important; color: #f87171 !important; }
+      &.pendente { background: rgba(253, 224, 71, 0.2) !important; color: #fde047 !important; }
+    }
+
+    .btn-laudo {
+      background: #112217 !important;
+      border: 1px solid #1e3827 !important;
+      color: #86efac !important;
+      padding: 6px 12px !important;
+      border-radius: 6px !important;
+      font-size: 0.78rem !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+
+      &:hover:not(:disabled) {
+        border-color: #4ade80 !important;
+        color: #ffffff !important;
+        background: #162c1e !important;
+      }
+    }
+  }
+}
+
+.ia-loading-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(17, 34, 23, 0.85) !important;
+  backdrop-filter: blur(2px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+  border-radius: 12px !important;
+}
+
+/* 🌾 PÍLULAS DE SELEÇÃO DE SAFRA FLORESTAL */
+.safras-pills-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-bottom: 20px !important;
+  background: #0b1a10 !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  overflow-x: auto !important;
+
+  .safras-label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 0.82rem !important;
+    font-weight: 800 !important;
+    color: #86efac !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+
+    mat-icon {
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+
+  .pills-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+
+    .safra-pill-btn {
+      background: #112217 !important;
+      border: 1px solid #1e3827 !important;
+      border-radius: 8px !important;
+      padding: 8px 14px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease-in-out !important;
+
+      .dot-status {
+        font-size: 10px !important;
+        color: #f97316 !important;
+
+        &.vigente {
+          color: #4ade80 !important;
+        }
+      }
+
+      .safra-texto {
+        font-size: 0.88rem !important;
+        font-weight: 800 !important;
+        color: #e2e8f0 !important;
+      }
+
+      .badge-vigente {
+        background: rgba(74, 222, 128, 0.2) !important;
+        color: #4ade80 !important;
+        border: 1px solid rgba(74, 222, 128, 0.4) !important;
+        padding: 2px 8px !important;
+        border-radius: 4px !important;
+        font-size: 0.68rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+      }
+
+      .badge-concluida {
+        background: rgba(148, 163, 184, 0.15) !important;
+        color: #cbd5e1 !important;
+        border: 1px solid rgba(148, 163, 184, 0.3) !important;
+        padding: 2px 8px !important;
+        border-radius: 4px !important;
+        font-size: 0.68rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+      }
+
+      &:hover {
+        border-color: #4ade80 !important;
+        background: #162c1e !important;
+      }
+
+      &.active {
+        background: #0f2e1d !important;
+        border-color: #4ade80 !important;
+        box-shadow: 0 0 0 1px #4ade80 !important;
+
+        .safra-texto {
+          color: #ffffff !important;
+        }
+      }
+    }
+  }
+}

@@ -75,6 +75,16 @@ export const PRODUTOR_ROUTES: Routes = [
         data: { origem: 'contestacao' }
       },
       {
+        path: 'multas-produtor',
+        loadComponent: () =>
+          import('../pages/financeiro/produtor/multas-produtor.component/multas-produtor.component').then(m => m.MultasProdutorComponent)
+      },
+      {
+        path: 'pagamento-podutor',
+        loadComponent: () =>
+          import('../pages/financeiro/produtor/pagamento-produtor.component/pagamento-produtor.component').then(m => m.PagamentoProdutorComponent)
+      },
+      {
         path: 'propriedades',
         component: PropriedadeComponent,
         data: { origem: 'propriedades' }

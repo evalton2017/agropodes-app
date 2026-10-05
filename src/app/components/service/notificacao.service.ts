@@ -1,49 +1,83 @@
-import {inject, Injectable, signal} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {switchMap, timer} from 'rxjs';
-import {Notificacao} from '../model/notificacao';
-import {environment} from '../../../environments/environment';
+import { inject, Injectable, signal, computed, DestroyRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {switchMap, timer, filter, catchError, of} from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Notificacao } from '../model/notificacao';
+import { environment } from '../../../environments/environment';
+import {PessoaService} from '../../service/pessoa.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
   private http = inject(HttpClient);
+  private pessoaService = inject(PessoaService);
+  private destroyRef = inject(DestroyRef);
 
-  // Signal para armazenar a lista de notificações pendentes
+  readonly idUsuarioLogado = this.pessoaService.idProdutorLogado;
+
+  // Signal com a lista de notificações pendentes/não lidas
   private notificationsSignal = signal<Notificacao[]>([]);
 
-  // Expõe apenas a leitura do Signal
+  // Exposição somente leitura dos signals
   public notifications = this.notificationsSignal.asReadonly();
 
+  // Signal computado para a contagem no badge do ícone do sininho
+  public unreadCount = computed(() => this.notificationsSignal().length);
+
   constructor() {
-    this.startPolling();
+    this.iniciarPolling();
   }
 
-  // Inicia a consulta automática a cada 50 segundos (50000 ms)
-  private startPolling(): void {
-    timer(0, 500000).pipe(
-      switchMap(() => this.http.get<Notificacao[]>(`${environment.url}/consulta/notificacao`))
-    ).subscribe({
-      next: (data) => {
-        // Filtra apenas as pendentes, caso a API traga misturado
-        const pendentes = data.filter(n => n.status === 'PENDENTE');
-        this.notificationsSignal.set(pendentes);
+  /**
+   *  Inicia o Polling a cada 30 segundos usando o idUsuario logado
+   */
+  private iniciarPolling(): void {
+    timer(0, 30000)
+      .pipe(
+        filter(() => !!this.idUsuarioLogado()), // Executa apenas se o usuário estiver logado
+        switchMap(() =>
+          this.http.get<Notificacao[]>(`${environment.url}/notificacao/pendentes/${this.idUsuarioLogado()}`).pipe(
+            catchError((err) => {
+              console.error('Erro ao buscar notificações via polling:', err);
+              return of([]); // Evita que o fluxo do timer seja quebrado por erros HTTP
+            })
+          )
+        ),
+        takeUntilDestroyed(this.destroyRef) // Cancela o timer se a aplicação/serviço for destruído
+      )
+      .subscribe((data) => {
+        this.notificationsSignal.set(data);
+      });
+  }
+
+  /**
+   *  Confirma a leitura de uma notificação individual
+   */
+  marcarComoLida(idNotificacao: number): void {
+    const payload = { idNotificacao, statusNotificacao: 'CONCLUIDO' };
+
+    this.http.patch(`${environment.url}/notificacao/confirmar`, payload).subscribe({
+      next: () => {
+        // Atualiza a lista removendo o item lido
+        this.notificationsSignal.update((prev) => prev.filter((n) => n.idNotificacao !== idNotificacao));
       },
-      error: (err) => console.error('Erro ao buscar notificações:', err)
+      error: (err) => console.error('Erro ao marcar notificação como lida:', err)
     });
   }
 
-  // Confirma a leitura da notificação
-  marcarComoLida(id: number) {
-    const request = {idNotificacao: id, statusNotificacao: 'CONFIRMADO'};
+  /**
+   *  Limpa todas as notificações não lidas
+   */
+  marcarTodasComoLidas(): void {
+    const idUsuario = this.idUsuarioLogado();
+    if (!idUsuario) return;
 
-    this.http.post(`${environment.url}/consulta/notificacao/confirmar`, request ).subscribe({
+    this.http.patch(`${environment.url}/notificacao/confirmar-todas/${idUsuario}`, {}).subscribe({
       next: () => {
-        // Remove a notificação da lista local após o sucesso na API
-        this.notificationsSignal.update(prev => prev.filter(n => n.id !== id));
+        this.notificationsSignal.set([]);
       },
-      error: (err) => console.error('Erro ao confirmar notificação:', err)
+      error: (err) => console.error('Erro ao marcar todas como lidas:', err)
     });
   }
 }

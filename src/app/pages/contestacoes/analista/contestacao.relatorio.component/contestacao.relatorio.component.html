@@ -1,0 +1,212 @@
+<div class="dashboard-card relatorios-main-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  <!-- 🏷️ HEADER DA TELA -->
+  <div class="card-header">
+    <div class="header-title-container">
+      <h3 class="card-title-custom">
+        <mat-icon class="title-icon">analytics</mat-icon> Painel de Relatórios & Auditoria de Contestações
+      </h3>
+      <span class="subtext">Visão analítica, SLA de atendimento, conformidade ambiental e emissão de laudos oficiais</span>
+    </div>
+    <button class="btn-refresh" (click)="carregarRelatorio()">
+      <mat-icon>refresh</mat-icon> Atualizar Métricas
+    </button>
+  </div>
+
+  <!-- 🌾 PÍLULAS DE SAFRAS DINÂMICAS DO BANCO DE DADOS -->
+  <div class="safras-pills-container">
+    <span class="safras-label"><mat-icon>grain</mat-icon> Safra Analisada:</span>
+    <div class="pills-wrapper">
+      @for (safra of listaSafras(); track safra) {
+        <button
+          type="button"
+          class="safra-pill-btn"
+          [class.active]="safraSelecionada() === safra"
+          (click)="selecionarSafra(safra)">
+          <span class="dot-status" [class.vigente]="isSafraVigente(safra)">♦</span>
+          <span class="safra-texto">{{ safra }}</span>
+          @if (isSafraVigente(safra)) {
+            <span class="badge-vigente">Vigente</span>
+          } @else {
+            <span class="badge-concluida">Concluída</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- 🔍 FILTROS COMPLEMENTARES (Status, Busca CAR, Período) -->
+  <div class="filtros-container">
+    <div class="filtro-item">
+      <label>Status Decisão</label>
+      <select [ngModel]="statusSelecionado()" (ngModelChange)="statusSelecionado.set($event); carregarRelatorio()">
+        <option value="">Todos</option>
+        <option value="PENDENTE">Pendente</option>
+        <option value="DEFERIDO">Deferido</option>
+        <option value="INDEFERIDO">Indeferido</option>
+      </select>
+    </div>
+
+    <div class="filtro-item search-item">
+      <label>Código CAR / Imóvel</label>
+      <input
+        type="text"
+        placeholder="Buscar CAR..."
+        [ngModel]="buscaCar()"
+        (ngModelChange)="buscaCar.set($event)"
+        (keyup.enter)="carregarRelatorio()" />
+    </div>
+
+    <div class="filtro-item">
+      <label>Data Início</label>
+      <input type="date" [ngModel]="dataInicio()" (ngModelChange)="dataInicio.set($event)" />
+    </div>
+
+    <div class="filtro-item">
+      <label>Data Fim</label>
+      <input type="date" [ngModel]="dataFim()" (ngModelChange)="dataFim.set($event)" />
+    </div>
+
+    <div class="filtro-acoes">
+      <button class="btn-aplicar" (click)="carregarRelatorio()">
+        <mat-icon>search</mat-icon> Filtrar
+      </button>
+      <button class="btn-limpar" (click)="limparFiltros()">Limpar</button>
+    </div>
+  </div>
+
+  <!-- 📊 CARDS DE KPIS -->
+  @if (dadosDashboard()?.kpis; as kpis) {
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">⏳ SLA Médio</span>
+        <span class="kpi-value">{{ kpis.sla_medio_dias || 0 }} Dias</span>
+        <span class="kpi-sub green">Análise automatizada VMG</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">⚖️ Deferimentos</span>
+        <span class="kpi-value">{{ kpis.pct_deferimento || 0 }}%</span>
+        <span class="kpi-sub green">{{ kpis.total_deferidas }} Deferidas de {{ kpis.total_contestacoes }}</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">🛑 Indeferimentos</span>
+        <span class="kpi-value">{{ kpis.pct_indeferimento || 0 }}%</span>
+        <span class="kpi-sub red">{{ kpis.total_indeferidas }} Recusadas</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">🗺️ Área Contestada</span>
+        <span class="kpi-value">{{ kpis.area_total_contestada_ha | number:'1.2-2':'pt-BR' }} ha</span>
+        <span class="kpi-sub yellow">{{ kpis.total_pendentes }} Em análise</span>
+      </div>
+    </div>
+  }
+
+  <!-- 📌 PAINÉIS DE ANÁLISE GRÁFICA -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4>📌 Tipologia de Conflitos Ambientais (Safra {{ safraSelecionada() }})</h4>
+      </div>
+      <div class="chart-body">
+        @for (item of dadosDashboard()?.tipologia_conflitos; track item.tipo) {
+          <div class="progress-row">
+            <div class="progress-info">
+              <span>{{ item.tipo }}</span>
+              <strong>{{ item.quantidade }} ({{ item.percentual }}%)</strong>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" [style.width.%]="item.percentual"></div>
+            </div>
+          </div>
+        } @empty {
+          <p class="no-data">Nenhuma tipologia mapeada nesta safra.</p>
+        }
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4>⏱️ Histórico de Atendimento por Analista</h4>
+      </div>
+      <div class="chart-body">
+        @for (analista of dadosDashboard()?.produtividade_analistas; track analista.analista) {
+          <div class="progress-row">
+            <div class="progress-info">
+              <span>{{ analista.analista }}</span>
+              <strong>{{ analista.julgados }} Julgados</strong>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill green-fill" [style.width.%]="(analista.julgados / 20) * 100"></div>
+            </div>
+          </div>
+        } @empty {
+          <p class="no-data">Nenhum atendimento registrado por analista.</p>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- 📋 TABELA DE LAUDOS E CONTESTAÇÕES -->
+  <div class="table-section">
+    <div class="table-header-title">
+      <h4>📋 Listagem de Laudos e Contestações Processadas</h4>
+    </div>
+
+    <div class="table-responsive-wrapper">
+      <table class="dashboard-table">
+        <thead>
+        <tr>
+          <th>Protocolo</th>
+          <th>Código CAR</th>
+          <th>Produtor / Alvo</th>
+          <th>Área Demarcada</th>
+          <th>Área Detectada</th>
+          <th>Status Decisão</th>
+          <th class="text-center">Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (item of dadosDashboard()?.listagem; track item.id_contestacao) {
+            <tr>
+              <td class="td-protocolo">{{ item.protocolo }}</td>
+              <td class="td-car font-mono">{{ item.codigo_car }}</td>
+              <td class="td-produtor">{{ item.produtor }}</td>
+              <td class="td-area">{{ item.area_demarcada_ha | number:'1.2-2':'pt-BR' }} ha</td>
+              <td class="td-area">{{ item.area_detectada_ha | number:'1.2-2':'pt-BR' }} ha</td>
+              <td>
+                <span class="status-badge" [ngClass]="item.status.toLowerCase()">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button
+                  type="button"
+                  class="btn-laudo"
+                  [disabled]="exportandoPdfId() === item.id_contestacao"
+                  (click)="baixarPdfLaudo(item.id_contestacao)">
+                  @if (exportandoPdfId() === item.id_contestacao) {
+                    <mat-spinner diameter="16"></mat-spinner>
+                  } @else {
+                    <mat-icon>description</mat-icon> Laudo PDF
+                  }
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-row">Nenhum laudo ou contestação localizada na safra {{ safraSelecionada() }}.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

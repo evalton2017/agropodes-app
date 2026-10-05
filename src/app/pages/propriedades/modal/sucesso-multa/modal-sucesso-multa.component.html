@@ -1,0 +1,40 @@
+<div class="modal-sucesso-container">
+  <div class="modal-header">
+    <div class="header-badge">
+      <mat-icon class="icon-success">check_circle</mat-icon>
+      <h2>Multa Apurada e Lançada com Sucesso!</h2>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <p class="sucesso-desc">
+      A infração ambiental foi apurada com base na Lei nº 9.605/1998 e Resolução CMN nº 5.268/2025, e o registro financeiro foi criado para processamento de pagamento.
+    </p>
+
+    <div class="alerta-validade-card">
+      <div class="card-title">
+        <mat-icon>timer</mat-icon>
+        <span>Validade da Apuração: 15 Dias</span>
+      </div>
+      <p>
+        Esta apuração possui validade de <strong>15 dias</strong>. Após este período, caso o pagamento não tenha sido emitido, a apuração expirará e precisará ser reprocessada.
+      </p>
+    </div>
+
+    <div class="orientacao-box">
+      <mat-icon class="icon-info">account_balance_wallet</mat-icon>
+      <div class="orientacao-text">
+        <strong>O que fazer agora?</strong>
+        <span>Acesse o menu <strong>Financeiro</strong> no painel principal para visualizar a fatura e efetuar a emissão do boleto ou PIX.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button mat-button (click)="fechar()">Permanecer Aqui</button>
+    <button mat-flat-button color="primary" (click)="irParaFinanceiro()">
+      <mat-icon>payments</mat-icon>
+      <span>Ir para o Menu Financeiro</span>
+    </button>
+  </div>
+</div>

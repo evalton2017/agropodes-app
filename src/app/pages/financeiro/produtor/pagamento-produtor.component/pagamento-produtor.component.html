@@ -1,0 +1,59 @@
+<div class="dashboard-card main-pagamentos-card">
+  @if (carregando()) {
+    <div class="ia-loading-overlay">
+      <mat-spinner diameter="35"></mat-spinner>
+    </div>
+  }
+
+  <div class="card-header flex justify-between items-center mb-4">
+    <div>
+      <h3 class="card-title-custom">Meus Pagamentos</h3>
+      <span class="subtext">Faturas e taxas pendentes de regularização</span>
+    </div>
+
+    <select [(ngModel)]="filtroStatus" (change)="carregarPagamentos()" class="select-status">
+      <option value="">Todos os Status</option>
+      <option value="PENDENTE">Pendente</option>
+      <option value="PAGO">Pago</option>
+    </select>
+  </div>
+
+  <div class="table-responsive-wrapper">
+    <table class="dashboard-table">
+      <thead>
+      <tr>
+        <th>Cód. Transação</th>
+        <th>Tipo</th>
+        <th>Descrição</th>
+        <th>Valor</th>
+        <th>Vencimento</th>
+        <th>Status</th>
+        <th class="text-center">Ação</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (item of pagamentos(); track item.idPagamento) {
+          <tr>
+            <td class="font-mono">{{ item.codigoTransacao || 'N/A' }}</td>
+            <td>{{ item.tipoPagamento }}</td>
+            <td>{{ item.descricao }}</td>
+            <td class="text-emerald-400 font-bold">R$ {{ item.valor | number:'1.2-2':'pt-BR' }}</td>
+            <td>{{ item.dataVencimento | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="badge" [ngClass]="obterClasseBadge(item.statusPagamento)">
+                {{ item.statusPagamento }}
+              </span>
+            </td>
+            <td class="text-center">
+              @if (item.statusPagamento === 'PENDENTE') {
+                <button class="btn-pagar" (click)="abrirModalPagamento(item)">
+                  <mat-icon>credit_score</mat-icon> Pagar
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

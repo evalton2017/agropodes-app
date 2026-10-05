@@ -45,7 +45,7 @@ export const MENU_ITEMS: MenuItem[] = [
       { route: '/acompanhamento-contestacao', label: 'Acompanhamento', icon: 'trending_up', roles: ['USER_PRODUTOR'] },
       { route: '/contestacao-analista', label: 'Contestações', icon: 'eco', roles: ['USER_ANALISTA'] },
       { route: '/aprovacoes', label: 'Aprovações', icon: 'cloud', roles: ['USER_ANALISTA'] },
-      { route: '/relatorio', label: 'Relatorios', icon: 'trending_up', roles: ['USER_ANALISTA'] },
+      { route: '/relatorio-contestaca', label: 'Relatorios', icon: 'trending_up', roles: ['USER_ANALISTA'] },
     ]
   },
   {
@@ -65,6 +65,15 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: 'rate_review',
     roles: ['USER_PRODUTOR'],
     route: '/consulta-ambiental'
+  },
+  {
+    label: 'Financeiro',
+    icon: 'account_balance',
+    roles: ['USER_PRODUTOR'],
+    children: [
+      { route: '/multas-produtor', label: 'Multas', icon: 'report_problem', roles: ['USER_PRODUTOR'] },
+      { route: '/pagamento-podutor', label: 'Pagamento', icon: 'credit_card', roles: ['USER_PRODUTOR'] }
+    ]
   },
  /* {
     label: 'Configuração',

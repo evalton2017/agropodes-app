@@ -5,7 +5,7 @@
       <span class="sub-title">Gerenciamento de Imóveis Rurais e Conformidade Ambiental</span>
     </div>
 
-    <!-- 🟢 Exibe o botão de cadastrar apenas no modo GERENCIAMENTO -->
+    <!-- Exibe o botão de cadastrar apenas no modo GERENCIAMENTO -->
     @if (modo === 'GERENCIAMENTO') {
       <button mat-flat-button class="btn-cadastrar" (click)="novaPropriedadeClick.emit()">
         <mat-icon>add</mat-icon>
@@ -46,10 +46,14 @@
             <td>{{ prop.data_criacao | date:'dd/MM/yyyy HH:mm' }}</td>
             <td class="text-center">
 
-              <!-- 🟢 MODO GERENCIAMENTO: Exibe botões de Detalhes e Edição -->
+              <!-- MODO GERENCIAMENTO: Exibe botões de Detalhes e Edição -->
               @if (modo === 'GERENCIAMENTO') {
                 <button mat-icon-button class="btn-action" (click)="onDetalhes(prop)" title="Ver Detalhes">
                   <mat-icon>visibility</mat-icon>
+                </button>
+
+                <button mat-icon-button class="btn-action btn-multa" (click)="onVerificarMulta(prop)" title="Verificar Multa">
+                  <mat-icon>monetization_on</mat-icon>
                 </button>
 
                 <button mat-icon-button class="btn-action" (click)="onAdicionarSocio(prop)" title="Adicionar Sócio">
@@ -57,7 +61,7 @@
                 </button>
               }
 
-              <!-- 🟢 MODO CONTESTACAO: Exibe apenas o botão de Contestação -->
+              <!-- MODO CONTESTACAO: Exibe apenas o botão de Contestação -->
               @if (modo === 'CONTESTACAO') {
                 <button mat-icon-button class="btn-action btn-gavel" (click)="onContestar(prop)" title="Realizar Contestação">
                   <mat-icon>gavel</mat-icon>

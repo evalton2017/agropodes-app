@@ -1,0 +1,87 @@
+.main-multas-card {
+  background: #112217 !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  position: relative !important;
+
+  .subtext {
+    font-size: 12px !important;
+    color: #94a3b8 !important;
+    display: block !important;
+    margin-top: 2px !important;
+  }
+}
+
+.select-status {
+  background: #0b1a10 !important;
+  border: 1px solid #1e3827 !important;
+  color: #f1f5f9 !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  font-size: 12.5px !important;
+  outline: none !important;
+
+  &:focus { border-color: #4ade80 !important; }
+}
+
+.table-responsive-wrapper {
+  max-height: 420px !important;
+  overflow-y: auto !important;
+  margin-top: 16px !important;
+
+  &::-webkit-scrollbar { width: 6px; height: 6px; }
+  &::-webkit-scrollbar-track { background: #0b1a10; }
+  &::-webkit-scrollbar-thumb { background: #1e3827; border-radius: 4px; }
+}
+
+.dashboard-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+
+  th {
+    position: sticky !important;
+    top: 0 !important;
+    background: #112217 !important;
+    color: #86efac !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    padding: 12px 10px !important;
+    border-bottom: 2px solid #1e3827 !important;
+  }
+
+  td {
+    padding: 12px 10px !important;
+    border-bottom: 1px solid #183321 !important;
+    color: #e2e8f0 !important;
+    font-size: 13px !important;
+  }
+
+  tr:hover td { background: #162c1e !important; }
+
+  .td-valor { color: #4ade80 !important; }
+
+  .badge {
+    padding: 3px 10px !important;
+    border-radius: 6px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+
+    &.dot-concluido { background: #14532d !important; color: #86efac !important; }
+    &.dot-alerta { background: #78350f !important; color: #fde68a !important; }
+    &.dot-andamento { background: #1e293b !important; color: #93c5fd !important; }
+    &.dot-nao-conforme { background: #881337 !important; color: #fecdd3 !important; }
+  }
+}
+
+.icon-green { color: #4ade80 !important; }
+
+.ia-loading-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(17, 34, 23, 0.85) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+}

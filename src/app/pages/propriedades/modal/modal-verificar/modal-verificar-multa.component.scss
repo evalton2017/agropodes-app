@@ -1,0 +1,312 @@
+/* ==========================================================================
+   ⚖️ MODAL DE PRÉVIA E APURAÇÃO DE MULTA AMBIENTAL (TEMA FLORESTAL)
+   ========================================================================== */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.modal-multa-container {
+  background-color: #0b1a10 !important;
+  color: #f8fafc !important;
+  padding: 24px !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 85vh !important;
+  box-sizing: border-box !important;
+}
+
+/* 🟢 CABEÇALHO DA MODAL */
+.modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-bottom: 16px !important;
+  border-bottom: 1px solid #1e3827 !important;
+  margin-bottom: 20px !important;
+
+  h2 {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+
+    .icon-warning {
+      color: #f59e0b !important;
+      font-size: 24px !important;
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
+  button {
+    color: #94a3b8 !important;
+    &:hover { color: #ffffff !important; }
+  }
+}
+
+/* 🟢 CORPO ROLÁVEL COM BARRA DE ROLAGEM PERSONALIZADA */
+.modal-body {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 6px !important;
+  flex: 1 !important;
+
+  /* Custom Scrollbar */
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: #08120b; border-radius: 4px; }
+  &::-webkit-scrollbar-thumb { background: #1e3827; border-radius: 4px; }
+  &::-webkit-scrollbar-thumb:hover { background: #2e543b; }
+}
+
+/* 🟢 CARD DE RESUMO E DESTACADOS */
+.summary-box {
+  background-color: #112217 !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 10px !important;
+  padding: 16px !important;
+  margin-bottom: 20px !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: 16px !important;
+
+  .info-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+
+    .lbl {
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      color: #94a3b8 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+    }
+
+    strong {
+      font-size: 14px !important;
+      color: #f1f5f9 !important;
+    }
+
+    .badge-alert {
+      background-color: rgba(245, 158, 11, 0.15) !important;
+      color: #fbbf24 !important;
+      border: 1px solid rgba(245, 158, 11, 0.3) !important;
+      padding: 3px 8px !important;
+      border-radius: 6px !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      width: fit-content !important;
+    }
+
+    &.total-highlight {
+      .val {
+        font-size: 18px !important;
+        font-weight: 900 !important;
+        color: #f43f5e !important;
+        font-family: 'JetBrains Mono', monospace !important;
+      }
+    }
+  }
+}
+
+.table-title {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  color: #86efac !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  margin: 0 0 12px 0 !important;
+}
+
+/* 🟢 TABELA COM DISTRIBUIÇÃO E LARGURAS CORRIGIDAS */
+.table-wrapper {
+  width: 100% !important;
+  overflow-x: auto !important;
+  border: 1px solid #1e3827 !important;
+  border-radius: 8px !important;
+}
+
+.infracoes-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 13px !important;
+
+  thead {
+    background-color: #142a1d !important;
+
+    th {
+      padding: 10px 14px !important;
+      color: #94a3b8 !important;
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.04em !important;
+      border-bottom: 1px solid #1e3827 !important;
+      white-space: nowrap !important;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #162e20 !important;
+      transition: background 0.2s ease !important;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.02) !important;
+      }
+
+      &:last-child {
+        border-bottom: none !important;
+      }
+    }
+
+    td {
+      padding: 12px 14px !important;
+      color: #e2e8f0 !important;
+      vertical-align: middle !important;
+      white-space: nowrap !important;
+
+      strong {
+        color: #ffffff !important;
+      }
+
+      .tag-conflito {
+        background-color: #1a3324 !important;
+        color: #cbd5e1 !important;
+        padding: 3px 8px !important;
+        border-radius: 4px !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+      }
+    }
+  }
+
+  .text-right { text-align: right !important; }
+  .font-bold { font-weight: 800 !important; }
+  .text-danger {
+    color: #f87171 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+}
+
+/* 🟢 RODAPÉ DA MODAL */
+.modal-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding-top: 16px !important;
+  margin-top: 16px !important;
+  border-top: 1px solid #1e3827 !important;
+
+  button[mat-button] {
+    color: #94a3b8 !important;
+    &:hover { color: #ffffff !important; }
+  }
+
+  button[mat-flat-button] {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    padding: 0 20px !important;
+    height: 40px !important;
+
+    &:hover {
+      background-color: #b91c1c !important;
+    }
+
+    mat-icon {
+      margin-right: 6px !important;
+    }
+  }
+}
+
+/* 🟢 ESTADOS DE CARREGAMENTO E VAZIO */
+.loading-state, .empty-state {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 40px 20px !important;
+  text-align: center !important;
+  gap: 12px !important;
+  color: #94a3b8 !important;
+}
+
+.empty-state {
+  .icon-ok {
+    font-size: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+    color: #4ade80 !important;
+  }
+
+  h3 {
+    color: #ffffff !important;
+    margin: 0 !important;
+    font-weight: 800 !important;
+  }
+}
+
+.legal-info-card {
+  background-color: #112217 !important;
+  border: 1px solid #1e3827 !important;
+  border-left: 4px solid #3b82f6 !important; // Destaque lateral em azul
+  border-radius: 8px !important;
+  padding: 16px !important;
+  margin-bottom: 20px !important;
+
+  .legal-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #60a5fa !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    margin-bottom: 8px !important;
+
+    mat-icon {
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+
+  .legal-desc {
+    font-size: 12.5px !important;
+    color: #cbd5e1 !important;
+    line-height: 1.5 !important;
+    margin: 0 0 12px 0 !important;
+
+    strong {
+      color: #ffffff !important;
+    }
+  }
+
+  .legal-bullets {
+    margin: 0 !important;
+    padding-left: 18px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+
+    li {
+      font-size: 11.5px !important;
+      color: #94a3b8 !important;
+      line-height: 1.4 !important;
+
+      strong {
+        color: #e2e8f0 !important;
+      }
+    }
+  }
+}

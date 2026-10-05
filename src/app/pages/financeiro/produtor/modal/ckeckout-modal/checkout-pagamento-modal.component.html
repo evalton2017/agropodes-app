@@ -1,0 +1,173 @@
+<div class="checkout-container">
+
+  <!-- CABEÇALHO DA MODAL -->
+  <div class="header-modal no-print">
+    <div>
+      <h3>CHECKOUT DE PAGAMENTO</h3>
+      <span class="sub-header">PROCESSO #{{ data.idPagamento }}</span>
+    </div>
+    @if (!loading()) {
+      <button (click)="fecharModal()" type="button" title="Fechar">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>
+
+  <!-- ESTADO 1: CARREGANDO -->
+  @if (loading()) {
+    <div class="flex flex-col items-center justify-center py-12">
+      <mat-spinner diameter="46" color="accent"></mat-spinner>
+      <p class="text-sm font-semibold text-gray-300 mt-4">Processando a transação na adquirente...</p>
+    </div>
+  } @else if (comprovanteGerado(); as comp) {
+    <!-- ESTADO 2: COMPROVANTE GERADO -->
+    <div class="comprovante-card printable-area">
+      <div class="comprovante-header">
+        <div class="icon-badge">
+          <mat-icon>verified</mat-icon>
+        </div>
+        <h2>COMPROVANTE DE PAGAMENTO</h2>
+        <span class="subtext">Autenticação: {{ comp.codigoAutenticacao }}</span>
+      </div>
+
+      <div class="valor-highlight-box">
+        <span class="valor-label">VALOR TOTAL PAGO</span>
+        <span class="valor-amount">R$ {{ comp.valorPago | number:'1.2-2':'pt-BR' }}</span>
+      </div>
+
+      <div class="detalhes-grid">
+        <div class="detalhe-item">
+          <span class="label">Status da Operação</span>
+          <span class="badge-status-pago">
+            <span class="dot"></span> {{ comp.statusTransacao }}
+          </span>
+        </div>
+
+        <div class="detalhe-item">
+          <span class="label">ID Pagamento</span>
+          <span class="valor font-mono">#{{ comp.idPagamento }}</span>
+        </div>
+
+        <div class="detalhe-item">
+          <span class="label">Forma de Pagamento</span>
+          <span class="valor text-neon font-bold">{{ comp.metodoPagamento }} {{ comp.parcelas > 1 ? '(' + comp.parcelas + 'x)' : '' }}</span>
+        </div>
+
+        @if (comp.metodoPagamento === 'PIX') {
+          @if (comp.pixTxid) {
+            <div class="detalhe-item">
+              <span class="label">TXID Pix</span>
+              <span class="valor font-mono text-xs">{{ comp.pixTxid }}</span>
+            </div>
+          }
+          @if (comp.pixE2eId) {
+            <div class="detalhe-item">
+              <span class="label">End-to-End ID</span>
+              <span class="valor font-mono text-xs">{{ comp.pixE2eId }}</span>
+            </div>
+          }
+        } @else {
+          @if (comp.cartaoMascarado) {
+            <div class="detalhe-item">
+              <span class="label">Cartão</span>
+              <span class="valor font-mono">{{ comp.bandeiraCartao }} {{ comp.cartaoMascarado }}</span>
+            </div>
+          }
+          @if (comp.titularCartao) {
+            <div class="detalhe-item">
+              <span class="label">Titular</span>
+              <span class="valor">{{ comp.titularCartao }}</span>
+            </div>
+          }
+        }
+
+        <div class="detalhe-item">
+          <span class="label">Data/Hora Emissão</span>
+          <span class="valor">{{ comp.dataEmissao | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+        </div>
+      </div>
+
+      <div class="actions-bar no-print">
+        <button (click)="imprimirComprovante()" class="btn-print">
+          <mat-icon>print</mat-icon> Imprimir
+        </button>
+        <button (click)="fecharModal()" class="btn-confirm">
+          Concluir
+        </button>
+      </div>
+    </div>
+  } @else {
+    <!-- ESTADO 3: FORMULÁRIO E SELEÇÃO -->
+    @if (!pixGerado()) {
+      <div class="metodos-pagamento">
+        <button [class.active]="metodoSelecionado() === 'PIX'" (click)="metodoSelecionado.set('PIX')">
+          PIX
+        </button>
+        <button [class.active]="metodoSelecionado() === 'CREDITO'" (click)="metodoSelecionado.set('CREDITO')">
+          CRÉDITO
+        </button>
+        <button [class.active]="metodoSelecionado() === 'DEBITO'" (click)="metodoSelecionado.set('DEBITO')">
+          DÉBITO
+        </button>
+      </div>
+    }
+
+    <!-- PAINEL PIX -->
+    @if (metodoSelecionado() === 'PIX' && pixGerado()) {
+      <div class="painel-pix">
+        <div class="qrcode-box">
+          <img [src]="urlQrCodePix()" alt="QR Code Pix" />
+        </div>
+
+        <div class="status-pix">
+          <span class="label-aguardando">Aguardando confirmação do pagamento...</span>
+          <div class="badge-timer">
+            <mat-icon>hourglass_top</mat-icon>
+            Confirmando em {{ tempoRestante() }}s
+          </div>
+        </div>
+
+        <div class="pix-copia-cola">
+          <span class="chave-texto">{{ codigoPixCopiaECola() }}</span>
+          <button (click)="copiarChavePix()" class="btn-copiar" type="button">
+            <mat-icon>{{ copiadoSucesso() ? 'check' : 'content_copy' }}</mat-icon>
+            {{ copiadoSucesso() ? 'Copiado!' : 'Copiar' }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- FORMULÁRIO DE CARTÃO (INCLUI CPF DO TITULAR) -->
+    @if (metodoSelecionado() !== 'PIX') {
+      <div class="form-cartao">
+        <input type="text" [(ngModel)]="numeroCartao" placeholder="Número do Cartão" />
+        <input type="text" [(ngModel)]="nomeTitular" placeholder="Nome Impresso no Cartão" />
+        <input type="text" [(ngModel)]="cpfTitular" placeholder="CPF do Titular (000.000.000-00)" />
+
+        <div class="row-2">
+          <input type="text" [(ngModel)]="validade" placeholder="MM/AA" />
+          <input type="text" [(ngModel)]="cvv" placeholder="CVV" />
+        </div>
+
+        @if (metodoSelecionado() === 'CREDITO') {
+          <select [(ngModel)]="parcelas" class="select-parcelas">
+            @for (op of opcoesParcelas(); track op.qtd) {
+              <option [value]="op.qtd">{{ op.label }}</option>
+            }
+          </select>
+        }
+      </div>
+    }
+
+    <!-- BARRA DE AÇÃO -->
+    @if (!pixGerado()) {
+      <div class="actions-bar">
+        <button (click)="confirmarPagamento()" class="btn-confirm">
+          <span>{{ metodoSelecionado() === 'PIX' ? 'GERAR QR CODE PIX' : 'PAGAR R$ ' + (data.valor | number:'1.2-2':'pt-BR') }}</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    }
+  }
+
+</div>

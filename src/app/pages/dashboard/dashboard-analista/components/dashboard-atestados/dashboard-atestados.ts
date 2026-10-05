@@ -53,7 +53,7 @@ export class AppDashboardAtestadosComponent {
 
   protected obterClasseStatus(status: string): string {
     const st = (status || '').toLowerCase();
-    if (st.includes('emitido') || st.includes('válido') || st.includes('valido')) return 'sucesso';
+    if (st.includes('emitido') || st.includes('válido') || st.includes('aprovado')) return 'sucesso';
     if (st.includes('pendente') || st.includes('processando')) return 'alerta';
     return 'critico';
   }

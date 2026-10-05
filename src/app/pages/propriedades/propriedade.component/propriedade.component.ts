@@ -17,6 +17,7 @@ import {
 } from '../components/detalhes-propriedade.component/detalhes-propriedade.component';
 import {ModalCadastrarSocioComponent} from '../modal/modal-cadastrar-socio.component';
 import {PessoaService} from '../../../service/pessoa.service';
+import {ModalVerificarMultaComponent} from '../modal/modal-verificar/modal-verificar-multa.component';
 
 export type ModoViewPropriedade = 'LISTA' | 'CADASTRO' | 'DETALHES' | 'EDICAO';
 
@@ -110,4 +111,21 @@ export class PropriedadeComponent implements OnInit {
     this.carregarPropriedades();
     this.voltarParaLista();
   }
+
+  abrirModalVerificarMulta(propriedade: Propriedade): void {
+    const dialogRef = this.dialog.open(ModalVerificarMultaComponent, {
+      width: '680px',
+      data: {
+        idPropriedade: propriedade.id_propriedade,
+        idProdutor: this.idProdutorLogado()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((gerado) => {
+      if (gerado) {
+        this.carregarPropriedades();
+      }
+    });
+  }
+
 }

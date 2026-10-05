@@ -42,6 +42,12 @@ export const ANALISTA_ROUTES: Routes = [
         data: { roles: ['USER_ANALISTA'] },
         loadComponent: () =>
           import('../pages/monitoramento/analista/clima/clima-page.component').then(m => m.ClimaPageComponent)
+      },
+      {
+        path: 'relatorio-contestaca',
+        data: { roles: ['USER_ANALISTA'] },
+        loadComponent: () =>
+          import('../pages/contestacoes/analista/contestacao.relatorio.component/contestacao.relatorio.component').then(m => m.ContestacaoRelatorioComponent)
       }
     ]
   }

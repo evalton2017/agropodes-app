@@ -12,7 +12,8 @@
       <span class="subtext">Contestações aguardando avaliação e parecer técnico do analista</span>
     </div>
     <button class="btn-refresh" (click)="carregarPendentes()">
-      <mat-icon>refresh</mat-icon> Atualizar Lista
+      <mat-icon>refresh</mat-icon>
+      Atualizar Lista
     </button>
   </div>
 
@@ -33,26 +34,32 @@
         @for (item of pendentes(); track item.id_contestacao) {
           <tr>
             <td class="td-codigo font-mono">{{ item.codigo_car }}</td>
-            <td class="td-produtor" [title]="item.nome_alvo">{{ item.nome_alvo }}</td>
+            <td class="td-produtor" [title]="item.nome_produtor">{{ item.nome_produtor }}</td>
             <td class="td-area">{{ item.tamanho_area_demarcada_ha | number:'1.2-2':'pt-BR' }} ha</td>
             <td class="td-area">{{ (item.tamanho_area_detectada_ha || 0) | number:'1.2-2':'pt-BR' }} ha</td>
             <td class="td-data">{{ item.data_criacao | date:'dd/MM/yyyy HH:mm' }}</td>
             <td class="td-acoes text-center">
               <div class="flex items-center justify-center gap-2">
                 <!-- Botão Ver Mapa/Detalhes -->
-                <button type="button" class="btn-acao btn-detalhar" (click)="visualizarMapa(item)" title="Ver Mapa e Detalhes">
+                <button type="button" class="btn-acao btn-detalhar" (click)="visualizarMapa(item)"
+                        title="Ver Mapa e Detalhes">
                   <mat-icon>map</mat-icon>
                 </button>
 
                 <!-- Botão Deferir -->
-                <button type="button" class="btn-acao btn-deferir" (click)="abrirModalParecer(item, 'DEFERIDO')" title="Deferir Contestação">
-                  <mat-icon>check_circle</mat-icon> Deferir
+                <button type="button" class="btn-acao btn-deferir" (click)="abrirModalParecer(item, 'DEFERIDO')"
+                        title="Deferir Contestação">
+                  <mat-icon>check_circle</mat-icon>
+                  Deferir
                 </button>
 
                 <!-- Botão Indeferir -->
-                <button type="button" class="btn-acao btn-indeferir" (click)="abrirModalParecer(item, 'INDEFERIDO')" title="Indeferir Contestação">
-                  <mat-icon>cancel</mat-icon> Indeferir
+                <button type="button" class="btn-acao btn-indeferir" (click)="abrirModalParecer(item, 'INDEFERIDO')"
+                        title="Indeferir Contestação">
+                  <mat-icon>cancel</mat-icon>
+                  Indeferir
                 </button>
+
               </div>
             </td>
           </tr>
@@ -68,7 +75,7 @@
   </div>
 </div>
 
-<!-- 🟢 MODAL DE DETALHES DE MAPA LEAFLET -->
+<!-- MODAL DE DETALHES DE MAPA LEAFLET -->
 @if (modalMapaAberto && contestacaoSelecionada) {
   <app-visualizar-contestacao-modal
     [contestacao]="contestacaoSelecionada"
@@ -76,25 +83,29 @@
   </app-visualizar-contestacao-modal>
 }
 
-<!-- 🟢 MODAL DE PARECER E DECISÃO MULTIPART -->
+<!-- MODAL DE PARECER E DECISÃO MULTIPART -->
 @if (modalParecerAberto && contestacaoSelecionada) {
   <div class="modal-backdrop" (click)="fecharModalParecer()">
     <div class="modal-container-florestal" (click)="$event.stopPropagation()">
 
       <div class="modal-header">
         <div class="flex items-center gap-2">
-          <mat-icon [class.icon-deferir]="statusDecisao === 'DEFERIDO'" [class.icon-indeferir]="statusDecisao === 'INDEFERIDO'">
+          <mat-icon [class.icon-deferir]="statusDecisao === 'DEFERIDO'"
+                    [class.icon-indeferir]="statusDecisao === 'INDEFERIDO'">
             {{ statusDecisao === 'DEFERIDO' ? 'gavel' : 'block' }}
           </mat-icon>
-          <h2>{{ statusDecisao === 'DEFERIDO' ? 'Deferimento' : 'Indeferimento' }} - Contestação #{{ contestacaoSelecionada.id_contestacao }}</h2>
+          <h2>{{ statusDecisao === 'DEFERIDO' ? 'Deferimento' : 'Indeferimento' }} - Contestação
+            #{{ contestacaoSelecionada.id_contestacao }}</h2>
         </div>
-        <button class="btn-close" (click)="fecharModalParecer()"><mat-icon>close</mat-icon></button>
+        <button class="btn-close" (click)="fecharModalParecer()">
+          <mat-icon>close</mat-icon>
+        </button>
       </div>
 
       <div class="modal-body">
         <div class="info-resumo mb-3">
           <span><strong>CAR:</strong> {{ contestacaoSelecionada.codigo_car }}</span>
-          <span><strong>Produtor:</strong> {{ contestacaoSelecionada.nome_alvo }}</span>
+          <span><strong>Produtor:</strong> {{ contestacaoSelecionada.nome_produtor }}</span>
         </div>
 
         <div class="field-group">
@@ -110,9 +121,10 @@
         <div class="field-group mt-4">
           <label class="label-florestal">Anexar Documentos ou Fotos Comprobatórias</label>
           <div class="file-dropzone">
-            <input type="file" multiple (change)="onFilesSelected($event)" id="fileInput" class="hidden-file-input" />
+            <input type="file" multiple (change)="onFilesSelected($event)" id="fileInput" class="hidden-file-input"/>
             <label for="fileInput" class="btn-choose-files">
-              <mat-icon>cloud_upload</mat-icon> Selecionar Arquivos / Fotos
+              <mat-icon>cloud_upload</mat-icon>
+              Selecionar Arquivos / Fotos
             </label>
           </div>
 
@@ -120,8 +132,11 @@
             <ul class="file-list mt-2">
               @for (file of arquivosSelecionados; track file.name; let i = $index) {
                 <li class="file-item">
-                  <span class="file-name"><mat-icon>attach_file</mat-icon> {{ file.name }}</span>
-                  <button type="button" class="btn-remove-file" (click)="removerArquivo(i)"><mat-icon>close</mat-icon></button>
+                  <span class="file-name"><mat-icon>attach_file</mat-icon>
+                    {{ file.name }}</span>
+                  <button type="button" class="btn-remove-file" (click)="removerArquivo(i)">
+                    <mat-icon>close</mat-icon>
+                  </button>
                 </li>
               }
             </ul>
